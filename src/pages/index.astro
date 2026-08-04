@@ -1,20 +1,16 @@
 ---
 import BaseLayout from "./layouts/BaseLayout.astro";
+import "./styles/homepage.css";
 ---
 
 <BaseLayout
   title="Prakhar's Personal Website"
-  description="Explore Prakhar's work, weekly discoveries, astrology and creative universe."
+  description="Explore Prakhar's personal creative universe."
 >
   <div class="site-shell" id="site-shell">
 
-    <!-- =========================================
-         TOP SYSTEM BAR
-    ========================================== -->
-
+    <!-- Top system bar -->
     <header class="system-bar">
-
-      <!-- Disabled because this is the homepage -->
       <button
         class="icon-button icon-button--back"
         type="button"
@@ -30,8 +26,6 @@ import BaseLayout from "./layouts/BaseLayout.astro";
       </p>
 
       <div class="system-actions">
-
-        <!-- Pauses future CSS animations -->
         <button
           class="icon-button icon-button--pause"
           id="pause-button"
@@ -40,12 +34,11 @@ import BaseLayout from "./layouts/BaseLayout.astro";
           aria-pressed="false"
         >
           <span aria-hidden="true">Ⅱ</span>
-          <span id="pause-label" class="visually-hidden">
+          <span class="visually-hidden" id="pause-label">
             Pause animations
           </span>
         </button>
 
-        <!-- Toggles sleep mode -->
         <button
           class="icon-button icon-button--power"
           id="power-button"
@@ -54,20 +47,15 @@ import BaseLayout from "./layouts/BaseLayout.astro";
           aria-pressed="false"
         >
           <span aria-hidden="true">⏻</span>
-          <span id="power-label" class="visually-hidden">
+          <span class="visually-hidden" id="power-label">
             Enter sleep mode
           </span>
         </button>
-
       </div>
     </header>
 
-    <!-- =========================================
-         PLANET NAVIGATION AREA
-    ========================================== -->
-
+    <!-- Main planet navigation -->
     <main class="planet-map">
-
       <h1 class="visually-hidden">
         Explore Prakhar's universe
       </h1>
@@ -78,19 +66,18 @@ import BaseLayout from "./layouts/BaseLayout.astro";
       >
         <ul class="destination-list">
 
-          <!-- ABOUT ME PLANET -->
+          <!-- About Me -->
           <li class="destination destination--about">
             <a
               class="planet-link"
               href="/about"
               aria-label="Open the About Me page"
             >
-              <span
-                class="planet-placeholder"
-                aria-hidden="true"
-              >
-                About Me Planet
-              </span>
+              <img
+                class="planet-artwork"
+                src="/assets/planets/about-me-planet.png"
+                alt=""
+              />
 
               <span class="planet-label">
                 About Me
@@ -98,19 +85,18 @@ import BaseLayout from "./layouts/BaseLayout.astro";
             </a>
           </li>
 
-          <!-- WEEKLY PLANET -->
+          <!-- Weekly -->
           <li class="destination destination--weekly">
             <a
               class="planet-link"
               href="/weekly"
               aria-label="Open the Weekly page"
             >
-              <span
-                class="planet-placeholder"
-                aria-hidden="true"
-              >
-                Weekly Planet
-              </span>
+              <img
+                class="planet-artwork"
+                src="/assets/planets/weekly-planet.png"
+                alt=""
+              />
 
               <span class="planet-label">
                 Weekly
@@ -118,19 +104,18 @@ import BaseLayout from "./layouts/BaseLayout.astro";
             </a>
           </li>
 
-          <!-- ASTROLOGY PLANET -->
+          <!-- Astrology -->
           <li class="destination destination--astrology">
             <a
               class="planet-link"
               href="/astrology"
               aria-label="Open the Astrology page"
             >
-              <span
-                class="planet-placeholder"
-                aria-hidden="true"
-              >
-                Astrology Planet
-              </span>
+              <img
+                class="planet-artwork"
+                src="/assets/planets/astrology-planet.png"
+                alt=""
+              />
 
               <span class="planet-label">
                 Astrology
@@ -138,27 +123,22 @@ import BaseLayout from "./layouts/BaseLayout.astro";
             </a>
           </li>
 
-          <!-- LIBRARIES PLANET -->
+          <!-- Library -->
           <li class="destination destination--libraries">
             <button
               class="planet-link planet-link--button"
               id="libraries-button"
               type="button"
-              aria-label="Libraries section coming soon"
+              aria-label="Library section coming soon"
             >
-              <span
-                class="planet-placeholder"
-                aria-hidden="true"
-              >
-                Libraries Planet
-              </span>
+              <img
+                class="planet-artwork"
+                src="/assets/planets/library-planet.png"
+                alt=""
+              />
 
               <span class="planet-label">
                 Libraries
-              </span>
-
-              <span class="availability-message">
-                Coming Soon
               </span>
             </button>
           </li>
@@ -167,32 +147,25 @@ import BaseLayout from "./layouts/BaseLayout.astro";
       </nav>
     </main>
 
-    <!-- =========================================
-         BOTTOM INFORMATION DOCK
-    ========================================== -->
-
+    <!-- Bottom information dock -->
     <footer class="bottom-dock">
 
-      <!-- LIVE TIME AND COORDINATES -->
       <section
         class="system-status"
         aria-label="Visitor system information"
       >
-        <p>
-          <span>TIME:</span>
+        <p class="status-row status-row--time">
+          <span class="status-label">TIME:</span>
           <time id="current-time">--:--</time>
         </p>
 
-        <p>
-          <span>COORD:</span>
-          <span id="current-coordinates">
-            LOCATING...
-          </span>
+        <p class="status-row">
+          <span class="status-label">COORD:</span>
+          <span id="current-coordinates">LOCATING...</span>
         </p>
 
-        <!-- Hidden visually but available to screen readers -->
         <p
-          class="location-status visually-hidden"
+          class="visually-hidden"
           id="location-status"
           aria-live="polite"
         >
@@ -200,21 +173,16 @@ import BaseLayout from "./layouts/BaseLayout.astro";
         </p>
       </section>
 
-      <!-- INFORMATION PANEL BUTTONS -->
       <section
         class="dock-actions"
         aria-label="Additional website controls"
       >
-
         <button
           class="dock-card"
           type="button"
           data-panel="info"
         >
-          <span class="dock-card__title">
-            Info
-          </span>
-
+          <span class="dock-card__title">Info</span>
           <span class="dock-card__description">
             About this realm
           </span>
@@ -225,10 +193,7 @@ import BaseLayout from "./layouts/BaseLayout.astro";
           type="button"
           data-panel="sitemap"
         >
-          <span class="dock-card__title">
-            Sitemap
-          </span>
-
+          <span class="dock-card__title">Sitemap</span>
           <span class="dock-card__description">
             Navigate all
           </span>
@@ -239,10 +204,7 @@ import BaseLayout from "./layouts/BaseLayout.astro";
           type="button"
           data-panel="credits"
         >
-          <span class="dock-card__title">
-            Credits
-          </span>
-
+          <span class="dock-card__title">Credits</span>
           <span class="dock-card__description">
             Thanks and magic
           </span>
@@ -253,32 +215,22 @@ import BaseLayout from "./layouts/BaseLayout.astro";
           type="button"
           data-panel="links"
         >
-          <span class="dock-card__title">
-            Links
-          </span>
-
+          <span class="dock-card__title">Links</span>
           <span class="dock-card__description">
             Connect outwards
           </span>
         </button>
-
       </section>
     </footer>
 
-    <!-- =========================================
-         INFORMATION POP-UP PANEL
-    ========================================== -->
-
+    <!-- Shared information panel -->
     <dialog
       class="information-panel"
       id="information-panel"
       aria-labelledby="panel-title"
     >
       <header class="information-panel__header">
-
-        <h2 id="panel-title">
-          Information
-        </h2>
+        <h2 id="panel-title">Information</h2>
 
         <button
           class="information-panel__close"
@@ -288,7 +240,6 @@ import BaseLayout from "./layouts/BaseLayout.astro";
         >
           ×
         </button>
-
       </header>
 
       <div
@@ -298,7 +249,7 @@ import BaseLayout from "./layouts/BaseLayout.astro";
       </div>
     </dialog>
 
-    <!-- Small system notification -->
+    <!-- Temporary system notification -->
     <div
       class="system-toast"
       id="system-toast"
@@ -312,12 +263,6 @@ import BaseLayout from "./layouts/BaseLayout.astro";
 </BaseLayout>
 
 <script>
-  /*
-   * =====================================================
-   * LIVE VISITOR TIME
-   * =====================================================
-   */
-
   const timeElement =
     document.querySelector<HTMLTimeElement>("#current-time");
 
@@ -339,17 +284,7 @@ import BaseLayout from "./layouts/BaseLayout.astro";
   }
 
   updateVisitorTime();
-
-  // The interface only shows hours and minutes,
-  // so updating every 30 seconds is enough.
   window.setInterval(updateVisitorTime, 30000);
-
-
-  /*
-   * =====================================================
-   * VISITOR COORDINATES
-   * =====================================================
-   */
 
   const coordinatesElement =
     document.querySelector<HTMLSpanElement>(
@@ -384,15 +319,12 @@ import BaseLayout from "./layouts/BaseLayout.astro";
 
     if (!("geolocation" in navigator)) {
       coordinatesElement.textContent = "UNAVAILABLE";
-
       locationStatusElement.textContent =
         "Geolocation is not supported by this browser.";
-
       return;
     }
 
     coordinatesElement.textContent = "LOCATING...";
-
     locationStatusElement.textContent =
       "Requesting location access.";
 
@@ -453,13 +385,6 @@ import BaseLayout from "./layouts/BaseLayout.astro";
 
   showVisitorLocation();
 
-
-  /*
-   * =====================================================
-   * SYSTEM NOTIFICATION
-   * =====================================================
-   */
-
   const systemToast =
     document.querySelector<HTMLDivElement>(
       "#system-toast"
@@ -483,13 +408,6 @@ import BaseLayout from "./layouts/BaseLayout.astro";
     }, 3000);
   }
 
-
-  /*
-   * =====================================================
-   * LIBRARIES COMING-SOON INTERACTION
-   * =====================================================
-   */
-
   const librariesButton =
     document.querySelector<HTMLButtonElement>(
       "#libraries-button"
@@ -497,16 +415,9 @@ import BaseLayout from "./layouts/BaseLayout.astro";
 
   librariesButton?.addEventListener("click", () => {
     showSystemMessage(
-      "LIBRARIES TRANSMISSION NOT YET AVAILABLE"
+      "LIBRARY TRANSMISSION NOT YET AVAILABLE"
     );
   });
-
-
-  /*
-   * =====================================================
-   * PAUSE AND RESUME ANIMATIONS
-   * =====================================================
-   */
 
   const pauseButton =
     document.querySelector<HTMLButtonElement>(
@@ -549,13 +460,6 @@ import BaseLayout from "./layouts/BaseLayout.astro";
     );
   });
 
-
-  /*
-   * =====================================================
-   * POWER AND SLEEP MODE
-   * =====================================================
-   */
-
   const powerButton =
     document.querySelector<HTMLButtonElement>(
       "#power-button"
@@ -568,9 +472,7 @@ import BaseLayout from "./layouts/BaseLayout.astro";
 
   powerButton?.addEventListener("click", () => {
     const sleepModeIsActive =
-      document.body.classList.toggle(
-        "sleep-mode"
-      );
+      document.body.classList.toggle("sleep-mode");
 
     powerButton.setAttribute(
       "aria-pressed",
@@ -596,13 +498,6 @@ import BaseLayout from "./layouts/BaseLayout.astro";
         : "SYSTEM RESTORED"
     );
   });
-
-
-  /*
-   * =====================================================
-   * INFORMATION POP-UP PANEL
-   * =====================================================
-   */
 
   const informationPanel =
     document.querySelector<HTMLDialogElement>(
@@ -632,45 +527,25 @@ import BaseLayout from "./layouts/BaseLayout.astro";
   const panelInformation = {
     info: {
       title: "Info",
-
       content: `
         <p>
           This is Prakhar's personal corner of the universe.
           Each planet leads to a different collection of work,
-          thoughts, discoveries and questionable transmissions.
-        </p>
-
-        <p>
-          Choose a planet to begin exploring.
+          discoveries and questionable transmissions.
         </p>
       `,
     },
 
     sitemap: {
       title: "Sitemap",
-
       content: `
         <nav aria-label="Website sitemap">
           <ul>
-            <li>
-              <a href="/">Home</a>
-            </li>
-
-            <li>
-              <a href="/about">About Me</a>
-            </li>
-
-            <li>
-              <a href="/weekly">Weekly</a>
-            </li>
-
-            <li>
-              <a href="/astrology">Astrology</a>
-            </li>
-
-            <li>
-              <span>Libraries — Coming Soon</span>
-            </li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About Me</a></li>
+            <li><a href="/weekly">Weekly</a></li>
+            <li><a href="/astrology">Astrology</a></li>
+            <li><span>Libraries — Coming Soon</span></li>
           </ul>
         </nav>
       `,
@@ -678,25 +553,15 @@ import BaseLayout from "./layouts/BaseLayout.astro";
 
     credits: {
       title: "Credits",
-
       content: `
-        <p>
-          Designed and developed by Prakhar Pandey.
-        </p>
-
-        <p>
-          Built using Astro.
-        </p>
-
-        <p>
-          Illustrations and visual assets by Prakhar Pandey.
-        </p>
+        <p>Designed and developed by Prakhar Pandey.</p>
+        <p>Built using Astro.</p>
+        <p>Illustrations and visual assets by Prakhar Pandey.</p>
       `,
     },
 
     links: {
       title: "Links",
-
       content: `
         <ul>
           <li>
@@ -704,46 +569,10 @@ import BaseLayout from "./layouts/BaseLayout.astro";
               Email
             </a>
           </li>
-
-          <li>
-            <a
-              href="#"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Instagram
-            </a>
-          </li>
-
-          <li>
-            <a
-              href="#"
-              target="_blank"
-              rel="noreferrer"
-            >
-              LinkedIn
-            </a>
-          </li>
-
-          <li>
-            <a
-              href="#"
-              target="_blank"
-              rel="noreferrer"
-            >
-              GitHub
-            </a>
-          </li>
-
-          <li>
-            <a
-              href="#"
-              target="_blank"
-              rel="noreferrer"
-            >
-              YouTube
-            </a>
-          </li>
+          <li><a href="#" target="_blank" rel="noreferrer">Instagram</a></li>
+          <li><a href="#" target="_blank" rel="noreferrer">LinkedIn</a></li>
+          <li><a href="#" target="_blank" rel="noreferrer">GitHub</a></li>
+          <li><a href="#" target="_blank" rel="noreferrer">YouTube</a></li>
         </ul>
       `,
     },
@@ -799,19 +628,17 @@ import BaseLayout from "./layouts/BaseLayout.astro";
     }
   );
 
-  // Close the dialog when the visitor clicks
-  // outside the visible panel.
   informationPanel?.addEventListener(
     "click",
     (event) => {
-      const panelBounds =
+      const bounds =
         informationPanel.getBoundingClientRect();
 
       const clickedInsidePanel =
-        event.clientX >= panelBounds.left &&
-        event.clientX <= panelBounds.right &&
-        event.clientY >= panelBounds.top &&
-        event.clientY <= panelBounds.bottom;
+        event.clientX >= bounds.left &&
+        event.clientX <= bounds.right &&
+        event.clientY >= bounds.top &&
+        event.clientY <= bounds.bottom;
 
       if (!clickedInsidePanel) {
         informationPanel.close();
@@ -819,94 +646,3 @@ import BaseLayout from "./layouts/BaseLayout.astro";
     }
   );
 </script>
-
-<style>
-  /*
-   * These are only temporary structural styles.
-   * The final homepage styling will be written
-   * during the CSS chapter.
-   */
-
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    white-space: nowrap;
-    border: 0;
-    clip-path: inset(50%);
-  }
-
-  .planet-link--button {
-    font: inherit;
-  }
-
-  .information-panel {
-    width: min(90%, 560px);
-    padding: 0;
-    border: 2px solid currentColor;
-  }
-
-  .information-panel::backdrop {
-    background: rgb(0 0 0 / 70%);
-  }
-
-  .information-panel__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    border-bottom: 1px solid currentColor;
-  }
-
-  .information-panel__header h2 {
-    margin: 0;
-  }
-
-  .information-panel__close {
-    border: 0;
-    background: transparent;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-
-  .information-panel__content {
-    padding: 1rem;
-  }
-
-  .system-toast {
-    position: fixed;
-    left: 50%;
-    bottom: 2rem;
-    z-index: 20;
-    max-width: min(90%, 500px);
-    padding: 0.75rem 1rem;
-    border: 2px solid currentColor;
-    background: black;
-    color: white;
-    transform: translateX(-50%);
-    text-align: center;
-  }
-
-  .animations-paused *,
-  .animations-paused *::before,
-  .animations-paused *::after {
-    animation-play-state: paused !important;
-  }
-
-  .sleep-mode .planet-map,
-  .sleep-mode .bottom-dock,
-  .sleep-mode .system-message,
-  .sleep-mode .icon-button--back,
-  .sleep-mode .icon-button--pause {
-    opacity: 0.12;
-    pointer-events: none;
-  }
-
-  .sleep-mode .icon-button--power {
-    opacity: 1;
-    pointer-events: auto;
-  }
-</style>
