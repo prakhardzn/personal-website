@@ -1,17 +1,311 @@
 ---
-
+import BaseLayout from "./layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="Prakhar's Personal Website"
+  description="Explore Prakhar's work, weekly discoveries and creative universe."
+>
+  <div class="site-shell">
+
+    <!-- Top system bar -->
+    <header class="system-bar">
+      <button
+        class="icon-button icon-button--back"
+        type="button"
+        aria-label="Go to the previous page"
+        disabled
+      >
+        Back
+      </button>
+
+      <p class="system-message">
+        “Nothing is broken. It just works differently in this dimension.”
+      </p>
+
+      <div class="system-actions">
+        <button
+          class="icon-button icon-button--pause"
+          type="button"
+          aria-label="Pause homepage animations"
+        >
+          Pause
+        </button>
+
+        <button
+          class="icon-button icon-button--power"
+          type="button"
+          aria-label="Toggle the website interface"
+        >
+          Power
+        </button>
+      </div>
+    </header>
+
+    <!-- Main planetary navigation -->
+    <main class="planet-map">
+      <h1 class="page-title">
+        Explore Prakhar's universe
+      </h1>
+
+      <nav
+        class="planet-navigation"
+        aria-label="Main website sections"
+      >
+        <ul class="destination-list">
+
+          <!-- About Me -->
+          <li class="destination destination--about">
+            <a class="planet-link" href="/about">
+              <span
+                class="planet-placeholder"
+                aria-hidden="true"
+              >
+                About Me planet
+              </span>
+
+              <span class="planet-label">
+                About Me
+              </span>
+            </a>
+          </li>
+
+          <!-- Weekly -->
+          <li class="destination destination--weekly">
+            <a class="planet-link" href="/weekly">
+              <span
+                class="planet-placeholder"
+                aria-hidden="true"
+              >
+                Weekly planet
+              </span>
+
+              <span class="planet-label">
+                Weekly
+              </span>
+            </a>
+          </li>
+
+          <!-- Astrology: future section -->
+          <li class="destination destination--astrology is-locked">
+            <div
+              class="planet-link"
+              aria-disabled="true"
+            >
+              <span
+                class="planet-placeholder"
+                aria-hidden="true"
+              >
+                Astrology planet
+              </span>
+
+              <span class="planet-label">
+                Astrology
+              </span>
+
+              <span class="availability-message">
+                Coming soon
+              </span>
+            </div>
+          </li>
+
+          <!-- Libraries: future section -->
+          <li class="destination destination--libraries is-locked">
+            <div
+              class="planet-link"
+              aria-disabled="true"
+            >
+              <span
+                class="planet-placeholder"
+                aria-hidden="true"
+              >
+                Libraries planet
+              </span>
+
+              <span class="planet-label">
+                Libraries
+              </span>
+
+              <span class="availability-message">
+                Coming soon
+              </span>
+            </div>
+          </li>
+
+        </ul>
+      </nav>
+    </main>
+
+    <!-- Bottom information dock -->
+    <footer class="bottom-dock">
+
+     <section
+  class="system-status"
+  aria-label="Visitor system information"
+>
+  <p>
+    TIME:
+    <time id="current-time">--:--</time>
+  </p>
+
+  <p>
+    COORD:
+    <span id="current-coordinates">LOCATING...</span>
+  </p>
+
+  <p id="location-status" class="location-status">
+    Awaiting location permission
+  </p>
+</section>
+
+      <section
+        class="dock-actions"
+        aria-label="Additional website controls"
+      >
+        <button class="dock-card" type="button">
+          <span class="dock-card__title">Info</span>
+          <span class="dock-card__description">
+            About this realm
+          </span>
+        </button>
+
+        <button class="dock-card" type="button">
+          <span class="dock-card__title">Sitemap</span>
+          <span class="dock-card__description">
+            Navigate all
+          </span>
+        </button>
+
+        <button class="dock-card" type="button">
+          <span class="dock-card__title">Credits</span>
+          <span class="dock-card__description">
+            Thanks and magic
+          </span>
+        </button>
+
+        <button class="dock-card" type="button">
+          <span class="dock-card__title">Links</span>
+          <span class="dock-card__description">
+            Connect outwards
+          </span>
+        </button>
+
+        <button
+          class="menu-button"
+          type="button"
+          aria-label="Open website menu"
+        >
+          Menu
+        </button>
+      </section>
+
+    </footer>
+
+  </div>
+</BaseLayout>
+<script>
+  const timeElement = document.querySelector<HTMLTimeElement>(
+    "#current-time"
+  );
+
+  const coordinatesElement = document.querySelector<HTMLSpanElement>(
+    "#current-coordinates"
+  );
+
+  const locationStatusElement = document.querySelector<HTMLParagraphElement>(
+    "#location-status"
+  );
+
+  function updateVisitorTime() {
+    if (!timeElement) return;
+
+    const now = new Date();
+
+    timeElement.textContent = new Intl.DateTimeFormat(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(now);
+
+    timeElement.dateTime = now.toISOString();
+  }
+
+  function formatCoordinate(
+    coordinate: number,
+    positiveDirection: string,
+    negativeDirection: string
+  ) {
+    const direction =
+      coordinate >= 0 ? positiveDirection : negativeDirection;
+
+    return `${Math.abs(coordinate).toFixed(4)}° ${direction}`;
+  }
+
+  function showVisitorLocation() {
+    if (!coordinatesElement || !locationStatusElement) return;
+
+    if (!("geolocation" in navigator)) {
+      coordinatesElement.textContent = "UNAVAILABLE";
+      locationStatusElement.textContent =
+        "Geolocation is not supported by this browser.";
+      return;
+    }
+
+    locationStatusElement.textContent = "Requesting location access...";
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitude = formatCoordinate(
+          position.coords.latitude,
+          "N",
+          "S"
+        );
+
+        const longitude = formatCoordinate(
+          position.coords.longitude,
+          "E",
+          "W"
+        );
+
+        coordinatesElement.textContent = `${latitude}, ${longitude}`;
+        locationStatusElement.textContent = "Location signal acquired";
+      },
+
+      (error) => {
+        coordinatesElement.textContent = "ACCESS UNAVAILABLE";
+
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            locationStatusElement.textContent =
+              "Location permission was denied.";
+            break;
+
+          case error.POSITION_UNAVAILABLE:
+            locationStatusElement.textContent =
+              "Location information is unavailable.";
+            break;
+
+          case error.TIMEOUT:
+            locationStatusElement.textContent =
+              "Location request timed out.";
+            break;
+
+          default:
+            locationStatusElement.textContent =
+              "Unable to detect visitor location.";
+        }
+      },
+
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000,
+      }
+    );
+  }
+
+  updateVisitorTime();
+  window.setInterval(updateVisitorTime, 3000);
+
+  showVisitorLocation();
+</script>
