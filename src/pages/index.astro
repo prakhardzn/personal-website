@@ -4,19 +4,25 @@ import BaseLayout from "./layouts/BaseLayout.astro";
 
 <BaseLayout
   title="Prakhar's Personal Website"
-  description="Explore Prakhar's work, weekly discoveries and creative universe."
+  description="Explore Prakhar's work, weekly discoveries, astrology and creative universe."
 >
-  <div class="site-shell">
+  <div class="site-shell" id="site-shell">
 
-    <!-- Top system bar -->
+    <!-- =========================================
+         TOP SYSTEM BAR
+    ========================================== -->
+
     <header class="system-bar">
+
+      <!-- Disabled because this is the homepage -->
       <button
         class="icon-button icon-button--back"
         type="button"
-        aria-label="Go to the previous page"
+        aria-label="Back button unavailable on homepage"
         disabled
       >
-        Back
+        <span aria-hidden="true">←</span>
+        <span class="visually-hidden">Back</span>
       </button>
 
       <p class="system-message">
@@ -24,27 +30,45 @@ import BaseLayout from "./layouts/BaseLayout.astro";
       </p>
 
       <div class="system-actions">
+
+        <!-- Pauses future CSS animations -->
         <button
           class="icon-button icon-button--pause"
+          id="pause-button"
           type="button"
           aria-label="Pause homepage animations"
+          aria-pressed="false"
         >
-          Pause
+          <span aria-hidden="true">Ⅱ</span>
+          <span id="pause-label" class="visually-hidden">
+            Pause animations
+          </span>
         </button>
 
+        <!-- Toggles sleep mode -->
         <button
           class="icon-button icon-button--power"
+          id="power-button"
           type="button"
-          aria-label="Toggle the website interface"
+          aria-label="Enter sleep mode"
+          aria-pressed="false"
         >
-          Power
+          <span aria-hidden="true">⏻</span>
+          <span id="power-label" class="visually-hidden">
+            Enter sleep mode
+          </span>
         </button>
+
       </div>
     </header>
 
-    <!-- Main planetary navigation -->
+    <!-- =========================================
+         PLANET NAVIGATION AREA
+    ========================================== -->
+
     <main class="planet-map">
-      <h1 class="page-title">
+
+      <h1 class="visually-hidden">
         Explore Prakhar's universe
       </h1>
 
@@ -54,14 +78,18 @@ import BaseLayout from "./layouts/BaseLayout.astro";
       >
         <ul class="destination-list">
 
-          <!-- About Me -->
+          <!-- ABOUT ME PLANET -->
           <li class="destination destination--about">
-            <a class="planet-link" href="/about">
+            <a
+              class="planet-link"
+              href="/about"
+              aria-label="Open the About Me page"
+            >
               <span
                 class="planet-placeholder"
                 aria-hidden="true"
               >
-                About Me planet
+                About Me Planet
               </span>
 
               <span class="planet-label">
@@ -70,14 +98,18 @@ import BaseLayout from "./layouts/BaseLayout.astro";
             </a>
           </li>
 
-          <!-- Weekly -->
+          <!-- WEEKLY PLANET -->
           <li class="destination destination--weekly">
-            <a class="planet-link" href="/weekly">
+            <a
+              class="planet-link"
+              href="/weekly"
+              aria-label="Open the Weekly page"
+            >
               <span
                 class="planet-placeholder"
                 aria-hidden="true"
               >
-                Weekly planet
+                Weekly Planet
               </span>
 
               <span class="planet-label">
@@ -86,40 +118,39 @@ import BaseLayout from "./layouts/BaseLayout.astro";
             </a>
           </li>
 
-          <!-- Astrology: future section -->
-          <li class="destination destination--astrology is-locked">
-            <div
+          <!-- ASTROLOGY PLANET -->
+          <li class="destination destination--astrology">
+            <a
               class="planet-link"
-              aria-disabled="true"
+              href="/astrology"
+              aria-label="Open the Astrology page"
             >
               <span
                 class="planet-placeholder"
                 aria-hidden="true"
               >
-                Astrology planet
+                Astrology Planet
               </span>
 
               <span class="planet-label">
                 Astrology
               </span>
-
-              <span class="availability-message">
-                Coming soon
-              </span>
-            </div>
+            </a>
           </li>
 
-          <!-- Libraries: future section -->
-          <li class="destination destination--libraries is-locked">
-            <div
-              class="planet-link"
-              aria-disabled="true"
+          <!-- LIBRARIES PLANET -->
+          <li class="destination destination--libraries">
+            <button
+              class="planet-link planet-link--button"
+              id="libraries-button"
+              type="button"
+              aria-label="Libraries section coming soon"
             >
               <span
                 class="planet-placeholder"
                 aria-hidden="true"
               >
-                Libraries planet
+                Libraries Planet
               </span>
 
               <span class="planet-label">
@@ -127,108 +158,208 @@ import BaseLayout from "./layouts/BaseLayout.astro";
               </span>
 
               <span class="availability-message">
-                Coming soon
+                Coming Soon
               </span>
-            </div>
+            </button>
           </li>
 
         </ul>
       </nav>
     </main>
 
-    <!-- Bottom information dock -->
+    <!-- =========================================
+         BOTTOM INFORMATION DOCK
+    ========================================== -->
+
     <footer class="bottom-dock">
 
-     <section
-  class="system-status"
-  aria-label="Visitor system information"
->
-  <p>
-    TIME:
-    <time id="current-time">--:--</time>
-  </p>
+      <!-- LIVE TIME AND COORDINATES -->
+      <section
+        class="system-status"
+        aria-label="Visitor system information"
+      >
+        <p>
+          <span>TIME:</span>
+          <time id="current-time">--:--</time>
+        </p>
 
-  <p>
-    COORD:
-    <span id="current-coordinates">LOCATING...</span>
-  </p>
+        <p>
+          <span>COORD:</span>
+          <span id="current-coordinates">
+            LOCATING...
+          </span>
+        </p>
 
-  <p id="location-status" class="location-status">
-    Awaiting location permission
-  </p>
-</section>
+        <!-- Hidden visually but available to screen readers -->
+        <p
+          class="location-status visually-hidden"
+          id="location-status"
+          aria-live="polite"
+        >
+          Awaiting location permission
+        </p>
+      </section>
 
+      <!-- INFORMATION PANEL BUTTONS -->
       <section
         class="dock-actions"
         aria-label="Additional website controls"
       >
-        <button class="dock-card" type="button">
-          <span class="dock-card__title">Info</span>
+
+        <button
+          class="dock-card"
+          type="button"
+          data-panel="info"
+        >
+          <span class="dock-card__title">
+            Info
+          </span>
+
           <span class="dock-card__description">
             About this realm
           </span>
         </button>
 
-        <button class="dock-card" type="button">
-          <span class="dock-card__title">Sitemap</span>
+        <button
+          class="dock-card"
+          type="button"
+          data-panel="sitemap"
+        >
+          <span class="dock-card__title">
+            Sitemap
+          </span>
+
           <span class="dock-card__description">
             Navigate all
           </span>
         </button>
 
-        <button class="dock-card" type="button">
-          <span class="dock-card__title">Credits</span>
+        <button
+          class="dock-card"
+          type="button"
+          data-panel="credits"
+        >
+          <span class="dock-card__title">
+            Credits
+          </span>
+
           <span class="dock-card__description">
             Thanks and magic
           </span>
         </button>
 
-        <button class="dock-card" type="button">
-          <span class="dock-card__title">Links</span>
+        <button
+          class="dock-card"
+          type="button"
+          data-panel="links"
+        >
+          <span class="dock-card__title">
+            Links
+          </span>
+
           <span class="dock-card__description">
             Connect outwards
           </span>
         </button>
 
-        <button
-          class="menu-button"
-          type="button"
-          aria-label="Open website menu"
-        >
-          Menu
-        </button>
       </section>
-
     </footer>
+
+    <!-- =========================================
+         INFORMATION POP-UP PANEL
+    ========================================== -->
+
+    <dialog
+      class="information-panel"
+      id="information-panel"
+      aria-labelledby="panel-title"
+    >
+      <header class="information-panel__header">
+
+        <h2 id="panel-title">
+          Information
+        </h2>
+
+        <button
+          class="information-panel__close"
+          id="close-information-panel"
+          type="button"
+          aria-label="Close information panel"
+        >
+          ×
+        </button>
+
+      </header>
+
+      <div
+        class="information-panel__content"
+        id="panel-content"
+      >
+      </div>
+    </dialog>
+
+    <!-- Small system notification -->
+    <div
+      class="system-toast"
+      id="system-toast"
+      role="status"
+      aria-live="polite"
+      hidden
+    >
+    </div>
 
   </div>
 </BaseLayout>
+
 <script>
-  const timeElement = document.querySelector<HTMLTimeElement>(
-    "#current-time"
-  );
+  /*
+   * =====================================================
+   * LIVE VISITOR TIME
+   * =====================================================
+   */
 
-  const coordinatesElement = document.querySelector<HTMLSpanElement>(
-    "#current-coordinates"
-  );
-
-  const locationStatusElement = document.querySelector<HTMLParagraphElement>(
-    "#location-status"
-  );
+  const timeElement =
+    document.querySelector<HTMLTimeElement>("#current-time");
 
   function updateVisitorTime() {
     if (!timeElement) return;
 
     const now = new Date();
 
-    timeElement.textContent = new Intl.DateTimeFormat(undefined, {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }).format(now);
+    timeElement.textContent = new Intl.DateTimeFormat(
+      undefined,
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }
+    ).format(now);
 
     timeElement.dateTime = now.toISOString();
   }
+
+  updateVisitorTime();
+
+  // The interface only shows hours and minutes,
+  // so updating every 30 seconds is enough.
+  window.setInterval(updateVisitorTime, 30000);
+
+
+  /*
+   * =====================================================
+   * VISITOR COORDINATES
+   * =====================================================
+   */
+
+  const coordinatesElement =
+    document.querySelector<HTMLSpanElement>(
+      "#current-coordinates"
+    );
+
+  const locationStatusElement =
+    document.querySelector<HTMLParagraphElement>(
+      "#location-status"
+    );
 
   function formatCoordinate(
     coordinate: number,
@@ -236,22 +367,34 @@ import BaseLayout from "./layouts/BaseLayout.astro";
     negativeDirection: string
   ) {
     const direction =
-      coordinate >= 0 ? positiveDirection : negativeDirection;
+      coordinate >= 0
+        ? positiveDirection
+        : negativeDirection;
 
     return `${Math.abs(coordinate).toFixed(4)}° ${direction}`;
   }
 
   function showVisitorLocation() {
-    if (!coordinatesElement || !locationStatusElement) return;
-
-    if (!("geolocation" in navigator)) {
-      coordinatesElement.textContent = "UNAVAILABLE";
-      locationStatusElement.textContent =
-        "Geolocation is not supported by this browser.";
+    if (
+      !coordinatesElement ||
+      !locationStatusElement
+    ) {
       return;
     }
 
-    locationStatusElement.textContent = "Requesting location access...";
+    if (!("geolocation" in navigator)) {
+      coordinatesElement.textContent = "UNAVAILABLE";
+
+      locationStatusElement.textContent =
+        "Geolocation is not supported by this browser.";
+
+      return;
+    }
+
+    coordinatesElement.textContent = "LOCATING...";
+
+    locationStatusElement.textContent =
+      "Requesting location access.";
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -267,12 +410,16 @@ import BaseLayout from "./layouts/BaseLayout.astro";
           "W"
         );
 
-        coordinatesElement.textContent = `${latitude}, ${longitude}`;
-        locationStatusElement.textContent = "Location signal acquired";
+        coordinatesElement.textContent =
+          `${latitude}, ${longitude}`;
+
+        locationStatusElement.textContent =
+          "Location signal acquired.";
       },
 
       (error) => {
-        coordinatesElement.textContent = "ACCESS UNAVAILABLE";
+        coordinatesElement.textContent =
+          "ACCESS UNAVAILABLE";
 
         switch (error.code) {
           case error.PERMISSION_DENIED:
@@ -304,8 +451,462 @@ import BaseLayout from "./layouts/BaseLayout.astro";
     );
   }
 
-  updateVisitorTime();
-  window.setInterval(updateVisitorTime, 3000);
-
   showVisitorLocation();
+
+
+  /*
+   * =====================================================
+   * SYSTEM NOTIFICATION
+   * =====================================================
+   */
+
+  const systemToast =
+    document.querySelector<HTMLDivElement>(
+      "#system-toast"
+    );
+
+  let toastTimer: number | undefined;
+
+  function showSystemMessage(message: string) {
+    if (!systemToast) return;
+
+    if (toastTimer) {
+      window.clearTimeout(toastTimer);
+    }
+
+    systemToast.textContent = message;
+    systemToast.hidden = false;
+
+    toastTimer = window.setTimeout(() => {
+      systemToast.hidden = true;
+      systemToast.textContent = "";
+    }, 3000);
+  }
+
+
+  /*
+   * =====================================================
+   * LIBRARIES COMING-SOON INTERACTION
+   * =====================================================
+   */
+
+  const librariesButton =
+    document.querySelector<HTMLButtonElement>(
+      "#libraries-button"
+    );
+
+  librariesButton?.addEventListener("click", () => {
+    showSystemMessage(
+      "LIBRARIES TRANSMISSION NOT YET AVAILABLE"
+    );
+  });
+
+
+  /*
+   * =====================================================
+   * PAUSE AND RESUME ANIMATIONS
+   * =====================================================
+   */
+
+  const pauseButton =
+    document.querySelector<HTMLButtonElement>(
+      "#pause-button"
+    );
+
+  const pauseLabel =
+    document.querySelector<HTMLSpanElement>(
+      "#pause-label"
+    );
+
+  pauseButton?.addEventListener("click", () => {
+    const animationsArePaused =
+      document.body.classList.toggle(
+        "animations-paused"
+      );
+
+    pauseButton.setAttribute(
+      "aria-pressed",
+      String(animationsArePaused)
+    );
+
+    pauseButton.setAttribute(
+      "aria-label",
+      animationsArePaused
+        ? "Resume homepage animations"
+        : "Pause homepage animations"
+    );
+
+    if (pauseLabel) {
+      pauseLabel.textContent = animationsArePaused
+        ? "Resume animations"
+        : "Pause animations";
+    }
+
+    showSystemMessage(
+      animationsArePaused
+        ? "PLANETARY MOTION PAUSED"
+        : "PLANETARY MOTION RESUMED"
+    );
+  });
+
+
+  /*
+   * =====================================================
+   * POWER AND SLEEP MODE
+   * =====================================================
+   */
+
+  const powerButton =
+    document.querySelector<HTMLButtonElement>(
+      "#power-button"
+    );
+
+  const powerLabel =
+    document.querySelector<HTMLSpanElement>(
+      "#power-label"
+    );
+
+  powerButton?.addEventListener("click", () => {
+    const sleepModeIsActive =
+      document.body.classList.toggle(
+        "sleep-mode"
+      );
+
+    powerButton.setAttribute(
+      "aria-pressed",
+      String(sleepModeIsActive)
+    );
+
+    powerButton.setAttribute(
+      "aria-label",
+      sleepModeIsActive
+        ? "Exit sleep mode"
+        : "Enter sleep mode"
+    );
+
+    if (powerLabel) {
+      powerLabel.textContent = sleepModeIsActive
+        ? "Exit sleep mode"
+        : "Enter sleep mode";
+    }
+
+    showSystemMessage(
+      sleepModeIsActive
+        ? "SYSTEM ENTERING SLEEP MODE"
+        : "SYSTEM RESTORED"
+    );
+  });
+
+
+  /*
+   * =====================================================
+   * INFORMATION POP-UP PANEL
+   * =====================================================
+   */
+
+  const informationPanel =
+    document.querySelector<HTMLDialogElement>(
+      "#information-panel"
+    );
+
+  const panelTitle =
+    document.querySelector<HTMLHeadingElement>(
+      "#panel-title"
+    );
+
+  const panelContent =
+    document.querySelector<HTMLDivElement>(
+      "#panel-content"
+    );
+
+  const closePanelButton =
+    document.querySelector<HTMLButtonElement>(
+      "#close-information-panel"
+    );
+
+  const panelButtons =
+    document.querySelectorAll<HTMLButtonElement>(
+      "[data-panel]"
+    );
+
+  const panelInformation = {
+    info: {
+      title: "Info",
+
+      content: `
+        <p>
+          This is Prakhar's personal corner of the universe.
+          Each planet leads to a different collection of work,
+          thoughts, discoveries and questionable transmissions.
+        </p>
+
+        <p>
+          Choose a planet to begin exploring.
+        </p>
+      `,
+    },
+
+    sitemap: {
+      title: "Sitemap",
+
+      content: `
+        <nav aria-label="Website sitemap">
+          <ul>
+            <li>
+              <a href="/">Home</a>
+            </li>
+
+            <li>
+              <a href="/about">About Me</a>
+            </li>
+
+            <li>
+              <a href="/weekly">Weekly</a>
+            </li>
+
+            <li>
+              <a href="/astrology">Astrology</a>
+            </li>
+
+            <li>
+              <span>Libraries — Coming Soon</span>
+            </li>
+          </ul>
+        </nav>
+      `,
+    },
+
+    credits: {
+      title: "Credits",
+
+      content: `
+        <p>
+          Designed and developed by Prakhar Pandey.
+        </p>
+
+        <p>
+          Built using Astro.
+        </p>
+
+        <p>
+          Illustrations and visual assets by Prakhar Pandey.
+        </p>
+      `,
+    },
+
+    links: {
+      title: "Links",
+
+      content: `
+        <ul>
+          <li>
+            <a href="mailto:your-email@example.com">
+              Email
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Instagram
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+            >
+              LinkedIn
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+            >
+              YouTube
+            </a>
+          </li>
+        </ul>
+      `,
+    },
+  };
+
+  type PanelName = keyof typeof panelInformation;
+
+  function openInformationPanel(
+    panelName: PanelName
+  ) {
+    if (
+      !informationPanel ||
+      !panelTitle ||
+      !panelContent
+    ) {
+      return;
+    }
+
+    const selectedPanel =
+      panelInformation[panelName];
+
+    panelTitle.textContent =
+      selectedPanel.title;
+
+    panelContent.innerHTML =
+      selectedPanel.content;
+
+    if (!informationPanel.open) {
+      informationPanel.showModal();
+    }
+  }
+
+  panelButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const panelName =
+        button.dataset.panel as
+          | PanelName
+          | undefined;
+
+      if (
+        panelName &&
+        panelName in panelInformation
+      ) {
+        openInformationPanel(panelName);
+      }
+    });
+  });
+
+  closePanelButton?.addEventListener(
+    "click",
+    () => {
+      informationPanel?.close();
+    }
+  );
+
+  // Close the dialog when the visitor clicks
+  // outside the visible panel.
+  informationPanel?.addEventListener(
+    "click",
+    (event) => {
+      const panelBounds =
+        informationPanel.getBoundingClientRect();
+
+      const clickedInsidePanel =
+        event.clientX >= panelBounds.left &&
+        event.clientX <= panelBounds.right &&
+        event.clientY >= panelBounds.top &&
+        event.clientY <= panelBounds.bottom;
+
+      if (!clickedInsidePanel) {
+        informationPanel.close();
+      }
+    }
+  );
 </script>
+
+<style>
+  /*
+   * These are only temporary structural styles.
+   * The final homepage styling will be written
+   * during the CSS chapter.
+   */
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    white-space: nowrap;
+    border: 0;
+    clip-path: inset(50%);
+  }
+
+  .planet-link--button {
+    font: inherit;
+  }
+
+  .information-panel {
+    width: min(90%, 560px);
+    padding: 0;
+    border: 2px solid currentColor;
+  }
+
+  .information-panel::backdrop {
+    background: rgb(0 0 0 / 70%);
+  }
+
+  .information-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid currentColor;
+  }
+
+  .information-panel__header h2 {
+    margin: 0;
+  }
+
+  .information-panel__close {
+    border: 0;
+    background: transparent;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  .information-panel__content {
+    padding: 1rem;
+  }
+
+  .system-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 2rem;
+    z-index: 20;
+    max-width: min(90%, 500px);
+    padding: 0.75rem 1rem;
+    border: 2px solid currentColor;
+    background: black;
+    color: white;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+
+  .animations-paused *,
+  .animations-paused *::before,
+  .animations-paused *::after {
+    animation-play-state: paused !important;
+  }
+
+  .sleep-mode .planet-map,
+  .sleep-mode .bottom-dock,
+  .sleep-mode .system-message,
+  .sleep-mode .icon-button--back,
+  .sleep-mode .icon-button--pause {
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  .sleep-mode .icon-button--power {
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>
