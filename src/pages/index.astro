@@ -1,27 +1,33 @@
 ---
-import BaseLayout from "./layouts/BaseLayout.astro";
-import "./styles/homepage.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/homepage.css";
 ---
 
 <BaseLayout
-  title="Prakhar's Personal Website"
+  title="Prakhar's Universe"
   description="Explore Prakhar's personal creative universe."
 >
   <div class="site-shell" id="site-shell">
 
-    <!-- Top system bar -->
+    <!-- ==================================================
+         TOP SYSTEM BAR
+    =================================================== -->
+
     <header class="system-bar">
       <button
         class="icon-button icon-button--back"
         type="button"
-        aria-label="Back button unavailable on homepage"
         disabled
+        aria-label="Back button unavailable on the homepage"
       >
         <span aria-hidden="true">←</span>
         <span class="visually-hidden">Back</span>
       </button>
 
-      <p class="system-message">
+      <p
+        class="system-message"
+        data-typewriter
+      >
         “Nothing is broken. It just works differently in this dimension.”
       </p>
 
@@ -34,7 +40,11 @@ import "./styles/homepage.css";
           aria-pressed="false"
         >
           <span aria-hidden="true">Ⅱ</span>
-          <span class="visually-hidden" id="pause-label">
+
+          <span
+            class="visually-hidden"
+            id="pause-label"
+          >
             Pause animations
           </span>
         </button>
@@ -47,14 +57,22 @@ import "./styles/homepage.css";
           aria-pressed="false"
         >
           <span aria-hidden="true">⏻</span>
-          <span class="visually-hidden" id="power-label">
+
+          <span
+            class="visually-hidden"
+            id="power-label"
+          >
             Enter sleep mode
           </span>
         </button>
       </div>
     </header>
 
-    <!-- Main planet navigation -->
+
+    <!-- ==================================================
+         PLANET NAVIGATION
+    =================================================== -->
+
     <main class="planet-map">
       <h1 class="visually-hidden">
         Explore Prakhar's universe
@@ -67,6 +85,7 @@ import "./styles/homepage.css";
         <ul class="destination-list">
 
           <!-- About Me -->
+
           <li class="destination destination--about">
             <a
               class="planet-link"
@@ -85,7 +104,9 @@ import "./styles/homepage.css";
             </a>
           </li>
 
+
           <!-- Weekly -->
+
           <li class="destination destination--weekly">
             <a
               class="planet-link"
@@ -104,7 +125,9 @@ import "./styles/homepage.css";
             </a>
           </li>
 
+
           <!-- Astrology -->
+
           <li class="destination destination--astrology">
             <a
               class="planet-link"
@@ -123,13 +146,15 @@ import "./styles/homepage.css";
             </a>
           </li>
 
-          <!-- Library -->
+
+          <!-- Libraries -->
+
           <li class="destination destination--libraries">
             <button
               class="planet-link planet-link--button"
               id="libraries-button"
               type="button"
-              aria-label="Library section coming soon"
+              aria-label="Libraries section coming soon"
             >
               <img
                 class="planet-artwork"
@@ -147,21 +172,37 @@ import "./styles/homepage.css";
       </nav>
     </main>
 
-    <!-- Bottom information dock -->
+
+    <!-- ==================================================
+         BOTTOM NAVIGATION
+    =================================================== -->
+
     <footer class="bottom-dock">
+
+      <!-- Time and coordinates -->
 
       <section
         class="system-status"
         aria-label="Visitor system information"
       >
         <p class="status-row status-row--time">
-          <span class="status-label">TIME:</span>
-          <time id="current-time">--:--</time>
+          <span class="status-label">
+            TIME:
+          </span>
+
+          <time id="current-time">
+            --:--
+          </time>
         </p>
 
         <p class="status-row">
-          <span class="status-label">COORD:</span>
-          <span id="current-coordinates">LOCATING...</span>
+          <span class="status-label">
+            COORD:
+          </span>
+
+          <span id="current-coordinates">
+            LOCATING...
+          </span>
         </p>
 
         <p
@@ -169,68 +210,218 @@ import "./styles/homepage.css";
           id="location-status"
           aria-live="polite"
         >
-          Awaiting location permission
+          Waiting for location access.
         </p>
       </section>
+
+
+      <!-- Icon navigation cards -->
 
       <section
         class="dock-actions"
         aria-label="Additional website controls"
       >
+
+        <!-- Info -->
+
         <button
           class="dock-card"
           type="button"
           data-panel="info"
         >
-          <span class="dock-card__title">Info</span>
-          <span class="dock-card__description">
-            About this realm
+          <span class="dock-card__inner">
+            <span
+              class="dock-card__icon"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 48 48">
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="18"
+                />
+
+                <circle
+                  class="dock-card__icon-fill"
+                  cx="24"
+                  cy="15"
+                  r="2"
+                />
+
+                <path d="M24 22V34" />
+              </svg>
+            </span>
+
+            <span class="dock-card__copy">
+              <span class="dock-card__title">
+                Info
+              </span>
+
+              <span class="dock-card__description">
+                About this realm
+              </span>
+            </span>
           </span>
         </button>
+
+
+        <!-- Sitemap -->
 
         <button
           class="dock-card"
           type="button"
           data-panel="sitemap"
         >
-          <span class="dock-card__title">Sitemap</span>
-          <span class="dock-card__description">
-            Navigate all
+          <span class="dock-card__inner">
+            <span
+              class="dock-card__icon"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 48 48">
+                <path
+                  d="
+                    M5 10
+                    L17 5
+                    L31 11
+                    L43 6
+                    V38
+                    L31 43
+                    L17 37
+                    L5 42
+                    Z
+                  "
+                />
+
+                <path d="M17 5V37" />
+                <path d="M31 11V43" />
+              </svg>
+            </span>
+
+            <span class="dock-card__copy">
+              <span class="dock-card__title">
+                Sitemap
+              </span>
+
+              <span class="dock-card__description">
+                Navigate all
+              </span>
+            </span>
           </span>
         </button>
+
+
+        <!-- Credits -->
 
         <button
           class="dock-card"
           type="button"
           data-panel="credits"
         >
-          <span class="dock-card__title">Credits</span>
-          <span class="dock-card__description">
-            Thanks and magic
+          <span class="dock-card__inner">
+            <span
+              class="dock-card__icon"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 48 48">
+                <path
+                  d="
+                    M24 4
+                    L30 17
+                    L44 19
+                    L34 29
+                    L36 43
+                    L24 36
+                    L12 43
+                    L14 29
+                    L4 19
+                    L18 17
+                    Z
+                  "
+                />
+              </svg>
+            </span>
+
+            <span class="dock-card__copy">
+              <span class="dock-card__title">
+                Credits
+              </span>
+
+              <span class="dock-card__description">
+                Thanks and magic
+              </span>
+            </span>
           </span>
         </button>
+
+
+        <!-- Links -->
 
         <button
           class="dock-card"
           type="button"
           data-panel="links"
         >
-          <span class="dock-card__title">Links</span>
-          <span class="dock-card__description">
-            Connect outwards
+          <span class="dock-card__inner">
+            <span
+              class="dock-card__icon"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 48 48">
+                <path
+                  d="
+                    M20 30
+                    L15 35
+                    C11 39 5 39 2 35
+                    C-1 32 0 26 4 22
+                    L11 15
+                    C15 11 21 11 24 15
+                  "
+                />
+
+                <path
+                  d="
+                    M28 18
+                    L33 13
+                    C37 9 43 9 46 13
+                    C49 16 48 22 44 26
+                    L37 33
+                    C33 37 27 37 24 33
+                  "
+                />
+
+                <path d="M16 32L32 16" />
+              </svg>
+            </span>
+
+            <span class="dock-card__copy">
+              <span class="dock-card__title">
+                Links
+              </span>
+
+              <span class="dock-card__description">
+                Connect outwards
+              </span>
+            </span>
           </span>
         </button>
+
       </section>
     </footer>
 
-    <!-- Shared information panel -->
+
+    <!-- ==================================================
+         INFORMATION PANEL
+    =================================================== -->
+
     <dialog
       class="information-panel"
       id="information-panel"
       aria-labelledby="panel-title"
     >
       <header class="information-panel__header">
-        <h2 id="panel-title">Information</h2>
+        <h2 id="panel-title">
+          Information
+        </h2>
 
         <button
           class="information-panel__close"
@@ -249,7 +440,11 @@ import "./styles/homepage.css";
       </div>
     </dialog>
 
-    <!-- Temporary system notification -->
+
+    <!-- ==================================================
+         TEMPORARY SYSTEM MESSAGE
+    =================================================== -->
+
     <div
       class="system-toast"
       id="system-toast"
@@ -262,29 +457,65 @@ import "./styles/homepage.css";
   </div>
 </BaseLayout>
 
-<script>
-  const timeElement =
-    document.querySelector<HTMLTimeElement>("#current-time");
 
-  function updateVisitorTime() {
-    if (!timeElement) return;
+<script>
+  /* ======================================================
+     PANEL TYPES
+  ====================================================== */
+
+  type PanelName =
+    | "info"
+    | "sitemap"
+    | "credits"
+    | "links";
+
+  interface PanelInformation {
+    title: string;
+    content: string;
+  }
+
+
+  /* ======================================================
+     LIVE TIME
+  ====================================================== */
+
+  const timeElement =
+    document.querySelector<HTMLTimeElement>(
+      "#current-time"
+    );
+
+  function updateVisitorTime(): void {
+    if (!timeElement) {
+      return;
+    }
 
     const now = new Date();
 
-    timeElement.textContent = new Intl.DateTimeFormat(
-      undefined,
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }
-    ).format(now);
+    timeElement.textContent =
+      new Intl.DateTimeFormat(
+        undefined,
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }
+      ).format(now);
 
-    timeElement.dateTime = now.toISOString();
+    timeElement.dateTime =
+      now.toISOString();
   }
 
   updateVisitorTime();
-  window.setInterval(updateVisitorTime, 30000);
+
+  window.setInterval(
+    updateVisitorTime,
+    30000
+  );
+
+
+  /* ======================================================
+     VISITOR COORDINATES
+  ====================================================== */
 
   const coordinatesElement =
     document.querySelector<HTMLSpanElement>(
@@ -300,7 +531,7 @@ import "./styles/homepage.css";
     coordinate: number,
     positiveDirection: string,
     negativeDirection: string
-  ) {
+  ): string {
     const direction =
       coordinate >= 0
         ? positiveDirection
@@ -309,7 +540,7 @@ import "./styles/homepage.css";
     return `${Math.abs(coordinate).toFixed(4)}° ${direction}`;
   }
 
-  function showVisitorLocation() {
+  function showVisitorLocation(): void {
     if (
       !coordinatesElement ||
       !locationStatusElement
@@ -318,29 +549,30 @@ import "./styles/homepage.css";
     }
 
     if (!("geolocation" in navigator)) {
-      coordinatesElement.textContent = "UNAVAILABLE";
+      coordinatesElement.textContent =
+        "UNAVAILABLE";
+
       locationStatusElement.textContent =
-        "Geolocation is not supported by this browser.";
+        "Geolocation is unavailable.";
+
       return;
     }
 
-    coordinatesElement.textContent = "LOCATING...";
-    locationStatusElement.textContent =
-      "Requesting location access.";
-
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const latitude = formatCoordinate(
-          position.coords.latitude,
-          "N",
-          "S"
-        );
+      (position: GeolocationPosition) => {
+        const latitude =
+          formatCoordinate(
+            position.coords.latitude,
+            "N",
+            "S"
+          );
 
-        const longitude = formatCoordinate(
-          position.coords.longitude,
-          "E",
-          "W"
-        );
+        const longitude =
+          formatCoordinate(
+            position.coords.longitude,
+            "E",
+            "W"
+          );
 
         coordinatesElement.textContent =
           `${latitude}, ${longitude}`;
@@ -349,30 +581,12 @@ import "./styles/homepage.css";
           "Location signal acquired.";
       },
 
-      (error) => {
+      () => {
         coordinatesElement.textContent =
           "ACCESS UNAVAILABLE";
 
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            locationStatusElement.textContent =
-              "Location permission was denied.";
-            break;
-
-          case error.POSITION_UNAVAILABLE:
-            locationStatusElement.textContent =
-              "Location information is unavailable.";
-            break;
-
-          case error.TIMEOUT:
-            locationStatusElement.textContent =
-              "Location request timed out.";
-            break;
-
-          default:
-            locationStatusElement.textContent =
-              "Unable to detect visitor location.";
-        }
+        locationStatusElement.textContent =
+          "Location permission was unavailable.";
       },
 
       {
@@ -385,39 +599,67 @@ import "./styles/homepage.css";
 
   showVisitorLocation();
 
+
+  /* ======================================================
+     SYSTEM TOAST
+  ====================================================== */
+
   const systemToast =
     document.querySelector<HTMLDivElement>(
       "#system-toast"
     );
 
-  let toastTimer: number | undefined;
+  let toastTimer:
+    number | undefined;
 
-  function showSystemMessage(message: string) {
-    if (!systemToast) return;
+  function showSystemMessage(
+    message: string
+  ): void {
+    if (!systemToast) {
+      return;
+    }
 
-    if (toastTimer) {
+    if (toastTimer !== undefined) {
       window.clearTimeout(toastTimer);
     }
 
     systemToast.textContent = message;
     systemToast.hidden = false;
 
-    toastTimer = window.setTimeout(() => {
-      systemToast.hidden = true;
-      systemToast.textContent = "";
-    }, 3000);
+    toastTimer =
+      window.setTimeout(
+        () => {
+          systemToast.hidden = true;
+          systemToast.textContent = "";
+          toastTimer = undefined;
+        },
+        3000
+      );
   }
+
+
+  /* ======================================================
+     LIBRARIES BUTTON
+  ====================================================== */
 
   const librariesButton =
     document.querySelector<HTMLButtonElement>(
       "#libraries-button"
     );
 
-  librariesButton?.addEventListener("click", () => {
-    showSystemMessage(
-      "LIBRARY TRANSMISSION NOT YET AVAILABLE"
-    );
-  });
+  librariesButton?.addEventListener(
+    "click",
+    () => {
+      showSystemMessage(
+        "LIBRARY TRANSMISSION NOT YET AVAILABLE"
+      );
+    }
+  );
+
+
+  /* ======================================================
+     PAUSE BUTTON
+  ====================================================== */
 
   const pauseButton =
     document.querySelector<HTMLButtonElement>(
@@ -429,36 +671,45 @@ import "./styles/homepage.css";
       "#pause-label"
     );
 
-  pauseButton?.addEventListener("click", () => {
-    const animationsArePaused =
-      document.body.classList.toggle(
-        "animations-paused"
+  pauseButton?.addEventListener(
+    "click",
+    () => {
+      const animationsArePaused =
+        document.body.classList.toggle(
+          "animations-paused"
+        );
+
+      pauseButton.setAttribute(
+        "aria-pressed",
+        String(animationsArePaused)
       );
 
-    pauseButton.setAttribute(
-      "aria-pressed",
-      String(animationsArePaused)
-    );
+      pauseButton.setAttribute(
+        "aria-label",
+        animationsArePaused
+          ? "Resume homepage animations"
+          : "Pause homepage animations"
+      );
 
-    pauseButton.setAttribute(
-      "aria-label",
-      animationsArePaused
-        ? "Resume homepage animations"
-        : "Pause homepage animations"
-    );
+      if (pauseLabel) {
+        pauseLabel.textContent =
+          animationsArePaused
+            ? "Resume animations"
+            : "Pause animations";
+      }
 
-    if (pauseLabel) {
-      pauseLabel.textContent = animationsArePaused
-        ? "Resume animations"
-        : "Pause animations";
+      showSystemMessage(
+        animationsArePaused
+          ? "PLANETARY MOTION PAUSED"
+          : "PLANETARY MOTION RESUMED"
+      );
     }
+  );
 
-    showSystemMessage(
-      animationsArePaused
-        ? "PLANETARY MOTION PAUSED"
-        : "PLANETARY MOTION RESUMED"
-    );
-  });
+
+  /* ======================================================
+     POWER BUTTON
+  ====================================================== */
 
   const powerButton =
     document.querySelector<HTMLButtonElement>(
@@ -470,34 +721,157 @@ import "./styles/homepage.css";
       "#power-label"
     );
 
-  powerButton?.addEventListener("click", () => {
-    const sleepModeIsActive =
-      document.body.classList.toggle("sleep-mode");
+  powerButton?.addEventListener(
+    "click",
+    () => {
+      const sleepModeIsActive =
+        document.body.classList.toggle(
+          "sleep-mode"
+        );
 
-    powerButton.setAttribute(
-      "aria-pressed",
-      String(sleepModeIsActive)
-    );
+      powerButton.setAttribute(
+        "aria-pressed",
+        String(sleepModeIsActive)
+      );
 
-    powerButton.setAttribute(
-      "aria-label",
-      sleepModeIsActive
-        ? "Exit sleep mode"
-        : "Enter sleep mode"
-    );
+      powerButton.setAttribute(
+        "aria-label",
+        sleepModeIsActive
+          ? "Exit sleep mode"
+          : "Enter sleep mode"
+      );
 
-    if (powerLabel) {
-      powerLabel.textContent = sleepModeIsActive
-        ? "Exit sleep mode"
-        : "Enter sleep mode";
+      if (powerLabel) {
+        powerLabel.textContent =
+          sleepModeIsActive
+            ? "Exit sleep mode"
+            : "Enter sleep mode";
+      }
+
+      showSystemMessage(
+        sleepModeIsActive
+          ? "SYSTEM ENTERING SLEEP MODE"
+          : "SYSTEM RESTORED"
+      );
     }
+  );
 
-    showSystemMessage(
-      sleepModeIsActive
-        ? "SYSTEM ENTERING SLEEP MODE"
-        : "SYSTEM RESTORED"
-    );
-  });
+
+  /* ======================================================
+     PANEL CONTENT
+  ====================================================== */
+
+  const panelInformation:
+    Record<PanelName, PanelInformation> = {
+      info: {
+        title: "Info",
+
+        content: `
+          <p>
+            This is Prakhar's personal corner of the universe.
+            Each planet leads to a different collection of work,
+            discoveries and questionable transmissions.
+          </p>
+        `,
+      },
+
+      sitemap: {
+        title: "Sitemap",
+
+        content: `
+          <nav aria-label="Website sitemap">
+            <ul>
+              <li>
+                <a href="/">Home</a>
+              </li>
+
+              <li>
+                <a href="/about">About Me</a>
+              </li>
+
+              <li>
+                <a href="/weekly">Weekly</a>
+              </li>
+
+              <li>
+                <a href="/astrology">Astrology</a>
+              </li>
+
+              <li>
+                Libraries — Coming Soon
+              </li>
+            </ul>
+          </nav>
+        `,
+      },
+
+      credits: {
+        title: "Credits",
+
+        content: `
+          <p>
+            Designed and developed by Prakhar Pandey.
+          </p>
+
+          <p>
+            Built using Astro.
+          </p>
+
+          <p>
+            Visual assets and illustrations by Prakhar Pandey.
+          </p>
+        `,
+      },
+
+      links: {
+        title: "Links",
+
+        content: `
+          <ul>
+            <li>
+              <a href="mailto:prakharpandey2027@gmail.com">
+                Email
+              </a>
+            </li>
+
+            <li>
+              <a href="#" target="_blank" rel="noreferrer">
+                Instagram
+              </a>
+            </li>
+
+            <li>
+              <a href="#" target="_blank" rel="noreferrer">
+                LinkedIn
+              </a>
+            </li>
+
+            <li>
+              <a href="#" target="_blank" rel="noreferrer">
+                GitHub
+              </a>
+            </li>
+
+            <li>
+              <a href="#" target="_blank" rel="noreferrer">
+                YouTube
+              </a>
+            </li>
+          </ul>
+        `,
+      },
+    };
+
+  function isPanelName(
+    value: string
+  ): value is PanelName {
+    return value in panelInformation;
+  }
+
+
+  /* ======================================================
+     PANEL ELEMENTS
+  ====================================================== */
 
   const informationPanel =
     document.querySelector<HTMLDialogElement>(
@@ -514,75 +888,20 @@ import "./styles/homepage.css";
       "#panel-content"
     );
 
-  const closePanelButton =
-    document.querySelector<HTMLButtonElement>(
-      "#close-information-panel"
-    );
-
   const panelButtons =
     document.querySelectorAll<HTMLButtonElement>(
       "[data-panel]"
     );
 
-  const panelInformation = {
-    info: {
-      title: "Info",
-      content: `
-        <p>
-          This is Prakhar's personal corner of the universe.
-          Each planet leads to a different collection of work,
-          discoveries and questionable transmissions.
-        </p>
-      `,
-    },
+  const closeInformationButton =
+    document.querySelector<HTMLButtonElement>(
+      "#close-information-panel"
+    );
 
-    sitemap: {
-      title: "Sitemap",
-      content: `
-        <nav aria-label="Website sitemap">
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About Me</a></li>
-            <li><a href="/weekly">Weekly</a></li>
-            <li><a href="/astrology">Astrology</a></li>
-            <li><span>Libraries — Coming Soon</span></li>
-          </ul>
-        </nav>
-      `,
-    },
-
-    credits: {
-      title: "Credits",
-      content: `
-        <p>Designed and developed by Prakhar Pandey.</p>
-        <p>Built using Astro.</p>
-        <p>Illustrations and visual assets by Prakhar Pandey.</p>
-      `,
-    },
-
-    links: {
-      title: "Links",
-      content: `
-        <ul>
-          <li>
-            <a href="mailto:your-email@example.com">
-              Email
-            </a>
-          </li>
-          <li><a href="#" target="_blank" rel="noreferrer">Instagram</a></li>
-          <li><a href="#" target="_blank" rel="noreferrer">LinkedIn</a></li>
-          <li><a href="#" target="_blank" rel="noreferrer">GitHub</a></li>
-          <li><a href="#" target="_blank" rel="noreferrer">YouTube</a></li>
-        </ul>
-      `,
-    },
-  };
-
-  type PanelName = keyof typeof panelInformation;
 
   function openInformationPanel(
     panelName: PanelName
-  ) {
+  ): void {
     if (
       !informationPanel ||
       !panelTitle ||
@@ -605,42 +924,46 @@ import "./styles/homepage.css";
     }
   }
 
-  panelButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const panelName =
-        button.dataset.panel as
-          | PanelName
-          | undefined;
 
-      if (
-        panelName &&
-        panelName in panelInformation
-      ) {
-        openInformationPanel(panelName);
-      }
-    });
-  });
+  panelButtons.forEach(
+    (button: HTMLButtonElement) => {
+      button.addEventListener(
+        "click",
+        () => {
+          const panelName =
+            button.dataset.panel;
 
-  closePanelButton?.addEventListener(
+          if (
+            !panelName ||
+            !isPanelName(panelName)
+          ) {
+            return;
+          }
+
+          openInformationPanel(
+            panelName
+          );
+        }
+      );
+    }
+  );
+
+
+  closeInformationButton?.addEventListener(
     "click",
     () => {
       informationPanel?.close();
     }
   );
 
+
   informationPanel?.addEventListener(
     "click",
-    (event) => {
-      const bounds =
-        informationPanel.getBoundingClientRect();
-
-      const clickedInsidePanel =
-        event.clientX >= bounds.left &&
-        event.clientX <= bounds.right &&
-        event.clientY >= bounds.top &&
-        event.clientY <= bounds.bottom;
-
-      if (!clickedInsidePanel) {
+    (event: MouseEvent) => {
+      if (
+        event.target ===
+        informationPanel
+      ) {
         informationPanel.close();
       }
     }

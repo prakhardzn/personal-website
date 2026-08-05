@@ -1,17 +1,54 @@
 ---
-import BaseLayout from "./layouts/BaseLayout.astro";
+import InternalPageLayout from
+  "../layouts/InternalPageLayout.astro";
 ---
 
-<BaseLayout
+<InternalPageLayout
   title="Astrology | Prakhar"
-  description="Astrology questions, interpretations and transmissions."
+  description="Astrology questions, charts and case studies."
+  message="Mercury denies responsibility for any bugs found here."
+  pageClass="astrology-page"
 >
-  <header>
-    <a href="/">← Return to homepage</a>
-  </header>
+  <Fragment slot="sidebar">
+    <section class="ui-panel astrology-placeholder">
+      <h1>Astrology</h1>
 
-  <main>
-    <h1>Astrology</h1>
-    <p>The complete Astrology page will be built later.</p>
-  </main>
-</BaseLayout>
+      <p>
+        Charts, questions and cosmic investigations
+        will appear here.
+      </p>
+    </section>
+  </Fragment>
+
+  <Fragment slot="content">
+    <section class="ui-panel astrology-placeholder">
+      <h2>Transmission pending</h2>
+
+      <p>
+        This page is connected correctly. Its full
+        design will be developed later.
+      </p>
+    </section>
+  </Fragment>
+</InternalPageLayout>
+
+<style>
+  .astrology-placeholder {
+    height: 100%;
+    padding: clamp(24px, 3vw, 55px);
+    overflow-y: auto;
+  }
+
+  .astrology-placeholder h1,
+  .astrology-placeholder h2 {
+    margin-top: 0;
+    color: var(--internal-green);
+    font-family: var(--internal-display-font);
+    text-transform: uppercase;
+  }
+
+  .astrology-placeholder p {
+    font-size: clamp(14px, 1.2vw, 22px);
+    line-height: 1.7;
+  }
+</style>

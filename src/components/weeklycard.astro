@@ -1,0 +1,27 @@
+---
+interface Props {
+  title: string;
+  href: string;
+  variant?: "one" | "two" | "three";
+}
+
+const {
+  title,
+  href,
+  variant = "one",
+} = Astro.props;
+---
+
+<a
+  class={`weekly-card weekly-card--${variant}`}
+  href={href}
+  aria-label={`Read ${title}`}
+>
+  <h2 class="weekly-card__title">
+    {title}
+  </h2>
+
+  <span class="weekly-card__action">
+    Read now
+  </span>
+</a>

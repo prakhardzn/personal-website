@@ -1,0 +1,77 @@
+<dialog
+  class="settings-dialog"
+  id="settings-dialog"
+  aria-labelledby="settings-dialog-title"
+>
+  <div class="settings-dialog__window">
+    <header class="settings-dialog__header">
+      <h2 id="settings-dialog-title">
+        System Settings
+      </h2>
+
+      <button
+        class="settings-dialog__close"
+        type="button"
+        data-close-settings
+        aria-label="Close settings"
+      >
+        ×
+      </button>
+    </header>
+
+    <div class="settings-dialog__content">
+      <p class="settings-dialog__warning">
+        Oops, can’t do anything.
+      </p>
+
+      <p>
+        This control appears to be purely decorative
+        in the current dimension.
+      </p>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const settingsDialog =
+    document.querySelector<HTMLDialogElement>(
+      "#settings-dialog"
+    );
+
+  const settingsOpenButtons =
+    document.querySelectorAll<HTMLButtonElement>(
+      "[data-open-settings]"
+    );
+
+  const settingsCloseButton =
+    document.querySelector<HTMLButtonElement>(
+      "[data-close-settings]"
+    );
+
+  settingsOpenButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (
+        settingsDialog &&
+        !settingsDialog.open
+      ) {
+        settingsDialog.showModal();
+      }
+    });
+  });
+
+  settingsCloseButton?.addEventListener(
+    "click",
+    () => {
+      settingsDialog?.close();
+    }
+  );
+
+  settingsDialog?.addEventListener(
+    "click",
+    (event) => {
+      if (event.target === settingsDialog) {
+        settingsDialog.close();
+      }
+    }
+  );
+</script>

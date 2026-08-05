@@ -1,0 +1,779 @@
+@import url("https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
+
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+:root {
+  --font-display: "Silkscreen", monospace;
+  --font-interface: "Space Mono", monospace;
+
+  --space-black: #02080a;
+
+  --neon-green: #a8ff36;
+  --neon-pink: #ff42b3;
+  --neon-blue: #58dfff;
+  --neon-purple: #9e72ff;
+
+  --interface-white: #f3fff5;
+}
+
+
+/* =========================================================
+   GLOBAL RESET
+========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+
+  padding: 0;
+  margin: 0;
+
+  background: var(--space-black);
+}
+
+body {
+  color: var(--interface-white);
+  font-family: var(--font-interface);
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+img,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+.visually-hidden {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  padding: 0;
+  margin: -1px;
+
+  overflow: hidden;
+
+  clip-path: inset(50%);
+
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* =========================================================
+   HIDE NORMAL CURSOR
+========================================================= */
+
+.has-alien-cursor,
+.has-alien-cursor * {
+  cursor: none !important;
+}
+
+
+/* =========================================================
+   ALIEN CURSOR CONTAINER
+========================================================= */
+
+.alien-cursor {
+  --cursor-x: -100px;
+  --cursor-y: -100px;
+
+  position: fixed;
+
+  top: 0;
+  left: 0;
+  z-index: 999999;
+
+  width: 64px;
+  height: 78px;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transform:
+    translate3d(
+      var(--cursor-x),
+      var(--cursor-y),
+      0
+    );
+
+  transition:
+    opacity 120ms ease,
+    filter 150ms ease;
+
+  will-change: transform;
+}
+
+
+/*
+  The alien is shown only when the user has
+  a proper mouse or trackpad.
+*/
+
+@media (hover: hover) and (pointer: fine) {
+  .has-alien-cursor .alien-cursor {
+    display: block;
+  }
+}
+
+
+.alien-cursor.is-visible {
+  opacity: 1;
+}
+
+
+/* =========================================================
+   ACTUAL POINTER HOTSPOT
+========================================================= */
+
+/*
+  The green point is the exact location where a click
+  happens. The alien head follows beside it.
+*/
+
+.alien-cursor__hotspot {
+  position: absolute;
+
+  top: -3px;
+  left: -3px;
+  z-index: 10;
+
+  width: 7px;
+  height: 7px;
+
+  border: 1px solid #071006;
+  border-radius: 50%;
+
+  background: var(--neon-green);
+
+  box-shadow:
+    0 0 5px
+    rgb(168 255 54 / 90%),
+    0 0 11px
+    rgb(168 255 54 / 45%);
+}
+
+
+/* =========================================================
+   FACE CONTAINER
+========================================================= */
+
+.alien-cursor__face-container {
+  position: absolute;
+
+  top: 5px;
+  left: 7px;
+
+  width: 51px;
+  height: 66px;
+
+  transform-origin: center;
+
+  animation:
+    alien-bored-idle
+    2.4s
+    ease-in-out
+    infinite;
+
+  will-change: transform;
+}
+
+
+/* Soft shadow behind the head */
+
+.alien-cursor__face-container::after {
+  position: absolute;
+
+  right: 7px;
+  bottom: -3px;
+  left: 7px;
+  z-index: -1;
+
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: rgb(0 0 0 / 42%);
+
+  filter: blur(4px);
+
+  content: "";
+}
+
+
+/* =========================================================
+   EXPRESSION IMAGES
+========================================================= */
+
+.alien-cursor__face {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center;
+
+  opacity: 0;
+
+  filter:
+    drop-shadow(
+      0 2px 2px
+      rgb(0 0 0 / 55%)
+    );
+
+  transition:
+    opacity 90ms linear;
+
+  user-select: none;
+}
+
+
+/* Bored is the normal expression */
+
+.alien-cursor__face--bored {
+  opacity: 1;
+}
+
+
+/* Happy state */
+
+.alien-cursor.is-happy
+.alien-cursor__face--bored {
+  opacity: 0;
+}
+
+.alien-cursor.is-happy
+.alien-cursor__face--happy {
+  opacity: 1;
+}
+
+
+/* Annoyed state */
+
+.alien-cursor.is-annoyed
+.alien-cursor__face--bored,
+.alien-cursor.is-annoyed
+.alien-cursor__face--happy {
+  opacity: 0;
+}
+
+.alien-cursor.is-annoyed
+.alien-cursor__face--annoyed {
+  opacity: 1;
+}
+
+
+/* =========================================================
+   BORED IDLE ANIMATION
+========================================================= */
+
+@keyframes alien-bored-idle {
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      rotate(-1deg);
+  }
+
+  50% {
+    transform:
+      translateY(-2px)
+      rotate(1deg);
+  }
+}
+
+
+/* =========================================================
+   PLANET HOVER
+========================================================= */
+
+.alien-cursor__orbit {
+  position: absolute;
+
+  top: 18px;
+  left: 2px;
+  z-index: -1;
+
+  width: 62px;
+  height: 32px;
+
+  border:
+    1.5px dashed
+    var(--neon-purple);
+
+  border-radius: 50%;
+
+  opacity: 0;
+
+  transform:
+    rotate(-14deg)
+    scale(0.7);
+
+  transition:
+    opacity 140ms ease,
+    transform 180ms ease;
+}
+
+
+.alien-cursor.is-over-planet
+.alien-cursor__orbit {
+  opacity: 0.95;
+
+  animation:
+    alien-orbit-spin
+    1.15s
+    linear
+    infinite;
+}
+
+
+@keyframes alien-orbit-spin {
+  from {
+    transform:
+      rotate(-14deg)
+      scale(1);
+  }
+
+  to {
+    transform:
+      rotate(346deg)
+      scale(1);
+  }
+}
+
+
+.alien-cursor.is-over-planet
+.alien-cursor__face-container {
+  animation:
+    alien-planet-excitement
+    0.8s
+    ease-in-out
+    infinite;
+}
+
+
+@keyframes alien-planet-excitement {
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      rotate(-4deg)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translateY(-5px)
+      rotate(4deg)
+      scale(1.08);
+  }
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION HOVER
+========================================================= */
+
+.alien-cursor__beam {
+  position: absolute;
+
+  top: 60px;
+  left: 13px;
+  z-index: -2;
+
+  width: 43px;
+  height: 28px;
+
+  opacity: 0;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgb(168 255 54 / 48%),
+      rgb(88 223 255 / 4%)
+    );
+
+  clip-path:
+    polygon(
+      35% 0,
+      65% 0,
+      100% 100%,
+      0 100%
+    );
+
+  transform:
+    scaleY(0.2);
+
+  transform-origin: top center;
+
+  transition:
+    opacity 140ms ease,
+    transform 180ms ease;
+}
+
+
+.alien-cursor.is-over-dock
+.alien-cursor__beam {
+  opacity: 0.8;
+
+  animation:
+    alien-beam-pulse
+    0.75s
+    ease-in-out
+    infinite;
+}
+
+
+@keyframes alien-beam-pulse {
+  0%,
+  100% {
+    opacity: 0.38;
+
+    transform:
+      scaleX(0.8)
+      scaleY(0.82);
+  }
+
+  50% {
+    opacity: 0.88;
+
+    transform:
+      scaleX(1.08)
+      scaleY(1);
+  }
+}
+
+
+.alien-cursor.is-over-dock
+.alien-cursor__face-container {
+  animation:
+    alien-dock-bounce
+    0.65s
+    ease-in-out
+    infinite;
+}
+
+
+@keyframes alien-dock-bounce {
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      rotate(-2deg);
+  }
+
+  50% {
+    transform:
+      translateY(-4px)
+      rotate(2deg)
+      scale(1.06);
+  }
+}
+
+
+/* =========================================================
+   CONTROL BUTTON HOVER
+========================================================= */
+
+/*
+  Back, pause, power, settings and close controls
+  use the annoyed face.
+*/
+
+.alien-cursor.is-over-control
+.alien-cursor__face-container {
+  animation:
+    alien-annoyed-shake
+    0.32s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+
+@keyframes alien-annoyed-shake {
+  from {
+    transform:
+      translateX(-2px)
+      rotate(-5deg);
+  }
+
+  to {
+    transform:
+      translateX(2px)
+      rotate(5deg);
+  }
+}
+
+
+/* Angry signal marks */
+
+.alien-cursor__anger-mark {
+  position: absolute;
+
+  top: 3px;
+  right: -2px;
+
+  width: 16px;
+  height: 16px;
+
+  opacity: 0;
+
+  transform: scale(0.6);
+
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+
+.alien-cursor__anger-mark::before,
+.alien-cursor__anger-mark::after {
+  position: absolute;
+
+  top: 7px;
+  left: 0;
+
+  width: 16px;
+  height: 2px;
+
+  border-radius: 999px;
+
+  background: var(--neon-pink);
+
+  box-shadow:
+    0 0 5px
+    rgb(255 66 179 / 65%);
+
+  content: "";
+}
+
+
+.alien-cursor__anger-mark::before {
+  transform: rotate(45deg);
+}
+
+.alien-cursor__anger-mark::after {
+  transform: rotate(-45deg);
+}
+
+
+.alien-cursor.is-over-control
+.alien-cursor__anger-mark {
+  opacity: 1;
+
+  transform: scale(1);
+}
+
+
+/* =========================================================
+   REGULAR LINK HOVER
+========================================================= */
+
+.alien-cursor.is-over-interactive
+.alien-cursor__face-container {
+  animation:
+    alien-curious-hover
+    0.72s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+
+@keyframes alien-curious-hover {
+  from {
+    transform:
+      translateX(-1px)
+      rotate(-4deg)
+      scale(1);
+  }
+
+  to {
+    transform:
+      translateX(2px)
+      rotate(5deg)
+      scale(1.05);
+  }
+}
+
+
+/* =========================================================
+   CLICK REACTION
+========================================================= */
+
+.alien-cursor.is-clicking
+.alien-cursor__face-container {
+  animation: none;
+
+  transform:
+    translateY(5px)
+    scaleX(1.12)
+    scaleY(0.78);
+}
+
+
+.alien-cursor.is-clicking {
+  filter:
+    brightness(1.14)
+    drop-shadow(
+      0 0 8px
+      rgb(255 66 179 / 44%)
+    );
+}
+
+
+/* =========================================================
+   TYPEWRITER SYSTEM
+========================================================= */
+
+.system-message,
+.internal-system-message,
+[data-typewriter] {
+  min-width: 0;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+}
+
+
+.js-typewriter::after {
+  display: inline-block;
+
+  width: 0.56em;
+  height: 1em;
+
+  margin-left: 0.3em;
+
+  background: var(--neon-green);
+
+  vertical-align: -0.14em;
+
+  box-shadow:
+    0 0 6px
+    rgb(168 255 54 / 68%);
+
+  content: "";
+
+  animation:
+    global-typewriter-caret
+    0.72s
+    step-end
+    infinite;
+}
+
+
+@keyframes global-typewriter-caret {
+  0%,
+  48% {
+    opacity: 1;
+  }
+
+  49%,
+  100% {
+    opacity: 0;
+  }
+}
+
+
+/* =========================================================
+   PANEL TYPEWRITER
+========================================================= */
+
+#panel-title.is-panel-typing::after,
+#panel-content.is-panel-typing::after {
+  display: inline-block;
+
+  width: 0.52em;
+  height: 0.92em;
+
+  margin-left: 0.3em;
+
+  background: var(--neon-green);
+
+  vertical-align: -0.12em;
+
+  box-shadow:
+    0 0 5px
+    rgb(168 255 54 / 58%);
+
+  content: "";
+
+  animation:
+    global-typewriter-caret
+    0.72s
+    step-end
+    infinite;
+}
+
+
+#panel-content a {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* =========================================================
+   TOUCH DEVICES
+========================================================= */
+
+@media (hover: none), (pointer: coarse) {
+  .has-alien-cursor,
+  .has-alien-cursor * {
+    cursor: auto !important;
+  }
+
+  .alien-cursor {
+    display: none !important;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .alien-cursor__face-container,
+  .alien-cursor__orbit,
+  .alien-cursor__beam,
+  .js-typewriter::after,
+  #panel-title.is-panel-typing::after,
+  #panel-content.is-panel-typing::after {
+    animation: none !important;
+  }
+
+  .js-typewriter::after,
+  #panel-title.is-panel-typing::after,
+  #panel-content.is-panel-typing::after {
+    display: none;
+  }
+}

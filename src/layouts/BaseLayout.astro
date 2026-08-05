@@ -1,0 +1,1028 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Prakhar's Universe",
+  description = "A strange little cosmic website by Prakhar.",
+} = Astro.props;
+---
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+
+    <meta
+      name="description"
+      content={description}
+    />
+
+    <meta
+      name="theme-color"
+      content="#02080a"
+    />
+
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/favicon.svg"
+    />
+
+    <!-- Preload cursor expressions -->
+
+    <link
+      rel="preload"
+      as="image"
+      href="/assets/cursor/alien-bored.png"
+    />
+
+    <link
+      rel="preload"
+      as="image"
+      href="/assets/cursor/alien-happy.png"
+    />
+
+    <link
+      rel="preload"
+      as="image"
+      href="/assets/cursor/alien-annoyed.png"
+    />
+
+    <title>{title}</title>
+  </head>
+
+  <body>
+    <slot />
+
+
+    <!-- ==================================================
+         ALIEN EXPRESSION CURSOR
+    =================================================== -->
+
+    <div
+      class="alien-cursor"
+      id="alien-cursor"
+      aria-hidden="true"
+    >
+      <span class="alien-cursor__hotspot"></span>
+
+      <span class="alien-cursor__orbit"></span>
+
+      <span class="alien-cursor__beam"></span>
+
+      <span class="alien-cursor__anger-mark"></span>
+
+      <span class="alien-cursor__face-container">
+        <img
+          class="
+            alien-cursor__face
+            alien-cursor__face--bored
+          "
+          src="/assets/cursor/alien-bored.png"
+          alt=""
+          draggable="false"
+        />
+
+        <img
+          class="
+            alien-cursor__face
+            alien-cursor__face--happy
+          "
+          src="/assets/cursor/alien-happy.png"
+          alt=""
+          draggable="false"
+        />
+
+        <img
+          class="
+            alien-cursor__face
+            alien-cursor__face--annoyed
+          "
+          src="/assets/cursor/alien-annoyed.png"
+          alt=""
+          draggable="false"
+        />
+      </span>
+    </div>
+
+
+    <!-- ==================================================
+         GLOBAL WEBSITE SCRIPT
+    =================================================== -->
+
+    <script is:inline>
+      (function () {
+        const reducedMotionQuery =
+          window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+          );
+
+
+        function wait(milliseconds) {
+          return new Promise(function (resolve) {
+            window.setTimeout(
+              resolve,
+              milliseconds
+            );
+          });
+        }
+
+
+        /* ==================================================
+           ALIEN CURSOR
+        ================================================== */
+
+        const alienCursor =
+          document.getElementById(
+            "alien-cursor"
+          );
+
+
+        const finePointerQuery =
+          window.matchMedia(
+            "(hover: hover) and (pointer: fine)"
+          );
+
+
+        if (
+          alienCursor &&
+          finePointerQuery.matches
+        ) {
+          document.documentElement.classList.add(
+            "has-alien-cursor"
+          );
+
+
+          let targetX = -100;
+          let targetY = -100;
+
+          let currentX = -100;
+          let currentY = -100;
+
+          let cursorHasMoved = false;
+
+
+          const cursorStateClasses = [
+            "is-happy",
+            "is-annoyed",
+            "is-over-planet",
+            "is-over-dock",
+            "is-over-control",
+            "is-over-interactive",
+          ];
+
+
+          function clearCursorState() {
+            cursorStateClasses.forEach(
+              function (className) {
+                alienCursor.classList.remove(
+                  className
+                );
+              }
+            );
+          }
+
+
+          function updateCursorPosition() {
+            currentX +=
+              (
+                targetX -
+                currentX
+              ) * 0.34;
+
+
+            currentY +=
+              (
+                targetY -
+                currentY
+              ) * 0.34;
+
+
+            alienCursor.style.setProperty(
+              "--cursor-x",
+              currentX + "px"
+            );
+
+
+            alienCursor.style.setProperty(
+              "--cursor-y",
+              currentY + "px"
+            );
+
+
+            window.requestAnimationFrame(
+              updateCursorPosition
+            );
+          }
+
+
+          function updateCursorExpression(
+            target
+          ) {
+            clearCursorState();
+
+
+            if (!(target instanceof Element)) {
+              return;
+            }
+
+
+            /* Planets */
+
+            if (
+              target.closest(
+                [
+                  ".planet-link",
+                  ".planet-artwork",
+                  ".planet-label",
+                ].join(",")
+              )
+            ) {
+              alienCursor.classList.add(
+                "is-happy",
+                "is-over-planet"
+              );
+
+              return;
+            }
+
+
+            /* Back, Pause, Power, Settings and Close */
+
+            if (
+              target.closest(
+                [
+                  "#pause-button",
+                  "#power-button",
+                  "#internal-back-button",
+                  "#internal-settings-button",
+                  ".icon-button",
+                  ".internal-icon-button",
+                  ".information-panel__close",
+                  ".settings-dialog__close",
+                ].join(",")
+              )
+            ) {
+              alienCursor.classList.add(
+                "is-annoyed",
+                "is-over-control"
+              );
+
+              return;
+            }
+
+
+            /* Bottom navigation cards */
+
+            if (
+              target.closest(
+                [
+                  ".dock-card",
+                  ".dock-actions [data-panel]",
+                ].join(",")
+              )
+            ) {
+              alienCursor.classList.add(
+                "is-happy",
+                "is-over-dock"
+              );
+
+              return;
+            }
+
+
+            /* Other links and controls */
+
+            if (
+              target.closest(
+                [
+                  "a",
+                  "button",
+                  "input",
+                  "textarea",
+                  "select",
+                  "summary",
+                  "[role='button']",
+                  ".about-tab",
+                  ".weekly-card",
+                ].join(",")
+              )
+            ) {
+              alienCursor.classList.add(
+                "is-happy",
+                "is-over-interactive"
+              );
+            }
+          }
+
+
+          document.addEventListener(
+            "pointermove",
+            function (event) {
+              targetX = event.clientX;
+              targetY = event.clientY;
+
+
+              if (!cursorHasMoved) {
+                currentX = targetX;
+                currentY = targetY;
+
+                cursorHasMoved = true;
+              }
+
+
+              alienCursor.classList.add(
+                "is-visible"
+              );
+
+
+              updateCursorExpression(
+                event.target
+              );
+            }
+          );
+
+
+          document.addEventListener(
+            "pointerdown",
+            function () {
+              alienCursor.classList.add(
+                "is-clicking"
+              );
+            }
+          );
+
+
+          document.addEventListener(
+            "pointerup",
+            function () {
+              alienCursor.classList.remove(
+                "is-clicking"
+              );
+            }
+          );
+
+
+          document.addEventListener(
+            "pointercancel",
+            function () {
+              alienCursor.classList.remove(
+                "is-clicking"
+              );
+            }
+          );
+
+
+          document.addEventListener(
+            "mouseout",
+            function (event) {
+              if (
+                event.relatedTarget === null
+              ) {
+                alienCursor.classList.remove(
+                  "is-visible"
+                );
+
+                clearCursorState();
+              }
+            }
+          );
+
+
+          window.addEventListener(
+            "blur",
+            function () {
+              alienCursor.classList.remove(
+                "is-visible"
+              );
+
+              clearCursorState();
+            }
+          );
+
+
+          window.requestAnimationFrame(
+            updateCursorPosition
+          );
+        }
+
+
+        /* ==================================================
+           NAVBAR TYPEWRITER
+        ================================================== */
+
+        const typewriterRuns =
+          new WeakMap();
+
+
+        async function typeText(
+          element,
+          fullText,
+          speed
+        ) {
+          const currentRun =
+            (
+              typewriterRuns.get(
+                element
+              ) || 0
+            ) + 1;
+
+
+          typewriterRuns.set(
+            element,
+            currentRun
+          );
+
+
+          element.classList.add(
+            "js-typewriter"
+          );
+
+
+          element.textContent = "";
+
+
+          element.setAttribute(
+            "aria-label",
+            fullText
+          );
+
+
+          if (
+            reducedMotionQuery.matches
+          ) {
+            element.textContent =
+              fullText;
+
+            return;
+          }
+
+
+          for (
+            let index = 0;
+            index < fullText.length;
+            index += 1
+          ) {
+            if (
+              typewriterRuns.get(
+                element
+              ) !== currentRun
+            ) {
+              return;
+            }
+
+
+            const character =
+              fullText[index];
+
+
+            element.textContent +=
+              character;
+
+
+            let delay = speed;
+
+
+            if (
+              character === "." ||
+              character === "!" ||
+              character === "?"
+            ) {
+              delay =
+                speed * 4.5;
+            } else if (
+              character === "," ||
+              character === ":" ||
+              character === ";"
+            ) {
+              delay =
+                speed * 2.2;
+            }
+
+
+            await wait(delay);
+          }
+        }
+
+
+        function initialiseNavbarTypewriters() {
+          const typewriterElements =
+            document.querySelectorAll(
+              [
+                ".system-message",
+                ".internal-system-message",
+                "[data-typewriter]",
+              ].join(",")
+            );
+
+
+          typewriterElements.forEach(
+            function (
+              element,
+              index
+            ) {
+              if (
+                element.dataset
+                  .typewriterStarted ===
+                "true"
+              ) {
+                return;
+              }
+
+
+              const fullText =
+                element.dataset
+                  .typewriterText ||
+                (
+                  element.textContent
+                    ? element.textContent.trim()
+                    : ""
+                );
+
+
+              if (!fullText) {
+                return;
+              }
+
+
+              element.dataset
+                .typewriterStarted =
+                "true";
+
+
+              element.dataset
+                .typewriterText =
+                fullText;
+
+
+              window.setTimeout(
+                function () {
+                  typeText(
+                    element,
+                    fullText,
+                    32
+                  );
+                },
+                160 + index * 50
+              );
+            }
+          );
+        }
+
+
+        initialiseNavbarTypewriters();
+
+
+        document.addEventListener(
+          "astro:page-load",
+          initialiseNavbarTypewriters
+        );
+
+
+        /* ==================================================
+           SLOW INFORMATION-PANEL TYPEWRITER
+        ================================================== */
+
+        let panelTypingRun = 0;
+
+
+        function cancelPanelTyping() {
+          panelTypingRun += 1;
+        }
+
+
+        async function typePanelTitle(
+          titleElement,
+          titleText,
+          runNumber
+        ) {
+          titleElement.textContent = "";
+
+          titleElement.classList.add(
+            "is-panel-typing"
+          );
+
+
+          if (
+            reducedMotionQuery.matches
+          ) {
+            titleElement.textContent =
+              titleText;
+
+            titleElement.classList.remove(
+              "is-panel-typing"
+            );
+
+            return true;
+          }
+
+
+          for (
+            let index = 0;
+            index < titleText.length;
+            index += 1
+          ) {
+            if (
+              runNumber !==
+              panelTypingRun
+            ) {
+              return false;
+            }
+
+
+            titleElement.textContent +=
+              titleText[index];
+
+
+            /*
+              Slower title typing:
+              65 milliseconds per character.
+            */
+
+            await wait(65);
+          }
+
+
+          if (
+            runNumber ===
+            panelTypingRun
+          ) {
+            titleElement.classList.remove(
+              "is-panel-typing"
+            );
+
+            return true;
+          }
+
+
+          return false;
+        }
+
+
+        async function typePanelNode(
+          sourceNode,
+          destinationNode,
+          runNumber,
+          speed
+        ) {
+          if (
+            runNumber !==
+            panelTypingRun
+          ) {
+            return;
+          }
+
+
+          if (
+            sourceNode.nodeType ===
+            Node.TEXT_NODE
+          ) {
+            const originalText =
+              sourceNode.textContent || "";
+
+
+            const normalisedText =
+              originalText.replace(
+                /\s+/g,
+                " "
+              );
+
+
+            if (!normalisedText.trim()) {
+              return;
+            }
+
+
+            const typedTextNode =
+              document.createTextNode("");
+
+
+            destinationNode.appendChild(
+              typedTextNode
+            );
+
+
+            if (
+              reducedMotionQuery.matches
+            ) {
+              typedTextNode.textContent =
+                normalisedText;
+
+              return;
+            }
+
+
+            for (
+              let index = 0;
+              index <
+              normalisedText.length;
+              index += 1
+            ) {
+              if (
+                runNumber !==
+                panelTypingRun
+              ) {
+                return;
+              }
+
+
+              const character =
+                normalisedText[index];
+
+
+              typedTextNode.textContent +=
+                character;
+
+
+              let delay = speed;
+
+
+              /*
+                Add natural pauses at punctuation.
+              */
+
+              if (
+                character === "." ||
+                character === "!" ||
+                character === "?"
+              ) {
+                delay =
+                  speed * 5;
+              } else if (
+                character === "," ||
+                character === ":" ||
+                character === ";"
+              ) {
+                delay =
+                  speed * 2.5;
+              }
+
+
+              await wait(delay);
+            }
+
+
+            return;
+          }
+
+
+          if (
+            sourceNode.nodeType ===
+            Node.ELEMENT_NODE
+          ) {
+            const copiedElement =
+              sourceNode.cloneNode(
+                false
+              );
+
+
+            destinationNode.appendChild(
+              copiedElement
+            );
+
+
+            const childNodes =
+              Array.from(
+                sourceNode.childNodes
+              );
+
+
+            for (
+              const childNode of childNodes
+            ) {
+              await typePanelNode(
+                childNode,
+                copiedElement,
+                runNumber,
+                speed
+              );
+            }
+          }
+        }
+
+
+        async function typePanelContent(
+          contentElement,
+          originalHTML,
+          runNumber
+        ) {
+          const template =
+            document.createElement(
+              "template"
+            );
+
+
+          template.innerHTML =
+            originalHTML;
+
+
+          contentElement.innerHTML = "";
+
+
+          contentElement.classList.add(
+            "is-panel-typing"
+          );
+
+
+          const contentLength =
+            (
+              template.content.textContent ||
+              ""
+            ).trim().length;
+
+
+          /*
+            Longer text is slightly faster so it does not
+            take too long, but every option is slower than
+            the previous version.
+          */
+
+          const speed =
+            contentLength > 240
+              ? 22
+              : contentLength > 140
+                ? 26
+                : 32;
+
+
+          const sourceNodes =
+            Array.from(
+              template.content.childNodes
+            );
+
+
+          for (
+            const sourceNode of sourceNodes
+          ) {
+            await typePanelNode(
+              sourceNode,
+              contentElement,
+              runNumber,
+              speed
+            );
+          }
+
+
+          if (
+            runNumber ===
+            panelTypingRun
+          ) {
+            contentElement.classList.remove(
+              "is-panel-typing"
+            );
+          }
+        }
+
+
+        async function animateOpenedPanel() {
+          const panel =
+            document.getElementById(
+              "information-panel"
+            );
+
+
+          const panelTitle =
+            document.getElementById(
+              "panel-title"
+            );
+
+
+          const panelContent =
+            document.getElementById(
+              "panel-content"
+            );
+
+
+          if (
+            !panel ||
+            !panelTitle ||
+            !panelContent
+          ) {
+            return;
+          }
+
+
+          const completeTitle =
+            panelTitle.textContent
+              ? panelTitle.textContent.trim()
+              : "";
+
+
+          const completeContent =
+            panelContent.innerHTML;
+
+
+          if (
+            !completeTitle ||
+            !completeContent.trim()
+          ) {
+            return;
+          }
+
+
+          panelTypingRun += 1;
+
+
+          const currentRun =
+            panelTypingRun;
+
+
+          /*
+            Type the title first instead of typing the title
+            and body at the same time.
+          */
+
+          const titleFinished =
+            await typePanelTitle(
+              panelTitle,
+              completeTitle,
+              currentRun
+            );
+
+
+          if (
+            !titleFinished ||
+            currentRun !== panelTypingRun
+          ) {
+            return;
+          }
+
+
+          /*
+            Short pause between the title and body.
+          */
+
+          await wait(180);
+
+
+          if (
+            currentRun !== panelTypingRun
+          ) {
+            return;
+          }
+
+
+          await typePanelContent(
+            panelContent,
+            completeContent,
+            currentRun
+          );
+
+
+          panel.addEventListener(
+            "close",
+            cancelPanelTyping,
+            {
+              once: true,
+            }
+          );
+        }
+
+
+        document.addEventListener(
+          "click",
+          function (event) {
+            if (
+              !(
+                event.target instanceof
+                Element
+              )
+            ) {
+              return;
+            }
+
+
+            const panelButton =
+              event.target.closest(
+                ".dock-actions [data-panel]"
+              );
+
+
+            if (!panelButton) {
+              return;
+            }
+
+
+            window.setTimeout(
+              function () {
+                void animateOpenedPanel();
+              },
+              0
+            );
+          }
+        );
+      })();
+    </script>
+  </body>
+</html>

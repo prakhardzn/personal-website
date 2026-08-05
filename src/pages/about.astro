@@ -1,17 +1,383 @@
 ---
-import BaseLayout from "./layouts/BaseLayout.astro";
+import InternalPageLayout from
+  "../layouts/InternalPageLayout.astro";
+
+import "../styles/about.css";
 ---
 
-<BaseLayout
+<InternalPageLayout
   title="About Me | Prakhar"
-  description="Learn more about Prakhar, his interests and creative work."
+  description="About Prakhar, his work, interests and creative experiments."
+  message="You are currently somewhere between a portfolio and a minor space incident."
+  pageClass="about-page"
 >
-  <header>
-    <a href="/">← Return to homepage</a>
-  </header>
+  <Fragment slot="sidebar">
+    <div class="about-sidebar-stack">
 
-  <main>
-    <h1>About Me</h1>
-    <p>The complete About Me page will be built in a later chapter.</p>
-  </main>
-</BaseLayout>
+      <section
+        class="ui-panel about-portrait-panel"
+        aria-label="Portrait of Prakhar"
+      >
+        <div class="about-image-placeholder">
+          About character artwork will appear here
+        </div>
+      </section>
+
+      <section class="ui-panel about-profile-panel">
+        <dl class="about-profile-list">
+
+          <div class="about-profile-row">
+            <dt>Name:</dt>
+            <dd>Prakhar</dd>
+          </div>
+
+          <div class="about-profile-row">
+            <dt>Pronouns:</dt>
+            <dd>He/Him</dd>
+          </div>
+
+          <div class="about-profile-row">
+            <dt>Bday:</dt>
+            <dd>01/11</dd>
+          </div>
+
+          <div class="about-profile-row">
+            <dt>Location:</dt>
+            <dd>India</dd>
+          </div>
+
+          <div class="about-profile-row">
+            <dt>Strength:</dt>
+            <dd>Can crack jokes!!!</dd>
+          </div>
+
+          <div class="about-profile-row">
+            <dt>Weakness:</dt>
+            <dd>Sweets, cats, bed, brainfog</dd>
+          </div>
+
+        </dl>
+
+        <div
+          class="about-badge-stack"
+          aria-label="Personality badges"
+        >
+          <span class="profile-badge profile-badge--psychic">
+            Psychic Type
+          </span>
+
+          <span class="profile-badge profile-badge--enfp">
+            ENFP
+          </span>
+
+          <span class="profile-badge profile-badge--scorpio">
+            Scorpio
+          </span>
+        </div>
+      </section>
+
+    </div>
+  </Fragment>
+
+  <Fragment slot="content">
+    <section
+      class="about-tabs"
+      data-about-tabs
+    >
+      <div
+        class="about-tab-list"
+        role="tablist"
+        aria-label="About Me sections"
+      >
+        <button
+          class="about-tab-button is-active"
+          id="about-tab"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="about-panel"
+          data-tab-button="about"
+        >
+          About
+        </button>
+
+        <button
+          class="about-tab-button"
+          id="work-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="work-panel"
+          data-tab-button="work"
+          tabindex="-1"
+        >
+          Work
+        </button>
+
+        <button
+          class="about-tab-button"
+          id="interests-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="interests-panel"
+          data-tab-button="interests"
+          tabindex="-1"
+        >
+          Interests
+        </button>
+
+        <button
+          class="about-tab-button"
+          id="vault-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="vault-panel"
+          data-tab-button="vault"
+          tabindex="-1"
+        >
+          Vault
+        </button>
+      </div>
+
+      <div class="about-tab-stage">
+
+        <section
+          class="about-tab-panel"
+          id="about-panel"
+          role="tabpanel"
+          aria-labelledby="about-tab"
+          data-tab-panel="about"
+        >
+          <div class="about-copy">
+            <p>
+              Hi, I’m Prakhar. I’m a multimedia design
+              student, filmmaker, photographer and
+              occasional victim of CSS.
+            </p>
+
+            <p>
+              Most of my time goes into making films,
+              taking photographs, designing strange
+              little websites and convincing myself
+              that every new project is not another
+              side quest. I like stories that feel
+              slightly unsettling, visually interesting
+              and human enough to stay with you after
+              the screen goes dark.
+            </p>
+
+            <p>
+              I have written and directed short films,
+              worked behind the camera, explored streets
+              with a camera in hand and spent an
+              unreasonable amount of time moving
+              elements two pixels to the left.
+            </p>
+
+            <p>
+              This website is my inventory. It contains
+              films, photographs, experiments,
+              unfinished thoughts and a few projects
+              that survived the final boss known as
+              the deadline.
+            </p>
+
+            <a
+              class="about-contact-bar"
+              href="mailto:prakharpandey2027@gmail.com"
+            >
+              <strong>Contact:</strong>
+
+              <span>
+                prakharpandey2027@gmail.com
+              </span>
+            </a>
+          </div>
+        </section>
+
+        <section
+          class="about-tab-panel"
+          id="work-panel"
+          role="tabpanel"
+          aria-labelledby="work-tab"
+          data-tab-panel="work"
+          hidden
+        >
+          <div class="about-copy">
+            <h2 class="about-section-title">
+              Work
+            </h2>
+
+            <div class="about-item-grid">
+              <article class="about-item">
+                <h3>Qaid</h3>
+
+                <p>
+                  A psychological thriller about
+                  repetition, avoidance and the prisons
+                  people construct for themselves.
+                </p>
+              </article>
+
+              <article class="about-item">
+                <h3>Kshitij</h3>
+
+                <p>
+                  A short film examining photography,
+                  consent and the distance between
+                  observing someone and understanding
+                  them.
+                </p>
+              </article>
+
+              <article class="about-item">
+                <h3>Photography</h3>
+
+                <p>
+                  Street photographs, visual studies
+                  and stories discovered while walking
+                  without a fixed destination.
+                </p>
+              </article>
+
+              <article class="about-item">
+                <h3>Design</h3>
+
+                <p>
+                  Interfaces, experiments, prototypes
+                  and websites that sometimes cooperate.
+                </p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="about-tab-panel"
+          id="interests-panel"
+          role="tabpanel"
+          aria-labelledby="interests-tab"
+          data-tab-panel="interests"
+          hidden
+        >
+          <div class="about-copy">
+            <h2 class="about-section-title">
+              Interests
+            </h2>
+
+            <div class="about-item-grid">
+              <article class="about-item">
+                Filmmaking and visual storytelling
+              </article>
+
+              <article class="about-item">
+                Street photography
+              </article>
+
+              <article class="about-item">
+                Theatre and performance
+              </article>
+
+              <article class="about-item">
+                Games and interactive spaces
+              </article>
+
+              <article class="about-item">
+                Astrology and strange systems
+              </article>
+
+              <article class="about-item">
+                Sound, editing and cinematography
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="about-tab-panel"
+          id="vault-panel"
+          role="tabpanel"
+          aria-labelledby="vault-tab"
+          data-tab-panel="vault"
+          hidden
+        >
+          <div class="about-copy">
+            <h2 class="about-section-title">
+              Vault
+            </h2>
+
+            <p>
+              This is where unfinished ideas,
+              abandoned experiments, suspicious
+              sketches and projects waiting for the
+              correct timeline will eventually live.
+            </p>
+
+            <p>
+              Access is currently limited because
+              some files have developed free will.
+            </p>
+          </div>
+        </section>
+
+      </div>
+    </section>
+  </Fragment>
+</InternalPageLayout>
+
+<script>
+  const tabsRoot =
+    document.querySelector<HTMLElement>(
+      "[data-about-tabs]"
+    );
+
+  if (tabsRoot) {
+    const tabButtons =
+      tabsRoot.querySelectorAll<HTMLButtonElement>(
+        "[data-tab-button]"
+      );
+
+    const tabPanels =
+      tabsRoot.querySelectorAll<HTMLElement>(
+        "[data-tab-panel]"
+      );
+
+    function activateTab(
+      selectedButton: HTMLButtonElement
+    ) {
+      const selectedTab =
+        selectedButton.dataset.tabButton;
+
+      tabButtons.forEach((button) => {
+        const isSelected =
+          button === selectedButton;
+
+        button.classList.toggle(
+          "is-active",
+          isSelected
+        );
+
+        button.setAttribute(
+          "aria-selected",
+          String(isSelected)
+        );
+
+        button.tabIndex =
+          isSelected ? 0 : -1;
+      });
+
+      tabPanels.forEach((panel) => {
+        panel.hidden =
+          panel.dataset.tabPanel !== selectedTab;
+      });
+    }
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activateTab(button);
+      });
+    });
+  }
+</script>

@@ -1,0 +1,160 @@
+<section
+  class="about-tabs"
+  data-about-tabs
+>
+  <div
+    class="about-tab-list"
+    role="tablist"
+    aria-label="About Me sections"
+  >
+    <button
+      class="about-tab-button is-active"
+      id="about-tab"
+      type="button"
+      role="tab"
+      aria-selected="true"
+      aria-controls="about-panel"
+      data-tab-button="about"
+    >
+      About
+    </button>
+
+    <button
+      class="about-tab-button"
+      id="work-tab"
+      type="button"
+      role="tab"
+      aria-selected="false"
+      aria-controls="work-panel"
+      data-tab-button="work"
+      tabindex="-1"
+    >
+      Work
+    </button>
+
+    <button
+      class="about-tab-button"
+      id="interests-tab"
+      type="button"
+      role="tab"
+      aria-selected="false"
+      aria-controls="interests-panel"
+      data-tab-button="interests"
+      tabindex="-1"
+    >
+      Interests
+    </button>
+
+    <button
+      class="about-tab-button"
+      id="vault-tab"
+      type="button"
+      role="tab"
+      aria-selected="false"
+      aria-controls="vault-panel"
+      data-tab-button="vault"
+      tabindex="-1"
+    >
+      Vault
+    </button>
+  </div>
+
+  <div class="about-tab-stage">
+    <section
+      class="about-tab-panel"
+      id="about-panel"
+      role="tabpanel"
+      aria-labelledby="about-tab"
+      data-tab-panel="about"
+    >
+      <slot name="about" />
+    </section>
+
+    <section
+      class="about-tab-panel"
+      id="work-panel"
+      role="tabpanel"
+      aria-labelledby="work-tab"
+      data-tab-panel="work"
+      hidden
+    >
+      <slot name="work" />
+    </section>
+
+    <section
+      class="about-tab-panel"
+      id="interests-panel"
+      role="tabpanel"
+      aria-labelledby="interests-tab"
+      data-tab-panel="interests"
+      hidden
+    >
+      <slot name="interests" />
+    </section>
+
+    <section
+      class="about-tab-panel"
+      id="vault-panel"
+      role="tabpanel"
+      aria-labelledby="vault-tab"
+      data-tab-panel="vault"
+      hidden
+    >
+      <slot name="vault" />
+    </section>
+  </div>
+</section>
+
+<script>
+  const tabsRoot =
+    document.querySelector<HTMLElement>(
+      "[data-about-tabs]"
+    );
+
+  if (tabsRoot) {
+    const tabButtons =
+      tabsRoot.querySelectorAll<HTMLButtonElement>(
+        "[data-tab-button]"
+      );
+
+    const tabPanels =
+      tabsRoot.querySelectorAll<HTMLElement>(
+        "[data-tab-panel]"
+      );
+
+    function activateTab(
+      selectedButton: HTMLButtonElement
+    ) {
+      const selectedTab =
+        selectedButton.dataset.tabButton;
+
+      tabButtons.forEach((button) => {
+        const isSelected =
+          button === selectedButton;
+
+        button.classList.toggle(
+          "is-active",
+          isSelected
+        );
+
+        button.setAttribute(
+          "aria-selected",
+          String(isSelected)
+        );
+
+        button.tabIndex = isSelected ? 0 : -1;
+      });
+
+      tabPanels.forEach((panel) => {
+        panel.hidden =
+          panel.dataset.tabPanel !== selectedTab;
+      });
+    }
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activateTab(button);
+      });
+    });
+  }
+</script>

@@ -1,17 +1,66 @@
 ---
-import BaseLayout from "./layouts/BaseLayout.astro";
+import InternalPageLayout from
+  "../layouts/InternalPageLayout.astro";
+
+import {
+  weeklyPosts,
+} from "../data/weeklyposts";
+
+import "../styles/weekly.css";
 ---
 
-<BaseLayout
+<InternalPageLayout
   title="Weekly | Prakhar"
-  description="Weekly discoveries, observations and stories from Prakhar."
+  description="Weekly discoveries, films, ideas and transmissions from Prakhar."
+  message="No aliens were harmed while building this page."
+  pageClass="weekly-page"
 >
-  <header>
-    <a href="/">← Return to homepage</a>
-  </header>
+  <Fragment slot="sidebar">
+    <div class="weekly-sidebar-stack">
 
-  <main>
-    <h1>Weekly</h1>
-    <p>The complete Weekly page will be built in a later chapter.</p>
-  </main>
-</BaseLayout>
+      <section class="weekly-title-panel">
+        <h1>Heys Weekly</h1>
+      </section>
+
+      <section
+        class="ui-panel weekly-anchor-panel"
+        aria-label="Weekly anchor artwork"
+      >
+        <div class="weekly-anchor-placeholder">
+          Weekly anchor artwork will appear here
+        </div>
+      </section>
+
+      <section class="ui-panel weekly-schedule-panel">
+        Fresh blogs every Friday
+      </section>
+
+    </div>
+  </Fragment>
+
+  <Fragment slot="content">
+    <section class="ui-panel weekly-feed-shell">
+      <div class="weekly-feed">
+
+        {
+          weeklyPosts.map((post) => (
+            <a
+              class={`weekly-card weekly-card--${post.variant}`}
+              href={`/weekly/${post.slug}`}
+              aria-label={`Read ${post.title}`}
+            >
+              <h2 class="weekly-card__title">
+                {post.title}
+              </h2>
+
+              <span class="weekly-card__action">
+                Read now
+              </span>
+            </a>
+          ))
+        }
+
+      </div>
+    </section>
+  </Fragment>
+</InternalPageLayout>

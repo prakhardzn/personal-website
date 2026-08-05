@@ -1,0 +1,416 @@
+@import url("https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
+:root {
+  --internal-display-font:
+    "Silkscreen",
+    monospace;
+
+  --internal-body-font:
+    "Space Mono",
+    monospace;
+
+  --internal-black: #020908;
+  --internal-black-soft: #06110e;
+  --internal-purple-black: #0c0713;
+
+  --internal-green: #a8ff36;
+  --internal-green-dark: #78b72a;
+  --internal-white: #f4fff5;
+  --internal-purple: #8a3aa5;
+
+  --internal-border:
+    max(2px, 0.14vw);
+
+  --internal-thin-border:
+    max(1px, 0.09vw);
+
+  --internal-radius:
+    clamp(8px, 0.8vw, 17px);
+
+  --internal-small-radius:
+    clamp(5px, 0.45vw, 10px);
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  margin: 0;
+  overflow: hidden;
+
+  background: var(--internal-black);
+  color: var(--internal-white);
+
+  font-family: var(--internal-body-font);
+}
+
+.internal-page-shell {
+  position: relative;
+  isolation: isolate;
+
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 78% 65%,
+      rgb(34 17 55 / 30%),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      #020908,
+      #040d0c 55%,
+      #090511
+    );
+}
+
+.internal-page-shell::before {
+  position: absolute;
+  inset: 0.3%;
+  z-index: 50;
+
+  border:
+    var(--internal-thin-border)
+    solid
+    var(--internal-green);
+
+  border-radius:
+    var(--internal-small-radius);
+
+  pointer-events: none;
+  content: "";
+}
+
+.internal-page-shell::after {
+  position: absolute;
+  inset: 0.8%;
+  z-index: 49;
+
+  border:
+    var(--internal-thin-border)
+    solid
+    rgb(168 255 54 / 48%);
+
+  border-radius:
+    var(--internal-radius);
+
+  pointer-events: none;
+  content: "";
+}
+
+.internal-system-bar {
+  position: absolute;
+  top: 2%;
+  left: 1.25%;
+  z-index: 30;
+
+  display: grid;
+  grid-template-columns:
+    clamp(64px, 5.3vw, 104px)
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: clamp(10px, 0.85vw, 18px);
+
+  width: 97.5%;
+  height: clamp(58px, 6.8vh, 82px);
+
+  padding:
+    clamp(5px, 0.4vw, 9px);
+
+  border:
+    var(--internal-border)
+    solid
+    var(--internal-green);
+
+  border-radius:
+    var(--internal-radius);
+
+  background:
+    rgb(2 12 10 / 97%);
+}
+
+.internal-system-message {
+  margin: 0;
+  overflow: hidden;
+
+  color: var(--internal-green);
+
+  font-family:
+    var(--internal-body-font);
+
+  font-size:
+    clamp(11px, 1.22vw, 25px);
+
+  line-height: 1.2;
+  letter-spacing: 0.025em;
+
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.internal-system-actions {
+  display: flex;
+  align-items: stretch;
+
+  gap: clamp(8px, 0.6vw, 13px);
+
+  height: 100%;
+}
+
+.internal-icon-button {
+  display: grid;
+  place-items: center;
+
+  min-width:
+    clamp(58px, 4.5vw, 90px);
+
+  height: 100%;
+
+  padding: 0;
+
+  border:
+    var(--internal-thin-border)
+    solid
+    var(--internal-green);
+
+  border-radius:
+    var(--internal-small-radius);
+
+  background: #020b09;
+  color: var(--internal-green);
+
+  font-family:
+    var(--internal-display-font);
+
+  font-size:
+    clamp(18px, 1.65vw, 34px);
+
+  font-weight: 700;
+  line-height: 1;
+
+  text-decoration: none;
+
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.internal-back-button {
+  width: 100%;
+  min-width: 0;
+}
+
+.internal-icon-button:hover,
+.internal-icon-button:focus-visible {
+  background:
+    var(--internal-green);
+
+  color:
+    var(--internal-black);
+
+  transform: translateY(-1px);
+}
+
+.internal-icon-button:focus-visible {
+  outline:
+    2px solid
+    var(--internal-white);
+
+  outline-offset: 3px;
+}
+
+.internal-page-grid {
+  position: absolute;
+  top: 10.5%;
+  bottom: 2.25%;
+  left: 1.75%;
+
+  z-index: 10;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(350px, 34.5%)
+    minmax(0, 1fr);
+
+  gap: 1.35%;
+
+  width: 96.5%;
+  min-height: 0;
+}
+
+.internal-page-sidebar,
+.internal-page-content {
+  min-width: 0;
+  min-height: 0;
+}
+
+.ui-panel {
+  border:
+    var(--internal-border)
+    solid
+    var(--internal-green);
+
+  border-radius:
+    var(--internal-radius);
+
+  background:
+    rgb(2 13 11 / 96%);
+
+  color:
+    var(--internal-white);
+}
+
+.internal-page-shell * {
+  scrollbar-width: thin;
+
+  scrollbar-color:
+    var(--internal-green)
+    #142016;
+}
+
+.internal-page-shell *::-webkit-scrollbar {
+  width: 14px;
+}
+
+.internal-page-shell *::-webkit-scrollbar-track {
+  border:
+    var(--internal-thin-border)
+    solid
+    var(--internal-green);
+
+  border-radius: 999px;
+
+  background: #102015;
+}
+
+.internal-page-shell *::-webkit-scrollbar-thumb {
+  border: 3px solid #102015;
+  border-radius: 999px;
+
+  background:
+    var(--internal-green);
+}
+
+/* Settings window */
+
+.settings-dialog {
+  width: min(88vw, 540px);
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+  color: var(--internal-white);
+}
+
+.settings-dialog::backdrop {
+  background: rgb(0 0 0 / 76%);
+  backdrop-filter: blur(4px);
+}
+
+.settings-dialog__window {
+  overflow: hidden;
+
+  border:
+    var(--internal-border)
+    solid
+    var(--internal-green);
+
+  border-radius:
+    var(--internal-radius);
+
+  background:
+    var(--internal-black);
+}
+
+.settings-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: 1rem 1.2rem;
+
+  border-bottom:
+    var(--internal-thin-border)
+    solid
+    var(--internal-green);
+}
+
+.settings-dialog__header h2 {
+  margin: 0;
+
+  color:
+    var(--internal-green);
+
+  font-family:
+    var(--internal-display-font);
+
+  font-size:
+    clamp(15px, 1.5vw, 26px);
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.settings-dialog__close {
+  display: grid;
+  place-items: center;
+
+  width: 2.4rem;
+  aspect-ratio: 1;
+
+  padding: 0;
+
+  border:
+    var(--internal-thin-border)
+    solid
+    var(--internal-green);
+
+  background: transparent;
+  color: var(--internal-green);
+
+  font-size: 1.45rem;
+  cursor: pointer;
+}
+
+.settings-dialog__content {
+  padding: 1.4rem;
+
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.settings-dialog__warning {
+  color:
+    var(--internal-green);
+
+  font-family:
+    var(--internal-display-font);
+
+  font-size: 1.2rem;
+}
+
+@media (max-width: 1150px) {
+  .internal-page-grid {
+    grid-template-columns:
+      minmax(290px, 35%)
+      minmax(0, 1fr);
+  }
+
+  .internal-system-message {
+    font-size:
+      clamp(9px, 1.15vw, 14px);
+  }
+}

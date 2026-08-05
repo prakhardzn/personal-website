@@ -1,0 +1,81 @@
+---
+import type {
+  GetStaticPaths,
+} from "astro";
+
+import InternalPageLayout from
+  "../../layouts/InternalPageLayout.astro";
+
+import {
+  weeklyPosts,
+  type WeeklyPost,
+} from "../../data/weeklyposts";
+
+import "../../styles/weekly.css";
+
+export const getStaticPaths:
+  GetStaticPaths = () => {
+    return weeklyPosts.map((post) => ({
+      params: {
+        slug: post.slug,
+      },
+
+      props: {
+        post,
+      },
+    }));
+  };
+
+interface Props {
+  post: WeeklyPost;
+}
+
+const {
+  post,
+} = Astro.props as Props;
+---
+
+<InternalPageLayout
+  title={`${post.title} | Weekly`}
+  description={post.summary}
+  message="This transmission is still being decoded."
+  pageClass="weekly-post-page"
+>
+  <Fragment slot="sidebar">
+    <div class="weekly-post-sidebar">
+
+      <a
+        class="weekly-post-back"
+        href="/weekly"
+      >
+        ← Back to Weekly
+      </a>
+
+      <section class="ui-panel weekly-post-meta">
+        <p>Weekly Transmission</p>
+        <p>Full article coming later</p>
+      </section>
+
+    </div>
+  </Fragment>
+
+  <Fragment slot="content">
+    <article class="ui-panel weekly-post-placeholder">
+
+      <p class="weekly-post-kicker">
+        Transmission in progress
+      </p>
+
+      <h1>{post.title}</h1>
+
+      <p>{post.summary}</p>
+
+      <p>
+        This route is working correctly. The
+        complete article will later be written
+        in Markdown and connected to this page.
+      </p>
+
+    </article>
+  </Fragment>
+</InternalPageLayout>

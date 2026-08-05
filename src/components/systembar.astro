@@ -1,0 +1,60 @@
+---
+interface Props {
+  message: string;
+}
+
+const { message } = Astro.props;
+---
+
+<header class="internal-system-bar">
+  <button
+    class="internal-icon-button internal-back-button"
+    type="button"
+    data-browser-back
+    aria-label="Return to the previous page"
+  >
+    <span aria-hidden="true">←</span>
+  </button>
+
+  <p class="internal-system-message">
+    “{message}”
+  </p>
+
+  <nav
+    class="internal-system-actions"
+    aria-label="Page controls"
+  >
+    <a
+      class="internal-icon-button"
+      href="/"
+      aria-label="Return to the homepage"
+    >
+      <span aria-hidden="true">⌂</span>
+    </a>
+
+    <button
+      class="internal-icon-button"
+      type="button"
+      data-open-settings
+      aria-label="Open settings"
+    >
+      <span aria-hidden="true">⚙</span>
+    </button>
+  </nav>
+</header>
+
+<script>
+  const backButton =
+    document.querySelector<HTMLButtonElement>(
+      "[data-browser-back]"
+    );
+
+  backButton?.addEventListener("click", () => {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    window.location.assign("/");
+  });
+</script>
