@@ -1,0 +1,81 @@
+---
+import NorthIndianChart
+  from "./NorthIndianChart.astro";
+
+import PlanetaryTable
+  from "./PlanetaryTable.astro";
+---
+
+<section
+  class="birth-chart-output"
+  data-birth-chart-output
+  aria-labelledby="birth-chart-output-title"
+>
+  <header class="birth-chart-output__header">
+    <div>
+      <p>CELESTIAL OUTPUT</p>
+
+      <h2 id="birth-chart-output-title">
+        North Indian Birth Chart
+      </h2>
+
+      <span>
+        Sidereal planetary positions,
+        Lahiri ayanamsha, whole-sign houses,
+        nakshatras and padas calculated from
+        the submitted birth details.
+      </span>
+    </div>
+
+    <strong
+      class="birth-chart-output__status"
+      data-result-status
+    >
+      CALCULATED
+    </strong>
+  </header>
+
+  <div class="birth-chart-output__metadata">
+    <div>
+      <span>ENGINE</span>
+
+      <strong data-result-engine>
+        —
+      </strong>
+    </div>
+
+    <div>
+      <span>UTC TIME</span>
+
+      <strong data-result-utc>
+        —
+      </strong>
+    </div>
+
+    <div>
+      <span>AYANAMSHA VALUE</span>
+
+      <strong data-result-ayanamsha-value>
+        —
+      </strong>
+    </div>
+  </div>
+
+  <div class="birth-chart-output__layout">
+    <NorthIndianChart />
+
+    <PlanetaryTable />
+  </div>
+
+  <div class="birth-chart-output__warnings">
+    <div class="birth-chart-output__warning-title">
+      <span aria-hidden="true">!</span>
+
+      <strong>
+        CALCULATION NOTES
+      </strong>
+    </div>
+
+    <ul data-result-warnings></ul>
+  </div>
+</section>

@@ -1,0 +1,1116 @@
+.birth-chart-module {
+  display: grid;
+  gap: 14px;
+}
+
+.birth-chart-module__statusbar,
+.north-indian-chart__statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  min-height: 38px;
+  padding: 8px 12px;
+
+  border: 1px solid var(--astro-border);
+  background: var(--astro-bg);
+  color: var(--astro-green-muted);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-micro);
+  line-height: 1.3;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.birth-chart-module__statusbar > div,
+.north-indian-chart__statusbar > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.birth-chart-module__statusbar strong,
+.north-indian-chart__statusbar strong {
+  color: var(--astro-mint);
+  font-weight: 400;
+}
+
+.birth-chart-module__signal,
+.north-indian-chart__signal {
+  display: block;
+  width: 7px;
+  height: 7px;
+
+  background: var(--astro-mint);
+
+  animation:
+    birth-chart-status-pulse
+    1500ms
+    ease-in-out
+    infinite;
+}
+
+.birth-chart-form,
+.birth-chart-preview,
+.birth-chart-output,
+.north-indian-chart,
+.planetary-index {
+  border: 1px solid var(--astro-border);
+  background: var(--astro-panel);
+}
+
+.birth-chart-form,
+.birth-chart-preview,
+.birth-chart-output {
+  padding: clamp(18px, 2.2vw, 28px);
+}
+
+.birth-chart-form,
+.birth-chart-output {
+  border-left:
+    2px solid var(--astro-green);
+}
+
+.birth-chart-preview,
+.north-indian-chart {
+  border-left:
+    2px solid var(--astro-mint);
+}
+
+.planetary-index {
+  border-left:
+    2px solid var(--astro-violet);
+}
+
+.birth-chart-form__header,
+.birth-chart-preview__header,
+.birth-chart-output__header {
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+
+  border-bottom:
+    1px solid var(--astro-border-soft);
+}
+
+.birth-chart-preview__header,
+.birth-chart-output__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.birth-chart-form__header p,
+.birth-chart-preview__header span,
+.birth-chart-output__header p,
+.planetary-index__header p {
+  margin: 0 0 8px;
+  color: var(--astro-mint);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-meta);
+  line-height: 1.3;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.birth-chart-form__header h2,
+.birth-chart-preview__header h2,
+.birth-chart-output__header h2 {
+  margin: 0 0 10px;
+  color: var(--astro-green);
+
+  font-family: var(--astro-display-font);
+  font-size:
+    clamp(1.55rem, 2.5vw, 2.25rem);
+
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.birth-chart-form__header > span,
+.birth-chart-output__header > div > span {
+  display: block;
+  max-width: 820px;
+
+  color: var(--astro-muted);
+  font-size: var(--astro-text-body);
+  line-height: 1.6;
+}
+
+.birth-chart-form__grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px 16px;
+}
+
+.birth-chart-field {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+}
+
+.birth-chart-field--wide {
+  grid-column: 1 / -1;
+}
+
+.birth-chart-field label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  margin-bottom: 8px;
+  color: var(--astro-green);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-meta);
+  line-height: 1.3;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.birth-chart-field label small {
+  color: var(--astro-dim);
+  font-size: var(--astro-text-micro);
+  font-weight: 400;
+}
+
+.birth-chart-field input {
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  padding: 12px 14px;
+
+  border: 1px solid var(--astro-border);
+  border-radius: 0;
+  outline: 0;
+
+  background: var(--astro-bg);
+  color: var(--astro-white);
+
+  font-family: var(--astro-body-font);
+  font-size: 0.95rem;
+  line-height: 1.3;
+
+  transition:
+    border-color 120ms ease,
+    background 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.birth-chart-field input::placeholder {
+  color: var(--astro-dim);
+  opacity: 0.78;
+}
+
+.birth-chart-field input:hover {
+  border-color: var(--astro-green-muted);
+}
+
+.birth-chart-field input:focus {
+  border-color: var(--astro-green);
+  background: var(--astro-panel-hover);
+
+  box-shadow:
+    0 0 0 2px
+    color-mix(
+      in srgb,
+      var(--astro-green) 16%,
+      transparent
+    );
+}
+
+.birth-chart-field input[aria-invalid="true"] {
+  border-color: var(--astro-amber);
+
+  box-shadow:
+    0 0 0 2px
+    color-mix(
+      in srgb,
+      var(--astro-amber) 14%,
+      transparent
+    );
+}
+
+.birth-chart-field__hint,
+.birth-chart-field__error {
+  display: block;
+  min-height: 1.2em;
+  margin-top: 7px;
+
+  font-size: var(--astro-text-micro);
+  line-height: 1.5;
+}
+
+.birth-chart-field__hint {
+  color: var(--astro-dim);
+}
+
+.birth-chart-field__error {
+  color: var(--astro-amber);
+}
+
+.birth-chart-advanced {
+  margin-top: 22px;
+
+  border: 1px solid var(--astro-border);
+  background: var(--astro-bg);
+}
+
+.birth-chart-advanced summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  min-height: 48px;
+  padding: 11px 14px;
+
+  color: var(--astro-cyan);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-meta);
+  line-height: 1.3;
+  letter-spacing: 0.07em;
+  list-style: none;
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.birth-chart-advanced
+  summary::-webkit-details-marker {
+  display: none;
+}
+
+.birth-chart-advanced summary::before {
+  color: var(--astro-green);
+  content: "+";
+}
+
+.birth-chart-advanced[open]
+  summary::before {
+  content: "−";
+}
+
+.birth-chart-advanced summary small {
+  color: var(--astro-dim);
+  font-size: var(--astro-text-micro);
+  font-weight: 400;
+}
+
+.birth-chart-advanced__content {
+  padding: 18px 16px 16px;
+
+  border-top:
+    1px solid var(--astro-border);
+}
+
+.birth-chart-advanced__content > p {
+  margin: 0 0 16px;
+  color: var(--astro-muted);
+
+  font-size: var(--astro-text-meta);
+  line-height: 1.6;
+}
+
+.birth-chart-settings,
+.birth-chart-output__metadata {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 1px;
+
+  border: 1px solid var(--astro-border);
+  background: var(--astro-border);
+}
+
+.birth-chart-settings {
+  margin-top: 22px;
+}
+
+.birth-chart-output__metadata {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  margin-bottom: 16px;
+}
+
+.birth-chart-settings > div,
+.birth-chart-output__metadata > div {
+  min-width: 0;
+  padding: 13px 12px;
+
+  background: var(--astro-bg);
+}
+
+.birth-chart-settings span,
+.birth-chart-settings strong,
+.birth-chart-output__metadata span,
+.birth-chart-output__metadata strong {
+  display: block;
+  text-transform: uppercase;
+}
+
+.birth-chart-settings span,
+.birth-chart-output__metadata span {
+  margin-bottom: 6px;
+  color: var(--astro-green-muted);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-micro);
+  letter-spacing: 0.07em;
+}
+
+.birth-chart-settings strong,
+.birth-chart-output__metadata strong {
+  color: var(--astro-white);
+
+  font-size: var(--astro-text-meta);
+  font-weight: 400;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.birth-chart-form__message {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  min-height: 44px;
+  margin-top: 18px;
+  padding: 10px 13px;
+
+  border-left:
+    2px solid var(--astro-green-muted);
+
+  background: var(--astro-bg);
+  color: var(--astro-green-muted);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-meta);
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.birth-chart-form__message.is-error {
+  border-left-color: var(--astro-amber);
+  color: var(--astro-amber);
+}
+
+.birth-chart-form__message.is-success {
+  border-left-color: var(--astro-mint);
+  color: var(--astro-mint);
+}
+
+.birth-chart-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  margin-top: 18px;
+}
+
+.birth-chart-button,
+.birth-chart-preview__edit {
+  min-height: 48px;
+  padding: 11px 16px;
+
+  border: 1px solid var(--astro-green);
+  border-radius: 0;
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-meta);
+  line-height: 1.3;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  transition:
+    background 120ms ease,
+    color 120ms ease,
+    transform 120ms ease;
+}
+
+.birth-chart-button:hover,
+.birth-chart-preview__edit:hover {
+  transform: translateY(-1px);
+}
+
+.birth-chart-button:focus-visible,
+.birth-chart-preview__edit:focus-visible {
+  outline: 2px solid var(--astro-white);
+  outline-offset: 3px;
+}
+
+.birth-chart-button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+  transform: none;
+}
+
+.birth-chart-button--primary {
+  background: var(--astro-green);
+  color: var(--astro-bg);
+}
+
+.birth-chart-button--secondary,
+.birth-chart-preview__edit {
+  background: var(--astro-bg);
+  color: var(--astro-green);
+}
+
+.birth-chart-preview__notice {
+  margin: 0 0 20px;
+  padding: 13px 14px;
+
+  border-left:
+    2px solid var(--astro-mint);
+
+  background: var(--astro-bg);
+  color: var(--astro-muted);
+
+  font-size: var(--astro-text-meta);
+  line-height: 1.6;
+}
+
+.birth-chart-preview__grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 1px;
+  margin: 0;
+
+  border: 1px solid var(--astro-border);
+  background: var(--astro-border);
+}
+
+.birth-chart-preview__grid > div {
+  min-width: 0;
+  padding: 14px;
+
+  background: var(--astro-bg);
+}
+
+.birth-chart-preview__grid dt,
+.birth-chart-preview__grid dd {
+  margin: 0;
+}
+
+.birth-chart-preview__grid dt {
+  margin-bottom: 7px;
+  color: var(--astro-green-muted);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-micro);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.birth-chart-preview__grid dd {
+  color: var(--astro-white);
+
+  font-size: var(--astro-text-meta);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.birth-chart-preview__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  margin-top: 18px;
+}
+
+.birth-chart-preview__footer > span {
+  color: var(--astro-dim);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-micro);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.birth-chart-output {
+  border-left-color: var(--astro-violet);
+}
+
+.birth-chart-output__status {
+  flex: 0 0 auto;
+  padding: 7px 9px;
+
+  border: 1px solid var(--astro-mint);
+  background: var(--astro-bg);
+  color: var(--astro-mint);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-micro);
+  font-weight: 400;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.birth-chart-output__layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.2fr)
+    minmax(300px, 0.8fr);
+
+  gap: 14px;
+  align-items: start;
+}
+
+.birth-chart-output__warnings {
+  margin-top: 16px;
+  padding: 14px 15px;
+
+  border-left:
+    2px solid var(--astro-amber);
+
+  background: var(--astro-bg);
+}
+
+.birth-chart-output__warning-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 9px;
+  color: var(--astro-amber);
+}
+
+.birth-chart-output__warning-title strong {
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-meta);
+  font-weight: 400;
+  letter-spacing: 0.07em;
+}
+
+.birth-chart-output__warnings ul {
+  display: grid;
+  gap: 7px;
+
+  padding-left: 20px;
+  margin: 0;
+
+  color: var(--astro-muted);
+  font-size: var(--astro-text-meta);
+  line-height: 1.6;
+}
+
+.north-indian-chart {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+.north-indian-chart__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+
+  padding: 18px 20px;
+
+  border-bottom:
+    1px solid var(--astro-border-soft);
+}
+
+.north-indian-chart__heading p {
+  margin: 0 0 7px;
+  color: var(--astro-green-muted);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.north-indian-chart__heading h3 {
+  margin: 0;
+  color: var(--astro-green);
+
+  font-family: var(--astro-display-font);
+  font-size:
+    clamp(1.25rem, 2vw, 1.8rem);
+
+  font-weight: 400;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.north-indian-chart__ascendant {
+  flex: 0 0 auto;
+  min-width: 130px;
+  padding: 10px 12px;
+
+  border: 1px solid var(--astro-violet);
+  background: var(--astro-bg);
+
+  text-align: right;
+}
+
+.north-indian-chart__ascendant span,
+.north-indian-chart__ascendant strong,
+.north-indian-chart__ascendant small {
+  display: block;
+
+  font-family: var(--astro-display-font);
+  text-transform: uppercase;
+}
+
+.north-indian-chart__ascendant span {
+  margin-bottom: 5px;
+  color: var(--astro-violet);
+
+  font-size: var(--astro-text-micro);
+}
+
+.north-indian-chart__ascendant strong {
+  color: var(--astro-white);
+
+  font-size: var(--astro-text-meta);
+  font-weight: 400;
+}
+
+.north-indian-chart__ascendant small {
+  margin-top: 4px;
+  color: var(--astro-muted);
+
+  font-size: var(--astro-text-micro);
+}
+
+.north-indian-chart__frame {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+
+  padding: clamp(14px, 2.2vw, 24px);
+}
+
+.north-indian-chart__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+
+  background: var(--astro-bg);
+}
+
+.north-indian-chart__outer,
+.north-indian-chart__line {
+  fill: none;
+  stroke: var(--astro-green);
+  stroke-width: 2;
+
+  vector-effect: non-scaling-stroke;
+}
+
+.north-indian-chart__outer {
+  fill:
+    color-mix(
+      in srgb,
+      var(--astro-panel) 58%,
+      var(--astro-bg)
+    );
+}
+
+.north-indian-chart__line {
+  stroke: var(--astro-border);
+}
+
+.north-indian-chart__house-number {
+  fill: var(--astro-green-muted);
+
+  font-family: var(--astro-display-font);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.north-indian-chart__sign {
+  fill: var(--astro-violet);
+
+  font-family: var(--astro-display-font);
+  font-size: 22px;
+}
+
+.north-indian-chart__asc-label {
+  fill: var(--astro-mint);
+
+  font-family: var(--astro-display-font);
+  font-size: 11px;
+}
+
+.north-indian-chart__planets {
+  fill: var(--astro-white);
+
+  font-family: var(--astro-body-font);
+  font-size: 13px;
+}
+
+.north-indian-chart__house--ascendant
+  .north-indian-chart__sign {
+  fill: var(--astro-mint);
+}
+
+.north-indian-chart__corner {
+  position: absolute;
+  display: block;
+
+  width: 13px;
+  height: 13px;
+
+  pointer-events: none;
+}
+
+.north-indian-chart__corner--top-left {
+  top: 10px;
+  left: 10px;
+
+  border-top: 1px solid var(--astro-mint);
+  border-left: 1px solid var(--astro-mint);
+}
+
+.north-indian-chart__corner--top-right {
+  top: 10px;
+  right: 10px;
+
+  border-top: 1px solid var(--astro-mint);
+  border-right: 1px solid var(--astro-mint);
+}
+
+.north-indian-chart__corner--bottom-left {
+  bottom: 10px;
+  left: 10px;
+
+  border-bottom: 1px solid var(--astro-mint);
+  border-left: 1px solid var(--astro-mint);
+}
+
+.north-indian-chart__corner--bottom-right {
+  right: 10px;
+  bottom: 10px;
+
+  border-right: 1px solid var(--astro-mint);
+  border-bottom: 1px solid var(--astro-mint);
+}
+
+.north-indian-chart__legend {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 1px;
+
+  border-top: 1px solid var(--astro-border);
+  border-bottom: 1px solid var(--astro-border);
+
+  background: var(--astro-border);
+}
+
+.north-indian-chart__legend span {
+  min-width: 0;
+  padding: 8px;
+
+  background: var(--astro-bg);
+  color: var(--astro-green-muted);
+
+  font-family: var(--astro-display-font);
+  font-size: 0.52rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.north-indian-chart__caption {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 1px;
+  background: var(--astro-border);
+}
+
+.north-indian-chart__caption > div {
+  min-width: 0;
+  padding: 12px 14px;
+
+  background: var(--astro-bg);
+}
+
+.north-indian-chart__caption span,
+.north-indian-chart__caption strong {
+  display: block;
+}
+
+.north-indian-chart__caption span {
+  margin-bottom: 5px;
+  color: var(--astro-green-muted);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-micro);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.north-indian-chart__caption strong {
+  color: var(--astro-white);
+
+  font-size: var(--astro-text-meta);
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.planetary-index {
+  min-width: 0;
+}
+
+.planetary-index__header {
+  padding: 17px 18px;
+
+  border-bottom:
+    1px solid var(--astro-border);
+}
+
+.planetary-index__header h3 {
+  margin: 0 0 8px;
+  color: var(--astro-violet);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-heading);
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.planetary-index__header > span {
+  color: var(--astro-muted);
+
+  font-size: var(--astro-text-meta);
+  line-height: 1.5;
+}
+
+.planetary-index__table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+
+  scrollbar-color:
+    var(--astro-green)
+    var(--astro-bg);
+
+  scrollbar-width: thin;
+}
+
+.planetary-index__table {
+  width: 100%;
+  min-width: 570px;
+
+  border-collapse: collapse;
+  background: var(--astro-bg);
+}
+
+.planetary-index__table th,
+.planetary-index__table td {
+  padding: 10px 11px;
+
+  border-bottom:
+    1px solid var(--astro-border-soft);
+
+  color: var(--astro-white);
+  font-size: var(--astro-text-micro);
+  line-height: 1.45;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.planetary-index__table thead th {
+  color: var(--astro-green-muted);
+
+  font-family: var(--astro-display-font);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.planetary-index__table tbody th {
+  color: var(--astro-mint);
+
+  font-family: var(--astro-display-font);
+  font-weight: 400;
+}
+
+.planetary-index__table tbody tr:hover {
+  background: var(--astro-panel-hover);
+}
+
+.planetary-index__settings {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 1px;
+
+  border-top: 1px solid var(--astro-border);
+  background: var(--astro-border);
+}
+
+.planetary-index__settings > div {
+  min-width: 0;
+  padding: 11px 12px;
+
+  background: var(--astro-bg);
+}
+
+.planetary-index__settings span,
+.planetary-index__settings strong {
+  display: block;
+  text-transform: uppercase;
+}
+
+.planetary-index__settings span {
+  margin-bottom: 5px;
+  color: var(--astro-green-muted);
+
+  font-family: var(--astro-display-font);
+  font-size: 0.5rem;
+}
+
+.planetary-index__settings strong {
+  color: var(--astro-white);
+
+  font-size: var(--astro-text-micro);
+  font-weight: 400;
+}
+
+.planetary-index__key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+
+  padding: 13px;
+
+  border-top: 1px solid var(--astro-border);
+}
+
+.planetary-index__key span {
+  padding: 5px 7px;
+
+  border: 1px solid var(--astro-border);
+  background: var(--astro-bg);
+  color: var(--astro-green-muted);
+
+  font-family: var(--astro-display-font);
+  font-size: 0.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@keyframes birth-chart-status-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1100px) {
+  .birth-chart-output__layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .birth-chart-module__statusbar,
+  .birth-chart-preview__header,
+  .birth-chart-preview__footer,
+  .birth-chart-output__header,
+  .north-indian-chart__statusbar,
+  .north-indian-chart__heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .birth-chart-form__grid,
+  .birth-chart-preview__grid,
+  .birth-chart-output__metadata {
+    grid-template-columns: 1fr;
+  }
+
+  .birth-chart-settings {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .birth-chart-field--wide {
+    grid-column: auto;
+  }
+
+  .north-indian-chart__ascendant {
+    width: 100%;
+    text-align: left;
+  }
+
+  .north-indian-chart__legend {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .north-indian-chart__caption {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 430px) {
+  .birth-chart-settings,
+  .planetary-index__settings {
+    grid-template-columns: 1fr;
+  }
+
+  .birth-chart-form__actions,
+  .birth-chart-button,
+  .birth-chart-preview__edit {
+    width: 100%;
+  }
+
+  .north-indian-chart__legend {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .birth-chart-module__signal,
+  .north-indian-chart__signal {
+    animation: none;
+  }
+
+  .birth-chart-button,
+  .birth-chart-preview__edit {
+    transition: none;
+  }
+}

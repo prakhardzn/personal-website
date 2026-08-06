@@ -1,5 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
+
+/* =========================================================
+   SHARED INTERNAL PAGE SYSTEM
+
+   Spacing scale:
+   4px
+   8px
+   12px
+   16px
+   24px
+========================================================= */
+
 :root {
   --internal-display-font:
     "Silkscreen",
@@ -9,27 +21,41 @@
     "Space Mono",
     monospace;
 
-  --internal-black: #020908;
-  --internal-black-soft: #06110e;
-  --internal-purple-black: #0c0713;
+  --internal-black: #020705;
+  --internal-panel: #06100a;
+  --internal-panel-hover: #08130c;
 
-  --internal-green: #a8ff36;
-  --internal-green-dark: #78b72a;
-  --internal-white: #f4fff5;
-  --internal-purple: #8a3aa5;
+  --internal-green: #8cff58;
+  --internal-green-muted: #64984f;
+  --internal-green-dark: #294624;
 
-  --internal-border:
-    max(2px, 0.14vw);
+  --internal-cyan: #78c9b8;
+  --internal-amber: #cfbb68;
 
-  --internal-thin-border:
-    max(1px, 0.09vw);
+  --internal-white: #eaf1e7;
+  --internal-muted: #98a596;
 
-  --internal-radius:
-    clamp(8px, 0.8vw, 17px);
+  --internal-border: #294624;
+  --internal-border-soft: #172b16;
 
-  --internal-small-radius:
-    clamp(5px, 0.45vw, 10px);
+  --internal-radius: 8px;
+  --internal-control-radius: 4px;
+
+  --internal-space-1: 4px;
+  --internal-space-2: 8px;
+  --internal-space-3: 12px;
+  --internal-space-4: 16px;
+  --internal-space-5: 24px;
 }
+
+
+html {
+  width: 100%;
+  min-height: 100%;
+
+  background: var(--internal-black);
+}
+
 
 body {
   width: 100%;
@@ -45,100 +71,126 @@ body {
   font-family: var(--internal-body-font);
 }
 
+
+.internal-page-shell,
+.internal-page-shell *,
+.internal-page-shell *::before,
+.internal-page-shell *::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PAGE SHELL
+
+   The shell now uses a real two-row grid instead of
+   percentage-based absolute positioning.
+========================================================= */
+
 .internal-page-shell {
   position: relative;
   isolation: isolate;
+
+  display: grid;
+
+  grid-template-rows:
+    72px
+    minmax(0, 1fr);
+
+  gap: var(--internal-space-2);
 
   width: 100vw;
   height: 100vh;
   height: 100dvh;
 
+  padding:
+    10px
+    12px
+    12px;
+
   overflow: hidden;
 
-  background:
-    radial-gradient(
-      circle at 78% 65%,
-      rgb(34 17 55 / 30%),
-      transparent 38%
-    ),
-    linear-gradient(
-      135deg,
-      #020908,
-      #040d0c 55%,
-      #090511
-    );
+  border:
+    1px solid
+    var(--internal-green);
+
+  background: var(--internal-black);
 }
+
+
+/* Secondary bezel line */
 
 .internal-page-shell::before {
   position: absolute;
-  inset: 0.3%;
-  z-index: 50;
+
+  inset: 5px;
+  z-index: 100;
 
   border:
-    var(--internal-thin-border)
-    solid
-    var(--internal-green);
+    1px solid
+    rgb(140 255 88 / 34%);
 
-  border-radius:
-    var(--internal-small-radius);
+  border-radius: 6px;
 
   pointer-events: none;
+
   content: "";
 }
+
+
+/* Remove the old second decorative frame */
 
 .internal-page-shell::after {
-  position: absolute;
-  inset: 0.8%;
-  z-index: 49;
+  display: none;
 
-  border:
-    var(--internal-thin-border)
-    solid
-    rgb(168 255 54 / 48%);
-
-  border-radius:
-    var(--internal-radius);
-
-  pointer-events: none;
-  content: "";
+  content: none;
 }
 
+
+/* =========================================================
+   SYSTEM BAR
+========================================================= */
+
 .internal-system-bar {
-  position: absolute;
-  top: 2%;
-  left: 1.25%;
+  position: relative;
   z-index: 30;
 
   display: grid;
+
   grid-template-columns:
-    clamp(64px, 5.3vw, 104px)
+    92px
     minmax(0, 1fr)
     auto;
 
-  align-items: center;
+  align-items: stretch;
 
-  gap: clamp(10px, 0.85vw, 18px);
+  gap: var(--internal-space-2);
 
-  width: 97.5%;
-  height: clamp(58px, 6.8vh, 82px);
+  width: 100%;
+  height: 72px;
 
-  padding:
-    clamp(5px, 0.4vw, 9px);
+  padding: 6px;
 
   border:
-    var(--internal-border)
-    solid
+    2px solid
     var(--internal-green);
 
   border-radius:
     var(--internal-radius);
 
   background:
-    rgb(2 12 10 / 97%);
+    var(--internal-black);
 }
 
+
 .internal-system-message {
+  align-self: center;
+
+  min-width: 0;
+
   margin: 0;
+  padding-inline: 12px;
+
   overflow: hidden;
 
   color: var(--internal-green);
@@ -147,9 +199,13 @@ body {
     var(--internal-body-font);
 
   font-size:
-    clamp(11px, 1.22vw, 25px);
+    clamp(
+      0.78rem,
+      1.15vw,
+      1.25rem
+    );
 
-  line-height: 1.2;
+  line-height: 1.3;
   letter-spacing: 0.025em;
 
   text-align: center;
@@ -157,173 +213,232 @@ body {
   white-space: nowrap;
 }
 
+
 .internal-system-actions {
   display: flex;
+
   align-items: stretch;
 
-  gap: clamp(8px, 0.6vw, 13px);
+  gap: var(--internal-space-2);
 
   height: 100%;
 }
+
+
+/* =========================================================
+   SYSTEM BUTTONS
+========================================================= */
 
 .internal-icon-button {
   display: grid;
   place-items: center;
 
-  min-width:
-    clamp(58px, 4.5vw, 90px);
-
+  width: 80px;
+  min-width: 80px;
   height: 100%;
 
   padding: 0;
 
   border:
-    var(--internal-thin-border)
-    solid
+    1px solid
     var(--internal-green);
 
   border-radius:
-    var(--internal-small-radius);
+    var(--internal-control-radius);
 
-  background: #020b09;
-  color: var(--internal-green);
+  background:
+    var(--internal-black);
+
+  color:
+    var(--internal-green);
 
   font-family:
     var(--internal-display-font);
 
   font-size:
-    clamp(18px, 1.65vw, 34px);
+    clamp(
+      1.15rem,
+      1.5vw,
+      1.7rem
+    );
 
   font-weight: 700;
   line-height: 1;
 
   text-decoration: none;
 
+  cursor: pointer;
+
   transition:
-    color 150ms ease,
-    background-color 150ms ease,
-    transform 150ms ease;
+    background-color 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease;
 }
 
-.internal-back-button {
-  width: 100%;
-  min-width: 0;
-}
 
 .internal-icon-button:hover,
 .internal-icon-button:focus-visible {
   background:
-    var(--internal-green);
+    var(--internal-panel);
 
   color:
-    var(--internal-black);
+    var(--internal-green);
 
-  transform: translateY(-1px);
+  border-color:
+    var(--internal-green);
+
+  box-shadow:
+    0 0 7px
+    rgb(140 255 88 / 13%);
 }
+
 
 .internal-icon-button:focus-visible {
   outline:
     2px solid
     var(--internal-white);
 
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 
-.internal-page-grid {
-  position: absolute;
-  top: 10.5%;
-  bottom: 2.25%;
-  left: 1.75%;
 
+/* =========================================================
+   SHARED CONTENT GRID
+
+   Page-specific styles may change the two column widths,
+   but the gap remains on the shared 12px scale.
+========================================================= */
+
+.internal-page-grid {
+  position: relative;
   z-index: 10;
 
   display: grid;
 
   grid-template-columns:
-    minmax(350px, 34.5%)
+    minmax(320px, 34%)
     minmax(0, 1fr);
 
-  gap: 1.35%;
+  gap: var(--internal-space-3);
 
-  width: 96.5%;
+  width: 100%;
+  height: 100%;
   min-height: 0;
+
+  padding:
+    0
+    2px
+    2px;
+
+  overflow: hidden;
 }
+
 
 .internal-page-sidebar,
 .internal-page-content {
+  width: 100%;
   min-width: 0;
+  height: 100%;
   min-height: 0;
+
+  overflow: hidden;
 }
+
+
+/* =========================================================
+   GENERIC PANEL
+========================================================= */
 
 .ui-panel {
   border:
-    var(--internal-border)
-    solid
+    1px solid
     var(--internal-green);
 
   border-radius:
     var(--internal-radius);
 
   background:
-    rgb(2 13 11 / 96%);
+    var(--internal-panel);
 
   color:
     var(--internal-white);
 }
+
+
+/* =========================================================
+   GENERIC SCROLLBARS
+========================================================= */
 
 .internal-page-shell * {
   scrollbar-width: thin;
 
   scrollbar-color:
     var(--internal-green)
-    #142016;
+    var(--internal-black);
 }
 
+
 .internal-page-shell *::-webkit-scrollbar {
-  width: 14px;
+  width: 10px;
+  height: 10px;
 }
+
 
 .internal-page-shell *::-webkit-scrollbar-track {
   border:
-    var(--internal-thin-border)
-    solid
-    var(--internal-green);
+    1px solid
+    var(--internal-border);
 
-  border-radius: 999px;
-
-  background: #102015;
+  background:
+    var(--internal-black);
 }
 
+
 .internal-page-shell *::-webkit-scrollbar-thumb {
-  border: 3px solid #102015;
-  border-radius: 999px;
+  border:
+    2px solid
+    var(--internal-black);
 
   background:
     var(--internal-green);
 }
 
-/* Settings window */
+
+/* =========================================================
+   SETTINGS DIALOG
+========================================================= */
 
 .settings-dialog {
-  width: min(88vw, 540px);
+  width:
+    min(
+      88vw,
+      540px
+    );
+
   padding: 0;
 
   border: 0;
-  background: transparent;
-  color: var(--internal-white);
+
+  background:
+    transparent;
+
+  color:
+    var(--internal-white);
 }
 
+
 .settings-dialog::backdrop {
-  background: rgb(0 0 0 / 76%);
-  backdrop-filter: blur(4px);
+  background:
+    rgb(0 0 0 / 78%);
 }
+
 
 .settings-dialog__window {
   overflow: hidden;
 
   border:
-    var(--internal-border)
-    solid
+    2px solid
     var(--internal-green);
 
   border-radius:
@@ -333,20 +448,24 @@ body {
     var(--internal-black);
 }
 
+
 .settings-dialog__header {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
 
-  gap: 1rem;
+  gap: var(--internal-space-4);
 
-  padding: 1rem 1.2rem;
+  padding:
+    14px
+    16px;
 
   border-bottom:
-    var(--internal-thin-border)
-    solid
-    var(--internal-green);
+    1px solid
+    var(--internal-border);
 }
+
 
 .settings-dialog__header h2 {
   margin: 0;
@@ -358,59 +477,188 @@ body {
     var(--internal-display-font);
 
   font-size:
-    clamp(15px, 1.5vw, 26px);
+    1.25rem;
 
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing:
+    0.08em;
+
+  text-transform:
+    uppercase;
 }
+
 
 .settings-dialog__close {
   display: grid;
   place-items: center;
 
-  width: 2.4rem;
-  aspect-ratio: 1;
+  width: 38px;
+  height: 38px;
 
   padding: 0;
 
   border:
-    var(--internal-thin-border)
-    solid
+    1px solid
     var(--internal-green);
 
-  background: transparent;
-  color: var(--internal-green);
+  border-radius:
+    var(--internal-control-radius);
 
-  font-size: 1.45rem;
+  background:
+    var(--internal-black);
+
+  color:
+    var(--internal-green);
+
+  font-size:
+    1.4rem;
+
   cursor: pointer;
 }
 
-.settings-dialog__content {
-  padding: 1.4rem;
 
-  font-size: 1rem;
-  line-height: 1.7;
+.settings-dialog__close:hover {
+  box-shadow:
+    0 0 7px
+    rgb(140 255 88 / 13%);
 }
 
-.settings-dialog__warning {
+
+.settings-dialog__content {
+  padding:
+    20px;
+
   color:
-    var(--internal-green);
+    var(--internal-muted);
+
+  font-size:
+    1rem;
+
+  line-height:
+    1.65;
+}
+
+
+.settings-dialog__warning {
+  margin-top: 0;
+
+  color:
+    var(--internal-amber);
 
   font-family:
     var(--internal-display-font);
 
-  font-size: 1.2rem;
+  font-size:
+    0.8rem;
+
+  letter-spacing:
+    0.1em;
+
+  text-transform:
+    uppercase;
 }
 
+
+/* =========================================================
+   MEDIUM SCREENS
+========================================================= */
+
 @media (max-width: 1150px) {
+  .internal-system-bar {
+    grid-template-columns:
+      74px
+      minmax(0, 1fr)
+      auto;
+  }
+
+
+  .internal-icon-button {
+    width: 68px;
+    min-width: 68px;
+  }
+
+
   .internal-page-grid {
     grid-template-columns:
       minmax(290px, 35%)
       minmax(0, 1fr);
   }
 
+
   .internal-system-message {
     font-size:
-      clamp(9px, 1.15vw, 14px);
+      clamp(
+        0.7rem,
+        1.1vw,
+        0.9rem
+      );
+  }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 780px) {
+  body {
+    overflow: auto;
+  }
+
+
+  .internal-page-shell {
+    grid-template-rows:
+      auto
+      auto;
+
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    overflow: visible;
+  }
+
+
+  .internal-system-bar {
+    grid-template-columns:
+      58px
+      minmax(0, 1fr)
+      auto;
+
+    height: 62px;
+  }
+
+
+  .internal-icon-button {
+    width: 52px;
+    min-width: 52px;
+  }
+
+
+  .internal-system-actions {
+    gap: 5px;
+  }
+
+
+  .internal-system-message {
+    padding-inline: 6px;
+  }
+
+
+  .internal-page-grid {
+    grid-template-columns: 1fr;
+
+    height: auto;
+    min-height: 0;
+
+    overflow: visible;
+  }
+
+
+  .internal-page-sidebar,
+  .internal-page-content {
+    height: auto;
+
+    overflow: visible;
   }
 }

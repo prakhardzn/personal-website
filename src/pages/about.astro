@@ -1,383 +1,1123 @@
 ---
-import InternalPageLayout from
-  "../layouts/InternalPageLayout.astro";
-
+import InternalPageLayout from "../layouts/InternalPageLayout.astro";
 import "../styles/about.css";
+
+const projectFiles = [
+  {
+    number: "PROJECT FILE 001",
+    title: "QAID",
+    metadata: "SHORT FILM · DIRECTOR AND DOP",
+    description:
+      "A psychological thriller about a man trapped inside a repeating cycle where memory, time and reality begin collapsing into one another.",
+    status: "COMPLETED",
+    statusType: "completed",
+  },
+  {
+    number: "PROJECT FILE 002",
+    title: "KSHITIJ",
+    metadata: "SHORT FILM · WRITER AND DIRECTOR",
+    description:
+      "A short film about photography, consent and the uneasy distance between observing someone and truly understanding them.",
+    status: "COMPLETED",
+    statusType: "completed",
+  },
+  {
+    number: "PROJECT FILE 003",
+    title: "DUNE POSTER TYPOGRAPHY",
+    metadata: "TYPOGRAPHY · POSTER DESIGN",
+    description:
+      "A typography project inspired by Dune, exploring hierarchy, scale, atmosphere and cinematic tension through poster design.",
+    status: "COMPLETED",
+    statusType: "completed",
+  },
+  {
+    number: "PROJECT FILE 004",
+    title: "ZOO TITLE SEQUENCE",
+    metadata: "MOTION DESIGN · TITLE SEQUENCE",
+    description:
+      "A title sequence for Zoo by Bert Haanstra, using observational imagery, playful timing and typography inspired by the film’s humour.",
+    status: "COMPLETED",
+    statusType: "completed",
+  },
+  {
+    number: "PROJECT FILE 005",
+    title: "STREET PHOTOGRAPHY",
+    metadata: "PHOTOGRAPHY · VISUAL DOCUMENTATION",
+    description:
+      "A growing collection of photographs exploring public movement, everyday routines, visual layers and small moments found across ordinary spaces.",
+    status: "WORK IN PROGRESS",
+    statusType: "working",
+  },
+];
+
+const interestFiles = [
+  {
+    number: "INTEREST FILE 001",
+    title: "FILMMAKING",
+    description:
+      "Stories, performances, camera movement, visual tension and the satisfying chaos of trying to make a film.",
+  },
+  {
+    number: "INTEREST FILE 002",
+    title: "PHOTOGRAPHY",
+    description:
+      "Observing people, public spaces, light, colour and moments that appear when nobody is performing for the camera.",
+  },
+  {
+    number: "INTEREST FILE 003",
+    title: "THEATRE",
+    description:
+      "Characters, stage movement, performance and stories that become real inside a shared physical space.",
+  },
+  {
+    number: "INTEREST FILE 004",
+    title: "INTERACTIVE WEB",
+    description:
+      "Designing digital spaces that feel less like ordinary websites and more like explorable worlds.",
+  },
+];
+
+const vaultFiles = [
+  {
+    number: "VAULT FILE 001",
+    title: "UNFINISHED STORIES",
+    description:
+      "Characters, scenes and film ideas currently waiting for enough courage, time or production budget.",
+  },
+  {
+    number: "VAULT FILE 002",
+    title: "STRANGE OBSERVATIONS",
+    description:
+      "Small details, overheard sentences and everyday events that might become stories later.",
+  },
+  {
+    number: "VAULT FILE 003",
+    title: "EXPERIMENTS",
+    description:
+      "Design tests, abandoned interfaces, visual accidents and ideas that refused to fit anywhere else.",
+  },
+];
 ---
 
 <InternalPageLayout
-  title="About Me | Prakhar"
-  description="About Prakhar, his work, interests and creative experiments."
+  title="About Me | Prakhar's Universe"
+  description="Learn about Prakhar Pandey and explore his creative work."
   message="You are currently somewhere between a portfolio and a minor space incident."
   pageClass="about-page"
 >
-  <Fragment slot="sidebar">
-    <div class="about-sidebar-stack">
+  <!-- ==================================================
+       LEFT COLUMN
+  =================================================== -->
 
-      <section
-        class="ui-panel about-portrait-panel"
-        aria-label="Portrait of Prakhar"
-      >
-        <div class="about-image-placeholder">
-          About character artwork will appear here
-        </div>
-      </section>
+  <div slot="sidebar" class="about-left-column">
+    <figure class="about-photo-frame">
+      <img
+        class="about-photo"
+        id="about-photo"
+        src="/assets/about/about-photo.png"
+        alt="Portrait of Prakhar Pandey"
+        draggable="false"
+        loading="eager"
+      />
 
-      <section class="ui-panel about-profile-panel">
-        <dl class="about-profile-list">
-
-          <div class="about-profile-row">
-            <dt>Name:</dt>
-            <dd>Prakhar</dd>
-          </div>
-
-          <div class="about-profile-row">
-            <dt>Pronouns:</dt>
-            <dd>He/Him</dd>
-          </div>
-
-          <div class="about-profile-row">
-            <dt>Bday:</dt>
-            <dd>01/11</dd>
-          </div>
-
-          <div class="about-profile-row">
-            <dt>Location:</dt>
-            <dd>India</dd>
-          </div>
-
-          <div class="about-profile-row">
-            <dt>Strength:</dt>
-            <dd>Can crack jokes!!!</dd>
-          </div>
-
-          <div class="about-profile-row">
-            <dt>Weakness:</dt>
-            <dd>Sweets, cats, bed, brainfog</dd>
-          </div>
-
-        </dl>
-
-        <div
-          class="about-badge-stack"
-          aria-label="Personality badges"
-        >
-          <span class="profile-badge profile-badge--psychic">
-            Psychic Type
-          </span>
-
-          <span class="profile-badge profile-badge--enfp">
-            ENFP
-          </span>
-
-          <span class="profile-badge profile-badge--scorpio">
-            Scorpio
-          </span>
-        </div>
-      </section>
-
-    </div>
-  </Fragment>
-
-  <Fragment slot="content">
-    <section
-      class="about-tabs"
-      data-about-tabs
-    >
       <div
-        class="about-tab-list"
-        role="tablist"
-        aria-label="About Me sections"
+        class="about-photo-fallback"
+        id="about-photo-fallback"
+        hidden
       >
-        <button
-          class="about-tab-button is-active"
-          id="about-tab"
-          type="button"
-          role="tab"
-          aria-selected="true"
-          aria-controls="about-panel"
-          data-tab-button="about"
-        >
-          About
-        </button>
+        <strong>PORTRAIT FILE MISSING</strong>
 
-        <button
-          class="about-tab-button"
-          id="work-tab"
-          type="button"
-          role="tab"
-          aria-selected="false"
-          aria-controls="work-panel"
-          data-tab-button="work"
-          tabindex="-1"
-        >
-          Work
-        </button>
+        <span>
+          Add about-photo.png inside public/assets/about
+        </span>
+      </div>
+    </figure>
 
-        <button
-          class="about-tab-button"
-          id="interests-tab"
-          type="button"
-          role="tab"
-          aria-selected="false"
-          aria-controls="interests-panel"
-          data-tab-button="interests"
-          tabindex="-1"
-        >
-          Interests
-        </button>
 
-        <button
-          class="about-tab-button"
-          id="vault-tab"
-          type="button"
-          role="tab"
-          aria-selected="false"
-          aria-controls="vault-panel"
-          data-tab-button="vault"
-          tabindex="-1"
-        >
-          Vault
-        </button>
+    <section class="about-profile-card">
+      <!-- Main profile -->
+
+      <div
+        class="about-profile-panel"
+        data-profile-panel="about"
+      >
+        <div class="about-profile-terminal">
+          <header class="about-profile-terminal__header">
+            <span class="about-profile-terminal__title">
+              USER PROFILE // LOCAL RECORD
+
+              <span
+                class="terminal-caret"
+                aria-hidden="true"
+              >
+                ▮
+              </span>
+            </span>
+
+            <span class="about-profile-terminal__status">
+              <span
+                class="terminal-status-dot"
+                aria-hidden="true"
+              ></span>
+
+              ONLINE · ID: P-01
+            </span>
+          </header>
+
+
+          <div class="about-profile-grid">
+            <div class="about-profile-cell about-profile-cell--label">
+              NAME
+            </div>
+
+            <div class="about-profile-cell about-profile-cell--value">
+              PRAKHAR
+            </div>
+
+            <div class="about-profile-cell about-profile-cell--badge">
+              <div class="about-identity-tag about-identity-tag--psychic">
+                <span>TYPE</span>
+                <strong>PSYCHIC</strong>
+              </div>
+            </div>
+
+
+            <div class="about-profile-cell about-profile-cell--label">
+              PRONOUNS
+            </div>
+
+            <div class="about-profile-cell about-profile-cell--value">
+              HE/HIM
+            </div>
+
+            <div class="about-profile-cell about-profile-cell--badge">
+              <div class="about-identity-tag about-identity-tag--enfp">
+                <span>MBTI</span>
+                <strong>ENFP</strong>
+              </div>
+            </div>
+
+
+            <div class="about-profile-cell about-profile-cell--label">
+              BDAY
+            </div>
+
+            <div class="about-profile-cell about-profile-cell--value">
+              01/11
+            </div>
+
+            <div class="about-profile-cell about-profile-cell--badge">
+              <div class="about-identity-tag about-identity-tag--scorpio">
+                <span>SIGN</span>
+                <strong>SCORPIO</strong>
+              </div>
+            </div>
+
+
+            <div class="about-profile-cell about-profile-cell--label">
+              LOCATION
+            </div>
+
+            <div class="about-profile-cell about-profile-cell--value">
+              INDIA
+            </div>
+
+            <div
+              class="about-profile-cell about-profile-cell--badge"
+              aria-hidden="true"
+            ></div>
+
+
+            <div class="about-profile-cell about-profile-cell--label">
+              STRENGTH
+            </div>
+
+            <div class="about-profile-cell about-profile-cell--value">
+              CAN CRACK JOKES!!!
+            </div>
+
+            <div
+              class="about-profile-cell about-profile-cell--badge"
+              aria-hidden="true"
+            ></div>
+
+
+            <div class="about-profile-cell about-profile-cell--label">
+              WEAKNESS
+            </div>
+
+            <div class="about-profile-cell about-profile-cell--value">
+              SWEETS, CATS, BED, BRAINFOG
+            </div>
+
+            <div
+              class="about-profile-cell about-profile-cell--badge"
+              aria-hidden="true"
+            ></div>
+          </div>
+        </div>
       </div>
 
-      <div class="about-tab-stage">
 
-        <section
-          class="about-tab-panel"
-          id="about-panel"
-          role="tabpanel"
-          aria-labelledby="about-tab"
-          data-tab-panel="about"
-        >
-          <div class="about-copy">
-            <p>
-              Hi, I’m Prakhar. I’m a multimedia design
-              student, filmmaker, photographer and
-              occasional victim of CSS.
-            </p>
+      <!-- Work information -->
 
-            <p>
-              Most of my time goes into making films,
-              taking photographs, designing strange
-              little websites and convincing myself
-              that every new project is not another
-              side quest. I like stories that feel
-              slightly unsettling, visually interesting
-              and human enough to stay with you after
-              the screen goes dark.
-            </p>
+      <div
+        class="about-profile-panel about-profile-panel--section"
+        data-profile-panel="work"
+        hidden
+      >
+        <p class="about-panel-eyebrow">
+          PORTFOLIO SECTION
+        </p>
 
-            <p>
-              I have written and directed short films,
-              worked behind the camera, explored streets
-              with a camera in hand and spent an
-              unreasonable amount of time moving
-              elements two pixels to the left.
-            </p>
+        <h2>Project Archive</h2>
 
-            <p>
-              This website is my inventory. It contains
-              films, photographs, experiments,
-              unfinished thoughts and a few projects
-              that survived the final boss known as
-              the deadline.
-            </p>
+        <p class="about-profile-description">
+          Browse film, photography, typography and motion-design
+          projects stored inside the portfolio archive.
+        </p>
 
-            <a
-              class="about-contact-bar"
-              href="mailto:prakharpandey2027@gmail.com"
-            >
-              <strong>Contact:</strong>
-
-              <span>
-                prakharpandey2027@gmail.com
-              </span>
-            </a>
+        <dl class="about-section-details">
+          <div>
+            <dt>FILES</dt>
+            <dd>Film, design and photography</dd>
           </div>
-        </section>
 
-        <section
-          class="about-tab-panel"
-          id="work-panel"
-          role="tabpanel"
-          aria-labelledby="work-tab"
-          data-tab-panel="work"
-          hidden
-        >
-          <div class="about-copy">
-            <h2 class="about-section-title">
-              Work
-            </h2>
-
-            <div class="about-item-grid">
-              <article class="about-item">
-                <h3>Qaid</h3>
-
-                <p>
-                  A psychological thriller about
-                  repetition, avoidance and the prisons
-                  people construct for themselves.
-                </p>
-              </article>
-
-              <article class="about-item">
-                <h3>Kshitij</h3>
-
-                <p>
-                  A short film examining photography,
-                  consent and the distance between
-                  observing someone and understanding
-                  them.
-                </p>
-              </article>
-
-              <article class="about-item">
-                <h3>Photography</h3>
-
-                <p>
-                  Street photographs, visual studies
-                  and stories discovered while walking
-                  without a fixed destination.
-                </p>
-              </article>
-
-              <article class="about-item">
-                <h3>Design</h3>
-
-                <p>
-                  Interfaces, experiments, prototypes
-                  and websites that sometimes cooperate.
-                </p>
-              </article>
-            </div>
+          <div>
+            <dt>ACCESS</dt>
+            <dd>Public archive</dd>
           </div>
-        </section>
 
-        <section
-          class="about-tab-panel"
-          id="interests-panel"
-          role="tabpanel"
-          aria-labelledby="interests-tab"
-          data-tab-panel="interests"
-          hidden
-        >
-          <div class="about-copy">
-            <h2 class="about-section-title">
-              Interests
-            </h2>
-
-            <div class="about-item-grid">
-              <article class="about-item">
-                Filmmaking and visual storytelling
-              </article>
-
-              <article class="about-item">
-                Street photography
-              </article>
-
-              <article class="about-item">
-                Theatre and performance
-              </article>
-
-              <article class="about-item">
-                Games and interactive spaces
-              </article>
-
-              <article class="about-item">
-                Astrology and strange systems
-              </article>
-
-              <article class="about-item">
-                Sound, editing and cinematography
-              </article>
-            </div>
+          <div>
+            <dt>STATUS</dt>
+            <dd>Continuously expanding</dd>
           </div>
-        </section>
+        </dl>
+      </div>
 
-        <section
-          class="about-tab-panel"
-          id="vault-panel"
-          role="tabpanel"
-          aria-labelledby="vault-tab"
-          data-tab-panel="vault"
-          hidden
-        >
-          <div class="about-copy">
-            <h2 class="about-section-title">
-              Vault
-            </h2>
 
-            <p>
-              This is where unfinished ideas,
-              abandoned experiments, suspicious
-              sketches and projects waiting for the
-              correct timeline will eventually live.
-            </p>
+      <!-- Interests information -->
 
-            <p>
-              Access is currently limited because
-              some files have developed free will.
-            </p>
+      <div
+        class="about-profile-panel about-profile-panel--section"
+        data-profile-panel="interests"
+        hidden
+      >
+        <p class="about-panel-eyebrow">
+          INTEREST DATABASE
+        </p>
+
+        <h2>Current Obsessions</h2>
+
+        <p class="about-profile-description">
+          Subjects that repeatedly steal my attention and
+          occasionally become entire projects.
+        </p>
+
+        <dl class="about-section-details">
+          <div>
+            <dt>SIGNAL</dt>
+            <dd>Visual storytelling</dd>
           </div>
-        </section>
 
+          <div>
+            <dt>FREQUENCY</dt>
+            <dd>Constant</dd>
+          </div>
+
+          <div>
+            <dt>CONTROL</dt>
+            <dd>Questionable</dd>
+          </div>
+        </dl>
+      </div>
+
+
+      <!-- Vault information -->
+
+      <div
+        class="about-profile-panel about-profile-panel--section"
+        data-profile-panel="vault"
+        hidden
+      >
+        <p class="about-panel-eyebrow">
+          RESTRICTED SECTION
+        </p>
+
+        <h2>The Vault</h2>
+
+        <p class="about-profile-description">
+          Unfinished ideas, strange observations and creative
+          experiments that have not found another home.
+        </p>
+
+        <dl class="about-section-details">
+          <div>
+            <dt>SECURITY</dt>
+            <dd>Mostly decorative</dd>
+          </div>
+
+          <div>
+            <dt>CONTENT</dt>
+            <dd>Unstable ideas</dd>
+          </div>
+
+          <div>
+            <dt>ACCESS</dt>
+            <dd>Proceed carefully</dd>
+          </div>
+        </dl>
       </div>
     </section>
-  </Fragment>
+  </div>
+
+
+  <!-- ==================================================
+       RIGHT COLUMN
+  =================================================== -->
+
+  <div slot="content" class="about-right-column">
+    <nav
+      class="about-tabs"
+      aria-label="About page sections"
+    >
+      <button
+        class="about-tab is-active"
+        type="button"
+        data-about-tab="about"
+        aria-selected="true"
+      >
+        ABOUT
+      </button>
+
+      <button
+        class="about-tab"
+        type="button"
+        data-about-tab="work"
+        aria-selected="false"
+      >
+        WORK
+      </button>
+
+      <button
+        class="about-tab"
+        type="button"
+        data-about-tab="interests"
+        aria-selected="false"
+      >
+        INTERESTS
+      </button>
+
+      <button
+        class="about-tab"
+        type="button"
+        data-about-tab="vault"
+        aria-selected="false"
+      >
+        VAULT
+      </button>
+    </nav>
+
+
+    <div class="about-content-stage">
+      <div
+        class="about-content-window"
+        id="about-content-window"
+      >
+        <!-- About -->
+
+        <section
+          class="about-content-panel about-content-panel--biography"
+          data-about-panel="about"
+        >
+          <div class="about-biography">
+            <p>
+              Hi, I’m Prakhar. I’m a multimedia design student,
+              filmmaker, photographer and occasional victim of CSS.
+            </p>
+
+            <p>
+              Most of my time goes into making films, taking
+              photographs, designing strange little websites and
+              convincing myself that every new project is not
+              another side quest. I like stories that feel slightly
+              unsettling, visually interesting and human enough to
+              stay with you after the screen goes dark.
+            </p>
+
+            <p>
+              I have written and directed short films, worked behind
+              the camera, explored streets with a camera in hand and
+              spent an unreasonable amount of time moving elements
+              two pixels to the left.
+            </p>
+
+            <p>
+              This website is my inventory. It contains films,
+              photographs, experiments, unfinished thoughts and a
+              few projects that survived the final boss known as the
+              deadline.
+            </p>
+          </div>
+
+          <footer class="about-contact">
+            <span>CONTACT</span>
+
+            <a href="mailto:prakharpandey2027@gmail.com">
+              prakharpandey2027@gmail.com
+            </a>
+          </footer>
+        </section>
+
+
+        <!-- Work -->
+
+        <section
+          class="about-content-panel"
+          data-about-panel="work"
+          hidden
+        >
+          <header class="about-content-header">
+            <p>PORTFOLIO ARCHIVE</p>
+
+            <h1>Project Files</h1>
+
+            <span>
+              Select a file to investigate the project.
+            </span>
+          </header>
+
+          <div class="about-file-list">
+            {
+              projectFiles.map((project, index) => (
+                <article
+                  class="about-file-card"
+                  style={`--project-delay: ${index * 70}ms;`}
+                >
+                  <div class="about-file-card__top">
+                    <span>{project.number}</span>
+
+                    <div
+                      class:list={[
+                        "about-project-status",
+                        project.statusType === "working" &&
+                          "about-project-status--working",
+                      ]}
+                    >
+                      <span
+                        class="about-project-status__dot"
+                        aria-hidden="true"
+                      ></span>
+
+                      <strong>{project.status}</strong>
+                    </div>
+                  </div>
+
+                  <h2>{project.title}</h2>
+
+                  <p class="about-file-card__metadata">
+                    {project.metadata}
+                  </p>
+
+                  <p class="about-file-card__description">
+                    {project.description}
+                  </p>
+
+                  <span class="about-file-card__link">
+                    OPEN FILE
+                  </span>
+                </article>
+              ))
+            }
+          </div>
+        </section>
+
+
+        <!-- Interests -->
+
+        <section
+          class="about-content-panel"
+          data-about-panel="interests"
+          hidden
+        >
+          <header class="about-content-header">
+            <p>ACTIVE SIGNALS</p>
+
+            <h1>Interest Files</h1>
+
+            <span>
+              Subjects occupying suspicious amounts of mental
+              storage.
+            </span>
+          </header>
+
+          <div class="about-file-list">
+            {
+              interestFiles.map((interest) => (
+                <article class="about-file-card about-file-card--interest">
+                  <div class="about-file-card__top">
+                    <span>{interest.number}</span>
+
+                    <div class="about-project-status about-project-status--active">
+                      <span
+                        class="about-project-status__dot"
+                        aria-hidden="true"
+                      ></span>
+
+                      <strong>ACTIVE</strong>
+                    </div>
+                  </div>
+
+                  <h2>{interest.title}</h2>
+
+                  <p class="about-file-card__description">
+                    {interest.description}
+                  </p>
+
+                  <span class="about-file-card__link">
+                    INSPECT SIGNAL
+                  </span>
+                </article>
+              ))
+            }
+          </div>
+        </section>
+
+
+        <!-- Vault -->
+
+        <section
+          class="about-content-panel"
+          data-about-panel="vault"
+          hidden
+        >
+          <header class="about-content-header">
+            <p>RESTRICTED ARCHIVE</p>
+
+            <h1>The Vault</h1>
+
+            <span>
+              The organisation system inside this section remains
+              theoretical.
+            </span>
+          </header>
+
+          <div class="about-vault-list">
+            {
+              vaultFiles.map((file) => (
+                <article class="about-vault-card">
+                  <span>{file.number}</span>
+
+                  <h2>{file.title}</h2>
+
+                  <p>{file.description}</p>
+                </article>
+              ))
+            }
+          </div>
+        </section>
+      </div>
+
+
+      <div
+        class="about-scrollbar"
+        id="about-scrollbar"
+        aria-hidden="true"
+      >
+        <div
+          class="about-scrollbar__thumb"
+          id="about-scrollbar-thumb"
+        ></div>
+      </div>
+    </div>
+  </div>
 </InternalPageLayout>
 
+
 <script>
-  const tabsRoot =
-    document.querySelector<HTMLElement>(
-      "[data-about-tabs]"
+  const validAboutTabs = [
+    "about",
+    "work",
+    "interests",
+    "vault",
+  ] as const;
+
+  type AboutTab =
+    (typeof validAboutTabs)[number];
+
+  const tabButtons =
+    document.querySelectorAll<HTMLButtonElement>(
+      "[data-about-tab]"
     );
 
-  if (tabsRoot) {
-    const tabButtons =
-      tabsRoot.querySelectorAll<HTMLButtonElement>(
-        "[data-tab-button]"
-      );
+  const contentPanels =
+    document.querySelectorAll<HTMLElement>(
+      "[data-about-panel]"
+    );
 
-    const tabPanels =
-      tabsRoot.querySelectorAll<HTMLElement>(
-        "[data-tab-panel]"
-      );
+  const profilePanels =
+    document.querySelectorAll<HTMLElement>(
+      "[data-profile-panel]"
+    );
 
-    function activateTab(
-      selectedButton: HTMLButtonElement
-    ) {
-      const selectedTab =
-        selectedButton.dataset.tabButton;
+  const contentWindow =
+    document.querySelector<HTMLElement>(
+      "#about-content-window"
+    );
 
-      tabButtons.forEach((button) => {
-        const isSelected =
-          button === selectedButton;
+  const scrollbar =
+    document.querySelector<HTMLElement>(
+      "#about-scrollbar"
+    );
 
-        button.classList.toggle(
-          "is-active",
-          isSelected
-        );
+  const scrollbarThumb =
+    document.querySelector<HTMLElement>(
+      "#about-scrollbar-thumb"
+    );
 
-        button.setAttribute(
-          "aria-selected",
-          String(isSelected)
-        );
 
-        button.tabIndex =
-          isSelected ? 0 : -1;
-      });
+  function isAboutTab(
+    value: string
+  ): value is AboutTab {
+    return validAboutTabs.includes(
+      value as AboutTab
+    );
+  }
 
-      tabPanels.forEach((panel) => {
-        panel.hidden =
-          panel.dataset.tabPanel !== selectedTab;
-      });
+
+  function restartEntryAnimation(
+    element: HTMLElement | undefined
+  ): void {
+    if (!element) {
+      return;
     }
 
+    element.classList.remove("is-entering");
+
+    void element.offsetWidth;
+
+    element.classList.add("is-entering");
+  }
+
+
+  function updateScrollbar(): void {
+    if (
+      !contentWindow ||
+      !scrollbar ||
+      !scrollbarThumb
+    ) {
+      return;
+    }
+
+    const usableTrackHeight =
+      Math.max(
+        0,
+        scrollbar.clientHeight - 10
+      );
+
+    const maximumScroll =
+      Math.max(
+        0,
+        contentWindow.scrollHeight -
+        contentWindow.clientHeight
+      );
+
+    const visibleRatio =
+      contentWindow.scrollHeight > 0
+        ? contentWindow.clientHeight /
+          contentWindow.scrollHeight
+        : 1;
+
+    const thumbHeight =
+      Math.min(
+        usableTrackHeight,
+        Math.max(
+          48,
+          usableTrackHeight * visibleRatio
+        )
+      );
+
+    const movementRange =
+      Math.max(
+        0,
+        usableTrackHeight - thumbHeight
+      );
+
+    const scrollProgress =
+      maximumScroll > 0
+        ? contentWindow.scrollTop /
+          maximumScroll
+        : 0;
+
+    scrollbarThumb.style.height =
+      `${thumbHeight}px`;
+
+    scrollbarThumb.style.transform =
+      `translateY(${
+        scrollProgress * movementRange
+      }px)`;
+  }
+
+
+  function activateAboutTab(
+    tabName: AboutTab,
+    updateHash = true
+  ): void {
+    let activeContentPanel:
+      HTMLElement | undefined;
+
+    let activeProfilePanel:
+      HTMLElement | undefined;
+
     tabButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        activateTab(button);
-      });
+      const isActive =
+        button.dataset.aboutTab === tabName;
+
+      button.classList.toggle(
+        "is-active",
+        isActive
+      );
+
+      button.setAttribute(
+        "aria-selected",
+        String(isActive)
+      );
     });
+
+    contentPanels.forEach((panel) => {
+      const isActive =
+        panel.dataset.aboutPanel === tabName;
+
+      panel.hidden = !isActive;
+
+      if (isActive) {
+        activeContentPanel = panel;
+      }
+    });
+
+    profilePanels.forEach((panel) => {
+      const isActive =
+        panel.dataset.profilePanel === tabName;
+
+      panel.hidden = !isActive;
+
+      if (isActive) {
+        activeProfilePanel = panel;
+      }
+    });
+
+    if (contentWindow) {
+      contentWindow.scrollTop = 0;
+    }
+
+    if (updateHash) {
+      window.history.replaceState(
+        null,
+        "",
+        `#${tabName}`
+      );
+    }
+
+    restartEntryAnimation(
+      activeContentPanel
+    );
+
+    restartEntryAnimation(
+      activeProfilePanel
+    );
+
+    window.requestAnimationFrame(
+      updateScrollbar
+    );
+  }
+
+
+  tabButtons.forEach((button) => {
+    button.addEventListener(
+      "click",
+      () => {
+        const requestedTab =
+          button.dataset.aboutTab;
+
+        if (
+          requestedTab &&
+          isAboutTab(requestedTab)
+        ) {
+          activateAboutTab(
+            requestedTab
+          );
+        }
+      }
+    );
+  });
+
+
+  const initialHash =
+    window.location.hash.replace(
+      "#",
+      ""
+    );
+
+  if (
+    initialHash &&
+    isAboutTab(initialHash)
+  ) {
+    activateAboutTab(
+      initialHash,
+      false
+    );
+  } else {
+    activateAboutTab(
+      "about",
+      false
+    );
+  }
+
+
+  contentWindow?.addEventListener(
+    "scroll",
+    updateScrollbar,
+    {
+      passive: true,
+    }
+  );
+
+
+  scrollbar?.addEventListener(
+    "pointerdown",
+    (event) => {
+      if (
+        !contentWindow ||
+        !scrollbar ||
+        !scrollbarThumb ||
+        event.target === scrollbarThumb
+      ) {
+        return;
+      }
+
+      const rectangle =
+        scrollbar.getBoundingClientRect();
+
+      const usableTrackHeight =
+        Math.max(
+          1,
+          scrollbar.clientHeight - 10
+        );
+
+      const movementRange =
+        Math.max(
+          1,
+          usableTrackHeight -
+          scrollbarThumb.offsetHeight
+        );
+
+      const requestedPosition =
+        Math.min(
+          movementRange,
+          Math.max(
+            0,
+            event.clientY -
+            rectangle.top -
+            scrollbarThumb.offsetHeight / 2
+          )
+        );
+
+      const maximumScroll =
+        Math.max(
+          0,
+          contentWindow.scrollHeight -
+          contentWindow.clientHeight
+        );
+
+      contentWindow.scrollTop =
+        (
+          requestedPosition /
+          movementRange
+        ) *
+        maximumScroll;
+    }
+  );
+
+
+  scrollbarThumb?.addEventListener(
+    "pointerdown",
+    (event) => {
+      if (
+        !contentWindow ||
+        !scrollbar ||
+        !scrollbarThumb
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const startingPointerY =
+        event.clientY;
+
+      const startingScrollTop =
+        contentWindow.scrollTop;
+
+      const usableTrackHeight =
+        Math.max(
+          1,
+          scrollbar.clientHeight - 10
+        );
+
+      const movementRange =
+        Math.max(
+          1,
+          usableTrackHeight -
+          scrollbarThumb.offsetHeight
+        );
+
+      const maximumScroll =
+        Math.max(
+          0,
+          contentWindow.scrollHeight -
+          contentWindow.clientHeight
+        );
+
+      scrollbarThumb.setPointerCapture(
+        event.pointerId
+      );
+
+      const moveThumb = (
+        moveEvent: PointerEvent
+      ): void => {
+        contentWindow.scrollTop =
+          startingScrollTop +
+          (
+            (
+              moveEvent.clientY -
+              startingPointerY
+            ) /
+            movementRange
+          ) *
+          maximumScroll;
+      };
+
+      const releaseThumb = (
+        releaseEvent: PointerEvent
+      ): void => {
+        if (
+          scrollbarThumb.hasPointerCapture(
+            releaseEvent.pointerId
+          )
+        ) {
+          scrollbarThumb.releasePointerCapture(
+            releaseEvent.pointerId
+          );
+        }
+
+        scrollbarThumb.removeEventListener(
+          "pointermove",
+          moveThumb
+        );
+
+        scrollbarThumb.removeEventListener(
+          "pointerup",
+          releaseThumb
+        );
+
+        scrollbarThumb.removeEventListener(
+          "pointercancel",
+          releaseThumb
+        );
+      };
+
+      scrollbarThumb.addEventListener(
+        "pointermove",
+        moveThumb
+      );
+
+      scrollbarThumb.addEventListener(
+        "pointerup",
+        releaseThumb
+      );
+
+      scrollbarThumb.addEventListener(
+        "pointercancel",
+        releaseThumb
+      );
+    }
+  );
+
+
+  if ("ResizeObserver" in window) {
+    const observer =
+      new ResizeObserver(
+        updateScrollbar
+      );
+
+    if (contentWindow) {
+      observer.observe(
+        contentWindow
+      );
+    }
+  }
+
+  window.addEventListener(
+    "load",
+    updateScrollbar
+  );
+
+  window.addEventListener(
+    "resize",
+    updateScrollbar
+  );
+
+
+  /* Portrait fallback */
+
+  const aboutPhoto =
+    document.querySelector<HTMLImageElement>(
+      "#about-photo"
+    );
+
+  const photoFallback =
+    document.querySelector<HTMLElement>(
+      "#about-photo-fallback"
+    );
+
+
+  function showPhoto(): void {
+    if (aboutPhoto) {
+      aboutPhoto.hidden = false;
+    }
+
+    if (photoFallback) {
+      photoFallback.hidden = true;
+    }
+  }
+
+
+  function showPhotoFallback(): void {
+    if (aboutPhoto) {
+      aboutPhoto.hidden = true;
+    }
+
+    if (photoFallback) {
+      photoFallback.hidden = false;
+    }
+  }
+
+
+  aboutPhoto?.addEventListener(
+    "load",
+    showPhoto
+  );
+
+  aboutPhoto?.addEventListener(
+    "error",
+    showPhotoFallback
+  );
+
+  if (aboutPhoto?.complete) {
+    if (aboutPhoto.naturalWidth > 0) {
+      showPhoto();
+    } else {
+      showPhotoFallback();
+    }
   }
 </script>

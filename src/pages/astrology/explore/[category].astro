@@ -1,0 +1,737 @@
+---
+import type {
+  GetStaticPaths,
+} from "astro";
+
+import InternalPageLayout from
+  "../../../layouts/InternalPageLayout.astro";
+
+import "../../../styles/astrology.css";
+
+import {
+  astrologyCategories,
+  type AstrologyCategory,
+} from "../../../data/astrology";
+
+
+export const getStaticPaths:
+  GetStaticPaths = () => {
+    return astrologyCategories.map(
+      (category) => ({
+        params: {
+          category: category.key,
+        },
+
+        props: {
+          category,
+        },
+      })
+    );
+  };
+
+
+const {
+  category,
+} = Astro.props as {
+  category: AstrologyCategory;
+};
+
+
+const baseUrl =
+  import.meta.env.BASE_URL;
+
+
+const buildSiteUrl = (
+  path: string
+): string => {
+  return `${baseUrl}${path.replace(
+    /^\/+/,
+    ""
+  )}`;
+};
+
+
+/* =========================================================
+   ASTRO PEDIA DIAL DATA
+========================================================= */
+
+const outerSegments =
+  Array.from({
+    length: 24,
+  });
+
+
+const lunarTicks =
+  Array.from({
+    length: 27,
+  });
+
+
+const sectorLabels =
+  Array.from(
+    {
+      length: 12,
+    },
+    (
+      _,
+      index
+    ) => ({
+      number:
+        String(
+          index + 1
+        ).padStart(
+          2,
+          "0"
+        ),
+
+      degree:
+        `${String(
+          index * 30
+        ).padStart(
+          3,
+          "0"
+        )}°`,
+    })
+  );
+
+
+const archiveNodes = [
+  {
+    key: "planets",
+    short: "P",
+    label: "PLANETS",
+    tone: "primary",
+  },
+
+  {
+    key: "zodiac-signs",
+    short: "Z",
+    label: "ZODIAC",
+    tone: "mint",
+  },
+
+  {
+    key: "nakshatras",
+    short: "N",
+    label: "NAKSHATRAS",
+    tone: "lime",
+  },
+
+  {
+    key: "houses",
+    short: "H",
+    label: "HOUSES",
+    tone: "muted",
+  },
+] as const;
+
+
+/* =========================================================
+   GREEN CATEGORY COLOURS
+========================================================= */
+
+const getCategoryTone = (
+  key: AstrologyCategory["key"]
+):
+  | "primary"
+  | "mint"
+  | "lime"
+  | "muted" => {
+  switch (key) {
+    case "planets":
+      return "primary";
+
+    case "zodiac-signs":
+      return "mint";
+
+    case "nakshatras":
+      return "lime";
+
+    case "houses":
+      return "muted";
+
+    default:
+      return "primary";
+  }
+};
+
+
+const categoryTone =
+  getCategoryTone(
+    category.key
+  );
+
+
+const categoryMode =
+  category.label
+    .toUpperCase()
+    .replace(
+      "ZODIAC SIGNS",
+      "ZODIAC"
+    );
+---
+
+<InternalPageLayout
+  title={`${category.label} | Astro Pedia`}
+  description={category.description}
+  message="You have entered a deeper layer of the celestial archive."
+  pageClass="astrology-page astrology-subpage"
+>
+  <!-- ==================================================
+       LEFT COLUMN
+  =================================================== -->
+
+  <div
+    slot="sidebar"
+    class="astrology-left-column astrology-subpage-left"
+  >
+    <!-- Astro Pedia terminal dial -->
+
+    <figure
+      class="astrology-terminal-card"
+      aria-labelledby="astro-category-terminal-title"
+    >
+      <header class="astrology-terminal-card__header">
+        <div>
+          <span
+            class="astrology-online-dot"
+            aria-hidden="true"
+          ></span>
+
+          <strong id="astro-category-terminal-title">
+            CELESTIAL INDEX // {categoryMode}
+          </strong>
+        </div>
+
+        <span>
+          SYS: ONLINE
+        </span>
+      </header>
+
+
+      <div class="astrology-terminal-viewport">
+        <div
+          class="astrology-dial"
+          role="img"
+          aria-label={`An animated Astro Pedia terminal dial displaying the ${category.label} archive`}
+        >
+          <!-- Coordinate labels -->
+
+          <span
+            class="astrology-coordinate astrology-coordinate--north"
+          >
+            Y: +090
+          </span>
+
+          <span
+            class="astrology-coordinate astrology-coordinate--east"
+          >
+            X: +180
+          </span>
+
+          <span
+            class="astrology-coordinate astrology-coordinate--south"
+          >
+            Y: -090
+          </span>
+
+          <span
+            class="astrology-coordinate astrology-coordinate--west"
+          >
+            X: 000
+          </span>
+
+
+          <!-- Fixed terminal crosshair -->
+
+          <div
+            class="astrology-dial__crosshair"
+            aria-hidden="true"
+          >
+            <span></span>
+            <span></span>
+          </div>
+
+
+          <!-- Rotating segmented ring -->
+
+          <div
+            class="astrology-dial__outer-ring"
+            aria-hidden="true"
+          >
+            {
+              outerSegments.map(
+                (
+                  _,
+                  index
+                ) => (
+                  <span
+                    class="astrology-dial__outer-segment"
+                    style={`
+                      --segment-angle:
+                      ${index * 15}deg;
+                    `}
+                  ></span>
+                )
+              )
+            }
+          </div>
+
+
+          <!-- Counter-rotating 27-part ring -->
+
+          <div
+            class="astrology-dial__lunar-ring"
+            aria-hidden="true"
+          >
+            {
+              lunarTicks.map(
+                (
+                  _,
+                  index
+                ) => (
+                  <span
+                    class="astrology-dial__lunar-tick"
+                    style={`
+                      --tick-angle:
+                      ${(index * 360) / 27}deg;
+                    `}
+                  ></span>
+                )
+              )
+            }
+          </div>
+
+
+          <!-- Twelve fixed sectors -->
+
+          <div
+            class="astrology-dial__sectors"
+            aria-hidden="true"
+          >
+            {
+              sectorLabels.map(
+                (
+                  sector,
+                  index
+                ) => (
+                  <span
+                    class="astrology-dial__sector"
+                    style={`
+                      --sector-angle:
+                      ${index * 30}deg;
+
+                      --sector-counter-angle:
+                      ${index * -30}deg;
+                    `}
+                  >
+                    <strong>
+                      {sector.number}
+                    </strong>
+
+                    <small>
+                      {sector.degree}
+                    </small>
+                  </span>
+                )
+              )
+            }
+          </div>
+
+
+          <!-- Moving observation node -->
+
+          <div
+            class="astrology-dial__tracker-path"
+            aria-hidden="true"
+          >
+            <span class="astrology-dial__tracker">
+              <i></i>
+
+              <em>
+                NODE 07
+              </em>
+            </span>
+          </div>
+
+
+          <!-- Four archive nodes -->
+
+          <div
+            class="astrology-dial__archive-nodes"
+            aria-hidden="true"
+          >
+            {
+              archiveNodes.map(
+                (node) => (
+                  <div
+                    class:list={[
+                      "astrology-archive-node",
+
+                      `astrology-archive-node--${node.key}`,
+
+                      `astrology-archive-node--${node.tone}`,
+
+                      node.key ===
+                        category.key &&
+                        "is-linked",
+                    ]}
+                    data-archive-node={node.key}
+                  >
+                    <span>
+                      {node.short}
+                    </span>
+
+                    <strong>
+                      {node.label}
+                    </strong>
+                  </div>
+                )
+              )
+            }
+          </div>
+
+
+          <!-- Fixed terminal centre -->
+
+          <div class="astrology-dial__core">
+            <p>
+              ASTRO PEDIA
+
+              <span
+                class="astrology-terminal-caret"
+                aria-hidden="true"
+              >
+                _
+              </span>
+            </p>
+
+            <dl>
+              <div>
+                <dt>
+                  MODE
+                </dt>
+
+                <dd>
+                  {categoryMode}
+                </dd>
+              </div>
+
+              <div>
+                <dt>
+                  FILES
+                </dt>
+
+                <dd>
+                  {
+                    String(
+                      category.entries.length
+                    ).padStart(
+                      3,
+                      "0"
+                    )
+                  }
+                </dd>
+              </div>
+
+              <div>
+                <dt>
+                  SIGNAL
+                </dt>
+
+                <dd>
+                  STABLE
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Terminal information strip -->
+
+      <figcaption class="astrology-terminal-readout">
+        <span>
+          ARCHIVE
+
+          <strong>
+            {
+              category.number
+                .replace(
+                  "ASTRO FILE ",
+                  ""
+                )
+            }
+          </strong>
+        </span>
+
+        <span>
+          FILES
+
+          <strong>
+            {
+              String(
+                category.entries.length
+              ).padStart(
+                2,
+                "0"
+              )
+            }
+          </strong>
+        </span>
+
+        <span>
+          MODE
+
+          <strong>
+            INDEX
+          </strong>
+        </span>
+
+        <span class="astrology-terminal-readout__status">
+          <i aria-hidden="true"></i>
+
+          EXPANDING
+        </span>
+      </figcaption>
+    </figure>
+
+
+    <!-- Category information -->
+
+    <section class="astrology-sidebar-card">
+      <div class="astrology-sidebar-panel">
+        <p>
+          {category.eyebrow}
+        </p>
+
+        <h2>
+          {category.label}
+        </h2>
+
+        <span>
+          {category.description}
+        </span>
+
+        <dl>
+          <div>
+            <dt>
+              FILES
+            </dt>
+
+            <dd>
+              {category.entries.length}
+            </dd>
+          </div>
+
+          <div>
+            <dt>
+              TYPE
+            </dt>
+
+            <dd>
+              Reference archive
+            </dd>
+          </div>
+
+          <div>
+            <dt>
+              STATUS
+            </dt>
+
+            <dd class="astrology-sidebar-status">
+              <i aria-hidden="true"></i>
+
+              Expanding
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </div>
+
+
+  <!-- ==================================================
+       RIGHT COLUMN
+  =================================================== -->
+
+  <div
+    slot="content"
+    class="astrology-right-column"
+  >
+    <!-- Main Astrology navigation -->
+
+    <nav
+      class="astrology-tabs astrology-tabs--links"
+      aria-label="Astrology sections"
+    >
+      <a
+        class="astrology-tab is-active"
+        href={`${buildSiteUrl(
+          "/astrology"
+        )}#explore`}
+      >
+        <span aria-hidden="true">
+          &gt;
+        </span>
+
+        ASTRO PEDIA
+      </a>
+
+      <a
+        class="astrology-tab"
+        href={`${buildSiteUrl(
+          "/astrology"
+        )}#case-studies`}
+      >
+        <span aria-hidden="true">
+          &gt;
+        </span>
+
+        CASE STUDIES
+      </a>
+
+      <a
+        class="astrology-tab"
+        href={`${buildSiteUrl(
+          "/astrology"
+        )}#questions`}
+      >
+        <span aria-hidden="true">
+          &gt;
+        </span>
+
+        QUESTIONS
+      </a>
+
+      <a
+        class="astrology-tab"
+        href={`${buildSiteUrl(
+          "/astrology"
+        )}#blogs`}
+      >
+        <span aria-hidden="true">
+          &gt;
+        </span>
+
+        BLOGS
+      </a>
+    </nav>
+
+
+    <!-- Category archive -->
+
+    <div class="astrology-subpage-window">
+      <section class="astrology-content-panel is-entering">
+        <header class="astrology-panel-header">
+          <p>
+            <span
+              class="astrology-observation-dot"
+              aria-hidden="true"
+            ></span>
+
+            {category.eyebrow}
+          </p>
+
+          <h1>
+            {category.label}
+          </h1>
+
+          <span>
+            {category.description}
+          </span>
+        </header>
+
+
+        <div class="astrology-card-list">
+          {
+            category.entries.map(
+              (
+                entry,
+                index
+              ) => (
+                <a
+                  class:list={[
+                    "astrology-file-card",
+
+                    `astrology-file-card--${categoryTone}`,
+                  ]}
+                  href={buildSiteUrl(
+                    `/astrology/explore/${category.key}/${entry.slug}`
+                  )}
+                  style={`
+                    --card-delay:
+                    ${index * 55}ms;
+                  `}
+                >
+                  <div class="astrology-file-card__top">
+                    <span>
+                      {
+                        category.singularLabel.toUpperCase()
+                      } FILE {
+                        String(
+                          index + 1
+                        ).padStart(
+                          2,
+                          "0"
+                        )
+                      }
+                    </span>
+
+                    <span class="astrology-card-status astrology-card-status--archive">
+                      <i aria-hidden="true"></i>
+
+                      <strong>
+                        OPEN
+                      </strong>
+                    </span>
+                  </div>
+
+
+                  <h2>
+                    {entry.name}
+                  </h2>
+
+
+                  <p class="astrology-file-card__eyebrow">
+                    {
+                      entry.alternate
+                        ? entry.alternate
+                        : entry.subtitle
+                    }
+                  </p>
+
+
+                  <p class="astrology-file-card__description">
+                    {entry.summary}
+                  </p>
+
+
+                  <div class="astrology-keywords">
+                    {
+                      entry.keywords.map(
+                        (keyword) => (
+                          <span>
+                            {keyword}
+                          </span>
+                        )
+                      )
+                    }
+                  </div>
+
+
+                  <span class="astrology-file-card__link">
+                    OPEN {
+                      category.singularLabel.toUpperCase()
+                    } FILE
+                  </span>
+                </a>
+              )
+            )
+          }
+        </div>
+      </section>
+    </div>
+  </div>
+</InternalPageLayout>

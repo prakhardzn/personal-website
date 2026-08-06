@@ -1,6 +1,62 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/homepage.css";
+
+const baseUrl = import.meta.env.BASE_URL;
+const buildSiteUrl = (path: string): string =>
+  `${baseUrl}${path.replace(/^\/+/, "")}`;
+
+const homeUrl = buildSiteUrl("");
+const aboutUrl = buildSiteUrl("about/");
+const weeklyUrl = buildSiteUrl("weekly/");
+const astrologyUrl = buildSiteUrl("astrology/");
+const librariesUrl = buildSiteUrl("libraries/");
+
+const planetAsset = (folder: string, file: string): string =>
+  buildSiteUrl(`assets/planets/${folder}/${file}`);
+
+const aboutLayers = [
+  ["about-planet-glow.png", "about-planet-layer--glow"],
+  ["about-planet-base.png", "about-planet-layer--base"],
+  ["about-planet-texture.png", "about-planet-layer--texture"],
+  ["about-planet-shadow.png", "about-planet-layer--shadow"],
+  ["about-planet-blink-overlay.png", "about-planet-layer--blink"],
+  ["about-planet-debris.png", "about-planet-layer--debris"],
+] as const;
+
+const weeklyLayers = [
+  ["weekly-planet-halo.png", "weekly-planet-layer--halo"],
+  ["weekly-planet-base.png", "weekly-planet-layer--base"],
+  ["weekly-planet-purple-anomaly.png", "weekly-planet-layer--purple"],
+  ["weekly-planet-stone-glint.png", "weekly-planet-layer--stone"],
+  ["weekly-planet-vortex-spill.png", "weekly-planet-layer--vortex-spill"],
+  ["weekly-planet-vortex-energy.png", "weekly-planet-layer--vortex-energy"],
+  ["weekly-planet-vortex-core.png", "weekly-planet-layer--vortex-core"],
+] as const;
+
+const astrologyLayers = [
+  ["astrology-planet-glow.png", "astrology-planet-layer--glow"],
+  ["astrology-planet-base.png", "astrology-planet-layer--base"],
+  ["astrology-planet-cloud-shimmer.png", "astrology-planet-layer--clouds"],
+  ["astrology-planet-gold-twinkle.png", "astrology-planet-layer--gold"],
+  ["astrology-planet-central-star.png", "astrology-planet-layer--central-star"],
+  ["astrology-planet-shadow.png", "astrology-planet-layer--shadow"],
+  ["astrology-planet-orbit.png", "astrology-planet-layer--orbit"],
+  ["astrology-planet-moon.png", "astrology-planet-layer--moon"],
+  ["astrology-planet-detached.png", "astrology-planet-layer--detached"],
+] as const;
+
+const libraryLayers = [
+  ["library-planet-halo.png", "library-planet-layer--halo"],
+  ["library-planet-base.png", "library-planet-layer--base"],
+  ["library-planet-metal-shimmer.png", "library-planet-layer--metal"],
+  ["library-planet-portal-spill.png", "library-planet-layer--portal-spill"],
+  ["library-planet-portal-energy.png", "library-planet-layer--portal-energy"],
+  ["library-planet-portal-core.png", "library-planet-layer--portal-core"],
+  ["library-planet-shadow.png", "library-planet-layer--shadow"],
+] as const;
+
+const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
 ---
 
 <BaseLayout
@@ -8,11 +64,6 @@ import "../styles/homepage.css";
   description="Explore Prakhar's personal creative universe."
 >
   <div class="site-shell" id="site-shell">
-
-    <!-- ==================================================
-         TOP SYSTEM BAR
-    =================================================== -->
-
     <header class="system-bar">
       <button
         class="icon-button icon-button--back"
@@ -24,10 +75,7 @@ import "../styles/homepage.css";
         <span class="visually-hidden">Back</span>
       </button>
 
-      <p
-        class="system-message"
-        data-typewriter
-      >
+      <p class="system-message" data-typewriter>
         “Nothing is broken. It just works differently in this dimension.”
       </p>
 
@@ -40,13 +88,7 @@ import "../styles/homepage.css";
           aria-pressed="false"
         >
           <span aria-hidden="true">Ⅱ</span>
-
-          <span
-            class="visually-hidden"
-            id="pause-label"
-          >
-            Pause animations
-          </span>
+          <span class="visually-hidden" id="pause-label">Pause animations</span>
         </button>
 
         <button
@@ -57,372 +99,243 @@ import "../styles/homepage.css";
           aria-pressed="false"
         >
           <span aria-hidden="true">⏻</span>
-
-          <span
-            class="visually-hidden"
-            id="power-label"
-          >
-            Enter sleep mode
-          </span>
+          <span class="visually-hidden" id="power-label">Enter sleep mode</span>
         </button>
       </div>
     </header>
 
-
-    <!-- ==================================================
-         PLANET NAVIGATION
-    =================================================== -->
-
     <main class="planet-map">
-      <h1 class="visually-hidden">
-        Explore Prakhar's universe
-      </h1>
+      <h1 class="visually-hidden">Explore Prakhar's universe</h1>
 
-      <nav
-        class="planet-navigation"
-        aria-label="Main website sections"
-      >
+      <nav class="planet-navigation" aria-label="Main website sections">
         <ul class="destination-list">
-
-          <!-- About Me -->
-
           <li class="destination destination--about">
-            <a
-              class="planet-link"
-              href="/about"
-              aria-label="Open the About Me page"
-            >
-              <img
-                class="planet-artwork"
-                src="/assets/planets/about-me-planet.png"
-                alt=""
-              />
-
-              <span class="planet-label">
-                About Me
+            <a class="planet-link" href={aboutUrl} aria-label="Open the About Me page">
+              <span
+                class="planet-artwork planet-artwork--layered planet-artwork--about"
+                aria-hidden="true"
+              >
+                <span class="about-planet-motion">
+                  {aboutLayers.map(([file, layerClass]) => (
+                    <img
+                      class={`about-planet-layer ${layerClass}`}
+                      src={planetAsset("about-me", file)}
+                      alt=""
+                      draggable="false"
+                    />
+                  ))}
+                </span>
               </span>
+              <span class="planet-label">About Me</span>
             </a>
           </li>
-
-
-          <!-- Weekly -->
 
           <li class="destination destination--weekly">
-            <a
-              class="planet-link"
-              href="/weekly"
-              aria-label="Open the Weekly page"
-            >
-              <img
-                class="planet-artwork"
-                src="/assets/planets/weekly-planet.png"
-                alt=""
-              />
+            <a class="planet-link" href={weeklyUrl} aria-label="Open the News Weekly page">
+              <span
+                class="planet-artwork planet-artwork--layered planet-artwork--weekly"
+                aria-hidden="true"
+              >
+                <span class="weekly-planet-motion">
+                  {weeklyLayers.map(([file, layerClass]) => (
+                    <img
+                      class={`weekly-planet-layer ${layerClass}`}
+                      src={planetAsset("weekly-planet", file)}
+                      alt=""
+                      draggable="false"
+                    />
+                  ))}
 
-              <span class="planet-label">
-                Weekly
+                  <span class="weekly-planet-layer weekly-planet-layer--scan"></span>
+                  <span class="weekly-vortex-ring weekly-vortex-ring--one"></span>
+                  <span class="weekly-vortex-ring weekly-vortex-ring--two"></span>
+                  <span class="weekly-vortex-ring weekly-vortex-ring--three"></span>
+
+                  <img
+                    class="weekly-planet-layer weekly-planet-layer--shadow"
+                    src={planetAsset("weekly-planet", "weekly-planet-shadow.png")}
+                    alt=""
+                    draggable="false"
+                  />
+
+                  <img
+                    class="weekly-planet-layer weekly-planet-layer--detached"
+                    src={planetAsset("weekly-planet", "weekly-planet-detached.png")}
+                    alt=""
+                    draggable="false"
+                  />
+
+                  <span class="weekly-vortex-particles">
+                    {particleNumbers.map((number) => (
+                      <span class={`weekly-vortex-particle weekly-vortex-particle--${number}`}></span>
+                    ))}
+                  </span>
+                </span>
               </span>
+              <span class="planet-label">News Weekly</span>
             </a>
           </li>
-
-
-          <!-- Astrology -->
 
           <li class="destination destination--astrology">
-            <a
-              class="planet-link"
-              href="/astrology"
-              aria-label="Open the Astrology page"
-            >
-              <img
-                class="planet-artwork"
-                src="/assets/planets/astrology-planet.png"
-                alt=""
-              />
-
-              <span class="planet-label">
-                Astrology
+            <a class="planet-link" href={astrologyUrl} aria-label="Open the Astrology page">
+              <span
+                class="planet-artwork planet-artwork--layered planet-artwork--astrology"
+                aria-hidden="true"
+              >
+                <span class="astrology-planet-motion">
+                  {astrologyLayers.map(([file, layerClass]) => (
+                    <img
+                      class={`astrology-planet-layer ${layerClass}`}
+                      src={planetAsset("astrology-planet", file)}
+                      alt=""
+                      draggable="false"
+                    />
+                  ))}
+                </span>
               </span>
+              <span class="planet-label">Astrology</span>
             </a>
           </li>
 
-
-          <!-- Libraries -->
-
           <li class="destination destination--libraries">
-            <button
-              class="planet-link planet-link--button"
-              id="libraries-button"
-              type="button"
-              aria-label="Libraries section coming soon"
-            >
-              <img
-                class="planet-artwork"
-                src="/assets/planets/library-planet.png"
-                alt=""
-              />
+            <a class="planet-link" href={librariesUrl} aria-label="Open the Libraries page">
+              <span
+                class="planet-artwork planet-artwork--layered planet-artwork--libraries"
+                aria-hidden="true"
+              >
+                <span class="library-planet-motion">
+                  {libraryLayers.slice(0, 2).map(([file, layerClass]) => (
+                    <img
+                      class={`library-planet-layer ${layerClass}`}
+                      src={planetAsset("library-planet", file)}
+                      alt=""
+                      draggable="false"
+                    />
+                  ))}
 
-              <span class="planet-label">
-                Libraries
+                  <span class="library-planet-layer library-planet-layer--scan"></span>
+
+                  {libraryLayers.slice(2, 6).map(([file, layerClass]) => (
+                    <img
+                      class={`library-planet-layer ${layerClass}`}
+                      src={planetAsset("library-planet", file)}
+                      alt=""
+                      draggable="false"
+                    />
+                  ))}
+
+                  <span class="library-portal-ring library-portal-ring--one"></span>
+                  <span class="library-portal-ring library-portal-ring--two"></span>
+                  <span class="library-portal-ring library-portal-ring--three"></span>
+                  <span class="library-planet-layer library-reel-highlight"></span>
+                  <span class="library-planet-layer library-lens-highlight"></span>
+                  <span class="library-planet-layer library-lower-mechanism-highlight"></span>
+
+                  <img
+                    class="library-planet-layer library-planet-layer--shadow"
+                    src={planetAsset("library-planet", "library-planet-shadow.png")}
+                    alt=""
+                    draggable="false"
+                  />
+
+                  <span class="library-portal-particles">
+                    {particleNumbers.map((number) => (
+                      <span class={`library-portal-particle library-portal-particle--${number}`}></span>
+                    ))}
+                  </span>
+                </span>
               </span>
-            </button>
+              <span class="planet-label">Libraries</span>
+            </a>
           </li>
-
         </ul>
       </nav>
     </main>
 
-
-    <!-- ==================================================
-         BOTTOM NAVIGATION
-    =================================================== -->
-
     <footer class="bottom-dock">
-
-      <!-- Time and coordinates -->
-
-      <section
-        class="system-status"
-        aria-label="Visitor system information"
-      >
+      <section class="system-status" aria-label="Visitor system information">
         <p class="status-row status-row--time">
-          <span class="status-label">
-            TIME:
-          </span>
-
-          <time id="current-time">
-            --:--
-          </time>
+          <span class="status-label">TIME:</span>
+          <time id="current-time">--:--</time>
         </p>
 
         <p class="status-row">
-          <span class="status-label">
-            COORD:
-          </span>
-
-          <span id="current-coordinates">
-            LOCATING...
-          </span>
+          <span class="status-label">COORD:</span>
+          <span id="current-coordinates">LOCATING...</span>
         </p>
 
-        <p
-          class="visually-hidden"
-          id="location-status"
-          aria-live="polite"
-        >
+        <p class="visually-hidden" id="location-status" aria-live="polite">
           Waiting for location access.
         </p>
       </section>
 
-
-      <!-- Icon navigation cards -->
-
-      <section
-        class="dock-actions"
-        aria-label="Additional website controls"
-      >
-
-        <!-- Info -->
-
-        <button
-          class="dock-card"
-          type="button"
-          data-panel="info"
-        >
+      <section class="dock-actions" aria-label="Additional website controls">
+        <button class="dock-card" type="button" data-panel="info">
           <span class="dock-card__inner">
-            <span
-              class="dock-card__icon"
-              aria-hidden="true"
-            >
+            <span class="dock-card__icon" aria-hidden="true">
               <svg viewBox="0 0 48 48">
-                <circle
-                  cx="24"
-                  cy="24"
-                  r="18"
-                />
-
-                <circle
-                  class="dock-card__icon-fill"
-                  cx="24"
-                  cy="15"
-                  r="2"
-                />
-
+                <circle cx="24" cy="24" r="18" />
+                <circle class="dock-card__icon-fill" cx="24" cy="15" r="2" />
                 <path d="M24 22V34" />
               </svg>
             </span>
-
             <span class="dock-card__copy">
-              <span class="dock-card__title">
-                Info
-              </span>
-
-              <span class="dock-card__description">
-                About this realm
-              </span>
+              <span class="dock-card__title">Info</span>
+              <span class="dock-card__description">About this realm</span>
             </span>
           </span>
         </button>
 
-
-        <!-- Sitemap -->
-
-        <button
-          class="dock-card"
-          type="button"
-          data-panel="sitemap"
-        >
+        <button class="dock-card" type="button" data-panel="sitemap">
           <span class="dock-card__inner">
-            <span
-              class="dock-card__icon"
-              aria-hidden="true"
-            >
+            <span class="dock-card__icon" aria-hidden="true">
               <svg viewBox="0 0 48 48">
-                <path
-                  d="
-                    M5 10
-                    L17 5
-                    L31 11
-                    L43 6
-                    V38
-                    L31 43
-                    L17 37
-                    L5 42
-                    Z
-                  "
-                />
-
-                <path d="M17 5V37" />
-                <path d="M31 11V43" />
+                <path d="M5 10 17 5 31 11 43 6V38L31 43 17 37 5 42Z" />
+                <path d="M17 5V37M31 11V43" />
               </svg>
             </span>
-
             <span class="dock-card__copy">
-              <span class="dock-card__title">
-                Sitemap
-              </span>
-
-              <span class="dock-card__description">
-                Navigate all
-              </span>
+              <span class="dock-card__title">Sitemap</span>
+              <span class="dock-card__description">Navigate all</span>
             </span>
           </span>
         </button>
 
-
-        <!-- Credits -->
-
-        <button
-          class="dock-card"
-          type="button"
-          data-panel="credits"
-        >
+        <button class="dock-card" type="button" data-panel="credits">
           <span class="dock-card__inner">
-            <span
-              class="dock-card__icon"
-              aria-hidden="true"
-            >
+            <span class="dock-card__icon" aria-hidden="true">
               <svg viewBox="0 0 48 48">
-                <path
-                  d="
-                    M24 4
-                    L30 17
-                    L44 19
-                    L34 29
-                    L36 43
-                    L24 36
-                    L12 43
-                    L14 29
-                    L4 19
-                    L18 17
-                    Z
-                  "
-                />
+                <path d="M24 4 30 17 44 19 34 29 36 43 24 36 12 43 14 29 4 19 18 17Z" />
               </svg>
             </span>
-
             <span class="dock-card__copy">
-              <span class="dock-card__title">
-                Credits
-              </span>
-
-              <span class="dock-card__description">
-                Thanks and magic
-              </span>
+              <span class="dock-card__title">Credits</span>
+              <span class="dock-card__description">Thanks and magic</span>
             </span>
           </span>
         </button>
 
-
-        <!-- Links -->
-
-        <button
-          class="dock-card"
-          type="button"
-          data-panel="links"
-        >
+        <button class="dock-card" type="button" data-panel="links">
           <span class="dock-card__inner">
-            <span
-              class="dock-card__icon"
-              aria-hidden="true"
-            >
+            <span class="dock-card__icon" aria-hidden="true">
               <svg viewBox="0 0 48 48">
-                <path
-                  d="
-                    M20 30
-                    L15 35
-                    C11 39 5 39 2 35
-                    C-1 32 0 26 4 22
-                    L11 15
-                    C15 11 21 11 24 15
-                  "
-                />
-
-                <path
-                  d="
-                    M28 18
-                    L33 13
-                    C37 9 43 9 46 13
-                    C49 16 48 22 44 26
-                    L37 33
-                    C33 37 27 37 24 33
-                  "
-                />
-
-                <path d="M16 32L32 16" />
+                <path d="M20 30 15 35C11 39 5 39 2 35-1 32 0 26 4 22L11 15C15 11 21 11 24 15" />
+                <path d="M28 18 33 13C37 9 43 9 46 13 49 16 48 22 44 26L37 33C33 37 27 37 24 33" />
+                <path d="M16 32 32 16" />
               </svg>
             </span>
-
             <span class="dock-card__copy">
-              <span class="dock-card__title">
-                Links
-              </span>
-
-              <span class="dock-card__description">
-                Connect outwards
-              </span>
+              <span class="dock-card__title">Links</span>
+              <span class="dock-card__description">Connect outwards</span>
             </span>
           </span>
         </button>
-
       </section>
     </footer>
 
-
-    <!-- ==================================================
-         INFORMATION PANEL
-    =================================================== -->
-
-    <dialog
-      class="information-panel"
-      id="information-panel"
-      aria-labelledby="panel-title"
-    >
+    <dialog class="information-panel" id="information-panel" aria-labelledby="panel-title">
       <header class="information-panel__header">
-        <h2 id="panel-title">
-          Information
-        </h2>
-
+        <h2 id="panel-title">Information</h2>
         <button
           class="information-panel__close"
           id="close-information-panel"
@@ -433,539 +346,289 @@ import "../styles/homepage.css";
         </button>
       </header>
 
-      <div
-        class="information-panel__content"
-        id="panel-content"
-      >
+      <div class="information-panel__content">
+        <section class="information-panel__section" data-panel-content="info">
+          <p data-panel-line>This is Prakhar's personal corner of the universe.</p>
+          <p data-panel-line>
+            Each planet leads to a different collection of work, discoveries and questionable transmissions.
+          </p>
+        </section>
+
+        <section class="information-panel__section" data-panel-content="sitemap" hidden>
+          <p class="information-panel__command" data-panel-line>
+            DIRECTORY INDEX // SELECT DESTINATION
+          </p>
+          <nav aria-label="Website sitemap">
+            <ul>
+              <li><a href={homeUrl} data-panel-line>Home</a></li>
+              <li><a href={aboutUrl} data-panel-line>About Me</a></li>
+              <li><a href={weeklyUrl} data-panel-line>News Weekly</a></li>
+              <li><a href={astrologyUrl} data-panel-line>Astrology</a></li>
+              <li><a href={librariesUrl} data-panel-line>Libraries</a></li>
+            </ul>
+          </nav>
+        </section>
+
+        <section class="information-panel__section" data-panel-content="credits" hidden>
+          <p class="information-panel__command" data-panel-line>
+            TRANSMISSION CREDITS // VERIFIED
+          </p>
+          <p data-panel-line>Designed and developed by Prakhar Pandey.</p>
+          <p data-panel-line>Built using Astro.</p>
+          <p data-panel-line>Visual assets and illustrations by Prakhar Pandey.</p>
+        </section>
+
+        <section class="information-panel__section" data-panel-content="links" hidden>
+          <p class="information-panel__command" data-panel-line>
+            EXTERNAL SIGNALS // CONNECTIONS AVAILABLE
+          </p>
+          <ul>
+            <li><a href="mailto:prakharpandey2027@gmail.com" data-panel-line>Email</a></li>
+            <li><a href="#" target="_blank" rel="noreferrer" data-panel-line>Instagram</a></li>
+            <li><a href="#" target="_blank" rel="noreferrer" data-panel-line>LinkedIn</a></li>
+            <li><a href="#" target="_blank" rel="noreferrer" data-panel-line>GitHub</a></li>
+            <li><a href="#" target="_blank" rel="noreferrer" data-panel-line>YouTube</a></li>
+          </ul>
+        </section>
       </div>
     </dialog>
 
-
-    <!-- ==================================================
-         TEMPORARY SYSTEM MESSAGE
-    =================================================== -->
-
-    <div
-      class="system-toast"
-      id="system-toast"
-      role="status"
-      aria-live="polite"
-      hidden
-    >
-    </div>
-
+    <div class="system-toast" id="system-toast" role="status" aria-live="polite" hidden></div>
   </div>
 </BaseLayout>
 
-
 <script>
-  /* ======================================================
-     PANEL TYPES
-  ====================================================== */
+  type PanelName = "info" | "sitemap" | "credits" | "links";
 
-  type PanelName =
-    | "info"
-    | "sitemap"
-    | "credits"
-    | "links";
+  const panelTitles: Record<PanelName, string> = {
+    info: "Info",
+    sitemap: "Sitemap",
+    credits: "Credits",
+    links: "Links",
+  };
 
-  interface PanelInformation {
-    title: string;
-    content: string;
-  }
+  const timeElement = document.querySelector<HTMLTimeElement>("#current-time");
+  const coordinatesElement = document.querySelector<HTMLSpanElement>("#current-coordinates");
+  const locationStatusElement = document.querySelector<HTMLParagraphElement>("#location-status");
+  const systemToast = document.querySelector<HTMLDivElement>("#system-toast");
+  const pauseButton = document.querySelector<HTMLButtonElement>("#pause-button");
+  const pauseLabel = document.querySelector<HTMLSpanElement>("#pause-label");
+  const powerButton = document.querySelector<HTMLButtonElement>("#power-button");
+  const powerLabel = document.querySelector<HTMLSpanElement>("#power-label");
+  const informationPanel = document.querySelector<HTMLDialogElement>("#information-panel");
+  const panelTitle = document.querySelector<HTMLHeadingElement>("#panel-title");
+  const panelButtons = document.querySelectorAll<HTMLButtonElement>("[data-panel]");
+  const panelSections = Array.from(document.querySelectorAll<HTMLElement>("[data-panel-content]"));
+  const animatedPanelLines = Array.from(document.querySelectorAll<HTMLElement>("[data-panel-line]"));
+  const closeInformationButton = document.querySelector<HTMLButtonElement>("#close-information-panel");
+  const systemMessage = document.querySelector<HTMLElement>("[data-typewriter]");
 
+  let toastTimer: number | undefined;
+  let panelAnimationSequence = 0;
 
-  /* ======================================================
-     LIVE TIME
-  ====================================================== */
+  const wait = (duration: number): Promise<void> =>
+    new Promise((resolve) => window.setTimeout(resolve, duration));
 
-  const timeElement =
-    document.querySelector<HTMLTimeElement>(
-      "#current-time"
-    );
-
-  function updateVisitorTime(): void {
-    if (!timeElement) {
-      return;
-    }
-
+  const updateVisitorTime = (): void => {
+    if (!timeElement) return;
     const now = new Date();
+    timeElement.textContent = new Intl.DateTimeFormat(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(now);
+    timeElement.dateTime = now.toISOString();
+  };
 
-    timeElement.textContent =
-      new Intl.DateTimeFormat(
-        undefined,
-        {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        }
-      ).format(now);
-
-    timeElement.dateTime =
-      now.toISOString();
-  }
-
-  updateVisitorTime();
-
-  window.setInterval(
-    updateVisitorTime,
-    30000
-  );
-
-
-  /* ======================================================
-     VISITOR COORDINATES
-  ====================================================== */
-
-  const coordinatesElement =
-    document.querySelector<HTMLSpanElement>(
-      "#current-coordinates"
-    );
-
-  const locationStatusElement =
-    document.querySelector<HTMLParagraphElement>(
-      "#location-status"
-    );
-
-  function formatCoordinate(
+  const formatCoordinate = (
     coordinate: number,
     positiveDirection: string,
     negativeDirection: string
-  ): string {
-    const direction =
-      coordinate >= 0
-        ? positiveDirection
-        : negativeDirection;
+  ): string =>
+    `${Math.abs(coordinate).toFixed(4)}° ${coordinate >= 0 ? positiveDirection : negativeDirection}`;
 
-    return `${Math.abs(coordinate).toFixed(4)}° ${direction}`;
-  }
-
-  function showVisitorLocation(): void {
-    if (
-      !coordinatesElement ||
-      !locationStatusElement
-    ) {
-      return;
-    }
+  const showVisitorLocation = (): void => {
+    if (!coordinatesElement || !locationStatusElement) return;
 
     if (!("geolocation" in navigator)) {
-      coordinatesElement.textContent =
-        "UNAVAILABLE";
-
-      locationStatusElement.textContent =
-        "Geolocation is unavailable.";
-
+      coordinatesElement.textContent = "UNAVAILABLE";
+      locationStatusElement.textContent = "Geolocation is unavailable.";
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
       (position: GeolocationPosition) => {
-        const latitude =
-          formatCoordinate(
-            position.coords.latitude,
-            "N",
-            "S"
-          );
-
-        const longitude =
-          formatCoordinate(
-            position.coords.longitude,
-            "E",
-            "W"
-          );
-
-        coordinatesElement.textContent =
-          `${latitude}, ${longitude}`;
-
-        locationStatusElement.textContent =
-          "Location signal acquired.";
+        const latitude = formatCoordinate(position.coords.latitude, "N", "S");
+        const longitude = formatCoordinate(position.coords.longitude, "E", "W");
+        coordinatesElement.textContent = `${latitude}, ${longitude}`;
+        locationStatusElement.textContent = "Location signal acquired.";
       },
-
       () => {
-        coordinatesElement.textContent =
-          "ACCESS UNAVAILABLE";
-
-        locationStatusElement.textContent =
-          "Location permission was unavailable.";
+        coordinatesElement.textContent = "ACCESS UNAVAILABLE";
+        locationStatusElement.textContent = "Location permission was unavailable.";
       },
-
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000,
-      }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
     );
-  }
+  };
 
-  showVisitorLocation();
-
-
-  /* ======================================================
-     SYSTEM TOAST
-  ====================================================== */
-
-  const systemToast =
-    document.querySelector<HTMLDivElement>(
-      "#system-toast"
-    );
-
-  let toastTimer:
-    number | undefined;
-
-  function showSystemMessage(
-    message: string
-  ): void {
-    if (!systemToast) {
-      return;
-    }
-
-    if (toastTimer !== undefined) {
-      window.clearTimeout(toastTimer);
-    }
-
+  const showSystemMessage = (message: string): void => {
+    if (!systemToast) return;
+    if (toastTimer !== undefined) window.clearTimeout(toastTimer);
     systemToast.textContent = message;
     systemToast.hidden = false;
+    toastTimer = window.setTimeout(() => {
+      systemToast.hidden = true;
+      systemToast.textContent = "";
+      toastTimer = undefined;
+    }, 3000);
+  };
 
-    toastTimer =
-      window.setTimeout(
-        () => {
-          systemToast.hidden = true;
-          systemToast.textContent = "";
-          toastTimer = undefined;
-        },
-        3000
-      );
-  }
+  const runTopTypewriter = async (): Promise<void> => {
+    if (!systemMessage) return;
+    const originalText = systemMessage.textContent?.replace(/\s+/g, " ").trim() ?? "";
+    systemMessage.textContent = "";
+    systemMessage.classList.add("is-typing");
 
-
-  /* ======================================================
-     LIBRARIES BUTTON
-  ====================================================== */
-
-  const librariesButton =
-    document.querySelector<HTMLButtonElement>(
-      "#libraries-button"
-    );
-
-  librariesButton?.addEventListener(
-    "click",
-    () => {
-      showSystemMessage(
-        "LIBRARY TRANSMISSION NOT YET AVAILABLE"
-      );
+    for (const character of originalText) {
+      systemMessage.textContent += character;
+      await wait(character === " " ? 14 : 44);
     }
-  );
 
+    systemMessage.classList.remove("is-typing");
+  };
 
-  /* ======================================================
-     PAUSE BUTTON
-  ====================================================== */
+  const isPanelName = (value: string | undefined): value is PanelName =>
+    value === "info" || value === "sitemap" || value === "credits" || value === "links";
 
-  const pauseButton =
-    document.querySelector<HTMLButtonElement>(
-      "#pause-button"
-    );
+  animatedPanelLines.forEach((line) => {
+    line.dataset.panelOriginal = line.textContent?.replace(/\s+/g, " ").trim() ?? "";
+  });
 
-  const pauseLabel =
-    document.querySelector<HTMLSpanElement>(
-      "#pause-label"
-    );
+  const restoreAnimatedLine = (line: HTMLElement): void => {
+    line.textContent = line.dataset.panelOriginal ?? "";
+    line.style.visibility = "visible";
+    line.classList.remove("is-typing");
+  };
 
-  pauseButton?.addEventListener(
-    "click",
-    () => {
-      const animationsArePaused =
-        document.body.classList.toggle(
-          "animations-paused"
-        );
+  const cancelPanelAnimation = (): void => {
+    panelAnimationSequence += 1;
+    animatedPanelLines.forEach(restoreAnimatedLine);
+  };
 
-      pauseButton.setAttribute(
-        "aria-pressed",
-        String(animationsArePaused)
-      );
+  const preparePanelLines = (section: HTMLElement): HTMLElement[] => {
+    const lines = Array.from(section.querySelectorAll<HTMLElement>("[data-panel-line]"));
+    lines.forEach((line) => {
+      line.textContent = "";
+      line.style.visibility = "hidden";
+      line.classList.remove("is-typing");
+    });
+    return lines;
+  };
 
-      pauseButton.setAttribute(
-        "aria-label",
-        animationsArePaused
-          ? "Resume homepage animations"
-          : "Pause homepage animations"
-      );
+  const getTypingDelay = (character: string): number => {
+    if (".!?".includes(character)) return 130;
+    if (",:;".includes(character)) return 65;
+    if (character === " ") return 10;
+    return 28;
+  };
 
-      if (pauseLabel) {
-        pauseLabel.textContent =
-          animationsArePaused
-            ? "Resume animations"
-            : "Pause animations";
+  const typePanelLine = async (line: HTMLElement, sequence: number): Promise<boolean> => {
+    const originalText = line.dataset.panelOriginal ?? "";
+    line.style.visibility = "visible";
+    line.classList.add("is-typing");
+
+    for (let index = 0; index < originalText.length; index += 1) {
+      if (sequence !== panelAnimationSequence || !informationPanel?.open) {
+        restoreAnimatedLine(line);
+        return false;
       }
-
-      showSystemMessage(
-        animationsArePaused
-          ? "PLANETARY MOTION PAUSED"
-          : "PLANETARY MOTION RESUMED"
-      );
-    }
-  );
-
-
-  /* ======================================================
-     POWER BUTTON
-  ====================================================== */
-
-  const powerButton =
-    document.querySelector<HTMLButtonElement>(
-      "#power-button"
-    );
-
-  const powerLabel =
-    document.querySelector<HTMLSpanElement>(
-      "#power-label"
-    );
-
-  powerButton?.addEventListener(
-    "click",
-    () => {
-      const sleepModeIsActive =
-        document.body.classList.toggle(
-          "sleep-mode"
-        );
-
-      powerButton.setAttribute(
-        "aria-pressed",
-        String(sleepModeIsActive)
-      );
-
-      powerButton.setAttribute(
-        "aria-label",
-        sleepModeIsActive
-          ? "Exit sleep mode"
-          : "Enter sleep mode"
-      );
-
-      if (powerLabel) {
-        powerLabel.textContent =
-          sleepModeIsActive
-            ? "Exit sleep mode"
-            : "Enter sleep mode";
-      }
-
-      showSystemMessage(
-        sleepModeIsActive
-          ? "SYSTEM ENTERING SLEEP MODE"
-          : "SYSTEM RESTORED"
-      );
-    }
-  );
-
-
-  /* ======================================================
-     PANEL CONTENT
-  ====================================================== */
-
-  const panelInformation:
-    Record<PanelName, PanelInformation> = {
-      info: {
-        title: "Info",
-
-        content: `
-          <p>
-            This is Prakhar's personal corner of the universe.
-            Each planet leads to a different collection of work,
-            discoveries and questionable transmissions.
-          </p>
-        `,
-      },
-
-      sitemap: {
-        title: "Sitemap",
-
-        content: `
-          <nav aria-label="Website sitemap">
-            <ul>
-              <li>
-                <a href="/">Home</a>
-              </li>
-
-              <li>
-                <a href="/about">About Me</a>
-              </li>
-
-              <li>
-                <a href="/weekly">Weekly</a>
-              </li>
-
-              <li>
-                <a href="/astrology">Astrology</a>
-              </li>
-
-              <li>
-                Libraries — Coming Soon
-              </li>
-            </ul>
-          </nav>
-        `,
-      },
-
-      credits: {
-        title: "Credits",
-
-        content: `
-          <p>
-            Designed and developed by Prakhar Pandey.
-          </p>
-
-          <p>
-            Built using Astro.
-          </p>
-
-          <p>
-            Visual assets and illustrations by Prakhar Pandey.
-          </p>
-        `,
-      },
-
-      links: {
-        title: "Links",
-
-        content: `
-          <ul>
-            <li>
-              <a href="mailto:prakharpandey2027@gmail.com">
-                Email
-              </a>
-            </li>
-
-            <li>
-              <a href="#" target="_blank" rel="noreferrer">
-                Instagram
-              </a>
-            </li>
-
-            <li>
-              <a href="#" target="_blank" rel="noreferrer">
-                LinkedIn
-              </a>
-            </li>
-
-            <li>
-              <a href="#" target="_blank" rel="noreferrer">
-                GitHub
-              </a>
-            </li>
-
-            <li>
-              <a href="#" target="_blank" rel="noreferrer">
-                YouTube
-              </a>
-            </li>
-          </ul>
-        `,
-      },
-    };
-
-  function isPanelName(
-    value: string
-  ): value is PanelName {
-    return value in panelInformation;
-  }
-
-
-  /* ======================================================
-     PANEL ELEMENTS
-  ====================================================== */
-
-  const informationPanel =
-    document.querySelector<HTMLDialogElement>(
-      "#information-panel"
-    );
-
-  const panelTitle =
-    document.querySelector<HTMLHeadingElement>(
-      "#panel-title"
-    );
-
-  const panelContent =
-    document.querySelector<HTMLDivElement>(
-      "#panel-content"
-    );
-
-  const panelButtons =
-    document.querySelectorAll<HTMLButtonElement>(
-      "[data-panel]"
-    );
-
-  const closeInformationButton =
-    document.querySelector<HTMLButtonElement>(
-      "#close-information-panel"
-    );
-
-
-  function openInformationPanel(
-    panelName: PanelName
-  ): void {
-    if (
-      !informationPanel ||
-      !panelTitle ||
-      !panelContent
-    ) {
-      return;
+      line.textContent = originalText.slice(0, index + 1);
+      await wait(getTypingDelay(originalText[index]));
     }
 
-    const selectedPanel =
-      panelInformation[panelName];
+    line.classList.remove("is-typing");
+    return true;
+  };
 
-    panelTitle.textContent =
-      selectedPanel.title;
+  const animatePanelLines = async (
+    sequence: number,
+    lines: HTMLElement[]
+  ): Promise<void> => {
+    await wait(120);
+    if (sequence !== panelAnimationSequence || !informationPanel?.open) return;
 
-    panelContent.innerHTML =
-      selectedPanel.content;
-
-    if (!informationPanel.open) {
-      informationPanel.showModal();
+    for (const line of lines) {
+      if (!(await typePanelLine(line, sequence))) return;
+      await wait(90);
     }
-  }
+  };
 
+  const openInformationPanel = (panelName: PanelName): void => {
+    if (!informationPanel || !panelTitle) return;
 
-  panelButtons.forEach(
-    (button: HTMLButtonElement) => {
-      button.addEventListener(
-        "click",
-        () => {
-          const panelName =
-            button.dataset.panel;
+    cancelPanelAnimation();
+    panelTitle.textContent = panelTitles[panelName];
 
-          if (
-            !panelName ||
-            !isPanelName(panelName)
-          ) {
-            return;
-          }
+    const activeSection = panelSections.find((section) => {
+      const isActive = section.dataset.panelContent === panelName;
+      section.hidden = !isActive;
+      return isActive;
+    });
 
-          openInformationPanel(
-            panelName
-          );
-        }
-      );
-    }
-  );
+    if (!activeSection) return;
+    const activeLines = preparePanelLines(activeSection);
 
+    if (!informationPanel.open) informationPanel.showModal();
+    activeSection.classList.remove("is-panel-entering");
+    void activeSection.offsetWidth;
+    activeSection.classList.add("is-panel-entering");
 
-  closeInformationButton?.addEventListener(
-    "click",
-    () => {
-      informationPanel?.close();
-    }
-  );
+    void animatePanelLines(panelAnimationSequence, activeLines);
+  };
 
+  const closeInformationPanel = (): void => {
+    cancelPanelAnimation();
+    informationPanel?.close();
+  };
 
-  informationPanel?.addEventListener(
-    "click",
-    (event: MouseEvent) => {
-      if (
-        event.target ===
-        informationPanel
-      ) {
-        informationPanel.close();
-      }
-    }
-  );
+  updateVisitorTime();
+  window.setInterval(updateVisitorTime, 30000);
+  showVisitorLocation();
+  void runTopTypewriter();
+
+  pauseButton?.addEventListener("click", () => {
+    const paused = document.body.classList.toggle("animations-paused");
+    pauseButton.setAttribute("aria-pressed", String(paused));
+    pauseButton.setAttribute(
+      "aria-label",
+      paused ? "Resume homepage animations" : "Pause homepage animations"
+    );
+    if (pauseLabel) pauseLabel.textContent = paused ? "Resume animations" : "Pause animations";
+    showSystemMessage(paused ? "PLANETARY MOTION PAUSED" : "PLANETARY MOTION RESUMED");
+  });
+
+  powerButton?.addEventListener("click", () => {
+    const sleeping = document.body.classList.toggle("sleep-mode");
+    powerButton.setAttribute("aria-pressed", String(sleeping));
+    powerButton.setAttribute("aria-label", sleeping ? "Exit sleep mode" : "Enter sleep mode");
+    if (powerLabel) powerLabel.textContent = sleeping ? "Exit sleep mode" : "Enter sleep mode";
+    showSystemMessage(sleeping ? "SYSTEM ENTERING SLEEP MODE" : "SYSTEM RESTORED");
+  });
+
+  panelButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const panelName = button.dataset.panel;
+      if (isPanelName(panelName)) openInformationPanel(panelName);
+    });
+  });
+
+  closeInformationButton?.addEventListener("click", closeInformationPanel);
+  informationPanel?.addEventListener("click", (event: MouseEvent) => {
+    if (event.target === informationPanel) closeInformationPanel();
+  });
+  informationPanel?.addEventListener("cancel", (event: Event) => {
+    event.preventDefault();
+    closeInformationPanel();
+  });
+  informationPanel?.addEventListener("close", cancelPanelAnimation);
 </script>

@@ -1,0 +1,289 @@
+---
+const zodiacSigns = [
+  "Aries",
+  "Taurus",
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpio",
+  "Sagittarius",
+  "Capricorn",
+  "Aquarius",
+  "Pisces",
+] as const;
+
+const housePositions = [
+  {
+    number: 1,
+    x: 300,
+    y: 92,
+  },
+  {
+    number: 2,
+    x: 177,
+    y: 178,
+  },
+  {
+    number: 3,
+    x: 92,
+    y: 90,
+  },
+  {
+    number: 4,
+    x: 88,
+    y: 300,
+  },
+  {
+    number: 5,
+    x: 92,
+    y: 510,
+  },
+  {
+    number: 6,
+    x: 177,
+    y: 422,
+  },
+  {
+    number: 7,
+    x: 300,
+    y: 508,
+  },
+  {
+    number: 8,
+    x: 423,
+    y: 422,
+  },
+  {
+    number: 9,
+    x: 508,
+    y: 510,
+  },
+  {
+    number: 10,
+    x: 512,
+    y: 300,
+  },
+  {
+    number: 11,
+    x: 508,
+    y: 90,
+  },
+  {
+    number: 12,
+    x: 423,
+    y: 178,
+  },
+] as const;
+---
+
+<figure
+  class="north-indian-chart"
+  data-north-indian-chart
+  aria-labelledby="generated-chart-title"
+>
+  <div class="north-indian-chart__statusbar">
+    <div>
+      <span
+        class="north-indian-chart__signal"
+        aria-hidden="true"
+      ></span>
+
+      <strong>
+        CHART MATRIX // ACTIVE
+      </strong>
+    </div>
+
+    <span data-chart-ephemeris>
+      AWAITING CALCULATION
+    </span>
+  </div>
+
+  <div class="north-indian-chart__heading">
+    <div>
+      <p>
+        D1 // RASHI // NORTH INDIAN
+      </p>
+
+      <h3 id="generated-chart-title">
+        Birth Matrix
+      </h3>
+    </div>
+
+    <div class="north-indian-chart__ascendant">
+      <span>ASCENDANT</span>
+
+      <strong data-chart-ascendant-sign>
+        —
+      </strong>
+
+      <small data-chart-ascendant-degree>
+        —
+      </small>
+    </div>
+  </div>
+
+  <div class="north-indian-chart__frame">
+    <svg
+      class="north-indian-chart__svg"
+      viewBox="0 0 600 600"
+      role="img"
+      aria-labelledby="generated-chart-svg-title generated-chart-svg-description"
+    >
+      <title id="generated-chart-svg-title">
+        Generated North Indian Vedic
+        birth chart
+      </title>
+
+      <desc id="generated-chart-svg-description">
+        A twelve-house North Indian D1
+        chart generated from the supplied
+        birth information.
+      </desc>
+
+      <rect
+        class="north-indian-chart__outer"
+        x="4"
+        y="4"
+        width="592"
+        height="592"
+      />
+
+      <path
+        class="north-indian-chart__line"
+        d="
+          M 300 4
+          L 596 300
+          L 300 596
+          L 4 300
+          Z
+        "
+      />
+
+      <path
+        class="north-indian-chart__line"
+        d="
+          M 4 4
+          L 596 596
+        "
+      />
+
+      <path
+        class="north-indian-chart__line"
+        d="
+          M 596 4
+          L 4 596
+        "
+      />
+
+      {
+        housePositions.map(
+          (house) => (
+            <g
+              class:list={[
+                "north-indian-chart__house",
+
+                house.number === 1 &&
+                  "north-indian-chart__house--ascendant",
+              ]}
+              data-chart-house={
+                house.number
+              }
+              transform={`translate(${house.x} ${house.y})`}
+            >
+              <text
+                class="north-indian-chart__house-number"
+                text-anchor="middle"
+                x="0"
+                y="-24"
+              >
+                H{house.number}
+              </text>
+
+              <text
+                class="north-indian-chart__sign"
+                data-house-sign
+                text-anchor="middle"
+                x="0"
+                y="-5"
+              >
+                —
+              </text>
+
+              <text
+                class="north-indian-chart__asc-label"
+                data-house-ascendant
+                text-anchor="middle"
+                x="0"
+                y="14"
+              ></text>
+
+              <text
+                class="north-indian-chart__planets"
+                data-house-planets
+                text-anchor="middle"
+                x="0"
+                y={
+                  house.number === 1
+                    ? 31
+                    : 13
+                }
+              ></text>
+            </g>
+          )
+        )
+      }
+    </svg>
+
+    <span
+      class="north-indian-chart__corner north-indian-chart__corner--top-left"
+      aria-hidden="true"
+    ></span>
+
+    <span
+      class="north-indian-chart__corner north-indian-chart__corner--top-right"
+      aria-hidden="true"
+    ></span>
+
+    <span
+      class="north-indian-chart__corner north-indian-chart__corner--bottom-left"
+      aria-hidden="true"
+    ></span>
+
+    <span
+      class="north-indian-chart__corner north-indian-chart__corner--bottom-right"
+      aria-hidden="true"
+    ></span>
+  </div>
+
+  <div class="north-indian-chart__legend">
+    {
+      zodiacSigns.map(
+        (sign, index) => (
+          <span>
+            {index + 1} {sign}
+          </span>
+        )
+      )
+    }
+  </div>
+
+  <figcaption class="north-indian-chart__caption">
+    <div>
+      <span>PROFILE</span>
+
+      <strong data-chart-profile>
+        UNNAMED CHART
+      </strong>
+    </div>
+
+    <div>
+      <span>BIRTH INPUT</span>
+
+      <strong data-chart-context>
+        AWAITING INPUT
+      </strong>
+    </div>
+  </figcaption>
+</figure>

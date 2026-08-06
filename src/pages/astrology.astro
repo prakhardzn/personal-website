@@ -1,54 +1,1715 @@
 ---
-import InternalPageLayout from
-  "../layouts/InternalPageLayout.astro";
+import InternalPageLayout from "../layouts/InternalPageLayout.astro";
+import BirthChartForm from "../components/astrology/BirthChartForm.astro";
+import "../styles/astrology.css";
+
+import {
+  astrologyCategories,
+  astrologyArticleCollections,
+} from "../data/astrology";
+
+const baseUrl = import.meta.env.BASE_URL;
+
+const buildSiteUrl = (path: string): string => {
+  return `${baseUrl}${path.replace(/^\/+/, "")}`;
+};
+
+const totalArchiveEntries =
+  astrologyCategories.reduce(
+    (total, category) =>
+      total + category.entries.length,
+    0
+  );
+
+const totalWritingEntries =
+  Object.values(
+    astrologyArticleCollections
+  ).reduce(
+    (total, collection) =>
+      total + collection.entries.length,
+    0
+  );
+
+const outerSegments =
+  Array.from({ length: 24 });
+
+const lunarTicks =
+  Array.from({ length: 27 });
+
+const sectorLabels = Array.from(
+  { length: 12 },
+  (_, index) => ({
+    number:
+      String(index + 1).padStart(2, "0"),
+
+    degree:
+      `${String(index * 30).padStart(
+        3,
+        "0"
+      )}°`,
+  })
+);
+
+const archiveNodes = [
+  {
+    key: "planets",
+    short: "P",
+    label: "PLANETS",
+    tone: "primary",
+  },
+  {
+    key: "zodiac-signs",
+    short: "Z",
+    label: "ZODIAC",
+    tone: "mint",
+  },
+  {
+    key: "nakshatras",
+    short: "N",
+    label: "NAKSHATRAS",
+    tone: "lime",
+  },
+  {
+    key: "houses",
+    short: "H",
+    label: "HOUSES",
+    tone: "muted",
+  },
+] as const;
+
+const articleSections = [
+  {
+    key: "case-studies",
+    title: "Case Studies",
+    command: "OPEN CASE STUDY",
+    tone: "mint",
+  },
+  {
+    key: "questions",
+    title: "Questions",
+    command: "OPEN ANSWER",
+    tone: "lime",
+  },
+  {
+    key: "blogs",
+    title: "Blogs",
+    command: "OPEN BLOG",
+    tone: "primary",
+  },
+] as const;
+
+const getCategoryTone = (
+  key: string
+): string => {
+  switch (key) {
+    case "planets":
+      return "primary";
+
+    case "zodiac-signs":
+      return "mint";
+
+    case "nakshatras":
+      return "lime";
+
+    case "houses":
+      return "muted";
+
+    default:
+      return "primary";
+  }
+};
+
+const getStatusTone = (
+  status: string
+): string => {
+  switch (status.toUpperCase()) {
+    case "NEW":
+      return "new";
+
+    case "ANSWERED":
+      return "answered";
+
+    case "ARCHIVED":
+      return "archived";
+
+    case "EXPERIMENT":
+      return "experiment";
+
+    default:
+      return "starter";
+  }
+};
 ---
 
 <InternalPageLayout
-  title="Astrology | Prakhar"
-  description="Astrology questions, charts and case studies."
-  message="Mercury denies responsibility for any bugs found here."
+  title="Astro Pedia | Prakhar's Universe"
+  description="Explore astrology reference files, case studies, questions, blogs and the Vedic birth chart generator."
+  message="The planets are not judging you. Saturn might be taking notes."
   pageClass="astrology-page"
 >
-  <Fragment slot="sidebar">
-    <section class="ui-panel astrology-placeholder">
-      <h1>Astrology</h1>
+  <!-- ==================================================
+       LEFT COLUMN
+  =================================================== -->
 
-      <p>
-        Charts, questions and cosmic investigations
-        will appear here.
-      </p>
+  <div
+    slot="sidebar"
+    class="astrology-left-column"
+  >
+    <figure
+      class="astrology-terminal-card"
+      aria-labelledby="astro-terminal-title"
+    >
+      <header
+        class="astrology-terminal-card__header"
+      >
+        <div>
+          <span
+            class="astrology-online-dot"
+            aria-hidden="true"
+          ></span>
+
+          <strong id="astro-terminal-title">
+            CELESTIAL INDEX // A-PEDIA
+          </strong>
+        </div>
+
+        <span>SYS: ONLINE</span>
+      </header>
+
+      <div
+        class="astrology-terminal-viewport"
+      >
+        <div
+          class="astrology-dial"
+          id="astrology-dial"
+          role="img"
+          aria-label="An animated terminal dial indexing planets, zodiac signs, nakshatras and houses"
+        >
+          <span
+            class="astrology-coordinate astrology-coordinate--north"
+          >
+            Y: +090
+          </span>
+
+          <span
+            class="astrology-coordinate astrology-coordinate--east"
+          >
+            X: +180
+          </span>
+
+          <span
+            class="astrology-coordinate astrology-coordinate--south"
+          >
+            Y: -090
+          </span>
+
+          <span
+            class="astrology-coordinate astrology-coordinate--west"
+          >
+            X: 000
+          </span>
+
+          <div
+            class="astrology-dial__crosshair"
+            aria-hidden="true"
+          >
+            <span></span>
+            <span></span>
+          </div>
+
+          <div
+            class="astrology-dial__outer-ring"
+            aria-hidden="true"
+          >
+            {
+              outerSegments.map(
+                (_, index) => (
+                  <span
+                    class="astrology-dial__outer-segment"
+                    style={`--segment-angle: ${
+                      index * 15
+                    }deg;`}
+                  ></span>
+                )
+              )
+            }
+          </div>
+
+          <div
+            class="astrology-dial__lunar-ring"
+            aria-hidden="true"
+          >
+            {
+              lunarTicks.map(
+                (_, index) => (
+                  <span
+                    class="astrology-dial__lunar-tick"
+                    style={`--tick-angle: ${
+                      (index * 360) / 27
+                    }deg;`}
+                  ></span>
+                )
+              )
+            }
+          </div>
+
+          <div
+            class="astrology-dial__sectors"
+            aria-hidden="true"
+          >
+            {
+              sectorLabels.map(
+                (sector, index) => (
+                  <span
+                    class="astrology-dial__sector"
+                    style={`--sector-angle: ${
+                      index * 30
+                    }deg; --sector-counter-angle: ${
+                      index * -30
+                    }deg;`}
+                  >
+                    <strong>
+                      {sector.number}
+                    </strong>
+
+                    <small>
+                      {sector.degree}
+                    </small>
+                  </span>
+                )
+              )
+            }
+          </div>
+
+          <div
+            class="astrology-dial__tracker-path"
+            aria-hidden="true"
+          >
+            <span
+              class="astrology-dial__tracker"
+            >
+              <i></i>
+              <em>NODE 07</em>
+            </span>
+          </div>
+
+          <div
+            class="astrology-dial__archive-nodes"
+            aria-hidden="true"
+          >
+            {
+              archiveNodes.map(
+                (node) => (
+                  <div
+                    class:list={[
+                      "astrology-archive-node",
+                      `astrology-archive-node--${node.key}`,
+                      `astrology-archive-node--${node.tone}`,
+                    ]}
+                    data-archive-node={
+                      node.key
+                    }
+                  >
+                    <span>
+                      {node.short}
+                    </span>
+
+                    <strong>
+                      {node.label}
+                    </strong>
+                  </div>
+                )
+              )
+            }
+          </div>
+
+          <div
+            class="astrology-dial__core"
+          >
+            <p>
+              ASTRO PEDIA
+
+              <span
+                class="astrology-terminal-caret"
+                aria-hidden="true"
+              >
+                _
+              </span>
+            </p>
+
+            <dl>
+              <div>
+                <dt>MODE</dt>
+
+                <dd
+                  id="astrology-mode-value"
+                >
+                  EXPLORE
+                </dd>
+              </div>
+
+              <div>
+                <dt>INDEX</dt>
+
+                <dd>
+                  {
+                    String(
+                      astrologyCategories
+                        .length
+                    ).padStart(3, "0")
+                  }
+                </dd>
+              </div>
+
+              <div>
+                <dt>SIGNAL</dt>
+                <dd>STABLE</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <figcaption
+        class="astrology-terminal-readout"
+      >
+        <span>
+          ARCHIVES
+
+          <strong>
+            {
+              String(
+                astrologyCategories.length
+              ).padStart(2, "0")
+            }
+          </strong>
+        </span>
+
+        <span>
+          RECORDS
+
+          <strong>
+            {
+              String(
+                totalArchiveEntries
+              ).padStart(2, "0")
+            }
+          </strong>
+        </span>
+
+        <span>
+          WRITING
+
+          <strong>
+            {
+              String(
+                totalWritingEntries
+              ).padStart(2, "0")
+            }
+          </strong>
+        </span>
+
+        <span
+          class="astrology-terminal-readout__status"
+        >
+          <i aria-hidden="true"></i>
+          EXPANDING
+        </span>
+      </figcaption>
+    </figure>
+
+    <section
+      class="astrology-sidebar-card"
+    >
+      <div
+        class="astrology-sidebar-panel"
+        data-astrology-sidebar="explore"
+      >
+        <p>REFERENCE TERMINAL</p>
+
+        <h2>Astro Pedia</h2>
+
+        <span>
+          Browse planets, zodiac signs,
+          nakshatras and houses through a
+          connected astrological knowledge
+          terminal.
+        </span>
+
+        <dl>
+          <div>
+            <dt>ARCHIVES</dt>
+
+            <dd>
+              {astrologyCategories.length}
+            </dd>
+          </div>
+
+          <div>
+            <dt>ENTRIES</dt>
+
+            <dd>
+              {totalArchiveEntries}
+            </dd>
+          </div>
+
+          <div>
+            <dt>STATUS</dt>
+
+            <dd
+              class="astrology-sidebar-status"
+            >
+              <i aria-hidden="true"></i>
+              Expanding
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div
+        class="astrology-sidebar-panel"
+        data-astrology-sidebar="case-studies"
+        hidden
+      >
+        <p>APPLIED ASTROLOGY</p>
+
+        <h2>Case Studies</h2>
+
+        <span>
+          Detailed chart investigations that
+          show how several placements can be
+          studied together.
+        </span>
+
+        <dl>
+          <div>
+            <dt>FORMAT</dt>
+            <dd>Structured analysis</dd>
+          </div>
+
+          <div>
+            <dt>METHOD</dt>
+            <dd>Pattern comparison</dd>
+          </div>
+
+          <div>
+            <dt>FILES</dt>
+
+            <dd>
+              {
+                astrologyArticleCollections[
+                  "case-studies"
+                ].entries.length
+              }
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div
+        class="astrology-sidebar-panel"
+        data-astrology-sidebar="questions"
+        hidden
+      >
+        <p>FOCUSED ANSWERS</p>
+
+        <h2>Questions</h2>
+
+        <span>
+          Specific astrology questions answered
+          through a simple, direct and
+          conversational structure.
+        </span>
+
+        <dl>
+          <div>
+            <dt>FORMAT</dt>
+            <dd>Question and answer</dd>
+          </div>
+
+          <div>
+            <dt>DETAIL</dt>
+            <dd>Focused</dd>
+          </div>
+
+          <div>
+            <dt>FILES</dt>
+
+            <dd>
+              {
+                astrologyArticleCollections
+                  .questions.entries.length
+              }
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div
+        class="astrology-sidebar-panel"
+        data-astrology-sidebar="blogs"
+        hidden
+      >
+        <p>LONG-FORM WRITING</p>
+
+        <h2>Astrology Blogs</h2>
+
+        <span>
+          Notes, observations and essays about
+          learning, interpretation and
+          storytelling.
+        </span>
+
+        <dl>
+          <div>
+            <dt>FORMAT</dt>
+            <dd>Long-form</dd>
+          </div>
+
+          <div>
+            <dt>TOPICS</dt>
+            <dd>Learning and stories</dd>
+          </div>
+
+          <div>
+            <dt>FILES</dt>
+
+            <dd>
+              {
+                astrologyArticleCollections
+                  .blogs.entries.length
+              }
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div
+        class="astrology-sidebar-panel"
+        data-astrology-sidebar="chart-generator"
+        hidden
+      >
+        <p>UTILITY MODULE</p>
+
+        <h2>Birth Matrix</h2>
+
+        <span>
+          Generate a North Indian Vedic birth
+          chart from a confirmed birth date,
+          time and location.
+        </span>
+
+        <dl>
+          <div>
+            <dt>CHART</dt>
+            <dd>D1 / Rashi</dd>
+          </div>
+
+          <div>
+            <dt>AYANAMSHA</dt>
+            <dd>Lahiri</dd>
+          </div>
+
+          <div>
+            <dt>STATUS</dt>
+            <dd>Input verification</dd>
+          </div>
+        </dl>
+      </div>
     </section>
-  </Fragment>
+  </div>
 
-  <Fragment slot="content">
-    <section class="ui-panel astrology-placeholder">
-      <h2>Transmission pending</h2>
+  <!-- ==================================================
+       RIGHT COLUMN
+  =================================================== -->
 
-      <p>
-        This page is connected correctly. Its full
-        design will be developed later.
-      </p>
-    </section>
-  </Fragment>
+  <div
+    slot="content"
+    class="astrology-right-column"
+  >
+    <nav
+      class="astrology-tabs"
+      aria-label="Astrology sections"
+      role="tablist"
+    >
+      <button
+        class="astrology-tab is-active"
+        id="astrology-tab-explore"
+        type="button"
+        role="tab"
+        data-astrology-tab="explore"
+        aria-controls="astrology-panel-explore"
+        aria-selected="true"
+        tabindex="0"
+      >
+        <span aria-hidden="true">
+          &gt;
+        </span>
+
+        ASTRO PEDIA
+      </button>
+
+      <button
+        class="astrology-tab"
+        id="astrology-tab-case-studies"
+        type="button"
+        role="tab"
+        data-astrology-tab="case-studies"
+        aria-controls="astrology-panel-case-studies"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        <span aria-hidden="true">
+          &gt;
+        </span>
+
+        CASE STUDIES
+      </button>
+
+      <button
+        class="astrology-tab"
+        id="astrology-tab-questions"
+        type="button"
+        role="tab"
+        data-astrology-tab="questions"
+        aria-controls="astrology-panel-questions"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        <span aria-hidden="true">
+          &gt;
+        </span>
+
+        QUESTIONS
+      </button>
+
+      <button
+        class="astrology-tab"
+        id="astrology-tab-blogs"
+        type="button"
+        role="tab"
+        data-astrology-tab="blogs"
+        aria-controls="astrology-panel-blogs"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        <span aria-hidden="true">
+          &gt;
+        </span>
+
+        BLOGS
+      </button>
+
+      <button
+        class="astrology-tab"
+        id="astrology-tab-chart-generator"
+        type="button"
+        role="tab"
+        data-astrology-tab="chart-generator"
+        aria-controls="astrology-panel-chart-generator"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        <span aria-hidden="true">
+          &gt;
+        </span>
+
+        CHART GENERATOR
+      </button>
+    </nav>
+
+    <div class="astrology-content-stage">
+      <div
+        class="astrology-content-window"
+        id="astrology-content-window"
+      >
+        <section
+          class="astrology-content-panel"
+          id="astrology-panel-explore"
+          role="tabpanel"
+          aria-labelledby="astrology-tab-explore"
+          data-astrology-panel="explore"
+        >
+          <header
+            class="astrology-panel-header"
+          >
+            <p>
+              <span
+                class="astrology-observation-dot"
+                aria-hidden="true"
+              ></span>
+
+              ORBITAL ARCHIVE
+            </p>
+
+            <h1>Astro Pedia</h1>
+
+            <span>
+              Choose a celestial archive to inspect
+              its reference files.
+            </span>
+          </header>
+
+          <div
+            class="astrology-card-list"
+          >
+            {
+              astrologyCategories.map(
+                (category, index) => {
+                  const tone =
+                    getCategoryTone(
+                      category.key
+                    );
+
+                  return (
+                    <a
+                      class:list={[
+                        "astrology-file-card",
+                        `astrology-file-card--${tone}`,
+                      ]}
+                      href={buildSiteUrl(
+                        category.href
+                      )}
+                      data-archive-card={
+                        category.key
+                      }
+                      style={`--card-delay: ${
+                        index * 70
+                      }ms;`}
+                    >
+                      <div
+                        class="astrology-file-card__top"
+                      >
+                        <span>
+                          {category.number}
+                        </span>
+
+                        <span
+                          class="astrology-card-status astrology-card-status--archive"
+                        >
+                          <i
+                            aria-hidden="true"
+                          ></i>
+
+                          <strong>
+                            {
+                              category.entries
+                                .length
+                            }{" "}
+                            FILES
+                          </strong>
+                        </span>
+                      </div>
+
+                      <h2>
+                        {category.label}
+                      </h2>
+
+                      <p
+                        class="astrology-file-card__eyebrow"
+                      >
+                        {category.eyebrow}
+                      </p>
+
+                      <p
+                        class="astrology-file-card__description"
+                      >
+                        {category.description}
+                      </p>
+
+                      <span
+                        class="astrology-file-card__link"
+                      >
+                        OPEN{" "}
+                        {
+                          category.label
+                            .toUpperCase()
+                        }{" "}
+                        INDEX
+                      </span>
+                    </a>
+                  );
+                }
+              )
+            }
+          </div>
+        </section>
+
+        {
+          articleSections.map(
+            (section) => {
+              const collection =
+                astrologyArticleCollections[
+                  section.key
+                ];
+
+              return (
+                <section
+                  class="astrology-content-panel"
+                  id={`astrology-panel-${section.key}`}
+                  role="tabpanel"
+                  aria-labelledby={`astrology-tab-${section.key}`}
+                  data-astrology-panel={
+                    section.key
+                  }
+                  hidden
+                >
+                  <header
+                    class="astrology-panel-header"
+                  >
+                    <p>
+                      {collection.eyebrow}
+                    </p>
+
+                    <h1>
+                      {section.title}
+                    </h1>
+
+                    <span>
+                      {collection.description}
+                    </span>
+                  </header>
+
+                  <div
+                    class="astrology-card-list"
+                  >
+                    {
+                      collection.entries.map(
+                        (
+                          article,
+                          index
+                        ) => (
+                          <a
+                            class:list={[
+                              "astrology-file-card",
+                              `astrology-file-card--${section.tone}`,
+                            ]}
+                            href={buildSiteUrl(
+                              `astrology/${section.key}/${article.slug}`
+                            )}
+                            style={`--card-delay: ${
+                              index * 70
+                            }ms;`}
+                          >
+                            <div
+                              class="astrology-file-card__top"
+                            >
+                              <span>
+                                {
+                                  article.number
+                                }
+                              </span>
+
+                              <span
+                                class:list={[
+                                  "astrology-card-status",
+                                  `astrology-card-status--${getStatusTone(
+                                    article.status
+                                  )}`,
+                                ]}
+                              >
+                                <i
+                                  aria-hidden="true"
+                                ></i>
+
+                                <strong>
+                                  {
+                                    article.status
+                                  }
+                                </strong>
+                              </span>
+                            </div>
+
+                            <h2>
+                              {article.title}
+                            </h2>
+
+                            <p
+                              class="astrology-file-card__eyebrow"
+                            >
+                              {
+                                article.eyebrow
+                              }
+                            </p>
+
+                            <p
+                              class="astrology-file-card__description"
+                            >
+                              {
+                                article.summary
+                              }
+                            </p>
+
+                            <div
+                              class="astrology-file-card__footer"
+                            >
+                              <span>
+                                {
+                                  article.date
+                                }{" "}
+                                //{" "}
+                                {
+                                  article.readTime
+                                }
+                              </span>
+
+                              <strong>
+                                {
+                                  section.command
+                                }
+                              </strong>
+                            </div>
+                          </a>
+                        )
+                      )
+                    }
+                  </div>
+                </section>
+              );
+            }
+          )
+        }
+
+        <section
+          class="astrology-content-panel"
+          id="astrology-panel-chart-generator"
+          role="tabpanel"
+          aria-labelledby="astrology-tab-chart-generator"
+          data-astrology-panel="chart-generator"
+          hidden
+        >
+          <header
+            class="astrology-panel-header"
+          >
+            <p>
+              <span
+                class="astrology-observation-dot"
+                aria-hidden="true"
+              ></span>
+
+              UTILITY MODULE
+            </p>
+
+            <h1>
+              Birth Matrix Generator
+            </h1>
+
+            <span>
+              Enter your birth date, exact time and
+              location. This chapter verifies the
+              information before we connect the
+              North Indian chart and real planetary
+              calculations.
+            </span>
+          </header>
+
+          <BirthChartForm />
+        </section>
+      </div>
+
+      <div
+        class="astrology-scrollbar"
+        id="astrology-scrollbar"
+        aria-hidden="true"
+      >
+        <div
+          class="astrology-scrollbar__thumb"
+          id="astrology-scrollbar-thumb"
+        ></div>
+      </div>
+    </div>
+  </div>
 </InternalPageLayout>
 
-<style>
-  .astrology-placeholder {
-    height: 100%;
-    padding: clamp(24px, 3vw, 55px);
-    overflow-y: auto;
+<style is:global>
+  .astrology-page
+    .astrology-right-column {
+    grid-template-rows:
+      64px
+      minmax(0, 1fr);
   }
 
-  .astrology-placeholder h1,
-  .astrology-placeholder h2 {
-    margin-top: 0;
-    color: var(--internal-green);
-    font-family: var(--internal-display-font);
-    text-transform: uppercase;
+  .astrology-page
+    .astrology-tabs {
+    display: grid;
+
+    grid-template-columns:
+      repeat(5, minmax(0, 1fr));
+
+    height: 64px;
+    overflow: hidden;
   }
 
-  .astrology-placeholder p {
-    font-size: clamp(14px, 1.2vw, 22px);
-    line-height: 1.7;
+  .astrology-page
+    .astrology-tab {
+    gap: 5px;
+    min-width: 0;
+    padding: 0 6px;
+
+    font-size:
+      clamp(
+        0.54rem,
+        0.62vw,
+        0.72rem
+      );
+
+    line-height: 1.15;
+    letter-spacing: 0.045em;
+    white-space: nowrap;
+  }
+
+  @media (
+    max-width: 980px
+  ) and (
+    min-width: 541px
+  ) {
+    .astrology-page
+      .astrology-tabs {
+      grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+      height: 64px;
+    }
+
+    .astrology-page
+      .astrology-tab {
+      gap: 3px;
+      padding: 0 4px;
+
+      font-size:
+        clamp(
+          0.45rem,
+          0.72vw,
+          0.58rem
+        );
+
+      letter-spacing: 0.02em;
+    }
+
+    .astrology-page
+      .astrology-right-column {
+      grid-template-rows:
+        64px
+        minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 540px) {
+    .astrology-page
+      .astrology-tabs {
+      display: flex;
+      height: 64px;
+
+      overflow-x: auto;
+      overflow-y: hidden;
+
+      scrollbar-width: none;
+    }
+
+    .astrology-page
+      .astrology-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .astrology-page
+      .astrology-tab {
+      flex: 0 0 auto;
+
+      width: max-content;
+      min-width: 128px;
+      height: 64px;
+      padding: 0 10px;
+
+      font-size: 0.54rem;
+      letter-spacing: 0.035em;
+    }
+
+    .astrology-page
+      .astrology-right-column {
+      grid-template-rows:
+        64px
+        minmax(0, 1fr);
+    }
   }
 </style>
+
+<script>
+  const validAstrologyTabs = [
+    "explore",
+    "case-studies",
+    "questions",
+    "blogs",
+    "chart-generator",
+  ] as const;
+
+  type AstrologyTab =
+    (typeof validAstrologyTabs)[number];
+
+  const astrologyModeLabels:
+    Record<AstrologyTab, string> = {
+      explore: "EXPLORE",
+      "case-studies": "CASE STUDY",
+      questions: "QUESTIONS",
+      blogs: "BLOGS",
+      "chart-generator":
+        "BIRTH MATRIX",
+    };
+
+  const tabButtons =
+    document.querySelectorAll<HTMLButtonElement>(
+      "[data-astrology-tab]"
+    );
+
+  const contentPanels =
+    document.querySelectorAll<HTMLElement>(
+      "[data-astrology-panel]"
+    );
+
+  const sidebarPanels =
+    document.querySelectorAll<HTMLElement>(
+      "[data-astrology-sidebar]"
+    );
+
+  const modeValue =
+    document.querySelector<HTMLElement>(
+      "#astrology-mode-value"
+    );
+
+  const contentWindow =
+    document.querySelector<HTMLElement>(
+      "#astrology-content-window"
+    );
+
+  const scrollbar =
+    document.querySelector<HTMLElement>(
+      "#astrology-scrollbar"
+    );
+
+  const scrollbarThumb =
+    document.querySelector<HTMLElement>(
+      "#astrology-scrollbar-thumb"
+    );
+
+  const archiveCards =
+    document.querySelectorAll<HTMLElement>(
+      "[data-archive-card]"
+    );
+
+  const archiveNodes =
+    document.querySelectorAll<HTMLElement>(
+      "[data-archive-node]"
+    );
+
+  function isAstrologyTab(
+    value: string
+  ): value is AstrologyTab {
+    return validAstrologyTabs.includes(
+      value as AstrologyTab
+    );
+  }
+
+  function restartPanelAnimation(
+    panel: HTMLElement | undefined
+  ): void {
+    if (!panel) {
+      return;
+    }
+
+    panel.classList.remove(
+      "is-entering"
+    );
+
+    void panel.offsetWidth;
+
+    panel.classList.add(
+      "is-entering"
+    );
+  }
+
+  function setLinkedArchive(
+    archiveKey: string | null
+  ): void {
+    archiveNodes.forEach((node) => {
+      node.classList.toggle(
+        "is-linked",
+        archiveKey !== null &&
+          node.dataset.archiveNode ===
+            archiveKey
+      );
+    });
+  }
+
+  function updateAstrologyScrollbar(): void {
+    if (
+      !contentWindow ||
+      !scrollbar ||
+      !scrollbarThumb
+    ) {
+      return;
+    }
+
+    const trackHeight = Math.max(
+      0,
+      scrollbar.clientHeight - 6
+    );
+
+    const maximumScroll = Math.max(
+      0,
+      contentWindow.scrollHeight -
+        contentWindow.clientHeight
+    );
+
+    const visibleRatio =
+      contentWindow.scrollHeight > 0
+        ? contentWindow.clientHeight /
+          contentWindow.scrollHeight
+        : 1;
+
+    const thumbHeight = Math.min(
+      trackHeight,
+      Math.max(
+        46,
+        trackHeight * visibleRatio
+      )
+    );
+
+    const moveDistance = Math.max(
+      0,
+      trackHeight - thumbHeight
+    );
+
+    const scrollProgress =
+      maximumScroll > 0
+        ? contentWindow.scrollTop /
+          maximumScroll
+        : 0;
+
+    scrollbarThumb.style.height =
+      `${thumbHeight}px`;
+
+    scrollbarThumb.style.transform =
+      `translateY(${
+        scrollProgress * moveDistance
+      }px)`;
+  }
+
+  function activateAstrologyTab(
+    tabName: AstrologyTab,
+    updateHash = true
+  ): void {
+    let activePanel:
+      | HTMLElement
+      | undefined;
+
+    tabButtons.forEach((button) => {
+      const isActive =
+        button.dataset.astrologyTab ===
+        tabName;
+
+      button.classList.toggle(
+        "is-active",
+        isActive
+      );
+
+      button.setAttribute(
+        "aria-selected",
+        String(isActive)
+      );
+
+      button.tabIndex =
+        isActive ? 0 : -1;
+    });
+
+    contentPanels.forEach((panel) => {
+      const isActive =
+        panel.dataset.astrologyPanel ===
+        tabName;
+
+      panel.hidden = !isActive;
+
+      if (isActive) {
+        activePanel = panel;
+      }
+    });
+
+    sidebarPanels.forEach((panel) => {
+      panel.hidden =
+        panel.dataset.astrologySidebar !==
+        tabName;
+    });
+
+    if (modeValue) {
+      modeValue.textContent =
+        astrologyModeLabels[tabName];
+    }
+
+    if (contentWindow) {
+      contentWindow.scrollTop = 0;
+    }
+
+    if (updateHash) {
+      window.history.replaceState(
+        null,
+        "",
+        `#${tabName}`
+      );
+    }
+
+    restartPanelAnimation(
+      activePanel
+    );
+
+    window.requestAnimationFrame(
+      updateAstrologyScrollbar
+    );
+  }
+
+  tabButtons.forEach(
+    (button, index) => {
+      button.addEventListener(
+        "click",
+        () => {
+          const tabName =
+            button.dataset.astrologyTab;
+
+          if (
+            tabName &&
+            isAstrologyTab(tabName)
+          ) {
+            activateAstrologyTab(
+              tabName
+            );
+          }
+        }
+      );
+
+      button.addEventListener(
+        "keydown",
+        (
+          event: KeyboardEvent
+        ) => {
+          if (
+            event.key !==
+              "ArrowRight" &&
+            event.key !==
+              "ArrowLeft" &&
+            event.key !== "Home" &&
+            event.key !== "End"
+          ) {
+            return;
+          }
+
+          event.preventDefault();
+
+          let nextIndex = index;
+
+          if (
+            event.key ===
+            "ArrowRight"
+          ) {
+            nextIndex =
+              (index + 1) %
+              tabButtons.length;
+          }
+
+          if (
+            event.key ===
+            "ArrowLeft"
+          ) {
+            nextIndex =
+              (
+                index -
+                1 +
+                tabButtons.length
+              ) %
+              tabButtons.length;
+          }
+
+          if (
+            event.key === "Home"
+          ) {
+            nextIndex = 0;
+          }
+
+          if (
+            event.key === "End"
+          ) {
+            nextIndex =
+              tabButtons.length - 1;
+          }
+
+          const nextButton =
+            tabButtons[nextIndex];
+
+          const nextTab =
+            nextButton?.dataset
+              .astrologyTab;
+
+          if (
+            nextButton &&
+            nextTab &&
+            isAstrologyTab(nextTab)
+          ) {
+            nextButton.focus();
+
+            activateAstrologyTab(
+              nextTab
+            );
+          }
+        }
+      );
+    }
+  );
+
+  archiveCards.forEach((card) => {
+    const archiveKey =
+      card.dataset.archiveCard ??
+      null;
+
+    card.addEventListener(
+      "mouseenter",
+      () =>
+        setLinkedArchive(
+          archiveKey
+        )
+    );
+
+    card.addEventListener(
+      "mouseleave",
+      () => setLinkedArchive(null)
+    );
+
+    card.addEventListener(
+      "focus",
+      () =>
+        setLinkedArchive(
+          archiveKey
+        )
+    );
+
+    card.addEventListener(
+      "blur",
+      () => setLinkedArchive(null)
+    );
+  });
+
+  const requestedTab =
+    window.location.hash.replace(
+      "#",
+      ""
+    );
+
+  if (
+    requestedTab &&
+    isAstrologyTab(requestedTab)
+  ) {
+    activateAstrologyTab(
+      requestedTab,
+      false
+    );
+  } else {
+    activateAstrologyTab(
+      "explore",
+      false
+    );
+  }
+
+  contentWindow?.addEventListener(
+    "scroll",
+    updateAstrologyScrollbar,
+    {
+      passive: true,
+    }
+  );
+
+  window.addEventListener(
+    "astrology:content-resized",
+    updateAstrologyScrollbar
+  );
+
+  scrollbar?.addEventListener(
+    "pointerdown",
+    (
+      event: PointerEvent
+    ) => {
+      if (
+        !contentWindow ||
+        !scrollbar ||
+        !scrollbarThumb ||
+        event.target ===
+          scrollbarThumb
+      ) {
+        return;
+      }
+
+      const rectangle =
+        scrollbar.getBoundingClientRect();
+
+      const trackHeight = Math.max(
+        1,
+        scrollbar.clientHeight - 6
+      );
+
+      const moveDistance = Math.max(
+        1,
+        trackHeight -
+          scrollbarThumb.offsetHeight
+      );
+
+      const intendedPosition =
+        Math.min(
+          moveDistance,
+          Math.max(
+            0,
+            event.clientY -
+              rectangle.top -
+              scrollbarThumb.offsetHeight /
+                2
+          )
+        );
+
+      const maximumScroll = Math.max(
+        0,
+        contentWindow.scrollHeight -
+          contentWindow.clientHeight
+      );
+
+      contentWindow.scrollTop =
+        (
+          intendedPosition /
+          moveDistance
+        ) * maximumScroll;
+    }
+  );
+
+  scrollbarThumb?.addEventListener(
+    "pointerdown",
+    (
+      event: PointerEvent
+    ) => {
+      if (
+        !contentWindow ||
+        !scrollbar ||
+        !scrollbarThumb
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const startingPointerY =
+        event.clientY;
+
+      const startingScrollTop =
+        contentWindow.scrollTop;
+
+      const trackHeight = Math.max(
+        1,
+        scrollbar.clientHeight - 6
+      );
+
+      const moveDistance = Math.max(
+        1,
+        trackHeight -
+          scrollbarThumb.offsetHeight
+      );
+
+      const maximumScroll = Math.max(
+        0,
+        contentWindow.scrollHeight -
+          contentWindow.clientHeight
+      );
+
+      scrollbarThumb.setPointerCapture(
+        event.pointerId
+      );
+
+      const moveThumb = (
+        moveEvent: PointerEvent
+      ): void => {
+        contentWindow.scrollTop =
+          startingScrollTop +
+          (
+            (
+              moveEvent.clientY -
+              startingPointerY
+            ) /
+            moveDistance
+          ) *
+            maximumScroll;
+      };
+
+      const releaseThumb = (
+        releaseEvent: PointerEvent
+      ): void => {
+        if (
+          scrollbarThumb.hasPointerCapture(
+            releaseEvent.pointerId
+          )
+        ) {
+          scrollbarThumb
+            .releasePointerCapture(
+              releaseEvent.pointerId
+            );
+        }
+
+        scrollbarThumb.removeEventListener(
+          "pointermove",
+          moveThumb
+        );
+
+        scrollbarThumb.removeEventListener(
+          "pointerup",
+          releaseThumb
+        );
+
+        scrollbarThumb.removeEventListener(
+          "pointercancel",
+          releaseThumb
+        );
+      };
+
+      scrollbarThumb.addEventListener(
+        "pointermove",
+        moveThumb
+      );
+
+      scrollbarThumb.addEventListener(
+        "pointerup",
+        releaseThumb
+      );
+
+      scrollbarThumb.addEventListener(
+        "pointercancel",
+        releaseThumb
+      );
+    }
+  );
+
+  if ("ResizeObserver" in window) {
+    const observer =
+      new ResizeObserver(
+        updateAstrologyScrollbar
+      );
+
+    if (contentWindow) {
+      observer.observe(
+        contentWindow
+      );
+    }
+  }
+
+  window.addEventListener(
+    "load",
+    updateAstrologyScrollbar
+  );
+
+  window.addEventListener(
+    "resize",
+    updateAstrologyScrollbar
+  );
+
+  window.requestAnimationFrame(
+    updateAstrologyScrollbar
+  );
+</script>

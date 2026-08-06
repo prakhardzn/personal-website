@@ -13,69 +13,211 @@ import {
 
 import "../../styles/weekly.css";
 
+
 export const getStaticPaths:
   GetStaticPaths = () => {
-    return weeklyPosts.map((post) => ({
-      params: {
-        slug: post.slug,
-      },
+    return weeklyPosts.map(
+      (post) => ({
+        params: {
+          slug: post.slug,
+        },
 
-      props: {
-        post,
-      },
-    }));
+        props: {
+          post,
+        },
+      })
+    );
   };
+
 
 interface Props {
   post: WeeklyPost;
 }
 
+
 const {
   post,
 } = Astro.props as Props;
+
+
+const weeklyIndexUrl =
+  `${import.meta.env.BASE_URL}weekly`;
 ---
 
 <InternalPageLayout
-  title={`${post.title} | Weekly`}
+  title={`${post.title} | News Weekly`}
   description={post.summary}
   message="This transmission is still being decoded."
-  pageClass="weekly-post-page"
+  pageClass="weekly-page weekly-post-page"
 >
-  <Fragment slot="sidebar">
-    <div class="weekly-post-sidebar">
+  <!-- ==================================================
+       ARTICLE SIDEBAR
+  =================================================== -->
 
-      <a
-        class="weekly-post-back"
-        href="/weekly"
-      >
-        ← Back to Weekly
-      </a>
+  <div
+    slot="sidebar"
+    class="weekly-post-sidebar"
+  >
+    <a
+      class="weekly-post-back"
+      href={weeklyIndexUrl}
+    >
+      <span aria-hidden="true">
+        ←
+      </span>
 
-      <section class="ui-panel weekly-post-meta">
-        <p>Weekly Transmission</p>
-        <p>Full article coming later</p>
-      </section>
+      BACK TO WEEKLY
+    </a>
 
-    </div>
-  </Fragment>
 
-  <Fragment slot="content">
-    <article class="ui-panel weekly-post-placeholder">
+    <section class="weekly-post-meta">
+      <header class="weekly-post-meta__header">
+        FILE METADATA
+      </header>
 
-      <p class="weekly-post-kicker">
-        Transmission in progress
-      </p>
+      <dl class="weekly-post-meta__list">
+        <div>
+          <dt>
+            FILE
+          </dt>
 
-      <h1>{post.title}</h1>
+          <dd>
+            {post.number}
+          </dd>
+        </div>
 
-      <p>{post.summary}</p>
+        <div>
+          <dt>
+            TYPE
+          </dt>
+
+          <dd>
+            {post.category}
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            DATE
+          </dt>
+
+          <dd>
+            {post.date}
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            LENGTH
+          </dt>
+
+          <dd>
+            {post.readTime}
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            STATUS
+          </dt>
+
+          <dd>
+            <span
+              class:list={[
+                "weekly-status",
+                `weekly-status--${post.statusTone}`,
+              ]}
+            >
+              <span
+                class="weekly-status__dot"
+                aria-hidden="true"
+              ></span>
+
+              <strong>
+                {post.status}
+              </strong>
+            </span>
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+
+    <section class="weekly-post-signal">
+      <div>
+        <span
+          class="weekly-signal-dot"
+          aria-hidden="true"
+        ></span>
+
+        ARTICLE CHANNEL READY
+      </div>
 
       <p>
-        This route is working correctly. The
-        complete article will later be written
-        in Markdown and connected to this page.
+        The route is connected and prepared for the final
+        article transmission.
+      </p>
+    </section>
+  </div>
+
+
+  <!-- ==================================================
+       ARTICLE CONTENT
+  =================================================== -->
+
+  <article
+    slot="content"
+    class="weekly-article-panel"
+  >
+    <header class="weekly-article-header">
+      <div class="weekly-article-header__top">
+        <span>
+          {post.number}
+        </span>
+
+        <span>
+          {post.date} // {post.readTime}
+        </span>
+      </div>
+
+      <p class="weekly-article-kicker">
+        {post.category}
       </p>
 
-    </article>
-  </Fragment>
+      <h1>
+        {post.title}
+      </h1>
+
+      <p class="weekly-article-summary">
+        {post.summary}
+      </p>
+    </header>
+
+
+    <div class="weekly-article-body">
+      <p class="weekly-article-command">
+        &gt; ARTICLE BODY // PENDING
+      </p>
+
+      <p>
+        The complete article will appear inside this terminal
+        once the transmission has been written and connected.
+      </p>
+
+      <p>
+        The page route, metadata and article layout are already
+        active, so the final writing can later replace this
+        temporary section without changing the design.
+      </p>
+
+      <div class="weekly-article-ready">
+        <span
+          class="weekly-signal-dot"
+          aria-hidden="true"
+        ></span>
+
+        CONTENT SLOT READY
+      </div>
+    </div>
+  </article>
 </InternalPageLayout>

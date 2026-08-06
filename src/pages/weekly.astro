@@ -1,66 +1,642 @@
 ---
-import InternalPageLayout from
-  "../layouts/InternalPageLayout.astro";
+import InternalPageLayout from "../layouts/InternalPageLayout.astro";
+import "../styles/weekly.css";
 
 import {
   weeklyPosts,
 } from "../data/weeklyposts";
 
-import "../styles/weekly.css";
+
+type WeeklyPostRecord = {
+  slug: string;
+  title: string;
+  number?: string;
+  status?: string;
+  category?: string;
+  description?: string;
+  summary?: string;
+  date?: string;
+  readTime?: string;
+};
+
+
+const posts =
+  weeklyPosts as unknown as WeeklyPostRecord[];
+
+
+const baseUrl =
+  import.meta.env.BASE_URL;
+
+
+const buildSiteUrl = (
+  path: string
+): string => {
+  return `${baseUrl}${path.replace(
+    /^\/+/,
+    ""
+  )}`;
+};
+
+
+const cardTones = [
+  "primary",
+  "mint",
+  "lime",
+  "muted",
+] as const;
 ---
 
 <InternalPageLayout
-  title="Weekly | Prakhar"
-  description="Weekly discoveries, films, ideas and transmissions from Prakhar."
+  title="News Weekly | Prakhar's Universe"
+  description="Weekly stories, discoveries, film notes and transmissions from Prakhar."
   message="No aliens were harmed while building this page."
   pageClass="weekly-page"
 >
-  <Fragment slot="sidebar">
-    <div class="weekly-sidebar-stack">
+  <!-- ==================================================
+       LEFT COLUMN
+  =================================================== -->
 
-      <section class="weekly-title-panel">
-        <h1>Heys Weekly</h1>
-      </section>
+  <div
+    slot="sidebar"
+    class="weekly-left-column"
+  >
+    <!-- News Weekly identity -->
 
+    <header class="weekly-title-card">
+      <div>
+        <span>
+          WEEKLY BROADCAST
+        </span>
+
+        <h1>
+          News Weekly
+        </h1>
+      </div>
+
+      <p>
+        ISSUE STREAM // ACTIVE
+      </p>
+    </header>
+
+
+    <!-- Anchor artwork -->
+
+    <figure class="weekly-anchor-frame">
+      <div class="weekly-anchor-art">
+        <img
+          class="weekly-anchor-image"
+          src={buildSiteUrl(
+            "/assets/weekly/alien-weekly.jpeg"
+          )}
+          alt="An alien news anchor inside a surreal outer-space broadcast studio"
+        />
+      </div>
+
+      <figcaption>
+        <span>
+          ANCHOR FEED
+        </span>
+
+        <strong>
+          LIVE
+        </strong>
+      </figcaption>
+    </figure>
+
+
+    <!-- Compact publication information -->
+
+    <section
+      class="weekly-schedule-card"
+      aria-label="Weekly publication schedule"
+    >
+      <div class="weekly-schedule-card__title">
+        <span>
+          PUBLICATION CYCLE
+        </span>
+
+        <strong>
+          FRESH FILES EVERY FRIDAY
+        </strong>
+      </div>
+
+      <div class="weekly-schedule-card__countdown">
+        <span>
+          NEXT TRANSMISSION
+        </span>
+
+        <strong id="weekly-countdown">
+          CALCULATING
+        </strong>
+      </div>
+    </section>
+  </div>
+
+
+  <!-- ==================================================
+       RIGHT COLUMN
+  =================================================== -->
+
+  <div
+    slot="content"
+    class="weekly-right-column"
+  >
+    <div class="weekly-content-stage">
       <section
-        class="ui-panel weekly-anchor-panel"
-        aria-label="Weekly anchor artwork"
+        class="weekly-feed-panel"
+        id="weekly-feed-panel"
+        aria-labelledby="weekly-feed-title"
       >
-        <div class="weekly-anchor-placeholder">
-          Weekly anchor artwork will appear here
+        <header class="weekly-feed-header">
+          <div class="weekly-feed-header__title">
+            <p>
+              <span
+                class="weekly-status-dot"
+                aria-hidden="true"
+              ></span>
+
+              CURRENT TRANSMISSIONS
+            </p>
+
+            <h1 id="weekly-feed-title">
+              Weekly Files
+            </h1>
+          </div>
+
+          <p class="weekly-feed-header__description">
+            Select a file to read the complete transmission.
+          </p>
+        </header>
+
+
+        <div class="weekly-card-list">
+          {
+            posts.map(
+              (
+                post,
+                index
+              ) => {
+                const tone =
+                  cardTones[
+                    index %
+                    cardTones.length
+                  ];
+
+                const postNumber =
+                  post.number ??
+                  `WEEKLY FILE ${String(
+                    index + 1
+                  ).padStart(
+                    3,
+                    "0"
+                  )}`;
+
+                const postStatus =
+                  post.status ??
+                  "ARCHIVED";
+
+                const postCategory =
+                  post.category ??
+                  "WEEKLY TRANSMISSION";
+
+                const postDescription =
+                  post.description ??
+                  post.summary ??
+                  "Transmission notes are currently being prepared.";
+
+                const postDate =
+                  post.date ??
+                  "DATE PENDING";
+
+                const postReadTime =
+                  post.readTime ??
+                  "READ TIME PENDING";
+
+                return (
+                  <a
+                    class:list={[
+                      "weekly-post-card",
+                      `weekly-post-card--${tone}`,
+                    ]}
+                    href={buildSiteUrl(
+                      `/weekly/${post.slug}`
+                    )}
+                    style={`--card-delay: ${index * 70}ms;`}
+                  >
+                    <div class="weekly-post-card__top">
+                      <span>
+                        {postNumber}
+                      </span>
+
+                      <span class="weekly-card-status">
+                        <i aria-hidden="true"></i>
+
+                        <strong>
+                          {postStatus}
+                        </strong>
+                      </span>
+                    </div>
+
+
+                    <h2>
+                      {post.title}
+                    </h2>
+
+
+                    <p class="weekly-post-card__category">
+                      {postCategory}
+                    </p>
+
+
+                    <p class="weekly-post-card__description">
+                      {postDescription}
+                    </p>
+
+
+                    <div class="weekly-post-card__footer">
+                      <span>
+                        {postDate} // {postReadTime}
+                      </span>
+
+                      <strong>
+                        OPEN TRANSMISSION
+                      </strong>
+                    </div>
+                  </a>
+                );
+              }
+            )
+          }
         </div>
       </section>
 
-      <section class="ui-panel weekly-schedule-panel">
-        Fresh blogs every Friday
-      </section>
 
+      <!-- External scrollbar -->
+
+      <div
+        class="weekly-scrollbar"
+        id="weekly-scrollbar"
+        aria-hidden="true"
+      >
+        <div
+          class="weekly-scrollbar__thumb"
+          id="weekly-scrollbar-thumb"
+        ></div>
+      </div>
     </div>
-  </Fragment>
+  </div>
+</InternalPageLayout>
 
-  <Fragment slot="content">
-    <section class="ui-panel weekly-feed-shell">
-      <div class="weekly-feed">
 
-        {
-          weeklyPosts.map((post) => (
-            <a
-              class={`weekly-card weekly-card--${post.variant}`}
-              href={`/weekly/${post.slug}`}
-              aria-label={`Read ${post.title}`}
-            >
-              <h2 class="weekly-card__title">
-                {post.title}
-              </h2>
+<script>
+  function updateWeeklyCountdown(): void {
+    const countdown =
+      document.querySelector<HTMLElement>(
+        "#weekly-countdown"
+      );
 
-              <span class="weekly-card__action">
-                Read now
-              </span>
-            </a>
-          ))
+    if (!countdown) {
+      return;
+    }
+
+    const now =
+      new Date();
+
+    const currentDay =
+      now.getDay();
+
+    const friday =
+      5;
+
+    const daysUntilFriday =
+      (
+        friday -
+        currentDay +
+        7
+      ) % 7;
+
+    if (
+      daysUntilFriday ===
+      0
+    ) {
+      countdown.textContent =
+        "TODAY";
+
+      return;
+    }
+
+    if (
+      daysUntilFriday ===
+      1
+    ) {
+      countdown.textContent =
+        "1 DAY";
+
+      return;
+    }
+
+    countdown.textContent =
+      `${daysUntilFriday} DAYS`;
+  }
+
+
+  function initialiseWeeklyScrollbar(): void {
+    const contentWindow =
+      document.querySelector<HTMLElement>(
+        "#weekly-feed-panel"
+      );
+
+    const scrollbar =
+      document.querySelector<HTMLElement>(
+        "#weekly-scrollbar"
+      );
+
+    const scrollbarThumb =
+      document.querySelector<HTMLElement>(
+        "#weekly-scrollbar-thumb"
+      );
+
+    if (
+      !contentWindow ||
+      !scrollbar ||
+      !scrollbarThumb
+    ) {
+      return;
+    }
+
+    if (
+      scrollbar.dataset.initialised ===
+      "true"
+    ) {
+      return;
+    }
+
+    scrollbar.dataset.initialised =
+      "true";
+
+
+    function updateScrollbar(): void {
+      const trackHeight =
+        scrollbar.clientHeight;
+
+      const maximumScroll =
+        Math.max(
+          0,
+          contentWindow.scrollHeight -
+            contentWindow.clientHeight
+        );
+
+      const visibleRatio =
+        contentWindow.scrollHeight > 0
+          ? contentWindow.clientHeight /
+            contentWindow.scrollHeight
+          : 1;
+
+      const thumbHeight =
+        Math.min(
+          trackHeight,
+          Math.max(
+            52,
+            trackHeight *
+              visibleRatio
+          )
+        );
+
+      const movementDistance =
+        Math.max(
+          0,
+          trackHeight -
+            thumbHeight
+        );
+
+      const scrollProgress =
+        maximumScroll > 0
+          ? contentWindow.scrollTop /
+            maximumScroll
+          : 0;
+
+      scrollbarThumb.style.height =
+        `${thumbHeight}px`;
+
+      scrollbarThumb.style.transform =
+        `translateY(${
+          scrollProgress *
+          movementDistance
+        }px)`;
+
+      scrollbar.classList.toggle(
+        "is-static",
+        maximumScroll === 0
+      );
+    }
+
+
+    contentWindow.addEventListener(
+      "scroll",
+      updateScrollbar,
+      {
+        passive: true,
+      }
+    );
+
+
+    scrollbar.addEventListener(
+      "click",
+      (
+        event:
+          MouseEvent
+      ) => {
+        if (
+          event.target ===
+          scrollbarThumb
+        ) {
+          return;
         }
 
-      </div>
-    </section>
-  </Fragment>
-</InternalPageLayout>
+        const bounds =
+          scrollbar.getBoundingClientRect();
+
+        const pointerPosition =
+          event.clientY -
+          bounds.top;
+
+        const percentage =
+          Math.max(
+            0,
+            Math.min(
+              1,
+              pointerPosition /
+                bounds.height
+            )
+          );
+
+        const maximumScroll =
+          Math.max(
+            0,
+            contentWindow.scrollHeight -
+              contentWindow.clientHeight
+          );
+
+        contentWindow.scrollTop =
+          percentage *
+          maximumScroll;
+      }
+    );
+
+
+    let isDragging =
+      false;
+
+    let dragStartY =
+      0;
+
+    let dragStartScroll =
+      0;
+
+
+    scrollbarThumb.addEventListener(
+      "pointerdown",
+      (
+        event:
+          PointerEvent
+      ) => {
+        isDragging =
+          true;
+
+        dragStartY =
+          event.clientY;
+
+        dragStartScroll =
+          contentWindow.scrollTop;
+
+        scrollbarThumb.setPointerCapture(
+          event.pointerId
+        );
+
+        scrollbarThumb.classList.add(
+          "is-dragging"
+        );
+
+        event.preventDefault();
+      }
+    );
+
+
+    scrollbarThumb.addEventListener(
+      "pointermove",
+      (
+        event:
+          PointerEvent
+      ) => {
+        if (
+          !isDragging
+        ) {
+          return;
+        }
+
+        const maximumScroll =
+          Math.max(
+            0,
+            contentWindow.scrollHeight -
+              contentWindow.clientHeight
+          );
+
+        const thumbHeight =
+          scrollbarThumb.offsetHeight;
+
+        const movementDistance =
+          Math.max(
+            1,
+            scrollbar.clientHeight -
+              thumbHeight
+          );
+
+        const pointerMovement =
+          event.clientY -
+          dragStartY;
+
+        contentWindow.scrollTop =
+          dragStartScroll +
+          (
+            pointerMovement /
+            movementDistance
+          ) *
+          maximumScroll;
+      }
+    );
+
+
+    function stopDragging(): void {
+      isDragging =
+        false;
+
+      scrollbarThumb.classList.remove(
+        "is-dragging"
+      );
+    }
+
+
+    scrollbarThumb.addEventListener(
+      "pointerup",
+      stopDragging
+    );
+
+    scrollbarThumb.addEventListener(
+      "pointercancel",
+      stopDragging
+    );
+
+
+    const resizeObserver =
+      new ResizeObserver(
+        updateScrollbar
+      );
+
+    resizeObserver.observe(
+      contentWindow
+    );
+
+    resizeObserver.observe(
+      scrollbar
+    );
+
+
+    window.addEventListener(
+      "resize",
+      updateScrollbar
+    );
+
+
+    window.requestAnimationFrame(
+      updateScrollbar
+    );
+  }
+
+
+  function initialiseWeeklyPage(): void {
+    updateWeeklyCountdown();
+    initialiseWeeklyScrollbar();
+  }
+
+
+  if (
+    document.readyState ===
+    "loading"
+  ) {
+    document.addEventListener(
+      "DOMContentLoaded",
+      initialiseWeeklyPage,
+      {
+        once: true,
+      }
+    );
+  } else {
+    initialiseWeeklyPage();
+  }
+
+
+  document.addEventListener(
+    "astro:page-load",
+    initialiseWeeklyPage
+  );
+</script>
