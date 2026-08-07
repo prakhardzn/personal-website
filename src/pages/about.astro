@@ -1,54 +1,19 @@
 ---
 import InternalPageLayout from "../layouts/InternalPageLayout.astro";
+import { getCollection } from "astro:content";
 import "../styles/about.css";
 
-const projectFiles = [
-  {
-    number: "PROJECT FILE 001",
-    title: "QAID",
-    metadata: "SHORT FILM · DIRECTOR AND DOP",
-    description:
-      "A psychological thriller about a man trapped inside a repeating cycle where memory, time and reality begin collapsing into one another.",
-    status: "COMPLETED",
-    statusType: "completed",
-  },
-  {
-    number: "PROJECT FILE 002",
-    title: "KSHITIJ",
-    metadata: "SHORT FILM · WRITER AND DIRECTOR",
-    description:
-      "A short film about photography, consent and the uneasy distance between observing someone and truly understanding them.",
-    status: "COMPLETED",
-    statusType: "completed",
-  },
-  {
-    number: "PROJECT FILE 003",
-    title: "DUNE POSTER TYPOGRAPHY",
-    metadata: "TYPOGRAPHY · POSTER DESIGN",
-    description:
-      "A typography project inspired by Dune, exploring hierarchy, scale, atmosphere and cinematic tension through poster design.",
-    status: "COMPLETED",
-    statusType: "completed",
-  },
-  {
-    number: "PROJECT FILE 004",
-    title: "ZOO TITLE SEQUENCE",
-    metadata: "MOTION DESIGN · TITLE SEQUENCE",
-    description:
-      "A title sequence for Zoo by Bert Haanstra, using observational imagery, playful timing and typography inspired by the film’s humour.",
-    status: "COMPLETED",
-    statusType: "completed",
-  },
-  {
-    number: "PROJECT FILE 005",
-    title: "STREET PHOTOGRAPHY",
-    metadata: "PHOTOGRAPHY · VISUAL DOCUMENTATION",
-    description:
-      "A growing collection of photographs exploring public movement, everyday routines, visual layers and small moments found across ordinary spaces.",
-    status: "WORK IN PROGRESS",
-    statusType: "working",
-  },
-];
+/* ==================================================
+   WORK PROJECTS
+   Loaded entirely from Markdown:
+   src/content/work/*.md
+=================================================== */
+
+const workEntries = await getCollection("work");
+
+const projectFiles = workEntries
+  .filter((project) => !project.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
 
 const interestFiles = [
   {
@@ -133,7 +98,6 @@ const vaultFiles = [
       </div>
     </figure>
 
-
     <section class="about-profile-card">
       <!-- Main profile -->
 
@@ -164,7 +128,6 @@ const vaultFiles = [
             </span>
           </header>
 
-
           <div class="about-profile-grid">
             <div class="about-profile-cell about-profile-cell--label">
               NAME
@@ -181,7 +144,6 @@ const vaultFiles = [
               </div>
             </div>
 
-
             <div class="about-profile-cell about-profile-cell--label">
               PRONOUNS
             </div>
@@ -196,7 +158,6 @@ const vaultFiles = [
                 <strong>ENFP</strong>
               </div>
             </div>
-
 
             <div class="about-profile-cell about-profile-cell--label">
               BDAY
@@ -213,7 +174,6 @@ const vaultFiles = [
               </div>
             </div>
 
-
             <div class="about-profile-cell about-profile-cell--label">
               LOCATION
             </div>
@@ -227,7 +187,6 @@ const vaultFiles = [
               aria-hidden="true"
             ></div>
 
-
             <div class="about-profile-cell about-profile-cell--label">
               STRENGTH
             </div>
@@ -240,7 +199,6 @@ const vaultFiles = [
               class="about-profile-cell about-profile-cell--badge"
               aria-hidden="true"
             ></div>
-
 
             <div class="about-profile-cell about-profile-cell--label">
               WEAKNESS
@@ -257,7 +215,6 @@ const vaultFiles = [
           </div>
         </div>
       </div>
-
 
       <!-- Work information -->
 
@@ -295,7 +252,6 @@ const vaultFiles = [
         </dl>
       </div>
 
-
       <!-- Interests information -->
 
       <div
@@ -331,7 +287,6 @@ const vaultFiles = [
           </div>
         </dl>
       </div>
-
 
       <!-- Vault information -->
 
@@ -370,7 +325,6 @@ const vaultFiles = [
       </div>
     </section>
   </div>
-
 
   <!-- ==================================================
        RIGHT COLUMN
@@ -417,7 +371,6 @@ const vaultFiles = [
         VAULT
       </button>
     </nav>
-
 
     <div class="about-content-stage">
       <div
@@ -469,7 +422,6 @@ const vaultFiles = [
           </footer>
         </section>
 
-
         <!-- Work -->
 
         <section
@@ -495,12 +447,12 @@ const vaultFiles = [
                   style={`--project-delay: ${index * 70}ms;`}
                 >
                   <div class="about-file-card__top">
-                    <span>{project.number}</span>
+                    <span>{project.data.number}</span>
 
                     <div
                       class:list={[
                         "about-project-status",
-                        project.statusType === "working" &&
+                        project.data.statusType === "working" &&
                           "about-project-status--working",
                       ]}
                     >
@@ -509,18 +461,18 @@ const vaultFiles = [
                         aria-hidden="true"
                       ></span>
 
-                      <strong>{project.status}</strong>
+                      <strong>{project.data.status}</strong>
                     </div>
                   </div>
 
-                  <h2>{project.title}</h2>
+                  <h2>{project.data.title}</h2>
 
                   <p class="about-file-card__metadata">
-                    {project.metadata}
+                    {project.data.metadata}
                   </p>
 
                   <p class="about-file-card__description">
-                    {project.description}
+                    {project.data.description}
                   </p>
 
                   <span class="about-file-card__link">
@@ -531,7 +483,6 @@ const vaultFiles = [
             }
           </div>
         </section>
-
 
         <!-- Interests -->
 
@@ -583,7 +534,6 @@ const vaultFiles = [
           </div>
         </section>
 
-
         <!-- Vault -->
 
         <section
@@ -618,7 +568,6 @@ const vaultFiles = [
         </section>
       </div>
 
-
       <div
         class="about-scrollbar"
         id="about-scrollbar"
@@ -632,7 +581,6 @@ const vaultFiles = [
     </div>
   </div>
 </InternalPageLayout>
-
 
 <script>
   const validAboutTabs = [
@@ -675,7 +623,6 @@ const vaultFiles = [
       "#about-scrollbar-thumb"
     );
 
-
   function isAboutTab(
     value: string
   ): value is AboutTab {
@@ -683,7 +630,6 @@ const vaultFiles = [
       value as AboutTab
     );
   }
-
 
   function restartEntryAnimation(
     element: HTMLElement | undefined
@@ -698,7 +644,6 @@ const vaultFiles = [
 
     element.classList.add("is-entering");
   }
-
 
   function updateScrollbar(): void {
     if (
@@ -757,7 +702,6 @@ const vaultFiles = [
         scrollProgress * movementRange
       }px)`;
   }
-
 
   function activateAboutTab(
     tabName: AboutTab,
@@ -831,7 +775,6 @@ const vaultFiles = [
     );
   }
 
-
   tabButtons.forEach((button) => {
     button.addEventListener(
       "click",
@@ -850,7 +793,6 @@ const vaultFiles = [
       }
     );
   });
-
 
   const initialHash =
     window.location.hash.replace(
@@ -873,7 +815,6 @@ const vaultFiles = [
     );
   }
 
-
   contentWindow?.addEventListener(
     "scroll",
     updateScrollbar,
@@ -881,7 +822,6 @@ const vaultFiles = [
       passive: true,
     }
   );
-
 
   scrollbar?.addEventListener(
     "pointerdown",
@@ -937,7 +877,6 @@ const vaultFiles = [
         maximumScroll;
     }
   );
-
 
   scrollbarThumb?.addEventListener(
     "pointerdown",
@@ -1043,7 +982,6 @@ const vaultFiles = [
     }
   );
 
-
   if ("ResizeObserver" in window) {
     const observer =
       new ResizeObserver(
@@ -1067,7 +1005,6 @@ const vaultFiles = [
     updateScrollbar
   );
 
-
   /* Portrait fallback */
 
   const aboutPhoto =
@@ -1080,7 +1017,6 @@ const vaultFiles = [
       "#about-photo-fallback"
     );
 
-
   function showPhoto(): void {
     if (aboutPhoto) {
       aboutPhoto.hidden = false;
@@ -1091,7 +1027,6 @@ const vaultFiles = [
     }
   }
 
-
   function showPhotoFallback(): void {
     if (aboutPhoto) {
       aboutPhoto.hidden = true;
@@ -1101,7 +1036,6 @@ const vaultFiles = [
       photoFallback.hidden = false;
     }
   }
-
 
   aboutPhoto?.addEventListener(
     "load",
