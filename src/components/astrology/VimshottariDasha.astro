@@ -1,0 +1,1347 @@
+<section
+  class="vimshottari"
+  data-vimshottari-dasha
+  aria-labelledby="vimshottari-title"
+>
+  <!-- ==================================================
+       STATUS
+  =================================================== -->
+
+  <div class="vimshottari__statusbar">
+    <div>
+      <span
+        class="vimshottari__signal"
+        aria-hidden="true"
+      ></span>
+
+      <strong>
+        TEMPORAL MATRIX // ACTIVE
+      </strong>
+    </div>
+
+    <span data-dasha-status>
+      AWAITING D1 DATA
+    </span>
+  </div>
+
+  <!-- ==================================================
+       HEADER
+  =================================================== -->
+
+  <header class="vimshottari__header">
+    <div>
+      <p>
+        VIMSHOTTARI // 120 YEAR CYCLE
+      </p>
+
+      <h3 id="vimshottari-title">
+        Mahadasha Timeline
+      </h3>
+
+      <span>
+        Planetary periods calculated from
+        the exact sidereal longitude of the
+        birth Moon.
+      </span>
+    </div>
+
+    <strong
+      class="vimshottari__convention"
+    >
+      365.25 DAY YEAR
+    </strong>
+  </header>
+
+  <!-- ==================================================
+       SUMMARY
+  =================================================== -->
+
+  <div class="vimshottari__summary">
+    <div>
+      <span>
+        JANMA NAKSHATRA
+      </span>
+
+      <strong
+        data-dasha-moon-nakshatra
+      >
+        —
+      </strong>
+    </div>
+
+    <div>
+      <span>
+        DASHA AT BIRTH
+      </span>
+
+      <strong
+        data-dasha-birth-period
+      >
+        —
+      </strong>
+    </div>
+
+    <div>
+      <span>
+        BALANCE AT BIRTH
+      </span>
+
+      <strong
+        data-dasha-birth-balance
+      >
+        —
+      </strong>
+    </div>
+
+    <div>
+      <span>
+        CURRENT PERIOD
+      </span>
+
+      <strong
+        data-dasha-current-period
+      >
+        —
+      </strong>
+    </div>
+  </div>
+
+  <!-- ==================================================
+       CURRENT PERIOD
+  =================================================== -->
+
+  <section
+    class="vimshottari-current"
+  >
+    <header>
+      <div>
+        <p>
+          CURRENT TEMPORAL WINDOW
+        </p>
+
+        <h4
+          data-dasha-current-title
+        >
+          AWAITING CALCULATION
+        </h4>
+      </div>
+
+      <span
+        data-dasha-current-date
+      >
+        —
+      </span>
+    </header>
+
+    <div
+      class="vimshottari-current__periods"
+    >
+      <div>
+        <span>
+          MAHADASHA
+        </span>
+
+        <strong
+          data-current-mahadasha
+        >
+          —
+        </strong>
+
+        <small
+          data-current-mahadasha-dates
+        >
+          —
+        </small>
+
+        <div
+          class="vimshottari-progress"
+          aria-hidden="true"
+        >
+          <span
+            data-current-mahadasha-progress
+          ></span>
+        </div>
+      </div>
+
+      <div>
+        <span>
+          ANTARDASHA
+        </span>
+
+        <strong
+          data-current-antardasha
+        >
+          —
+        </strong>
+
+        <small
+          data-current-antardasha-dates
+        >
+          —
+        </small>
+
+        <div
+          class="vimshottari-progress"
+          aria-hidden="true"
+        >
+          <span
+            data-current-antardasha-progress
+          ></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================
+       MAHADASHA TIMELINE
+  =================================================== -->
+
+  <section class="vimshottari-panel">
+    <header class="vimshottari-panel__header">
+      <div>
+        <p>
+          LEVEL 01
+        </p>
+
+        <h4>
+          Mahadasha Sequence
+        </h4>
+      </div>
+
+      <span>
+        CLICK A PERIOD TO INSPECT ITS ANTARDASHAS
+      </span>
+    </header>
+
+    <div
+      class="vimshottari-table-wrapper"
+    >
+      <table
+        class="vimshottari-table"
+      >
+        <thead>
+          <tr>
+            <th>
+              LORD
+            </th>
+
+            <th>
+              START
+            </th>
+
+            <th>
+              END
+            </th>
+
+            <th>
+              DURATION
+            </th>
+
+            <th>
+              STATUS
+            </th>
+          </tr>
+        </thead>
+
+        <tbody
+          data-mahadasha-table-body
+        ></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================================================
+       ANTARDASHA
+  =================================================== -->
+
+  <section class="vimshottari-panel">
+    <header class="vimshottari-panel__header">
+      <div>
+        <p>
+          LEVEL 02
+        </p>
+
+        <h4
+          data-antardasha-title
+        >
+          Antardasha Sequence
+        </h4>
+      </div>
+
+      <span
+        data-antardasha-context
+      >
+        SELECT A MAHADASHA
+      </span>
+    </header>
+
+    <div
+      class="vimshottari-table-wrapper"
+    >
+      <table
+        class="vimshottari-table"
+      >
+        <thead>
+          <tr>
+            <th>
+              PERIOD
+            </th>
+
+            <th>
+              START
+            </th>
+
+            <th>
+              END
+            </th>
+
+            <th>
+              DURATION
+            </th>
+
+            <th>
+              STATUS
+            </th>
+          </tr>
+        </thead>
+
+        <tbody
+          data-antardasha-table-body
+        ></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================================================
+       CALCULATION NOTES
+  =================================================== -->
+
+  <section class="vimshottari__notes">
+    <strong>
+      DASHA CALCULATION NOTES
+    </strong>
+
+    <ul data-dasha-notes>
+      <li>
+        Waiting for a calculated D1 chart.
+      </li>
+    </ul>
+  </section>
+</section>
+
+<script>
+  import {
+    calculateVimshottariDasha,
+  } from "../../lib/astrology/vimshottari";
+
+  import type {
+    AntardashaPeriod,
+    MahadashaPeriod,
+    VimshottariResult,
+  } from "../../lib/astrology/vimshottari";
+
+  import type {
+    BirthChartResult,
+  } from "../../lib/astrology/types";
+
+  const root =
+    document.querySelector<HTMLElement>(
+      "[data-vimshottari-dasha]"
+    );
+
+  const outputRoot =
+    root?.closest<HTMLElement>(
+      "[data-birth-chart-output]"
+    ) ??
+    null;
+
+  const queryRoot = <
+    ElementType extends Element
+  >(
+    selector: string
+  ): ElementType | null => {
+    return (
+      root?.querySelector<ElementType>(
+        selector
+      ) ??
+      null
+    );
+  };
+
+  let latestResult:
+    VimshottariResult |
+    null = null;
+
+  /* =========================================================
+     TEXT
+  ========================================================= */
+
+  const setText = (
+    selector: string,
+    value: string
+  ): void => {
+    const element =
+      queryRoot<HTMLElement>(
+        selector
+      );
+
+    if (
+      element
+    ) {
+      element.textContent =
+        value;
+    }
+  };
+
+  const setTabStatus = (
+    status:
+      "WAIT" |
+      "READY" |
+      "ERROR"
+  ): void => {
+    const element =
+      outputRoot?.querySelector<HTMLElement>(
+        "[data-dasha-tab-status]"
+      );
+
+    if (
+      !element
+    ) {
+      return;
+    }
+
+    element.textContent =
+      status;
+
+    element.classList.toggle(
+      "is-ready",
+      status === "READY"
+    );
+  };
+
+  /* =========================================================
+     DATE FORMAT
+  ========================================================= */
+
+  const formatDate = (
+    isoDate: string
+  ): string => {
+    const date =
+      new Date(
+        isoDate
+      );
+
+    return new Intl.DateTimeFormat(
+      "en-GB",
+      {
+        day:
+          "2-digit",
+
+        month:
+          "short",
+
+        year:
+          "numeric",
+
+        timeZone:
+          "UTC",
+      }
+    )
+      .format(date)
+      .toUpperCase();
+  };
+
+  /* =========================================================
+     DURATION
+  ========================================================= */
+
+  const formatDuration = (
+    years: number
+  ): string => {
+    const yearDays =
+      365.25;
+
+    const monthDays =
+      yearDays /
+      12;
+
+    let totalDays =
+      Math.max(
+        0,
+        years *
+        yearDays
+      );
+
+    const wholeYears =
+      Math.floor(
+        totalDays /
+        yearDays
+      );
+
+    totalDays -=
+      wholeYears *
+      yearDays;
+
+    const months =
+      Math.floor(
+        totalDays /
+        monthDays
+      );
+
+    totalDays -=
+      months *
+      monthDays;
+
+    const days =
+      Math.round(
+        totalDays
+      );
+
+    const parts:
+      string[] = [];
+
+    if (
+      wholeYears >
+      0
+    ) {
+      parts.push(
+        `${wholeYears}Y`
+      );
+    }
+
+    if (
+      months >
+      0
+    ) {
+      parts.push(
+        `${months}M`
+      );
+    }
+
+    if (
+      days >
+        0 ||
+      parts.length ===
+        0
+    ) {
+      parts.push(
+        `${days}D`
+      );
+    }
+
+    return parts.join(
+      " "
+    );
+  };
+
+  /* =========================================================
+     PROGRESS
+  ========================================================= */
+
+  const calculateProgress = (
+    startDate:
+      string,
+
+    endDate:
+      string,
+
+    currentDate:
+      string
+  ): number => {
+    const start =
+      new Date(
+        startDate
+      ).getTime();
+
+    const end =
+      new Date(
+        endDate
+      ).getTime();
+
+    const current =
+      new Date(
+        currentDate
+      ).getTime();
+
+    if (
+      !Number.isFinite(
+        start
+      ) ||
+      !Number.isFinite(
+        end
+      ) ||
+      end <=
+        start
+    ) {
+      return 0;
+    }
+
+    return Math.min(
+      100,
+      Math.max(
+        0,
+
+        (
+          (
+            current -
+            start
+          ) /
+          (
+            end -
+            start
+          )
+        ) *
+        100
+      )
+    );
+  };
+
+  const setProgress = (
+    selector:
+      string,
+
+    percentage:
+      number
+  ): void => {
+    const bar =
+      queryRoot<HTMLElement>(
+        selector
+      );
+
+    if (
+      bar
+    ) {
+      bar.style.width =
+        `${percentage}%`;
+    }
+  };
+
+  /* =========================================================
+     TABLE HELPERS
+  ========================================================= */
+
+  const createCell = (
+    tag:
+      "th" |
+      "td",
+
+    value:
+      string
+  ): HTMLTableCellElement => {
+    const cell =
+      document.createElement(
+        tag
+      );
+
+    cell.textContent =
+      value;
+
+    return cell;
+  };
+
+  const getPeriodStatus = (
+    period: {
+      containsBirth:
+        boolean;
+
+      isCurrent:
+        boolean;
+
+      isPartialAtBirth:
+        boolean;
+
+      isPartialAtHorizon:
+        boolean;
+    }
+  ): string => {
+    const labels:
+      string[] = [];
+
+    if (
+      period.isCurrent
+    ) {
+      labels.push(
+        "CURRENT"
+      );
+    }
+
+    if (
+      period.containsBirth
+    ) {
+      labels.push(
+        "BIRTH"
+      );
+    }
+
+    if (
+      period.isPartialAtBirth
+    ) {
+      labels.push(
+        "BALANCE"
+      );
+    }
+
+    if (
+      period.isPartialAtHorizon
+    ) {
+      labels.push(
+        "PARTIAL"
+      );
+    }
+
+    return (
+      labels.join(
+        " // "
+      ) ||
+      "COMPLETE"
+    );
+  };
+
+  /* =========================================================
+     ANTARDASHAS
+  ========================================================= */
+
+  const renderAntardashas = (
+    mahadasha:
+      MahadashaPeriod
+  ): void => {
+    const tbody =
+      queryRoot<HTMLTableSectionElement>(
+        "[data-antardasha-table-body]"
+      );
+
+    if (
+      !tbody
+    ) {
+      return;
+    }
+
+    tbody.replaceChildren();
+
+    setText(
+      "[data-antardasha-title]",
+
+      `${mahadasha.lord} Mahadasha`
+    );
+
+    setText(
+      "[data-antardasha-context]",
+
+      `${formatDate(
+        mahadasha.startDate
+      )} → ${formatDate(
+        mahadasha.endDate
+      )}`
+    );
+
+    mahadasha.antardashas.forEach(
+      (
+        period
+      ) => {
+        const row =
+          document.createElement(
+            "tr"
+          );
+
+        if (
+          period.isCurrent
+        ) {
+          row.classList.add(
+            "is-current"
+          );
+        }
+
+        if (
+          period.containsBirth
+        ) {
+          row.classList.add(
+            "contains-birth"
+          );
+        }
+
+        const periodCell =
+          document.createElement(
+            "th"
+          );
+
+        periodCell.scope =
+          "row";
+
+        periodCell.textContent =
+          `${period.mahadashaLord} / ${period.lord}`;
+
+        row.append(
+          periodCell,
+
+          createCell(
+            "td",
+            formatDate(
+              period.startDate
+            )
+          ),
+
+          createCell(
+            "td",
+            formatDate(
+              period.endDate
+            )
+          ),
+
+          createCell(
+            "td",
+            formatDuration(
+              period.durationYears
+            )
+          ),
+
+          createCell(
+            "td",
+            getPeriodStatus(
+              period
+            )
+          )
+        );
+
+        tbody.append(
+          row
+        );
+      }
+    );
+
+    root
+      ?.querySelectorAll<HTMLButtonElement>(
+        "[data-mahadasha-select]"
+      )
+      .forEach(
+        (
+          button
+        ) => {
+          button.classList.toggle(
+            "is-selected",
+
+            button.dataset
+              .mahadashaSelect ===
+              mahadasha.id
+          );
+        }
+      );
+  };
+
+  /* =========================================================
+     MAHADASHA TABLE
+  ========================================================= */
+
+  const renderMahadashas = (
+    result:
+      VimshottariResult
+  ): void => {
+    const tbody =
+      queryRoot<HTMLTableSectionElement>(
+        "[data-mahadasha-table-body]"
+      );
+
+    if (
+      !tbody
+    ) {
+      return;
+    }
+
+    tbody.replaceChildren();
+
+    result.mahadashas.forEach(
+      (
+        period
+      ) => {
+        const row =
+          document.createElement(
+            "tr"
+          );
+
+        if (
+          period.isCurrent
+        ) {
+          row.classList.add(
+            "is-current"
+          );
+        }
+
+        if (
+          period.containsBirth
+        ) {
+          row.classList.add(
+            "contains-birth"
+          );
+        }
+
+        const lordCell =
+          document.createElement(
+            "th"
+          );
+
+        lordCell.scope =
+          "row";
+
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.type =
+          "button";
+
+        button.className =
+          "vimshottari-period-button";
+
+        button.dataset
+          .mahadashaSelect =
+          period.id;
+
+        button.textContent =
+          period.lord;
+
+        button.addEventListener(
+          "click",
+          () => {
+            renderAntardashas(
+              period
+            );
+          }
+        );
+
+        lordCell.append(
+          button
+        );
+
+        row.append(
+          lordCell,
+
+          createCell(
+            "td",
+            formatDate(
+              period.startDate
+            )
+          ),
+
+          createCell(
+            "td",
+            formatDate(
+              period.endDate
+            )
+          ),
+
+          createCell(
+            "td",
+            formatDuration(
+              period.durationYears
+            )
+          ),
+
+          createCell(
+            "td",
+            getPeriodStatus(
+              period
+            )
+          )
+        );
+
+        tbody.append(
+          row
+        );
+      }
+    );
+
+    const defaultMahadasha =
+      result.mahadashas.find(
+        (
+          period
+        ) =>
+          period.id ===
+          result.currentMahadasha
+            ?.id
+      ) ??
+      result.mahadashas.find(
+        (
+          period
+        ) =>
+          period.containsBirth
+      ) ??
+      result.mahadashas[0];
+
+    if (
+      defaultMahadasha
+    ) {
+      renderAntardashas(
+        defaultMahadasha
+      );
+    }
+  };
+
+  /* =========================================================
+     CURRENT PERIOD
+  ========================================================= */
+
+  const renderCurrentPeriod = (
+    result:
+      VimshottariResult
+  ): void => {
+    setText(
+      "[data-dasha-current-date]",
+
+      formatDate(
+        result.currentDateTime
+      )
+    );
+
+    if (
+      !result.currentMahadasha
+    ) {
+      setText(
+        "[data-dasha-current-title]",
+        "NO ACTIVE PERIOD FOUND"
+      );
+
+      setText(
+        "[data-current-mahadasha]",
+        "—"
+      );
+
+      setText(
+        "[data-current-antardasha]",
+        "—"
+      );
+
+      return;
+    }
+
+    const mahadasha =
+      result.currentMahadasha;
+
+    const antardasha =
+      result.currentAntardasha;
+
+    setText(
+      "[data-dasha-current-title]",
+
+      antardasha
+        ? `${mahadasha.lord} / ${antardasha.lord}`
+        : mahadasha.lord
+    );
+
+    setText(
+      "[data-current-mahadasha]",
+      mahadasha.lord
+    );
+
+    setText(
+      "[data-current-mahadasha-dates]",
+
+      `${formatDate(
+        mahadasha.fullStartDate
+      )} → ${formatDate(
+        mahadasha.fullEndDate
+      )}`
+    );
+
+    setProgress(
+      "[data-current-mahadasha-progress]",
+
+      calculateProgress(
+        mahadasha.fullStartDate,
+        mahadasha.fullEndDate,
+        result.currentDateTime
+      )
+    );
+
+    if (
+      antardasha
+    ) {
+      setText(
+        "[data-current-antardasha]",
+        antardasha.lord
+      );
+
+      setText(
+        "[data-current-antardasha-dates]",
+
+        `${formatDate(
+          antardasha.fullStartDate
+        )} → ${formatDate(
+          antardasha.fullEndDate
+        )}`
+      );
+
+      setProgress(
+        "[data-current-antardasha-progress]",
+
+        calculateProgress(
+          antardasha.fullStartDate,
+          antardasha.fullEndDate,
+          result.currentDateTime
+        )
+      );
+    }
+  };
+
+  /* =========================================================
+     NOTES
+  ========================================================= */
+
+  const renderNotes = (
+    result:
+      VimshottariResult
+  ): void => {
+    const list =
+      queryRoot<HTMLUListElement>(
+        "[data-dasha-notes]"
+      );
+
+    if (
+      !list
+    ) {
+      return;
+    }
+
+    list.replaceChildren();
+
+    result.notes.forEach(
+      (
+        note
+      ) => {
+        const item =
+          document.createElement(
+            "li"
+          );
+
+        item.textContent =
+          note;
+
+        list.append(
+          item
+        );
+      }
+    );
+  };
+
+  /* =========================================================
+     COMPLETE RENDER
+  ========================================================= */
+
+  const renderDasha = (
+    result:
+      VimshottariResult
+  ): void => {
+    latestResult =
+      result;
+
+    setText(
+      "[data-dasha-status]",
+      "DASHA DERIVED"
+    );
+
+    setText(
+      "[data-dasha-moon-nakshatra]",
+
+      `${result.moonNakshatra} // ${result.birthMahadashaLord}`
+    );
+
+    setText(
+      "[data-dasha-birth-period]",
+
+      result.birthAntardasha
+        ? `${result.birthMahadashaLord} / ${result.birthAntardasha.lord}`
+        : result.birthMahadashaLord
+    );
+
+    setText(
+      "[data-dasha-birth-balance]",
+
+      `${formatDuration(
+        result.birthBalanceYears
+      )} // ${result.birthBalancePercent.toFixed(
+        2
+      )}%`
+    );
+
+    setText(
+      "[data-dasha-current-period]",
+
+      result.currentMahadasha
+        ? (
+            result.currentAntardasha
+              ? `${result.currentMahadasha.lord} / ${result.currentAntardasha.lord}`
+              : result.currentMahadasha.lord
+          )
+        : "—"
+    );
+
+    renderCurrentPeriod(
+      result
+    );
+
+    renderMahadashas(
+      result
+    );
+
+    renderNotes(
+      result
+    );
+
+    setTabStatus(
+      "READY"
+    );
+
+    window.dispatchEvent(
+      new CustomEvent(
+        "astrology:content-resized"
+      )
+    );
+  };
+
+  /* =========================================================
+     RECEIVE D1
+  ========================================================= */
+
+  window.addEventListener(
+    "astrology:birth-chart-calculated",
+    (
+      event:
+        Event
+    ) => {
+      const customEvent =
+        event as
+          CustomEvent<
+            BirthChartResult
+          >;
+
+      const birthChart =
+        customEvent.detail;
+
+      if (
+        !birthChart
+      ) {
+        setTabStatus(
+          "ERROR"
+        );
+
+        return;
+      }
+
+      try {
+        const result =
+          calculateVimshottariDasha(
+            birthChart,
+            new Date()
+          );
+
+        renderDasha(
+          result
+        );
+      } catch (
+        error
+      ) {
+        console.error(
+          "Vimshottari calculation failed:",
+          error
+        );
+
+        setText(
+          "[data-dasha-status]",
+          "DASHA ERROR"
+        );
+
+        setTabStatus(
+          "ERROR"
+        );
+      }
+    }
+  );
+
+  /* =========================================================
+     RESET
+  ========================================================= */
+
+  window.addEventListener(
+    "astrology:birth-chart-reset",
+    () => {
+      latestResult =
+        null;
+
+      setTabStatus(
+        "WAIT"
+      );
+
+      setText(
+        "[data-dasha-status]",
+        "AWAITING D1 DATA"
+      );
+
+      setText(
+        "[data-dasha-moon-nakshatra]",
+        "—"
+      );
+
+      setText(
+        "[data-dasha-birth-period]",
+        "—"
+      );
+
+      setText(
+        "[data-dasha-birth-balance]",
+        "—"
+      );
+
+      setText(
+        "[data-dasha-current-period]",
+        "—"
+      );
+
+      setText(
+        "[data-dasha-current-title]",
+        "AWAITING CALCULATION"
+      );
+
+      setText(
+        "[data-dasha-current-date]",
+        "—"
+      );
+
+      setText(
+        "[data-current-mahadasha]",
+        "—"
+      );
+
+      setText(
+        "[data-current-mahadasha-dates]",
+        "—"
+      );
+
+      setText(
+        "[data-current-antardasha]",
+        "—"
+      );
+
+      setText(
+        "[data-current-antardasha-dates]",
+        "—"
+      );
+
+      setProgress(
+        "[data-current-mahadasha-progress]",
+        0
+      );
+
+      setProgress(
+        "[data-current-antardasha-progress]",
+        0
+      );
+
+      queryRoot<HTMLTableSectionElement>(
+        "[data-mahadasha-table-body]"
+      )?.replaceChildren();
+
+      queryRoot<HTMLTableSectionElement>(
+        "[data-antardasha-table-body]"
+      )?.replaceChildren();
+    }
+  );
+</script>

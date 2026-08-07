@@ -1,10 +1,10 @@
 ---
-number: "PROJECT FILE 001"
-title: "QAID"
-metadata: "SHORT FILM · DIRECTOR AND DOP"
-description: "A psychological thriller about a man trapped inside a repeating cycle where memory, time and reality begin collapsing into one another."
-status: "COMPLETED"
-statusType: "completed"
+number: PROJECT FILE 001
+title: QAID
+metadata: SHORT FILM · DIRECTOR AND DOP
+description: QAID IS NOW BEING EDITED THROUGH OBSIDIAN.
+status: COMPLETED
+statusType: completed
 order: 1
 draft: false
 ---

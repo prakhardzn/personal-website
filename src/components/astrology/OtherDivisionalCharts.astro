@@ -1,0 +1,1559 @@
+---
+const zodiacSigns = [
+  "Aries",
+  "Taurus",
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpio",
+  "Sagittarius",
+  "Capricorn",
+  "Aquarius",
+  "Pisces",
+] as const;
+
+const houseLayouts = [
+  {
+    number: 1,
+    x: 300,
+    y: 150,
+    houseLabelY: -31,
+    signY: -7,
+    ascendantY: 16,
+    planetY: 30,
+  },
+
+  {
+    number: 2,
+    x: 150,
+    y: 50,
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 21,
+  },
+
+  {
+    number: 3,
+    x: 50,
+    y: 150,
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 22,
+  },
+
+  {
+    number: 4,
+    x: 150,
+    y: 300,
+    houseLabelY: -24,
+    signY: 2,
+    ascendantY: 0,
+    planetY: 26,
+  },
+
+  {
+    number: 5,
+    x: 50,
+    y: 450,
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 22,
+  },
+
+  {
+    number: 6,
+    x: 150,
+    y: 550,
+    houseLabelY: -3,
+    signY: 20,
+    ascendantY: 0,
+    planetY: -58,
+  },
+
+  {
+    number: 7,
+    x: 300,
+    y: 450,
+    houseLabelY: -31,
+    signY: -7,
+    ascendantY: 0,
+    planetY: 28,
+  },
+
+  {
+    number: 8,
+    x: 450,
+    y: 550,
+    houseLabelY: -3,
+    signY: 20,
+    ascendantY: 0,
+    planetY: -58,
+  },
+
+  {
+    number: 9,
+    x: 550,
+    y: 450,
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 22,
+  },
+
+  {
+    number: 10,
+    x: 450,
+    y: 300,
+    houseLabelY: -24,
+    signY: 2,
+    ascendantY: 0,
+    planetY: 26,
+  },
+
+  {
+    number: 11,
+    x: 550,
+    y: 150,
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 22,
+  },
+
+  {
+    number: 12,
+    x: 450,
+    y: 50,
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 21,
+  },
+] as const;
+---
+
+<section
+  class="other-vargas"
+  data-other-vargas
+>
+  <!-- ==================================================
+       STATUS
+  =================================================== -->
+
+  <div class="other-vargas__statusbar">
+    <div>
+      <span
+        class="other-vargas__signal"
+        aria-hidden="true"
+      ></span>
+
+      <strong>
+        VARGA MATRIX // ACTIVE
+      </strong>
+    </div>
+
+    <span data-other-varga-status>
+      AWAITING D1 DATA
+    </span>
+  </div>
+
+  <!-- ==================================================
+       HEADER
+  =================================================== -->
+
+  <header class="other-vargas__header">
+    <div>
+      <p data-other-varga-code>
+        D7 // SAPTAMSA
+      </p>
+
+      <h3 data-other-varga-name>
+        Saptamsa Matrix
+      </h3>
+
+      <span>
+        Additional divisional charts derived
+        from the exact same sidereal D1
+        planetary longitudes.
+      </span>
+    </div>
+
+    <div class="other-vargas__ascendant">
+      <span>
+        VARGA ASCENDANT
+      </span>
+
+      <strong data-other-varga-ascendant-sign>
+        —
+      </strong>
+
+      <small data-other-varga-ascendant-degree>
+        —
+      </small>
+    </div>
+  </header>
+
+  <!-- ==================================================
+       D7 / D10 / D12
+  =================================================== -->
+
+  <div
+    class="other-vargas__tabs"
+    role="tablist"
+    aria-label="Additional divisional charts"
+  >
+    <button
+      class="other-vargas__tab is-active"
+      type="button"
+      data-other-varga-select="D7"
+      aria-selected="true"
+    >
+      <span>
+        D7
+      </span>
+
+      <strong>
+        SAPTAMSA
+      </strong>
+
+      <small
+        data-other-varga-button-status="D7"
+      >
+        WAIT
+      </small>
+    </button>
+
+    <button
+      class="other-vargas__tab"
+      type="button"
+      data-other-varga-select="D10"
+      aria-selected="false"
+    >
+      <span>
+        D10
+      </span>
+
+      <strong>
+        DASHAMSA
+      </strong>
+
+      <small
+        data-other-varga-button-status="D10"
+      >
+        WAIT
+      </small>
+    </button>
+
+    <button
+      class="other-vargas__tab"
+      type="button"
+      data-other-varga-select="D12"
+      aria-selected="false"
+    >
+      <span>
+        D12
+      </span>
+
+      <strong>
+        DWADASHAMSA
+      </strong>
+
+      <small
+        data-other-varga-button-status="D12"
+      >
+        WAIT
+      </small>
+    </button>
+  </div>
+
+  <!-- ==================================================
+       SUMMARY
+  =================================================== -->
+
+  <div class="other-vargas__summary">
+    <div>
+      <span>
+        CHART
+      </span>
+
+      <strong data-other-summary-code>
+        D7
+      </strong>
+    </div>
+
+    <div>
+      <span>
+        ASCENDANT
+      </span>
+
+      <strong data-other-summary-ascendant>
+        —
+      </strong>
+    </div>
+
+    <div>
+      <span>
+        DIVISIONS
+      </span>
+
+      <strong data-other-summary-division>
+        7
+      </strong>
+    </div>
+
+    <div>
+      <span>
+        SEGMENT
+      </span>
+
+      <strong data-other-summary-segment>
+        —
+      </strong>
+    </div>
+  </div>
+
+  <!-- ==================================================
+       MAIN LAYOUT
+  =================================================== -->
+
+  <div class="other-vargas__layout">
+    <!-- ================================================
+         CHART
+    ================================================= -->
+
+    <figure class="other-varga-chart">
+      <div class="other-varga-chart__frame">
+        <svg
+          class="other-varga-chart__svg"
+          viewBox="0 0 600 600"
+          preserveAspectRatio="xMidYMid meet"
+          role="img"
+          aria-label="North Indian divisional chart"
+        >
+          <rect
+            x="4"
+            y="4"
+            width="592"
+            height="592"
+            fill="#020704"
+          />
+
+          <rect
+            x="4"
+            y="4"
+            width="592"
+            height="592"
+            fill="none"
+            stroke="#9cff6f"
+            stroke-width="2"
+            vector-effect="non-scaling-stroke"
+          />
+
+          <path
+            d="
+              M 300 4
+              L 596 300
+              L 300 596
+              L 4 300
+              Z
+            "
+            fill="none"
+            stroke="#76d851"
+            stroke-width="1.6"
+            vector-effect="non-scaling-stroke"
+          />
+
+          <path
+            d="
+              M 4 4
+              L 596 596
+            "
+            fill="none"
+            stroke="#5fa943"
+            stroke-width="1.3"
+            vector-effect="non-scaling-stroke"
+          />
+
+          <path
+            d="
+              M 596 4
+              L 4 596
+            "
+            fill="none"
+            stroke="#5fa943"
+            stroke-width="1.3"
+            vector-effect="non-scaling-stroke"
+          />
+
+          <circle
+            cx="300"
+            cy="300"
+            r="2.5"
+            fill="#91f562"
+            opacity="0.55"
+          />
+
+          {
+            houseLayouts.map((house) => (
+              <g
+                class:list={[
+                  "other-varga-chart__house",
+
+                  house.number === 1 &&
+                    "other-varga-chart__house--ascendant",
+                ]}
+                data-other-house={house.number}
+                transform={`translate(${house.x} ${house.y})`}
+              >
+                <text
+                  class="other-varga-chart__house-number"
+                  text-anchor="middle"
+                  x="0"
+                  y={house.houseLabelY}
+                  fill="#70836d"
+                >
+                  H{house.number}
+                </text>
+
+                <text
+                  class="other-varga-chart__sign"
+                  data-other-house-sign
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                  x="0"
+                  y={house.signY}
+                  fill="#dfff9f"
+                >
+                  —
+                </text>
+
+                <text
+                  class="other-varga-chart__asc"
+                  data-other-house-ascendant
+                  text-anchor="middle"
+                  x="0"
+                  y={house.ascendantY}
+                  fill="#70ffc2"
+                ></text>
+
+                <text
+                  class="other-varga-chart__planets"
+                  data-other-house-planets
+                  text-anchor="middle"
+                  x="0"
+                  y={house.planetY}
+                  fill="#ffffff"
+                ></text>
+              </g>
+            ))
+          }
+        </svg>
+      </div>
+
+      <div class="other-varga-chart__legend">
+        {
+          zodiacSigns.map(
+            (
+              sign,
+              index
+            ) => (
+              <span>
+                <strong>
+                  {index + 1}
+                </strong>
+
+                {sign}
+              </span>
+            )
+          )
+        }
+      </div>
+    </figure>
+
+    <!-- ================================================
+         TABLE
+    ================================================= -->
+
+    <aside class="other-varga-index">
+      <header>
+        <p>
+          VARGA INDEX
+        </p>
+
+        <h4 data-other-table-title>
+          D7 Placements
+        </h4>
+
+        <span>
+          Every position comes from the
+          already calculated D1 longitude.
+        </span>
+      </header>
+
+      <div class="other-varga-index__table-wrapper">
+        <table class="other-varga-index__table">
+          <thead>
+            <tr>
+              <th>
+                BODY
+              </th>
+
+              <th>
+                SIGN
+              </th>
+
+              <th>
+                HOUSE
+              </th>
+
+              <th>
+                DEGREE
+              </th>
+
+              <th>
+                D1 SOURCE
+              </th>
+            </tr>
+          </thead>
+
+          <tbody
+            data-other-varga-table-body
+          ></tbody>
+        </table>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ==================================================
+       NOTES
+  =================================================== -->
+
+  <section class="other-vargas__notes">
+    <strong data-other-notes-title>
+      D7 DERIVATION
+    </strong>
+
+    <ul data-other-varga-notes>
+      <li>
+        Waiting for a calculated D1 chart.
+      </li>
+    </ul>
+  </section>
+</section>
+
+<style>
+  .other-vargas {
+    display: grid;
+
+    gap: 14px;
+
+    min-width: 0;
+  }
+
+  /* =========================================================
+     STATUS
+  ========================================================= */
+
+  .other-vargas__statusbar {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    min-height: 40px;
+
+    padding:
+      9px
+      13px;
+
+    border:
+      1px solid
+      var(--astro-border);
+
+    border-left:
+      2px solid
+      var(--astro-mint);
+
+    background:
+      var(--astro-bg);
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+
+    letter-spacing:
+      0.07em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .other-vargas__statusbar > div {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+  }
+
+  .other-vargas__statusbar strong {
+    color:
+      var(--astro-mint);
+
+    font-weight: 400;
+  }
+
+  .other-vargas__signal {
+    width: 7px;
+    height: 7px;
+
+    background:
+      var(--astro-mint);
+
+    box-shadow:
+      0
+      0
+      8px
+      var(--astro-mint);
+
+    animation:
+      other-varga-pulse
+      1.5s
+      ease-in-out
+      infinite;
+  }
+
+  /* =========================================================
+     HEADER
+  ========================================================= */
+
+  .other-vargas__header {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 22px;
+
+    padding: 20px;
+
+    border:
+      1px solid
+      var(--astro-border);
+
+    border-left:
+      2px solid
+      var(--astro-mint);
+
+    background:
+      var(--astro-panel);
+  }
+
+  .other-vargas__header p {
+    margin:
+      0
+      0
+      7px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+
+    letter-spacing:
+      0.08em;
+  }
+
+  .other-vargas__header h3 {
+    margin:
+      0
+      0
+      9px;
+
+    color:
+      var(--astro-mint);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      clamp(
+        1.4rem,
+        2.4vw,
+        2rem
+      );
+
+    font-weight:
+      400;
+
+    text-transform:
+      uppercase;
+  }
+
+  .other-vargas__header
+    > div:first-child
+    > span {
+    color:
+      var(--astro-muted);
+
+    font-size:
+      var(--astro-text-meta);
+
+    line-height: 1.6;
+  }
+
+  /* =========================================================
+     ASCENDANT
+  ========================================================= */
+
+  .other-vargas__ascendant {
+    flex:
+      0
+      0
+      auto;
+
+    min-width: 165px;
+
+    padding:
+      11px
+      13px;
+
+    border:
+      1px solid
+      var(--astro-mint);
+
+    background:
+      var(--astro-bg);
+
+    text-align: right;
+  }
+
+  .other-vargas__ascendant span,
+  .other-vargas__ascendant strong,
+  .other-vargas__ascendant small {
+    display: block;
+
+    font-family:
+      var(--astro-display-font);
+  }
+
+  .other-vargas__ascendant span {
+    margin-bottom: 5px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-size:
+      var(--astro-text-micro);
+  }
+
+  .other-vargas__ascendant strong {
+    color:
+      #dfff9f;
+
+    font-size:
+      var(--astro-text-meta);
+
+    font-weight: 400;
+
+    text-transform:
+      uppercase;
+  }
+
+  .other-vargas__ascendant small {
+    margin-top: 5px;
+
+    color:
+      var(--astro-white);
+
+    font-size:
+      var(--astro-text-micro);
+  }
+
+  /* =========================================================
+     INTERNAL TABS
+  ========================================================= */
+
+  .other-vargas__tabs {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap: 1px;
+
+    border:
+      1px solid
+      var(--astro-border);
+
+    background:
+      var(--astro-border);
+  }
+
+  .other-vargas__tab {
+    display: grid;
+
+    grid-template-columns:
+      auto
+      minmax(
+        0,
+        1fr
+      )
+      auto;
+
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 0;
+
+    padding:
+      11px
+      12px;
+
+    border: 0;
+
+    background:
+      var(--astro-bg);
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    text-align: left;
+
+    cursor: pointer;
+  }
+
+  .other-vargas__tab:hover {
+    background:
+      var(--astro-panel-hover);
+  }
+
+  .other-vargas__tab.is-active {
+    color:
+      var(--astro-mint);
+
+    box-shadow:
+      inset
+      0
+      -2px
+      0
+      var(--astro-mint);
+  }
+
+  .other-vargas__tab > span {
+    color:
+      #dfff9f;
+
+    font-size:
+      var(--astro-text-meta);
+  }
+
+  .other-vargas__tab > strong {
+    overflow: hidden;
+
+    font-size:
+      var(--astro-text-micro);
+
+    font-weight: 400;
+
+    text-overflow:
+      ellipsis;
+
+    white-space:
+      nowrap;
+  }
+
+  .other-vargas__tab > small {
+    padding:
+      3px
+      5px;
+
+    border:
+      1px solid
+      var(--astro-border);
+
+    color:
+      var(--astro-dim);
+
+    font-size:
+      0.45rem;
+  }
+
+  .other-vargas__tab
+    > small.is-ready {
+    border-color:
+      var(--astro-mint);
+
+    color:
+      var(--astro-mint);
+  }
+
+  /* =========================================================
+     SUMMARY
+  ========================================================= */
+
+  .other-vargas__summary {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap: 1px;
+
+    border:
+      1px solid
+      var(--astro-border);
+
+    background:
+      var(--astro-border);
+  }
+
+  .other-vargas__summary > div {
+    padding:
+      11px
+      12px;
+
+    background:
+      var(--astro-bg);
+  }
+
+  .other-vargas__summary span,
+  .other-vargas__summary strong {
+    display: block;
+  }
+
+  .other-vargas__summary span {
+    margin-bottom: 5px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      0.48rem;
+  }
+
+  .other-vargas__summary strong {
+    color:
+      var(--astro-white);
+
+    font-size:
+      var(--astro-text-micro);
+
+    font-weight: 400;
+  }
+
+  /* =========================================================
+     LAYOUT
+  ========================================================= */
+
+  .other-vargas__layout {
+    display: grid;
+
+    grid-template-columns:
+      minmax(
+        0,
+        1.15fr
+      )
+      minmax(
+        300px,
+        0.85fr
+      );
+
+    gap: 14px;
+
+    align-items: start;
+  }
+
+  /* =========================================================
+     CHART
+  ========================================================= */
+
+  .other-varga-chart {
+    margin: 0;
+
+    overflow: hidden;
+
+    border:
+      1px solid
+      var(--astro-border);
+
+    border-left:
+      2px solid
+      var(--astro-mint);
+
+    background:
+      var(--astro-panel);
+  }
+
+  .other-varga-chart__frame {
+    width:
+      min(
+        100%,
+        720px
+      );
+
+    margin:
+      0
+      auto;
+
+    padding:
+      clamp(
+        18px,
+        2.7vw,
+        30px
+      );
+
+    box-sizing:
+      border-box;
+  }
+
+  .other-varga-chart__svg {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    aspect-ratio:
+      1 / 1;
+
+    background:
+      #020704;
+  }
+
+  .other-varga-chart__house-number {
+    font-family:
+      var(--astro-display-font);
+
+    font-size: 8px;
+
+    letter-spacing:
+      1px;
+
+    paint-order:
+      stroke fill;
+
+    stroke:
+      #020704;
+
+    stroke-width:
+      3px;
+  }
+
+  .other-varga-chart__sign {
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      25px;
+
+    paint-order:
+      stroke fill;
+
+    stroke:
+      #020704;
+
+    stroke-width:
+      5px;
+
+    stroke-linejoin:
+      round;
+  }
+
+  .other-varga-chart__house--ascendant
+    .other-varga-chart__sign {
+    fill:
+      #86ff72;
+
+    font-size:
+      28px;
+  }
+
+  .other-varga-chart__asc {
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      9px;
+
+    paint-order:
+      stroke fill;
+
+    stroke:
+      #020704;
+
+    stroke-width:
+      3px;
+  }
+
+  .other-varga-chart__planets {
+    font-family:
+      var(--astro-body-font);
+
+    font-size:
+      10.5px;
+
+    font-weight:
+      700;
+
+    paint-order:
+      stroke fill;
+
+    stroke:
+      #020704;
+
+    stroke-width:
+      3px;
+  }
+
+  .other-varga-chart__house[
+    data-planet-count="4"
+  ]
+    .other-varga-chart__planets,
+  .other-varga-chart__house[
+    data-planet-count="5"
+  ]
+    .other-varga-chart__planets {
+    font-size:
+      9px;
+  }
+
+  /* =========================================================
+     LEGEND
+  ========================================================= */
+
+  .other-varga-chart__legend {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap: 1px;
+
+    background:
+      var(--astro-border);
+
+    border-top:
+      1px solid
+      var(--astro-border);
+  }
+
+  .other-varga-chart__legend span {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+      9px
+      10px;
+
+    background:
+      var(--astro-bg);
+
+    color:
+      var(--astro-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      0.5rem;
+
+    text-transform:
+      uppercase;
+  }
+
+  .other-varga-chart__legend strong {
+    color:
+      #dfff9f;
+
+    font-weight: 400;
+  }
+
+  /* =========================================================
+     INDEX
+  ========================================================= */
+
+  .other-varga-index {
+    min-width: 0;
+
+    border:
+      1px solid
+      var(--astro-border);
+
+    border-left:
+      2px solid
+      var(--astro-mint);
+
+    background:
+      var(--astro-panel);
+  }
+
+  .other-varga-index > header {
+    padding:
+      17px
+      18px;
+
+    border-bottom:
+      1px solid
+      var(--astro-border);
+  }
+
+  .other-varga-index
+    header p {
+    margin:
+      0
+      0
+      7px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+  }
+
+  .other-varga-index
+    header h4 {
+    margin:
+      0
+      0
+      8px;
+
+    color:
+      var(--astro-mint);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-heading);
+
+    font-weight:
+      400;
+
+    text-transform:
+      uppercase;
+  }
+
+  .other-varga-index
+    header > span {
+    color:
+      var(--astro-muted);
+
+    font-size:
+      var(--astro-text-meta);
+
+    line-height: 1.5;
+  }
+
+  .other-varga-index__table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+  }
+
+  .other-varga-index__table {
+    width: 100%;
+
+    min-width:
+      590px;
+
+    border-collapse:
+      collapse;
+
+    background:
+      var(--astro-bg);
+  }
+
+  .other-varga-index__table
+    th,
+  .other-varga-index__table
+    td {
+    padding:
+      10px
+      11px;
+
+    border-bottom:
+      1px solid
+      var(--astro-border-soft);
+
+    color:
+      var(--astro-white);
+
+    font-size:
+      var(--astro-text-micro);
+
+    text-align: left;
+
+    white-space:
+      nowrap;
+  }
+
+  .other-varga-index__table
+    thead th {
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-weight:
+      400;
+  }
+
+  .other-varga-index__table
+    tbody th {
+    color:
+      var(--astro-mint);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-weight:
+      400;
+  }
+
+  /* =========================================================
+     NOTES
+  ========================================================= */
+
+  .other-vargas__notes {
+    padding:
+      14px
+      16px;
+
+    border-left:
+      2px solid
+      var(--astro-mint);
+
+    background:
+      var(--astro-bg);
+  }
+
+  .other-vargas__notes
+    > strong {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color:
+      var(--astro-mint);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-meta);
+
+    font-weight: 400;
+  }
+
+  .other-vargas__notes ul {
+    display: grid;
+
+    gap: 6px;
+
+    margin: 0;
+
+    padding-left:
+      19px;
+
+    color:
+      var(--astro-muted);
+
+    font-size:
+      var(--astro-text-meta);
+
+    line-height:
+      1.55;
+  }
+
+  @keyframes other-varga-pulse {
+    0%,
+    100% {
+      opacity:
+        0.35;
+    }
+
+    50% {
+      opacity:
+        1;
+    }
+  }
+
+  @media (
+    max-width:
+      1100px
+  ) {
+    .other-vargas__layout {
+      grid-template-columns:
+        1fr;
+    }
+  }
+
+  @media (
+    max-width:
+      720px
+  ) {
+    .other-vargas__header {
+      flex-direction:
+        column;
+    }
+
+    .other-vargas__ascendant {
+      width: 100%;
+
+      text-align: left;
+    }
+
+    .other-vargas__summary {
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(
+            0,
+            1fr
+          )
+        );
+    }
+
+    .other-varga-chart__legend {
+      grid-template-columns:
+        repeat(
+          3,
+          minmax(
+            0,
+            1fr
+          )
+        );
+    }
+  }
+
+  @media (
+    max-width:
+      520px
+  ) {
+    .other-vargas__tabs,
+    .other-vargas__summary {
+      grid-template-columns:
+        1fr;
+    }
+
+    .other-varga-chart__legend {
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(
+            0,
+            1fr
+          )
+        );
+    }
+
+    .other-varga-chart__frame {
+      padding: 12px;
+    }
+  }
+
+  @media (
+    prefers-reduced-motion:
+      reduce
+  ) {
+    .other-vargas__signal {
+      animation:
+        none;
+    }
+  }
+</style>
+
+<style is:global>
+  /*
+   * Chapter 11 adds a fourth main result tab.
+   */
+
+  .birth-chart-output
+    .birth-chart-output__chart-tabs {
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(
+          0,
+          1fr
+        )
+      ) !important;
+  }
+
+  @media (
+    max-width:
+      820px
+  ) {
+    .birth-chart-output
+      .birth-chart-output__chart-tabs {
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(
+            0,
+            1fr
+          )
+        ) !important;
+    }
+  }
+
+  @media (
+    max-width:
+      520px
+  ) {
+    .birth-chart-output
+      .birth-chart-output__chart-tabs {
+      grid-template-columns:
+        1fr !important;
+    }
+  }
+</style>

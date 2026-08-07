@@ -1,0 +1,1353 @@
+---
+const zodiacSigns = [
+  "Aries",
+  "Taurus",
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpio",
+  "Sagittarius",
+  "Capricorn",
+  "Aquarius",
+  "Pisces",
+] as const;
+
+/*
+ * North Indian chart geometry.
+ *
+ * Houses stay fixed:
+ *
+ *                 H1
+ *
+ *          H2             H12
+ *
+ *     H3                       H11
+ *
+ * H4                               H10
+ *
+ *     H5                       H9
+ *
+ *          H6             H8
+ *
+ *                 H7
+ */
+
+const houseLayouts = [
+  {
+    number: 1,
+    x: 300,
+    y: 150,
+    houseLabelY: -31,
+    signY: -7,
+    ascendantY: 16,
+    planetY: 30,
+  },
+
+  {
+    number: 2,
+    x: 150,
+    y: 50,
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 21,
+  },
+
+  {
+    number: 3,
+    x: 50,
+    y: 150,
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 22,
+  },
+
+  {
+    number: 4,
+    x: 150,
+    y: 300,
+    houseLabelY: -24,
+    signY: 2,
+    ascendantY: 0,
+    planetY: 26,
+  },
+
+  {
+    number: 5,
+    x: 50,
+    y: 450,
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 22,
+  },
+
+  {
+    number: 6,
+    x: 150,
+    y: 550,
+    houseLabelY: -3,
+    signY: 20,
+    ascendantY: 0,
+    planetY: -58,
+  },
+
+  {
+    number: 7,
+    x: 300,
+    y: 450,
+    houseLabelY: -31,
+    signY: -7,
+    ascendantY: 0,
+    planetY: 28,
+  },
+
+  {
+    number: 8,
+    x: 450,
+    y: 550,
+    houseLabelY: -3,
+    signY: 20,
+    ascendantY: 0,
+    planetY: -58,
+  },
+
+  {
+    number: 9,
+    x: 550,
+    y: 450,
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 22,
+  },
+
+  {
+    number: 10,
+    x: 450,
+    y: 300,
+    houseLabelY: -24,
+    signY: 2,
+    ascendantY: 0,
+    planetY: 26,
+  },
+
+  {
+    number: 11,
+    x: 550,
+    y: 150,
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 22,
+  },
+
+  {
+    number: 12,
+    x: 450,
+    y: 50,
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 21,
+  },
+] as const;
+---
+
+<figure
+  class="navamsa-chart"
+  data-navamsa-chart
+  aria-labelledby="navamsa-chart-title"
+>
+  <!-- ================================================
+       STATUS
+  ================================================= -->
+
+  <div class="navamsa-chart__statusbar">
+    <div>
+      <span
+        class="navamsa-chart__signal"
+        aria-hidden="true"
+      ></span>
+
+      <strong>
+        DIVISIONAL MATRIX // ACTIVE
+      </strong>
+    </div>
+
+    <span data-d9-status>
+      AWAITING D1 DATA
+    </span>
+  </div>
+
+  <!-- ================================================
+       HEADER
+  ================================================= -->
+
+  <div class="navamsa-chart__heading">
+    <div class="navamsa-chart__title-group">
+      <p>
+        D9 // NAVAMSA // NORTH INDIAN
+      </p>
+
+      <h3 id="navamsa-chart-title">
+        Navamsa Matrix
+      </h3>
+    </div>
+
+    <div class="navamsa-chart__ascendant">
+      <span>
+        D9 ASCENDANT
+      </span>
+
+      <strong data-d9-ascendant-sign>
+        —
+      </strong>
+
+      <small data-d9-ascendant-degree>
+        —
+      </small>
+    </div>
+  </div>
+
+  <!-- ================================================
+       CHART FRAME
+  ================================================= -->
+
+  <div class="navamsa-chart__frame">
+    <svg
+      class="navamsa-chart__svg"
+      viewBox="0 0 600 600"
+      preserveAspectRatio="xMidYMid meet"
+      role="img"
+      aria-labelledby="navamsa-svg-title navamsa-svg-description"
+    >
+      <title id="navamsa-svg-title">
+        D9 Navamsa North Indian chart
+      </title>
+
+      <desc id="navamsa-svg-description">
+        A North Indian Navamsa divisional chart
+        showing twelve fixed houses, zodiac signs
+        and calculated planetary positions.
+      </desc>
+
+      <!-- ==========================================
+           BACKGROUND
+      =========================================== -->
+
+      <rect
+        x="4"
+        y="4"
+        width="592"
+        height="592"
+        rx="0"
+        fill="#020704"
+      />
+
+      <!-- ==========================================
+           OUTER BORDER
+      =========================================== -->
+
+      <rect
+        x="4"
+        y="4"
+        width="592"
+        height="592"
+        rx="0"
+        fill="none"
+        stroke="#9cff6f"
+        stroke-width="2"
+        vector-effect="non-scaling-stroke"
+      />
+
+      <!-- ==========================================
+           CENTRAL DIAMOND
+      =========================================== -->
+
+      <path
+        d="
+          M 300 4
+          L 596 300
+          L 300 596
+          L 4 300
+          Z
+        "
+        fill="none"
+        stroke="#76d851"
+        stroke-width="1.6"
+        vector-effect="non-scaling-stroke"
+      />
+
+      <!-- ==========================================
+           DIAGONAL
+      =========================================== -->
+
+      <path
+        d="
+          M 4 4
+          L 596 596
+        "
+        fill="none"
+        stroke="#5fa943"
+        stroke-width="1.3"
+        vector-effect="non-scaling-stroke"
+      />
+
+      <!-- ==========================================
+           DIAGONAL
+      =========================================== -->
+
+      <path
+        d="
+          M 596 4
+          L 4 596
+        "
+        fill="none"
+        stroke="#5fa943"
+        stroke-width="1.3"
+        vector-effect="non-scaling-stroke"
+      />
+
+      <!-- Centre -->
+
+      <circle
+        cx="300"
+        cy="300"
+        r="2.5"
+        fill="#91f562"
+        opacity="0.55"
+      />
+
+      <!-- ==========================================
+           HOUSES
+      =========================================== -->
+
+      {
+        houseLayouts.map((house) => (
+          <g
+            class:list={[
+              "navamsa-chart__house",
+
+              house.number === 1 &&
+                "navamsa-chart__house--ascendant",
+            ]}
+            data-d9-house={house.number}
+            transform={`translate(${house.x} ${house.y})`}
+          >
+            <!-- FIXED HOUSE NUMBER -->
+
+            <text
+              class="navamsa-chart__house-number"
+              text-anchor="middle"
+              x="0"
+              y={house.houseLabelY}
+              fill="#70836d"
+            >
+              H{house.number}
+            </text>
+
+            <!-- ZODIAC SIGN NUMBER -->
+
+            <text
+              class="navamsa-chart__sign"
+              data-d9-house-sign
+              text-anchor="middle"
+              dominant-baseline="middle"
+              x="0"
+              y={house.signY}
+              fill="#dfff9f"
+            >
+              —
+            </text>
+
+            <!-- ASCENDANT DEGREE -->
+
+            <text
+              class="navamsa-chart__asc-label"
+              data-d9-house-ascendant
+              text-anchor="middle"
+              x="0"
+              y={house.ascendantY}
+              fill="#70ffc2"
+            ></text>
+
+            <!-- PLANETS -->
+
+            <text
+              class="navamsa-chart__planets"
+              data-d9-house-planets
+              text-anchor="middle"
+              x="0"
+              y={house.planetY}
+              fill="#ffffff"
+            ></text>
+          </g>
+        ))
+      }
+    </svg>
+
+    <!-- ================================================
+         TERMINAL CORNERS
+    ================================================= -->
+
+    <span
+      class="navamsa-chart__corner navamsa-chart__corner--top-left"
+      aria-hidden="true"
+    ></span>
+
+    <span
+      class="navamsa-chart__corner navamsa-chart__corner--top-right"
+      aria-hidden="true"
+    ></span>
+
+    <span
+      class="navamsa-chart__corner navamsa-chart__corner--bottom-left"
+      aria-hidden="true"
+    ></span>
+
+    <span
+      class="navamsa-chart__corner navamsa-chart__corner--bottom-right"
+      aria-hidden="true"
+    ></span>
+  </div>
+
+  <!-- ================================================
+       LEGEND
+  ================================================= -->
+
+  <div
+    class="navamsa-chart__legend"
+    aria-label="Zodiac sign number key"
+  >
+    {
+      zodiacSigns.map((sign, index) => (
+        <span>
+          <strong>
+            {index + 1}
+          </strong>
+
+          {sign}
+        </span>
+      ))
+    }
+  </div>
+
+  <!-- ================================================
+       FOOTER
+  ================================================= -->
+
+  <figcaption class="navamsa-chart__caption">
+    <div>
+      <span>
+        PROFILE
+      </span>
+
+      <strong data-d9-profile>
+        UNNAMED CHART
+      </strong>
+    </div>
+
+    <div>
+      <span>
+        SOURCE
+      </span>
+
+      <strong data-d9-context>
+        AWAITING D1
+      </strong>
+    </div>
+  </figcaption>
+</figure>
+
+<style>
+  /* =========================================================
+     ROOT
+  ========================================================= */
+
+  .navamsa-chart {
+    display: grid;
+
+    width: 100%;
+    min-width: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    border:
+      1px solid
+      var(--astro-border, #29532d);
+
+    border-left:
+      2px solid
+      var(--astro-mint, #74ffad);
+
+    background:
+      var(--astro-panel, #051009);
+  }
+
+  /* =========================================================
+     STATUS
+  ========================================================= */
+
+  .navamsa-chart__statusbar {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    min-height: 42px;
+
+    padding:
+      9px
+      14px;
+
+    border-bottom:
+      1px solid
+      var(--astro-border, #29532d);
+
+    background:
+      var(--astro-bg, #020704);
+
+    font-family:
+      var(
+        --astro-display-font,
+        monospace
+      );
+
+    font-size:
+      var(
+        --astro-text-micro,
+        0.68rem
+      );
+
+    line-height: 1.35;
+
+    letter-spacing: 0.08em;
+
+    text-transform: uppercase;
+  }
+
+  .navamsa-chart__statusbar > div {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+  }
+
+  .navamsa-chart__statusbar strong {
+    color:
+      var(
+        --astro-mint,
+        #74ffad
+      );
+
+    font-weight: 400;
+  }
+
+  .navamsa-chart__statusbar > span {
+    color:
+      var(
+        --astro-green-muted,
+        #73966f
+      );
+  }
+
+  .navamsa-chart__signal {
+    display: block;
+
+    width: 7px;
+    height: 7px;
+
+    flex:
+      0
+      0
+      7px;
+
+    background:
+      var(
+        --astro-mint,
+        #74ffad
+      );
+
+    box-shadow:
+      0
+      0
+      8px
+      rgba(
+        116,
+        255,
+        173,
+        0.65
+      );
+
+    animation:
+      navamsa-pulse
+      1.5s
+      ease-in-out
+      infinite;
+  }
+
+  /* =========================================================
+     HEADER
+  ========================================================= */
+
+  .navamsa-chart__heading {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    padding:
+      20px;
+
+    border-bottom:
+      1px solid
+      var(--astro-border, #29532d);
+  }
+
+  .navamsa-chart__title-group {
+    min-width: 0;
+  }
+
+  .navamsa-chart__title-group p {
+    margin:
+      0
+      0
+      8px;
+
+    color:
+      var(
+        --astro-green-muted,
+        #73966f
+      );
+
+    font-family:
+      var(
+        --astro-display-font,
+        monospace
+      );
+
+    font-size:
+      var(
+        --astro-text-micro,
+        0.68rem
+      );
+
+    letter-spacing:
+      0.08em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .navamsa-chart__title-group h3 {
+    margin: 0;
+
+    color:
+      var(
+        --astro-mint,
+        #74ffad
+      );
+
+    font-family:
+      var(
+        --astro-display-font,
+        monospace
+      );
+
+    font-size:
+      clamp(
+        1.35rem,
+        2vw,
+        1.9rem
+      );
+
+    font-weight: 400;
+
+    line-height: 1.15;
+
+    letter-spacing:
+      0.04em;
+
+    text-transform:
+      uppercase;
+  }
+
+  /* =========================================================
+     ASCENDANT BOX
+  ========================================================= */
+
+  .navamsa-chart__ascendant {
+    display: grid;
+
+    flex:
+      0
+      0
+      auto;
+
+    min-width: 165px;
+
+    padding:
+      11px
+      13px;
+
+    border:
+      1px solid
+      var(
+        --astro-mint,
+        #74ffad
+      );
+
+    background:
+      var(
+        --astro-bg,
+        #020704
+      );
+
+    text-align: right;
+  }
+
+  .navamsa-chart__ascendant span,
+  .navamsa-chart__ascendant strong,
+  .navamsa-chart__ascendant small {
+    display: block;
+
+    font-family:
+      var(
+        --astro-display-font,
+        monospace
+      );
+
+    text-transform:
+      uppercase;
+  }
+
+  .navamsa-chart__ascendant span {
+    margin-bottom: 5px;
+
+    color:
+      var(
+        --astro-green-muted,
+        #73966f
+      );
+
+    font-size:
+      var(
+        --astro-text-micro,
+        0.68rem
+      );
+  }
+
+  .navamsa-chart__ascendant strong {
+    color:
+      #dfff9f;
+
+    font-size:
+      0.9rem;
+
+    font-weight:
+      400;
+  }
+
+  .navamsa-chart__ascendant small {
+    margin-top: 5px;
+
+    color:
+      #ffffff;
+
+    font-size:
+      0.7rem;
+  }
+
+  /* =========================================================
+     CHART AREA
+  ========================================================= */
+
+  .navamsa-chart__frame {
+    position: relative;
+
+    width:
+      min(
+        100%,
+        720px
+      );
+
+    margin:
+      0
+      auto;
+
+    box-sizing:
+      border-box;
+
+    padding:
+      clamp(
+        18px,
+        2.7vw,
+        30px
+      );
+  }
+
+  .navamsa-chart__svg {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    aspect-ratio: 1 / 1;
+
+    overflow: visible;
+
+    background: #020704;
+  }
+
+  /* =========================================================
+     TEXT INSIDE SVG
+  ========================================================= */
+
+  .navamsa-chart__house-number {
+    font-family:
+      var(
+        --astro-display-font,
+        monospace
+      );
+
+    font-size: 8px;
+
+    letter-spacing:
+      1px;
+
+    paint-order: stroke;
+
+    stroke: #020704;
+    stroke-width: 3px;
+
+    stroke-linejoin:
+      round;
+  }
+
+  .navamsa-chart__sign {
+    font-family:
+      var(
+        --astro-display-font,
+        monospace
+      );
+
+    font-size:
+      25px !important;
+
+    font-weight:
+      400;
+
+    paint-order:
+      stroke fill;
+
+    stroke:
+      #020704;
+
+    stroke-width:
+      5px;
+
+    stroke-linejoin:
+      round;
+
+    filter:
+      drop-shadow(
+        0
+        0
+        4px
+        rgba(
+          203,
+          255,
+          145,
+          0.4
+        )
+      );
+  }
+
+  .navamsa-chart__house--ascendant
+    .navamsa-chart__sign {
+    fill:
+      #86ff72 !important;
+
+    font-size:
+      28px !important;
+  }
+
+  .navamsa-chart__asc-label {
+    font-family:
+      var(
+        --astro-display-font,
+        monospace
+      );
+
+    font-size:
+      9px;
+
+    letter-spacing:
+      0.35px;
+
+    paint-order:
+      stroke fill;
+
+    stroke:
+      #020704;
+
+    stroke-width:
+      3px;
+
+    stroke-linejoin:
+      round;
+  }
+
+  .navamsa-chart__planets {
+    font-family:
+      var(
+        --astro-body-font,
+        monospace
+      );
+
+    font-size:
+      10.5px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      -0.1px;
+
+    paint-order:
+      stroke fill;
+
+    stroke:
+      #020704;
+
+    stroke-width:
+      3px;
+
+    stroke-linejoin:
+      round;
+  }
+
+  .navamsa-chart__house[
+    data-planet-count="3"
+  ]
+    .navamsa-chart__planets {
+    font-size:
+      10px;
+  }
+
+  .navamsa-chart__house[
+    data-planet-count="4"
+  ]
+    .navamsa-chart__planets,
+  .navamsa-chart__house[
+    data-planet-count="5"
+  ]
+    .navamsa-chart__planets {
+    font-size:
+      9px;
+  }
+
+  /* =========================================================
+     CORNER DETAILS
+  ========================================================= */
+
+  .navamsa-chart__corner {
+    position: absolute;
+
+    width:
+      14px;
+
+    height:
+      14px;
+
+    pointer-events:
+      none;
+  }
+
+  .navamsa-chart__corner--top-left {
+    top:
+      11px;
+
+    left:
+      11px;
+
+    border-top:
+      1px solid
+      #74ffad;
+
+    border-left:
+      1px solid
+      #74ffad;
+  }
+
+  .navamsa-chart__corner--top-right {
+    top:
+      11px;
+
+    right:
+      11px;
+
+    border-top:
+      1px solid
+      #74ffad;
+
+    border-right:
+      1px solid
+      #74ffad;
+  }
+
+  .navamsa-chart__corner--bottom-left {
+    bottom:
+      11px;
+
+    left:
+      11px;
+
+    border-bottom:
+      1px solid
+      #74ffad;
+
+    border-left:
+      1px solid
+      #74ffad;
+  }
+
+  .navamsa-chart__corner--bottom-right {
+    right:
+      11px;
+
+    bottom:
+      11px;
+
+    border-right:
+      1px solid
+      #74ffad;
+
+    border-bottom:
+      1px solid
+      #74ffad;
+  }
+
+  /* =========================================================
+     ZODIAC LEGEND
+  ========================================================= */
+
+  .navamsa-chart__legend {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap:
+      1px;
+
+    border-top:
+      1px solid
+      var(
+        --astro-border,
+        #29532d
+      );
+
+    border-bottom:
+      1px solid
+      var(
+        --astro-border,
+        #29532d
+      );
+
+    background:
+      var(
+        --astro-border,
+        #29532d
+      );
+  }
+
+  .navamsa-chart__legend span {
+    display: flex;
+
+    align-items: center;
+
+    gap:
+      7px;
+
+    min-width: 0;
+
+    padding:
+      9px
+      10px;
+
+    background:
+      var(
+        --astro-bg,
+        #020704
+      );
+
+    color:
+      var(
+        --astro-muted,
+        #9aa69b
+      );
+
+    font-family:
+      var(
+        --astro-display-font,
+        monospace
+      );
+
+    font-size:
+      0.52rem;
+
+    line-height:
+      1.3;
+
+    text-transform:
+      uppercase;
+  }
+
+  .navamsa-chart__legend strong {
+    color:
+      #dfff9f;
+
+    font-size:
+      0.65rem;
+
+    font-weight:
+      400;
+  }
+
+  /* =========================================================
+     FOOTER
+  ========================================================= */
+
+  .navamsa-chart__caption {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap:
+      1px;
+
+    background:
+      var(
+        --astro-border,
+        #29532d
+      );
+  }
+
+  .navamsa-chart__caption > div {
+    min-width: 0;
+
+    padding:
+      12px
+      14px;
+
+    background:
+      var(
+        --astro-bg,
+        #020704
+      );
+  }
+
+  .navamsa-chart__caption span,
+  .navamsa-chart__caption strong {
+    display: block;
+  }
+
+  .navamsa-chart__caption span {
+    margin-bottom:
+      5px;
+
+    color:
+      var(
+        --astro-green-muted,
+        #73966f
+      );
+
+    font-family:
+      var(
+        --astro-display-font,
+        monospace
+      );
+
+    font-size:
+      var(
+        --astro-text-micro,
+        0.68rem
+      );
+
+    letter-spacing:
+      0.07em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .navamsa-chart__caption strong {
+    color:
+      #ffffff;
+
+    font-family:
+      var(
+        --astro-body-font,
+        monospace
+      );
+
+    font-size:
+      var(
+        --astro-text-meta,
+        0.75rem
+      );
+
+    font-weight:
+      400;
+
+    line-height:
+      1.5;
+
+    overflow-wrap:
+      anywhere;
+  }
+
+  /* =========================================================
+     ANIMATION
+  ========================================================= */
+
+  @keyframes navamsa-pulse {
+    0%,
+    100% {
+      opacity:
+        0.35;
+    }
+
+    50% {
+      opacity:
+        1;
+    }
+  }
+
+  /* =========================================================
+     MOBILE
+  ========================================================= */
+
+  @media (
+    max-width:
+      620px
+  ) {
+    .navamsa-chart__statusbar,
+    .navamsa-chart__heading {
+      align-items:
+        stretch;
+
+      flex-direction:
+        column;
+    }
+
+    .navamsa-chart__ascendant {
+      width:
+        100%;
+
+      min-width:
+        0;
+
+      text-align:
+        left;
+    }
+
+    .navamsa-chart__frame {
+      padding:
+        12px;
+    }
+
+    .navamsa-chart__legend {
+      grid-template-columns:
+        repeat(
+          3,
+          minmax(
+            0,
+            1fr
+          )
+        );
+    }
+
+    .navamsa-chart__caption {
+      grid-template-columns:
+        1fr;
+    }
+
+    .navamsa-chart__house-number {
+      font-size:
+        7px;
+    }
+
+    .navamsa-chart__sign {
+      font-size:
+        20px !important;
+    }
+
+    .navamsa-chart__house--ascendant
+      .navamsa-chart__sign {
+      font-size:
+        22px !important;
+    }
+
+    .navamsa-chart__asc-label {
+      font-size:
+        7px;
+    }
+
+    .navamsa-chart__planets {
+      font-size:
+        8.5px;
+    }
+  }
+
+  @media (
+    max-width:
+      420px
+  ) {
+    .navamsa-chart__legend {
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(
+            0,
+            1fr
+          )
+        );
+    }
+  }
+
+  @media (
+    prefers-reduced-motion:
+      reduce
+  ) {
+    .navamsa-chart__signal {
+      animation:
+        none;
+    }
+  }
+</style>

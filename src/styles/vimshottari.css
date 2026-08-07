@@ -1,0 +1,884 @@
+/* =========================================================
+   THREE RESULT TABS
+========================================================= */
+
+.birth-chart-output
+  .birth-chart-output__chart-tabs {
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(
+        0,
+        1fr
+      )
+    );
+}
+
+/* =========================================================
+   ROOT
+========================================================= */
+
+.vimshottari {
+  display: grid;
+
+  gap: 14px;
+
+  min-width: 0;
+
+  color:
+    var(--astro-white);
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.vimshottari__statusbar {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  min-height: 40px;
+
+  padding:
+    9px
+    13px;
+
+  border:
+    1px solid
+    var(--astro-border);
+
+  border-left:
+    2px solid
+    var(--astro-amber);
+
+  background:
+    var(--astro-bg);
+
+  color:
+    var(--astro-green-muted);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-size:
+    var(--astro-text-micro);
+
+  letter-spacing:
+    0.07em;
+
+  text-transform:
+    uppercase;
+}
+
+.vimshottari__statusbar
+  > div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+.vimshottari__statusbar
+  strong {
+  color:
+    var(--astro-amber);
+
+  font-weight: 400;
+}
+
+.vimshottari__signal {
+  width: 7px;
+  height: 7px;
+
+  background:
+    var(--astro-amber);
+
+  box-shadow:
+    0
+    0
+    8px
+    color-mix(
+      in srgb,
+      var(--astro-amber) 60%,
+      transparent
+    );
+
+  animation:
+    vimshottari-pulse
+    1.5s
+    ease-in-out
+    infinite;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.vimshottari__header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding:
+    20px;
+
+  border:
+    1px solid
+    var(--astro-border);
+
+  border-left:
+    2px solid
+    var(--astro-amber);
+
+  background:
+    var(--astro-panel);
+}
+
+.vimshottari__header p,
+.vimshottari-panel__header p,
+.vimshottari-current header p {
+  margin:
+    0
+    0
+    7px;
+
+  color:
+    var(--astro-green-muted);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-size:
+    var(--astro-text-micro);
+
+  letter-spacing:
+    0.075em;
+
+  text-transform:
+    uppercase;
+}
+
+.vimshottari__header h3 {
+  margin:
+    0
+    0
+    9px;
+
+  color:
+    var(--astro-amber);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-size:
+    clamp(
+      1.45rem,
+      2.4vw,
+      2.1rem
+    );
+
+  font-weight: 400;
+
+  text-transform:
+    uppercase;
+}
+
+.vimshottari__header
+  > div
+  > span {
+  color:
+    var(--astro-muted);
+
+  font-size:
+    var(--astro-text-meta);
+
+  line-height: 1.6;
+}
+
+.vimshottari__convention {
+  flex:
+    0
+    0
+    auto;
+
+  padding:
+    8px
+    10px;
+
+  border:
+    1px solid
+    var(--astro-amber);
+
+  background:
+    var(--astro-bg);
+
+  color:
+    var(--astro-amber);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-size:
+    var(--astro-text-micro);
+
+  font-weight: 400;
+
+  letter-spacing:
+    0.06em;
+}
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.vimshottari__summary {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap: 1px;
+
+  border:
+    1px solid
+    var(--astro-border);
+
+  background:
+    var(--astro-border);
+}
+
+.vimshottari__summary
+  > div {
+  min-width: 0;
+
+  padding:
+    12px;
+
+  background:
+    var(--astro-bg);
+}
+
+.vimshottari__summary span,
+.vimshottari__summary strong {
+  display: block;
+}
+
+.vimshottari__summary span {
+  margin-bottom:
+    6px;
+
+  color:
+    var(--astro-green-muted);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-size:
+    0.48rem;
+
+  letter-spacing:
+    0.06em;
+
+  text-transform:
+    uppercase;
+}
+
+.vimshottari__summary strong {
+  color:
+    var(--astro-white);
+
+  font-size:
+    var(--astro-text-micro);
+
+  font-weight: 400;
+
+  line-height: 1.5;
+
+  overflow-wrap:
+    anywhere;
+}
+
+.vimshottari__summary
+  > div:last-child
+  strong {
+  color:
+    var(--astro-amber);
+}
+
+/* =========================================================
+   CURRENT PERIOD
+========================================================= */
+
+.vimshottari-current {
+  border:
+    1px solid
+    var(--astro-border);
+
+  border-left:
+    2px solid
+    var(--astro-amber);
+
+  background:
+    var(--astro-panel);
+}
+
+.vimshottari-current
+  > header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding:
+    16px
+    18px;
+
+  border-bottom:
+    1px solid
+    var(--astro-border);
+}
+
+.vimshottari-current
+  h4 {
+  margin: 0;
+
+  color:
+    var(--astro-amber);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-size:
+    var(--astro-text-heading);
+
+  font-weight: 400;
+
+  text-transform:
+    uppercase;
+}
+
+.vimshottari-current
+  > header
+  > span {
+  color:
+    var(--astro-muted);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-size:
+    var(--astro-text-micro);
+}
+
+.vimshottari-current__periods {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap: 1px;
+
+  background:
+    var(--astro-border);
+}
+
+.vimshottari-current__periods
+  > div {
+  min-width: 0;
+
+  padding:
+    16px;
+
+  background:
+    var(--astro-bg);
+}
+
+.vimshottari-current__periods
+  span,
+.vimshottari-current__periods
+  strong,
+.vimshottari-current__periods
+  small {
+  display: block;
+}
+
+.vimshottari-current__periods
+  > div
+  > span {
+  margin-bottom:
+    7px;
+
+  color:
+    var(--astro-green-muted);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-size:
+    var(--astro-text-micro);
+
+  letter-spacing:
+    0.06em;
+}
+
+.vimshottari-current__periods
+  strong {
+  color:
+    var(--astro-white);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-size:
+    1rem;
+
+  font-weight: 400;
+
+  text-transform:
+    uppercase;
+}
+
+.vimshottari-current__periods
+  small {
+  margin-top:
+    6px;
+
+  color:
+    var(--astro-muted);
+
+  font-size:
+    var(--astro-text-micro);
+}
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.vimshottari-progress {
+  width: 100%;
+  height: 4px;
+
+  margin-top:
+    12px;
+
+  overflow: hidden;
+
+  background:
+    var(--astro-border);
+}
+
+.vimshottari-progress
+  > span {
+  display: block;
+
+  width: 0;
+  height: 100%;
+
+  margin: 0;
+
+  background:
+    var(--astro-amber);
+
+  transition:
+    width
+    250ms
+    ease;
+}
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+.vimshottari-panel {
+  min-width: 0;
+
+  border:
+    1px solid
+    var(--astro-border);
+
+  background:
+    var(--astro-panel);
+}
+
+.vimshottari-panel__header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  padding:
+    15px
+    17px;
+
+  border-bottom:
+    1px solid
+    var(--astro-border);
+}
+
+.vimshottari-panel__header
+  h4 {
+  margin: 0;
+
+  color:
+    var(--astro-amber);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-size:
+    var(--astro-text-heading);
+
+  font-weight: 400;
+
+  text-transform:
+    uppercase;
+}
+
+.vimshottari-panel__header
+  > span {
+  color:
+    var(--astro-dim);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-size:
+    var(--astro-text-micro);
+
+  text-align: right;
+}
+
+/* =========================================================
+   TABLES
+========================================================= */
+
+.vimshottari-table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+
+  scrollbar-width:
+    thin;
+
+  scrollbar-color:
+    var(--astro-amber)
+    var(--astro-bg);
+}
+
+.vimshottari-table {
+  width: 100%;
+
+  min-width:
+    720px;
+
+  border-collapse:
+    collapse;
+
+  background:
+    var(--astro-bg);
+}
+
+.vimshottari-table
+  th,
+.vimshottari-table
+  td {
+  padding:
+    10px
+    12px;
+
+  border-bottom:
+    1px solid
+    var(--astro-border-soft);
+
+  color:
+    var(--astro-white);
+
+  font-size:
+    var(--astro-text-micro);
+
+  line-height: 1.45;
+
+  text-align: left;
+
+  white-space:
+    nowrap;
+}
+
+.vimshottari-table
+  thead
+  th {
+  color:
+    var(--astro-green-muted);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-weight: 400;
+
+  letter-spacing:
+    0.055em;
+}
+
+.vimshottari-table
+  tbody
+  th {
+  color:
+    var(--astro-amber);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-weight: 400;
+}
+
+.vimshottari-table
+  tbody
+  tr:hover {
+  background:
+    var(--astro-panel-hover);
+}
+
+.vimshottari-table
+  tr.is-current {
+  background:
+    color-mix(
+      in srgb,
+      var(--astro-amber) 8%,
+      var(--astro-bg)
+    );
+}
+
+.vimshottari-table
+  tr.is-current
+  td:last-child {
+  color:
+    var(--astro-amber);
+}
+
+.vimshottari-table
+  tr.contains-birth
+  td:last-child {
+  color:
+    var(--astro-mint);
+}
+
+/* =========================================================
+   PERIOD BUTTON
+========================================================= */
+
+.vimshottari-period-button {
+  padding:
+    4px
+    6px;
+
+  border:
+    1px solid
+    transparent;
+
+  background:
+    transparent;
+
+  color:
+    inherit;
+
+  font:
+    inherit;
+
+  letter-spacing:
+    0.05em;
+
+  text-transform:
+    uppercase;
+
+  cursor:
+    pointer;
+}
+
+.vimshottari-period-button:hover {
+  border-color:
+    var(--astro-amber);
+
+  color:
+    var(--astro-white);
+}
+
+.vimshottari-period-button.is-selected {
+  border-color:
+    var(--astro-amber);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--astro-amber) 10%,
+      transparent
+    );
+
+  color:
+    var(--astro-amber);
+}
+
+/* =========================================================
+   NOTES
+========================================================= */
+
+.vimshottari__notes {
+  padding:
+    14px
+    16px;
+
+  border-left:
+    2px solid
+    var(--astro-amber);
+
+  background:
+    var(--astro-bg);
+}
+
+.vimshottari__notes
+  > strong {
+  display: block;
+
+  margin-bottom:
+    9px;
+
+  color:
+    var(--astro-amber);
+
+  font-family:
+    var(--astro-display-font);
+
+  font-size:
+    var(--astro-text-meta);
+
+  font-weight: 400;
+
+  letter-spacing:
+    0.06em;
+}
+
+.vimshottari__notes ul {
+  display: grid;
+
+  gap: 6px;
+
+  margin: 0;
+
+  padding-left:
+    19px;
+
+  color:
+    var(--astro-muted);
+
+  font-size:
+    var(--astro-text-meta);
+
+  line-height:
+    1.55;
+}
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+@keyframes vimshottari-pulse {
+  0%,
+  100% {
+    opacity:
+      0.35;
+  }
+
+  50% {
+    opacity:
+      1;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (
+  max-width:
+    800px
+) {
+  .vimshottari__summary {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
+  }
+
+  .vimshottari__header,
+  .vimshottari-panel__header,
+  .vimshottari-current
+    > header {
+    flex-direction:
+      column;
+  }
+}
+
+@media (
+  max-width:
+    600px
+) {
+  .birth-chart-output
+    .birth-chart-output__chart-tabs {
+    grid-template-columns:
+      1fr;
+  }
+
+  .vimshottari__summary,
+  .vimshottari-current__periods {
+    grid-template-columns:
+      1fr;
+  }
+
+  .vimshottari__convention {
+    width:
+      100%;
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+  .vimshottari__signal {
+    animation:
+      none;
+  }
+
+  .vimshottari-progress
+    > span {
+    transition:
+      none;
+  }
+}

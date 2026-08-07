@@ -1,0 +1,1136 @@
+---
+import InternalPageLayout
+  from "../../layouts/InternalPageLayout.astro";
+
+import {
+  DASHA_AUDIT_TOLERANCES,
+  runVimshottariAudit,
+} from "../../lib/astrology/vimshottariAudit";
+
+const report =
+  runVimshottariAudit();
+---
+
+<InternalPageLayout
+  title="Vimshottari Accuracy Audit | Prakhar's Universe"
+  description="Internal diagnostic page for the Vimshottari Mahadasha and Antardasha calculation engine."
+  message="Time itself has entered quality assurance."
+  pageClass="dasha-audit-page"
+>
+  <!-- ==================================================
+       SIDEBAR
+  =================================================== -->
+
+  <div
+    slot="sidebar"
+    class="dasha-audit-sidebar"
+  >
+    <section
+      class="dasha-audit-terminal"
+    >
+      <header>
+        <span
+          class:list={[
+            "dasha-audit-dot",
+
+            report.passed
+              ? "is-pass"
+              : "is-fail",
+          ]}
+        ></span>
+
+        <strong>
+          TEMPORAL QA
+        </strong>
+      </header>
+
+      <div
+        class="dasha-audit-terminal__body"
+      >
+        <p>
+          CHAPTER 10
+        </p>
+
+        <h1>
+          Dasha Audit
+        </h1>
+
+        <span>
+          Internal validation for
+          Vimshottari Mahadasha,
+          Antardasha and birth
+          balance calculations.
+        </span>
+      </div>
+
+      <dl
+        class="dasha-audit-stats"
+      >
+        <div>
+          <dt>
+            FIXTURES
+          </dt>
+
+          <dd>
+            {report.passedFixtures}
+            /
+            {report.totalFixtures}
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            CYCLE
+          </dt>
+
+          <dd>
+            {report.cycleYears}Y
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            STATUS
+          </dt>
+
+          <dd
+            class:list={[
+              report.passed
+                ? "is-pass"
+                : "is-fail",
+            ]}
+          >
+            {
+              report.passed
+                ? "PASS"
+                : "FAIL"
+            }
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <section
+      class="dasha-audit-info"
+    >
+      <p>
+        AUDIT CONVENTION
+      </p>
+
+      <dl>
+        <div>
+          <dt>
+            SYSTEM
+          </dt>
+
+          <dd>
+            Vimshottari
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            CYCLE
+          </dt>
+
+          <dd>
+            120 years
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            YEAR
+          </dt>
+
+          <dd>
+            365.25 days
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            DATE Δ
+          </dt>
+
+          <dd>
+            ≤
+            {
+              DASHA_AUDIT_TOLERANCES
+                .dateSeconds
+            }
+            sec
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <section
+      class="dasha-audit-info"
+    >
+      <p>
+        FIXED CURRENT DATE
+      </p>
+
+      <strong
+        class="dasha-audit-fixed-date"
+      >
+        {report.auditDate}
+      </strong>
+
+      <span>
+        The audit uses a fixed date
+        so the expected running dasha
+        does not change every day.
+      </span>
+    </section>
+  </div>
+
+  <!-- ==================================================
+       CONTENT
+  =================================================== -->
+
+  <main
+    slot="content"
+    class="dasha-audit-content"
+  >
+    <header
+      class="dasha-audit-header"
+    >
+      <p>
+        CHAPTER 10 // TEMPORAL VALIDATION
+      </p>
+
+      <h1>
+        Vimshottari Accuracy
+      </h1>
+
+      <span>
+        This page verifies that the
+        Moon's audited D1 longitude is
+        converted into the correct
+        Mahadasha and Antardasha timeline.
+      </span>
+
+      <div
+        class:list={[
+          "dasha-audit-overall",
+
+          report.passed
+            ? "is-pass"
+            : "is-fail",
+        ]}
+      >
+        <span>
+          {
+            report.passed
+              ? "✓"
+              : "!"
+          }
+        </span>
+
+        <strong>
+          {
+            report.passed
+              ? "ALL DASHA TESTS PASS"
+              : "DASHA AUDIT FAILURE"
+          }
+        </strong>
+      </div>
+    </header>
+
+    <!-- ==================================================
+         SYSTEM CHECKS
+    =================================================== -->
+
+    <section
+      class="dasha-audit-system"
+    >
+      <header>
+        <p>
+          GLOBAL SYSTEM CHECK
+        </p>
+
+        <h2>
+          Vimshottari Sequence
+        </h2>
+      </header>
+
+      <div
+        class="dasha-audit-system__grid"
+      >
+        <div>
+          <span>
+            EXPECTED
+          </span>
+
+          <strong>
+            {report.expectedSequence}
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            ACTUAL
+          </span>
+
+          <strong>
+            {report.actualSequence}
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            SEQUENCE
+          </span>
+
+          <strong
+            class:list={[
+              report.sequencePassed
+                ? "is-pass"
+                : "is-fail",
+            ]}
+          >
+            {
+              report.sequencePassed
+                ? "PASS"
+                : "FAIL"
+            }
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            120 YEAR CYCLE
+          </span>
+
+          <strong
+            class:list={[
+              report.cyclePassed
+                ? "is-pass"
+                : "is-fail",
+            ]}
+          >
+            {
+              report.cyclePassed
+                ? "PASS"
+                : "FAIL"
+            }
+          </strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         FIXTURE RESULTS
+    =================================================== -->
+
+    <div
+      class="dasha-audit-fixtures"
+    >
+      {
+        report.fixtures.map(
+          (
+            fixture,
+            index
+          ) => (
+            <section
+              class:list={[
+                "dasha-audit-fixture",
+
+                fixture.passed
+                  ? "is-pass"
+                  : "is-fail",
+              ]}
+            >
+              <header
+                class="dasha-audit-fixture__header"
+              >
+                <div>
+                  <p>
+                    DASHA TEST{" "}
+                    {String(
+                      index + 1
+                    ).padStart(
+                      2,
+                      "0"
+                    )}
+                  </p>
+
+                  <h2>
+                    {fixture.label}
+                  </h2>
+                </div>
+
+                <strong
+                  class:list={[
+                    "dasha-audit-badge",
+
+                    fixture.passed
+                      ? "is-pass"
+                      : "is-fail",
+                  ]}
+                >
+                  {
+                    fixture.passed
+                      ? "PASS"
+                      : "FAIL"
+                  }
+                </strong>
+              </header>
+
+              {
+                fixture.error ? (
+                  <div
+                    class="dasha-audit-error"
+                  >
+                    <strong>
+                      AUDIT ERROR
+                    </strong>
+
+                    <p>
+                      {fixture.error}
+                    </p>
+                  </div>
+                ) : (
+                  <div
+                    class="dasha-audit-table-wrapper"
+                  >
+                    <table
+                      class="dasha-audit-table"
+                    >
+                      <thead>
+                        <tr>
+                          <th>
+                            CHECK
+                          </th>
+
+                          <th>
+                            EXPECTED
+                          </th>
+
+                          <th>
+                            ACTUAL
+                          </th>
+
+                          <th>
+                            DIFFERENCE
+                          </th>
+
+                          <th>
+                            RESULT
+                          </th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {
+                          fixture.checks.map(
+                            (
+                              check
+                            ) => (
+                              <tr
+                                class:list={[
+                                  check.passed
+                                    ? "is-pass"
+                                    : "is-fail",
+                                ]}
+                              >
+                                <th
+                                  scope="row"
+                                >
+                                  {check.name}
+                                </th>
+
+                                <td>
+                                  {check.expected}
+                                </td>
+
+                                <td>
+                                  {check.actual}
+                                </td>
+
+                                <td>
+                                  {
+                                    check.difference ??
+                                    "—"
+                                  }
+                                </td>
+
+                                <td>
+                                  <strong
+                                    class:list={[
+                                      "dasha-audit-row-status",
+
+                                      check.passed
+                                        ? "is-pass"
+                                        : "is-fail",
+                                    ]}
+                                  >
+                                    {
+                                      check.passed
+                                        ? "PASS"
+                                        : "FAIL"
+                                    }
+                                  </strong>
+                                </td>
+                              </tr>
+                            )
+                          )
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                )
+              }
+            </section>
+          )
+        )
+      }
+    </div>
+  </main>
+</InternalPageLayout>
+
+<style is:global>
+  .dasha-audit-page {
+    --dasha-pass:
+      #82ff8e;
+
+    --dasha-fail:
+      #ff8b78;
+
+    --dasha-accent:
+      #ffe36e;
+  }
+
+  .dasha-audit-sidebar,
+  .dasha-audit-content {
+    min-width: 0;
+  }
+
+  .dasha-audit-sidebar {
+    display: grid;
+    align-content: start;
+
+    gap: 14px;
+  }
+
+  .dasha-audit-terminal,
+  .dasha-audit-info,
+  .dasha-audit-header,
+  .dasha-audit-system,
+  .dasha-audit-fixture {
+    border:
+      1px solid
+      var(--astro-border);
+
+    background:
+      var(--astro-panel);
+  }
+
+  .dasha-audit-terminal {
+    border-left:
+      2px solid
+      var(--dasha-accent);
+  }
+
+  .dasha-audit-terminal
+    > header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding:
+      10px
+      12px;
+
+    border-bottom:
+      1px solid
+      var(--astro-border);
+
+    background:
+      var(--astro-bg);
+
+    color:
+      var(--dasha-accent);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-meta);
+
+    letter-spacing:
+      0.07em;
+  }
+
+  .dasha-audit-dot {
+    width: 7px;
+    height: 7px;
+  }
+
+  .dasha-audit-dot.is-pass {
+    background:
+      var(--dasha-pass);
+
+    box-shadow:
+      0
+      0
+      8px
+      var(--dasha-pass);
+  }
+
+  .dasha-audit-dot.is-fail {
+    background:
+      var(--dasha-fail);
+
+    box-shadow:
+      0
+      0
+      8px
+      var(--dasha-fail);
+  }
+
+  .dasha-audit-terminal__body {
+    padding: 19px;
+  }
+
+  .dasha-audit-terminal__body p,
+  .dasha-audit-info > p,
+  .dasha-audit-header > p,
+  .dasha-audit-system header p,
+  .dasha-audit-fixture__header p {
+    margin:
+      0
+      0
+      7px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+
+    letter-spacing:
+      0.07em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .dasha-audit-terminal__body h1 {
+    margin:
+      0
+      0
+      10px;
+
+    color:
+      var(--dasha-accent);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      1.6rem;
+
+    font-weight: 400;
+
+    text-transform:
+      uppercase;
+  }
+
+  .dasha-audit-terminal__body
+    > span,
+  .dasha-audit-info
+    > span {
+    color:
+      var(--astro-muted);
+
+    font-size:
+      var(--astro-text-meta);
+
+    line-height: 1.6;
+  }
+
+  .dasha-audit-stats {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap: 1px;
+
+    margin: 0;
+
+    border-top:
+      1px solid
+      var(--astro-border);
+
+    background:
+      var(--astro-border);
+  }
+
+  .dasha-audit-stats
+    > div {
+    padding:
+      10px
+      8px;
+
+    background:
+      var(--astro-bg);
+  }
+
+  .dasha-audit-stats dt,
+  .dasha-audit-stats dd {
+    margin: 0;
+  }
+
+  .dasha-audit-stats dt {
+    margin-bottom: 6px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      0.46rem;
+  }
+
+  .dasha-audit-stats dd {
+    color:
+      var(--astro-white);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-meta);
+  }
+
+  .dasha-audit-info {
+    padding: 15px;
+  }
+
+  .dasha-audit-info dl {
+    display: grid;
+
+    gap: 1px;
+
+    margin: 0;
+
+    background:
+      var(--astro-border);
+  }
+
+  .dasha-audit-info dl
+    > div {
+    display: flex;
+
+    justify-content:
+      space-between;
+
+    gap: 12px;
+
+    padding:
+      9px
+      10px;
+
+    background:
+      var(--astro-bg);
+  }
+
+  .dasha-audit-info dt,
+  .dasha-audit-info dd {
+    margin: 0;
+
+    font-size:
+      var(--astro-text-micro);
+  }
+
+  .dasha-audit-info dt {
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+  }
+
+  .dasha-audit-info dd {
+    color:
+      var(--astro-white);
+
+    text-align: right;
+  }
+
+  .dasha-audit-fixed-date {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color:
+      var(--dasha-accent);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+
+    overflow-wrap: anywhere;
+  }
+
+  .dasha-audit-content {
+    display: grid;
+
+    align-content: start;
+
+    gap: 18px;
+
+    padding-bottom:
+      32px;
+  }
+
+  .dasha-audit-header {
+    padding: 24px;
+
+    border-left:
+      2px solid
+      var(--dasha-accent);
+  }
+
+  .dasha-audit-header h1 {
+    margin:
+      0
+      0
+      10px;
+
+    color:
+      var(--dasha-accent);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      clamp(
+        1.8rem,
+        4vw,
+        3rem
+      );
+
+    font-weight: 400;
+
+    text-transform:
+      uppercase;
+  }
+
+  .dasha-audit-header
+    > span {
+    color:
+      var(--astro-muted);
+
+    line-height: 1.65;
+  }
+
+  .dasha-audit-overall {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 18px;
+
+    padding:
+      12px
+      14px;
+
+    border:
+      1px solid
+      currentColor;
+
+    background:
+      var(--astro-bg);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-meta);
+
+    letter-spacing:
+      0.06em;
+  }
+
+  .dasha-audit-system {
+    padding: 18px;
+
+    border-left:
+      2px solid
+      var(--astro-mint);
+  }
+
+  .dasha-audit-system h2,
+  .dasha-audit-fixture h2 {
+    margin: 0;
+
+    color:
+      var(--astro-white);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-heading);
+
+    font-weight: 400;
+
+    text-transform:
+      uppercase;
+  }
+
+  .dasha-audit-system__grid {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap: 1px;
+
+    margin-top: 15px;
+
+    border:
+      1px solid
+      var(--astro-border);
+
+    background:
+      var(--astro-border);
+  }
+
+  .dasha-audit-system__grid
+    > div {
+    min-width: 0;
+
+    padding: 12px;
+
+    background:
+      var(--astro-bg);
+  }
+
+  .dasha-audit-system__grid
+    span,
+  .dasha-audit-system__grid
+    strong {
+    display: block;
+  }
+
+  .dasha-audit-system__grid
+    span {
+    margin-bottom: 6px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      0.48rem;
+  }
+
+  .dasha-audit-system__grid
+    strong {
+    color:
+      var(--astro-white);
+
+    font-size:
+      var(--astro-text-micro);
+
+    font-weight: 400;
+
+    line-height: 1.55;
+
+    overflow-wrap: anywhere;
+  }
+
+  .dasha-audit-fixtures {
+    display: grid;
+
+    gap: 18px;
+  }
+
+  .dasha-audit-fixture.is-pass {
+    border-left:
+      2px solid
+      var(--dasha-pass);
+  }
+
+  .dasha-audit-fixture.is-fail {
+    border-left:
+      2px solid
+      var(--dasha-fail);
+  }
+
+  .dasha-audit-fixture__header {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content:
+      space-between;
+
+    gap: 18px;
+
+    padding: 17px;
+
+    border-bottom:
+      1px solid
+      var(--astro-border);
+  }
+
+  .dasha-audit-badge,
+  .dasha-audit-row-status {
+    padding:
+      5px
+      7px;
+
+    border:
+      1px solid
+      currentColor;
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+
+    font-weight: 400;
+  }
+
+  .dasha-audit-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+      var(--dasha-accent)
+      var(--astro-bg);
+  }
+
+  .dasha-audit-table {
+    width: 100%;
+
+    min-width: 850px;
+
+    border-collapse:
+      collapse;
+
+    background:
+      var(--astro-bg);
+  }
+
+  .dasha-audit-table th,
+  .dasha-audit-table td {
+    padding:
+      10px
+      11px;
+
+    border-bottom:
+      1px solid
+      var(--astro-border-soft);
+
+    color:
+      var(--astro-white);
+
+    font-size:
+      var(--astro-text-micro);
+
+    line-height: 1.45;
+
+    text-align: left;
+
+    white-space: nowrap;
+  }
+
+  .dasha-audit-table
+    thead th {
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-weight: 400;
+  }
+
+  .dasha-audit-table
+    tbody th {
+    color:
+      var(--dasha-accent);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-weight: 400;
+  }
+
+  .dasha-audit-table
+    tr.is-fail {
+    background:
+      rgba(
+        255,
+        90,
+        70,
+        0.05
+      );
+  }
+
+  .dasha-audit-error {
+    padding: 18px;
+
+    color:
+      var(--dasha-fail);
+  }
+
+  .is-pass {
+    color:
+      var(--dasha-pass) !important;
+  }
+
+  .is-fail {
+    color:
+      var(--dasha-fail) !important;
+  }
+
+  @media (
+    max-width: 700px
+  ) {
+    .dasha-audit-system__grid,
+    .dasha-audit-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .dasha-audit-fixture__header {
+      flex-direction: column;
+    }
+  }
+</style>

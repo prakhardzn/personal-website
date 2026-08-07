@@ -1,0 +1,406 @@
+/* =========================================================
+   ROOT
+========================================================= */
+
+.birth-chart-output {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  color: var(--astro-white);
+}
+
+.birth-chart-output *,
+.birth-chart-output *::before,
+.birth-chart-output *::after {
+  box-sizing: border-box;
+}
+
+.birth-chart-output button {
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.birth-chart-output__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 20px;
+
+  border: 1px solid var(--astro-border);
+  border-left: 2px solid var(--astro-mint);
+
+  background: var(--astro-panel);
+}
+
+.birth-chart-output__header p {
+  margin: 0 0 7px;
+  color: var(--astro-green-muted);
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-micro);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.birth-chart-output__header h2 {
+  margin: 0 0 10px;
+  color: var(--astro-mint);
+  font-family: var(--astro-display-font);
+  font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+  font-weight: 400;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.birth-chart-output__header span {
+  display: block;
+  max-width: 760px;
+  color: var(--astro-muted);
+  font-size: var(--astro-text-meta);
+  line-height: 1.6;
+}
+
+.birth-chart-output__status {
+  flex: 0 0 auto;
+
+  padding: 8px 10px;
+
+  border: 1px solid var(--astro-mint);
+
+  background: var(--astro-bg);
+
+  color: var(--astro-mint);
+
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-micro);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   METADATA
+========================================================= */
+
+.birth-chart-output__metadata {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+
+  border: 1px solid var(--astro-border);
+  background: var(--astro-border);
+}
+
+.birth-chart-output__metadata > div {
+  min-width: 0;
+  padding: 12px;
+  background: var(--astro-bg);
+}
+
+.birth-chart-output__metadata span,
+.birth-chart-output__metadata strong {
+  display: block;
+}
+
+.birth-chart-output__metadata span {
+  margin-bottom: 6px;
+  color: var(--astro-green-muted);
+  font-family: var(--astro-display-font);
+  font-size: 0.48rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.birth-chart-output__metadata strong {
+  color: var(--astro-white);
+  font-size: var(--astro-text-micro);
+  font-weight: 400;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   TOP RESULT TABS
+========================================================= */
+
+.birth-chart-output__chart-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+
+  border: 1px solid var(--astro-border);
+  background: var(--astro-border);
+}
+
+.birth-chart-output__chart-tab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  min-width: 0;
+  min-height: 62px;
+
+  padding: 12px 14px;
+
+  border: 0;
+  outline: none;
+
+  background: var(--astro-bg);
+
+  color: var(--astro-green-muted);
+
+  font-family: var(--astro-display-font);
+  text-align: left;
+  cursor: pointer;
+
+  transition:
+    background 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.birth-chart-output__chart-tab:hover {
+  background: var(--astro-panel-hover);
+  color: var(--astro-white);
+}
+
+.birth-chart-output__chart-tab:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--astro-mint);
+}
+
+.birth-chart-output__chart-tab.is-active {
+  background: color-mix(in srgb, var(--astro-mint) 10%, var(--astro-bg));
+  color: var(--astro-mint);
+  box-shadow: inset 0 -2px 0 var(--astro-mint);
+}
+
+.birth-chart-output__chart-tab > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+
+  color: inherit;
+  font-size: clamp(0.75rem, 1.2vw, 1rem);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.birth-chart-output__chart-tab-status {
+  flex: 0 0 auto;
+
+  padding: 4px 7px;
+
+  border: 1px solid var(--astro-border-soft);
+
+  background: transparent;
+
+  color: var(--astro-dim);
+
+  font-family: var(--astro-display-font);
+  font-size: 0.46rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.birth-chart-output__chart-tab-status.is-ready {
+  border-color: var(--astro-mint);
+  color: var(--astro-mint);
+}
+
+.birth-chart-output__chart-tab.is-active
+  .birth-chart-output__chart-tab-status {
+  border-color: currentColor;
+  color: currentColor;
+}
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+.birth-chart-output__chart-panel {
+  min-width: 0;
+}
+
+.birth-chart-output__layout,
+.navamsa-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  gap: 14px;
+  align-items: start;
+}
+
+/* =========================================================
+   NAVAMSA SUMMARY
+========================================================= */
+
+.navamsa-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+
+  margin-bottom: 14px;
+
+  border: 1px solid var(--astro-border);
+  background: var(--astro-border);
+}
+
+.navamsa-summary > div {
+  min-width: 0;
+  padding: 12px;
+  background: var(--astro-bg);
+}
+
+.navamsa-summary span,
+.navamsa-summary strong {
+  display: block;
+}
+
+.navamsa-summary span {
+  margin-bottom: 6px;
+  color: var(--astro-green-muted);
+  font-family: var(--astro-display-font);
+  font-size: 0.48rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.navamsa-summary strong {
+  color: var(--astro-white);
+  font-size: var(--astro-text-micro);
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   NOTES
+========================================================= */
+
+.navamsa-notes,
+.birth-chart-output__warnings {
+  padding: 14px 16px;
+  border-left: 2px solid var(--astro-mint);
+  background: var(--astro-bg);
+}
+
+.navamsa-notes {
+  margin-top: 14px;
+}
+
+.navamsa-notes > strong,
+.birth-chart-output__warning-title strong {
+  color: var(--astro-mint);
+  font-family: var(--astro-display-font);
+  font-size: var(--astro-text-meta);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.navamsa-notes ul,
+.birth-chart-output__warnings ul {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding-left: 18px;
+
+  color: var(--astro-muted);
+  font-size: var(--astro-text-meta);
+  line-height: 1.55;
+}
+
+.birth-chart-output__warning-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.birth-chart-output__warning-title span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 18px;
+  height: 18px;
+
+  border: 1px solid var(--astro-mint);
+  color: var(--astro-mint);
+
+  font-family: var(--astro-display-font);
+  font-size: 0.68rem;
+  line-height: 1;
+}
+
+/* =========================================================
+   SAFE OVERRIDES FOR WHITE PANELS / WHITE BORDERS
+========================================================= */
+
+.birth-chart-output__chart-panel,
+.birth-chart-output__layout > *,
+.navamsa-layout > *,
+.birth-chart-output__metadata > *,
+.navamsa-summary > *,
+.birth-chart-output__warnings,
+.navamsa-notes {
+  background-clip: padding-box;
+}
+
+.birth-chart-output__layout > *,
+.navamsa-layout > * {
+  min-width: 0;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+  .birth-chart-output__layout,
+  .navamsa-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .birth-chart-output__header {
+    flex-direction: column;
+  }
+
+  .birth-chart-output__status {
+    width: 100%;
+  }
+
+  .birth-chart-output__metadata,
+  .navamsa-summary,
+  .birth-chart-output__chart-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .birth-chart-output__metadata,
+  .navamsa-summary,
+  .birth-chart-output__chart-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .birth-chart-output__chart-tab {
+    min-height: 56px;
+  }
+
+  .birth-chart-output__chart-tab > span:first-child {
+    font-size: 0.82rem;
+  }
+}

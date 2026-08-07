@@ -44,42 +44,48 @@ interface CalendarParts {
 
 const planetDefinitions:
   PlanetDefinition[] = [
-  {
-    name: "Sun",
-    abbreviation: "SU",
-    body: Astronomy.Body.Sun,
-  },
-  {
-    name: "Moon",
-    abbreviation: "MO",
-    body: Astronomy.Body.Moon,
-  },
-  {
-    name: "Mars",
-    abbreviation: "MA",
-    body: Astronomy.Body.Mars,
-  },
-  {
-    name: "Mercury",
-    abbreviation: "ME",
-    body: Astronomy.Body.Mercury,
-  },
-  {
-    name: "Jupiter",
-    abbreviation: "JU",
-    body: Astronomy.Body.Jupiter,
-  },
-  {
-    name: "Venus",
-    abbreviation: "VE",
-    body: Astronomy.Body.Venus,
-  },
-  {
-    name: "Saturn",
-    abbreviation: "SA",
-    body: Astronomy.Body.Saturn,
-  },
-];
+    {
+      name: "Sun",
+      abbreviation: "SU",
+      body: Astronomy.Body.Sun,
+    },
+
+    {
+      name: "Moon",
+      abbreviation: "MO",
+      body: Astronomy.Body.Moon,
+    },
+
+    {
+      name: "Mars",
+      abbreviation: "MA",
+      body: Astronomy.Body.Mars,
+    },
+
+    {
+      name: "Mercury",
+      abbreviation: "ME",
+      body: Astronomy.Body.Mercury,
+    },
+
+    {
+      name: "Jupiter",
+      abbreviation: "JU",
+      body: Astronomy.Body.Jupiter,
+    },
+
+    {
+      name: "Venus",
+      abbreviation: "VE",
+      body: Astronomy.Body.Venus,
+    },
+
+    {
+      name: "Saturn",
+      abbreviation: "SA",
+      body: Astronomy.Body.Saturn,
+    },
+  ];
 
 const millisecondsPerDay =
   86_400_000;
@@ -87,20 +93,31 @@ const millisecondsPerDay =
 const degreesToRadians = (
   value: number
 ): number => {
-  return value * Math.PI / 180;
+  return (
+    value *
+    Math.PI /
+    180
+  );
 };
 
 const radiansToDegrees = (
   value: number
 ): number => {
-  return value * 180 / Math.PI;
+  return (
+    value *
+    180 /
+    Math.PI
+  );
 };
 
 export const normalizeDegrees = (
   value: number
 ): number => {
   return (
-    (value % 360) +
+    (
+      value %
+      360
+    ) +
     360
   ) % 360;
 };
@@ -115,7 +132,10 @@ const signedAngularDifference = (
       firstLongitude
     );
 
-  if (difference > 180) {
+  if (
+    difference >
+    180
+  ) {
     difference -= 360;
   }
 
@@ -135,7 +155,8 @@ const getJulianDay = (
 const createUtcTimestamp = (
   parts: CalendarParts
 ): number => {
-  const date = new Date(0);
+  const date =
+    new Date(0);
 
   date.setUTCFullYear(
     parts.year,
@@ -159,28 +180,57 @@ const parseBirthInput = (
 ): CalendarParts => {
   const dateMatch =
     /^(\d{4})-(\d{2})-(\d{2})$/
-      .exec(birthDate);
+      .exec(
+        birthDate
+      );
 
   const timeMatch =
     /^(\d{2}):(\d{2})(?::(\d{2}))?$/
-      .exec(birthTime);
+      .exec(
+        birthTime
+      );
 
-  if (!dateMatch || !timeMatch) {
+  if (
+    !dateMatch ||
+    !timeMatch
+  ) {
     throw new BirthChartCalculationError(
       "The birth date or time has an invalid format."
     );
   }
 
-  const parts: CalendarParts = {
-    year: Number(dateMatch[1]),
-    month: Number(dateMatch[2]),
-    day: Number(dateMatch[3]),
+  const parts:
+    CalendarParts = {
+    year:
+      Number(
+        dateMatch[1]
+      ),
 
-    hour: Number(timeMatch[1]),
-    minute: Number(timeMatch[2]),
-    second: Number(
-      timeMatch[3] ?? "0"
-    ),
+    month:
+      Number(
+        dateMatch[2]
+      ),
+
+    day:
+      Number(
+        dateMatch[3]
+      ),
+
+    hour:
+      Number(
+        timeMatch[1]
+      ),
+
+    minute:
+      Number(
+        timeMatch[2]
+      ),
+
+    second:
+      Number(
+        timeMatch[3] ??
+          "0"
+      ),
   };
 
   if (
@@ -200,16 +250,25 @@ const parseBirthInput = (
     );
   }
 
-  const validationDate = new Date(
-    createUtcTimestamp(parts)
-  );
+  const validationDate =
+    new Date(
+      createUtcTimestamp(
+        parts
+      )
+    );
 
   if (
-    validationDate.getUTCFullYear() !==
+    validationDate
+      .getUTCFullYear() !==
       parts.year ||
-    validationDate.getUTCMonth() + 1 !==
+
+    validationDate
+      .getUTCMonth() +
+        1 !==
       parts.month ||
-    validationDate.getUTCDate() !==
+
+    validationDate
+      .getUTCDate() !==
       parts.day
   ) {
     throw new BirthChartCalculationError(
@@ -228,74 +287,128 @@ const getPartsInTimezone = (
     new Intl.DateTimeFormat(
       "en-CA",
       {
-        timeZone: timezone,
+        timeZone:
+          timezone,
 
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
+        year:
+          "numeric",
 
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
+        month:
+          "2-digit",
 
-        hourCycle: "h23",
+        day:
+          "2-digit",
+
+        hour:
+          "2-digit",
+
+        minute:
+          "2-digit",
+
+        second:
+          "2-digit",
+
+        hourCycle:
+          "h23",
       }
     );
 
   const values =
-    new Map<string, string>();
+    new Map<
+      string,
+      string
+    >();
 
   formatter
-    .formatToParts(date)
-    .forEach((part) => {
-      if (
-        part.type !== "literal"
-      ) {
-        values.set(
-          part.type,
-          part.value
-        );
+    .formatToParts(
+      date
+    )
+    .forEach(
+      (
+        part
+      ) => {
+        if (
+          part.type !==
+          "literal"
+        ) {
+          values.set(
+            part.type,
+            part.value
+          );
+        }
       }
-    });
+    );
 
   return {
-    year: Number(
-      values.get("year")
-    ),
+    year:
+      Number(
+        values.get(
+          "year"
+        )
+      ),
 
-    month: Number(
-      values.get("month")
-    ),
+    month:
+      Number(
+        values.get(
+          "month"
+        )
+      ),
 
-    day: Number(
-      values.get("day")
-    ),
+    day:
+      Number(
+        values.get(
+          "day"
+        )
+      ),
 
-    hour: Number(
-      values.get("hour")
-    ),
+    hour:
+      Number(
+        values.get(
+          "hour"
+        )
+      ),
 
-    minute: Number(
-      values.get("minute")
-    ),
+    minute:
+      Number(
+        values.get(
+          "minute"
+        )
+      ),
 
-    second: Number(
-      values.get("second")
-    ),
+    second:
+      Number(
+        values.get(
+          "second"
+        )
+      ),
   };
 };
 
 const calendarPartsMatch = (
-  first: CalendarParts,
-  second: CalendarParts
+  first:
+    CalendarParts,
+
+  second:
+    CalendarParts
 ): boolean => {
   return (
-    first.year === second.year &&
-    first.month === second.month &&
-    first.day === second.day &&
-    first.hour === second.hour &&
-    first.minute === second.minute &&
-    first.second === second.second
+    first.year ===
+      second.year &&
+
+    first.month ===
+      second.month &&
+
+    first.day ===
+      second.day &&
+
+    first.hour ===
+      second.hour &&
+
+    first.minute ===
+      second.minute &&
+
+    first.second ===
+      second.second
   );
 };
 
@@ -315,12 +428,6 @@ const zonedDateTimeToUtc = (
       requestedParts
     );
 
-  /*
-   * The candidate is corrected repeatedly until
-   * formatting it inside the requested timezone
-   * produces the local date and time supplied by
-   * the visitor.
-   */
   for (
     let attempt = 0;
     attempt < 6;
@@ -354,13 +461,17 @@ const zonedDateTimeToUtc = (
     candidateTimestamp -=
       correction;
 
-    if (correction === 0) {
+    if (
+      correction === 0
+    ) {
       break;
     }
   }
 
   const result =
-    new Date(candidateTimestamp);
+    new Date(
+      candidateTimestamp
+    );
 
   const finalParts =
     getPartsInTimezone(
@@ -382,6 +493,10 @@ const zonedDateTimeToUtc = (
   return result;
 };
 
+/* =========================================================
+   LAHIRI AYANAMSHA
+========================================================= */
+
 const getGeneralPrecessionArcseconds = (
   julianCenturies: number
 ): number => {
@@ -390,8 +505,13 @@ const getGeneralPrecessionArcseconds = (
 
   return (
     5029.0966 * T +
-    1.11113 * T * T -
-    0.000006 * T * T * T
+    1.11113 *
+      T *
+      T -
+    0.000006 *
+      T *
+      T *
+      T
   );
 };
 
@@ -408,19 +528,22 @@ const getSimplifiedNutationLongitude = (
   const ascendingNode =
     normalizeDegrees(
       125.04452 -
-      1934.136261 * T
+      1934.136261 *
+        T
     );
 
   const sunMeanLongitude =
     normalizeDegrees(
       280.4665 +
-      36_000.7698 * T
+      36_000.7698 *
+        T
     );
 
   const moonMeanLongitude =
     normalizeDegrees(
       218.3165 +
-      481_267.8813 * T
+      481_267.8813 *
+        T
     );
 
   const nodeRadians =
@@ -440,18 +563,26 @@ const getSimplifiedNutationLongitude = (
 
   const nutationArcseconds =
     -17.2 *
-      Math.sin(nodeRadians) -
+      Math.sin(
+        nodeRadians
+      ) -
+
     1.32 *
       Math.sin(
-        2 * sunRadians
+        2 *
+        sunRadians
       ) -
+
     0.23 *
       Math.sin(
-        2 * moonRadians
+        2 *
+        moonRadians
       ) +
+
     0.21 *
       Math.sin(
-        2 * nodeRadians
+        2 *
+        nodeRadians
       );
 
   return (
@@ -463,16 +594,6 @@ const getSimplifiedNutationLongitude = (
 export const getLahiriAyanamsha = (
   date: Date
 ): number => {
-  /*
-   * Official Lahiri anchor:
-   *
-   * 21 March 1956, 00:00 TDT
-   * 23°15′00.658″
-   *
-   * The open implementation below advances that
-   * anchor with the IAU-1976 general-precession
-   * polynomial and a compact nutation correction.
-   */
   const anchorTrueAyanamsha =
     23 +
     15 / 60 +
@@ -496,7 +617,9 @@ export const getLahiriAyanamsha = (
     );
 
   const targetJulianDay =
-    getJulianDay(date);
+    getJulianDay(
+      date
+    );
 
   const anchorT =
     (
@@ -544,63 +667,104 @@ export const getLahiriAyanamsha = (
   );
 };
 
-const getTropicalLongitude = (
+/* =========================================================
+   GEOCENTRIC PLANETARY LONGITUDES
+
+   IMPORTANT:
+   A birth chart needs the apparent position of
+   celestial bodies as seen from Earth.
+
+   Astronomy.EclipticLongitude() is heliocentric,
+   so we deliberately do NOT use it here.
+
+   GeoVector() gives the Earth-centered vector.
+   Ecliptic() converts it into true ecliptic
+   coordinates of date.
+========================================================= */
+
+const getGeocentricTropicalLongitude = (
   body: Astronomy.Body,
   date: Date
 ): number => {
-  return normalizeDegrees(
-    Astronomy.EclipticLongitude(
+  const geocentricVector =
+    Astronomy.GeoVector(
       body,
-      date
-    )
+      date,
+      true
+    );
+
+  const eclipticCoordinates =
+    Astronomy.Ecliptic(
+      geocentricVector
+    );
+
+  return normalizeDegrees(
+    eclipticCoordinates.elon
   );
 };
+
+/* =========================================================
+   RETROGRADE DETECTION
+========================================================= */
 
 const getRetrogradeStatus = (
   body: Astronomy.Body,
   date: Date
 ): boolean => {
   if (
-    body === Astronomy.Body.Sun ||
-    body === Astronomy.Body.Moon
+    body ===
+      Astronomy.Body.Sun ||
+    body ===
+      Astronomy.Body.Moon
   ) {
     return false;
   }
 
-  const halfDay =
-    12 * 60 * 60 * 1000;
+  const halfDayMilliseconds =
+    12 *
+    60 *
+    60 *
+    1000;
 
   const beforeDate =
     new Date(
       date.getTime() -
-      halfDay
+      halfDayMilliseconds
     );
 
   const afterDate =
     new Date(
       date.getTime() +
-      halfDay
+      halfDayMilliseconds
     );
 
   const beforeLongitude =
-    getTropicalLongitude(
+    getGeocentricTropicalLongitude(
       body,
       beforeDate
     );
 
   const afterLongitude =
-    getTropicalLongitude(
+    getGeocentricTropicalLongitude(
       body,
       afterDate
     );
 
-  return (
+  const movement =
     signedAngularDifference(
       beforeLongitude,
       afterLongitude
-    ) < 0
+    );
+
+  return (
+    movement <
+    0
   );
 };
+
+/* =========================================================
+   DEGREE FORMATTING
+========================================================= */
 
 const formatDegreeInSign = (
   degreeInSign: number
@@ -608,45 +772,80 @@ const formatDegreeInSign = (
   const normalized =
     normalizeDegrees(
       degreeInSign
-    ) % 30;
+    ) %
+    30;
 
-  const degrees =
-    Math.floor(normalized);
-
-  const minutes =
+  let degrees =
     Math.floor(
-      (
-        normalized -
-        degrees
-      ) * 60
+      normalized
     );
 
+  const rawMinutes =
+    (
+      normalized -
+      degrees
+    ) *
+    60;
+
+  let minutes =
+    Math.round(
+      rawMinutes
+    );
+
+  if (
+    minutes === 60
+  ) {
+    minutes = 0;
+    degrees += 1;
+  }
+
+  if (
+    degrees === 30
+  ) {
+    degrees = 29;
+    minutes = 59;
+  }
+
   return (
-    `${String(degrees).padStart(
+    `${String(
+      degrees
+    ).padStart(
       2,
       "0"
     )}°` +
-    `${String(minutes).padStart(
+
+    `${String(
+      minutes
+    ).padStart(
       2,
       "0"
     )}′`
   );
 };
 
+/* =========================================================
+   POSITION DATA
+========================================================= */
+
 const createPositionData = (
   longitude: number,
   ascendantSignNumber: number
 ) => {
   const normalizedLongitude =
-    normalizeDegrees(longitude);
+    normalizeDegrees(
+      longitude
+    );
 
   const signNumber =
     Math.floor(
-      normalizedLongitude / 30
-    ) + 1;
+      normalizedLongitude /
+      30
+    ) +
+    1;
 
   const degreeInSign =
-    normalizedLongitude % 30;
+    normalizedLongitude %
+    30;
 
   const house =
     (
@@ -656,7 +855,8 @@ const createPositionData = (
         12
       ) %
       12
-    ) + 1;
+    ) +
+    1;
 
   const nakshatra =
     getNakshatraPosition(
@@ -691,12 +891,18 @@ const createPositionData = (
   };
 };
 
+/* =========================================================
+   RAHU / KETU
+========================================================= */
+
 const getMeanRahuLongitude = (
   date: Date,
   ayanamsha: number
 ): number => {
   const julianDay =
-    getJulianDay(date);
+    getJulianDay(
+      date
+    );
 
   const T =
     (
@@ -708,17 +914,28 @@ const getMeanRahuLongitude = (
   const tropicalNode =
     normalizeDegrees(
       125.044555 -
-      1934.1361849 * T +
-      0.0020762 * T * T +
+
+      1934.1361849 *
+        T +
+
+      0.0020762 *
+        T *
+        T +
+
       (
-        T * T * T
-      ) / 467_410 -
+        T *
+        T *
+        T
+      ) /
+        467_410 -
+
       (
         T *
         T *
         T *
         T
-      ) / 60_616_000
+      ) /
+        60_616_000
     );
 
   return normalizeDegrees(
@@ -726,6 +943,10 @@ const getMeanRahuLongitude = (
     ayanamsha
   );
 };
+
+/* =========================================================
+   ASCENDANT
+========================================================= */
 
 const getMeanObliquity = (
   julianDay: number
@@ -739,10 +960,14 @@ const getMeanObliquity = (
 
   return (
     23.439291111 -
-    0.013004167 * T -
+
+    0.013004167 *
+      T -
+
     0.000000164 *
       T *
       T +
+
     0.000000504 *
       T *
       T *
@@ -757,7 +982,9 @@ const getSiderealAscendant = (
   ayanamsha: number
 ): number => {
   const julianDay =
-    getJulianDay(date);
+    getJulianDay(
+      date
+    );
 
   const obliquity =
     getMeanObliquity(
@@ -767,7 +994,8 @@ const getSiderealAscendant = (
   const greenwichSiderealDegrees =
     Astronomy.SiderealTime(
       date
-    ) * 15;
+    ) *
+    15;
 
   const localSiderealDegrees =
     normalizeDegrees(
@@ -790,20 +1018,34 @@ const getSiderealAscendant = (
       latitude
     );
 
+  const numerator =
+    Math.cos(
+      theta
+    );
+
+  const denominator =
+    -(
+      Math.sin(
+        theta
+      ) *
+        Math.cos(
+          epsilon
+        ) +
+
+      Math.tan(
+        latitudeRadians
+      ) *
+        Math.sin(
+          epsilon
+        )
+    );
+
   const tropicalAscendant =
     normalizeDegrees(
       radiansToDegrees(
         Math.atan2(
-          Math.cos(theta),
-
-          -(
-            Math.sin(theta) *
-              Math.cos(epsilon) +
-            Math.tan(
-              latitudeRadians
-            ) *
-              Math.sin(epsilon)
-          )
+          numerator,
+          denominator
         )
       )
     );
@@ -828,33 +1070,52 @@ const calculateAscendant = (
       ayanamsha
     );
 
-  const temporarySignNumber =
+  const ascendantSignNumber =
     Math.floor(
-      ascendantLongitude / 30
-    ) + 1;
+      ascendantLongitude /
+      30
+    ) +
+    1;
 
   const position =
     createPositionData(
       ascendantLongitude,
-      temporarySignNumber
+      ascendantSignNumber
     );
 
   return {
-    name: "Ascendant",
-    abbreviation: "ASC",
+    name:
+      "Ascendant",
+
+    abbreviation:
+      "ASC",
+
     ...position,
-    house: 1,
+
+    house:
+      1,
   };
 };
 
+/* =========================================================
+   PLANETS
+========================================================= */
+
 const calculatePlanet = (
-  definition: PlanetDefinition,
-  date: Date,
-  ayanamsha: number,
-  ascendantSignNumber: number
+  definition:
+    PlanetDefinition,
+
+  date:
+    Date,
+
+  ayanamsha:
+    number,
+
+  ascendantSignNumber:
+    number
 ): PlanetPosition => {
   const tropicalLongitude =
-    getTropicalLongitude(
+    getGeocentricTropicalLongitude(
       definition.body,
       date
     );
@@ -872,7 +1133,9 @@ const calculatePlanet = (
     );
 
   return {
-    name: definition.name,
+    name:
+      definition.name,
+
     abbreviation:
       definition.abbreviation,
 
@@ -886,25 +1149,40 @@ const calculatePlanet = (
   };
 };
 
+/* =========================================================
+   ERROR TYPE
+========================================================= */
+
 export class BirthChartCalculationError
   extends Error {
-  constructor(message: string) {
-    super(message);
+  constructor(
+    message: string
+  ) {
+    super(
+      message
+    );
 
     this.name =
       "BirthChartCalculationError";
   }
 }
 
+/* =========================================================
+   MAIN CALCULATION
+========================================================= */
+
 export const calculateBirthChart = (
-  input: BirthChartInput
+  input:
+    BirthChartInput
 ): BirthChartResult => {
   if (
     !Number.isFinite(
       input.latitude
     ) ||
-    input.latitude < -90 ||
-    input.latitude > 90
+    input.latitude <
+      -90 ||
+    input.latitude >
+      90
   ) {
     throw new BirthChartCalculationError(
       "Latitude must be between -90 and 90."
@@ -915,15 +1193,18 @@ export const calculateBirthChart = (
     !Number.isFinite(
       input.longitude
     ) ||
-    input.longitude < -180 ||
-    input.longitude > 180
+    input.longitude <
+      -180 ||
+    input.longitude >
+      180
   ) {
     throw new BirthChartCalculationError(
       "Longitude must be between -180 and 180."
     );
   }
 
-  let utcDate: Date;
+  let utcDate:
+    Date;
 
   try {
     utcDate =
@@ -932,7 +1213,9 @@ export const calculateBirthChart = (
         input.birthTime,
         input.timezone
       );
-  } catch (error) {
+  } catch (
+    error
+  ) {
     if (
       error instanceof
       BirthChartCalculationError
@@ -958,16 +1241,19 @@ export const calculateBirthChart = (
       ayanamsha
     );
 
-  const planets =
-    planetDefinitions.map(
-      (definition) =>
-        calculatePlanet(
-          definition,
-          utcDate,
-          ayanamsha,
-          ascendant.signNumber
-        )
-    );
+  const planets:
+    PlanetPosition[] =
+      planetDefinitions.map(
+        (
+          definition
+        ) =>
+          calculatePlanet(
+            definition,
+            utcDate,
+            ayanamsha,
+            ascendant.signNumber
+          )
+      );
 
   const rahuLongitude =
     getMeanRahuLongitude(
@@ -977,7 +1263,8 @@ export const calculateBirthChart = (
 
   const ketuLongitude =
     normalizeDegrees(
-      rahuLongitude + 180
+      rahuLongitude +
+      180
     );
 
   const rahuPosition =
@@ -994,16 +1281,29 @@ export const calculateBirthChart = (
 
   planets.push(
     {
-      name: "Rahu",
-      abbreviation: "RA",
+      name:
+        "Rahu",
+
+      abbreviation:
+        "RA",
+
       ...rahuPosition,
-      retrograde: true,
+
+      retrograde:
+        true,
     },
+
     {
-      name: "Ketu",
-      abbreviation: "KE",
+      name:
+        "Ketu",
+
+      abbreviation:
+        "KE",
+
       ...ketuPosition,
-      retrograde: true,
+
+      retrograde:
+        true,
     }
   );
 
@@ -1011,19 +1311,28 @@ export const calculateBirthChart = (
     id:
       `birth-chart-${Date.now()}`,
 
-    status: "calculated",
+    status:
+      "calculated",
 
     generatedAt:
-      new Date().toISOString(),
+      new Date()
+        .toISOString(),
 
     input,
 
     settings: {
-      zodiac: "sidereal",
-      ayanamsha: "lahiri",
-      nodeType: "mean",
+      zodiac:
+        "sidereal",
+
+      ayanamsha:
+        "lahiri",
+
+      nodeType:
+        "mean",
+
       chartStyle:
         "north-indian",
+
       houseSystem:
         "whole-sign",
     },
@@ -1049,14 +1358,15 @@ export const calculateBirthChart = (
     },
 
     ascendant,
+
     planets,
 
     warnings: [
-      "Planetary longitudes are calculated with Astronomy Engine.",
-      "The Lahiri ayanamsha is an openly implemented IAU-1976 anchored approximation, not Swiss Ephemeris.",
-      "Rahu and Ketu use the mean lunar node.",
-      "Houses use the whole-sign house system.",
-      "Historic timezone accuracy depends on the timezone database included with the visitor's browser.",
+      "Planetary positions are calculated geocentrically with Astronomy Engine.",
+      "The Lahiri ayanamsha is an openly implemented approximation and will be benchmarked before final release.",
+      "Rahu and Ketu currently use the mean lunar node.",
+      "Houses currently use the whole-sign house system.",
+      "Historical timezone accuracy depends on the timezone database available in the visitor's browser.",
     ],
   };
 };

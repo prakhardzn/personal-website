@@ -4,6 +4,21 @@ import NorthIndianChart
 
 import PlanetaryTable
   from "./PlanetaryTable.astro";
+
+import NavamsaChart
+  from "./NavamsaChart.astro";
+
+import NavamsaTable
+  from "./NavamsaTable.astro";
+
+import OtherDivisionalCharts
+  from "./OtherDivisionalCharts.astro";
+
+import VimshottariDasha
+  from "./VimshottariDasha.astro";
+
+import "../../styles/birth-chart-divisional.css";
+import "../../styles/vimshottari.css";
 ---
 
 <section
@@ -11,19 +26,25 @@ import PlanetaryTable
   data-birth-chart-output
   aria-labelledby="birth-chart-output-title"
 >
+  <!-- ==================================================
+       HEADER
+  =================================================== -->
+
   <header class="birth-chart-output__header">
     <div>
-      <p>CELESTIAL OUTPUT</p>
+      <p>
+        CELESTIAL OUTPUT
+      </p>
 
       <h2 id="birth-chart-output-title">
-        North Indian Birth Chart
+        Vedic Birth Chart
       </h2>
 
       <span>
-        Sidereal planetary positions,
-        Lahiri ayanamsha, whole-sign houses,
-        nakshatras and padas calculated from
-        the submitted birth details.
+        Explore D1 Rashi, D9 Navamsa,
+        additional divisional charts and
+        Vimshottari planetary periods from
+        one calculated birth dataset.
       </span>
     </div>
 
@@ -35,9 +56,15 @@ import PlanetaryTable
     </strong>
   </header>
 
+  <!-- ==================================================
+       METADATA
+  =================================================== -->
+
   <div class="birth-chart-output__metadata">
     <div>
-      <span>ENGINE</span>
+      <span>
+        ENGINE
+      </span>
 
       <strong data-result-engine>
         —
@@ -45,7 +72,9 @@ import PlanetaryTable
     </div>
 
     <div>
-      <span>UTC TIME</span>
+      <span>
+        UTC TIME
+      </span>
 
       <strong data-result-utc>
         —
@@ -53,7 +82,9 @@ import PlanetaryTable
     </div>
 
     <div>
-      <span>AYANAMSHA VALUE</span>
+      <span>
+        AYANAMSHA VALUE
+      </span>
 
       <strong data-result-ayanamsha-value>
         —
@@ -61,15 +92,213 @@ import PlanetaryTable
     </div>
   </div>
 
-  <div class="birth-chart-output__layout">
-    <NorthIndianChart />
+  <!-- ==================================================
+       MAIN VIEW SWITCHER
+  =================================================== -->
 
-    <PlanetaryTable />
+  <div
+    class="birth-chart-output__chart-tabs"
+    role="tablist"
+    aria-label="Vedic chart views"
+  >
+    <button
+      class="birth-chart-output__chart-tab is-active"
+      type="button"
+      role="tab"
+      data-result-chart-tab="d1"
+      aria-selected="true"
+      tabindex="0"
+    >
+      <span>
+        &gt; D1 RASHI
+      </span>
+
+      <span
+        class="birth-chart-output__chart-tab-status is-ready"
+      >
+        NATAL
+      </span>
+    </button>
+
+    <button
+      class="birth-chart-output__chart-tab"
+      type="button"
+      role="tab"
+      data-result-chart-tab="d9"
+      aria-selected="false"
+      tabindex="-1"
+    >
+      <span>
+        &gt; D9 NAVAMSA
+      </span>
+
+      <span
+        class="birth-chart-output__chart-tab-status"
+        data-d9-tab-status
+      >
+        WAIT
+      </span>
+    </button>
+
+    <button
+      class="birth-chart-output__chart-tab"
+      type="button"
+      role="tab"
+      data-result-chart-tab="other"
+      aria-selected="false"
+      tabindex="-1"
+    >
+      <span>
+        &gt; OTHER CHARTS
+      </span>
+
+      <span
+        class="birth-chart-output__chart-tab-status"
+        data-other-tab-status
+      >
+        WAIT
+      </span>
+    </button>
+
+    <button
+      class="birth-chart-output__chart-tab"
+      type="button"
+      role="tab"
+      data-result-chart-tab="dasha"
+      aria-selected="false"
+      tabindex="-1"
+    >
+      <span>
+        &gt; VIMSHOTTARI
+      </span>
+
+      <span
+        class="birth-chart-output__chart-tab-status"
+        data-dasha-tab-status
+      >
+        WAIT
+      </span>
+    </button>
   </div>
+
+  <!-- ==================================================
+       D1
+  =================================================== -->
+
+  <section
+    class="birth-chart-output__chart-panel"
+    data-result-chart-panel="d1"
+  >
+    <div class="birth-chart-output__layout">
+      <NorthIndianChart />
+
+      <PlanetaryTable />
+    </div>
+  </section>
+
+  <!-- ==================================================
+       D9
+  =================================================== -->
+
+  <section
+    class="birth-chart-output__chart-panel"
+    data-result-chart-panel="d9"
+    hidden
+  >
+    <div class="navamsa-summary">
+      <div>
+        <span>
+          CHART
+        </span>
+
+        <strong>
+          D9 NAVAMSA
+        </strong>
+      </div>
+
+      <div>
+        <span>
+          D9 ASCENDANT
+        </span>
+
+        <strong data-d9-summary-ascendant>
+          —
+        </strong>
+      </div>
+
+      <div>
+        <span>
+          DIVISION
+        </span>
+
+        <strong>
+          9 × 3°20′
+        </strong>
+      </div>
+
+      <div>
+        <span>
+          SOURCE
+        </span>
+
+        <strong>
+          EXACT D1 LONGITUDES
+        </strong>
+      </div>
+    </div>
+
+    <div class="navamsa-layout">
+      <NavamsaChart />
+
+      <NavamsaTable />
+    </div>
+
+    <div class="navamsa-notes">
+      <strong>
+        NAVAMSA DERIVATION
+      </strong>
+
+      <ul data-d9-notes>
+        <li>
+          Waiting for a calculated D1 chart.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ==================================================
+       D7 / D10 / D12
+  =================================================== -->
+
+  <section
+    class="birth-chart-output__chart-panel"
+    data-result-chart-panel="other"
+    hidden
+  >
+    <OtherDivisionalCharts />
+  </section>
+
+  <!-- ==================================================
+       VIMSHOTTARI
+  =================================================== -->
+
+  <section
+    class="birth-chart-output__chart-panel"
+    data-result-chart-panel="dasha"
+    hidden
+  >
+    <VimshottariDasha />
+  </section>
+
+  <!-- ==================================================
+       NOTES
+  =================================================== -->
 
   <div class="birth-chart-output__warnings">
     <div class="birth-chart-output__warning-title">
-      <span aria-hidden="true">!</span>
+      <span aria-hidden="true">
+        !
+      </span>
 
       <strong>
         CALCULATION NOTES
@@ -79,3 +308,1472 @@ import PlanetaryTable
     <ul data-result-warnings></ul>
   </div>
 </section>
+
+<script>
+  import {
+    calculateDivisionalChart,
+    calculateNavamsaChart,
+  } from "../../lib/astrology/divisionalCharts";
+
+  import type {
+    DivisionalChartCode,
+    DivisionalChartPosition,
+    DivisionalChartResult,
+  } from "../../lib/astrology/divisionalCharts";
+
+  import type {
+    BirthChartResult as BirthChartResultData,
+  } from "../../lib/astrology/types";
+
+  const svgNamespace =
+    "http://www.w3.org/2000/svg";
+
+  const outputRoot =
+    document.querySelector<HTMLElement>(
+      "[data-birth-chart-output]"
+    );
+
+  const queryOutput = <
+    ElementType extends Element
+  >(
+    selector: string
+  ): ElementType | null => {
+    return (
+      outputRoot
+        ?.querySelector<ElementType>(
+          selector
+        ) ??
+      null
+    );
+  };
+
+  const notifyContentChanged =
+    (): void => {
+      window.requestAnimationFrame(
+        () => {
+          window.dispatchEvent(
+            new CustomEvent(
+              "astrology:content-resized"
+            )
+          );
+        }
+      );
+    };
+
+  const setOutputText = (
+    selector:
+      string,
+
+    value:
+      string
+  ): void => {
+    const element =
+      queryOutput<HTMLElement>(
+        selector
+      );
+
+    if (
+      element
+    ) {
+      element.textContent =
+        value;
+    }
+  };
+
+  /* =========================================================
+     MAIN TABS
+  ========================================================= */
+
+  type ChartView =
+    | "d1"
+    | "d9"
+    | "other"
+    | "dasha";
+
+  const chartTabs =
+    Array.from(
+      outputRoot
+        ?.querySelectorAll<HTMLButtonElement>(
+          "[data-result-chart-tab]"
+        ) ??
+        []
+    );
+
+  const chartPanels =
+    Array.from(
+      outputRoot
+        ?.querySelectorAll<HTMLElement>(
+          "[data-result-chart-panel]"
+        ) ??
+        []
+    );
+
+  const isChartView = (
+    value:
+      string |
+      undefined
+  ): value is ChartView => {
+    return (
+      value === "d1" ||
+      value === "d9" ||
+      value === "other" ||
+      value === "dasha"
+    );
+  };
+
+  const activateChartView = (
+    view:
+      ChartView
+  ): void => {
+    chartTabs.forEach(
+      (
+        button
+      ) => {
+        const active =
+          button.dataset
+            .resultChartTab ===
+          view;
+
+        button.classList.toggle(
+          "is-active",
+          active
+        );
+
+        button.setAttribute(
+          "aria-selected",
+          String(active)
+        );
+
+        button.tabIndex =
+          active
+            ? 0
+            : -1;
+      }
+    );
+
+    chartPanels.forEach(
+      (
+        panel
+      ) => {
+        panel.hidden =
+          panel.dataset
+            .resultChartPanel !==
+          view;
+      }
+    );
+
+    notifyContentChanged();
+  };
+
+  chartTabs.forEach(
+    (
+      button,
+      index
+    ) => {
+      button.addEventListener(
+        "click",
+        () => {
+          const view =
+            button.dataset
+              .resultChartTab;
+
+          if (
+            isChartView(
+              view
+            )
+          ) {
+            activateChartView(
+              view
+            );
+          }
+        }
+      );
+
+      button.addEventListener(
+        "keydown",
+        (
+          event:
+            KeyboardEvent
+        ) => {
+          if (
+            event.key !==
+              "ArrowLeft" &&
+            event.key !==
+              "ArrowRight" &&
+            event.key !==
+              "Home" &&
+            event.key !==
+              "End"
+          ) {
+            return;
+          }
+
+          if (
+            chartTabs.length ===
+            0
+          ) {
+            return;
+          }
+
+          event.preventDefault();
+
+          let nextIndex =
+            index;
+
+          if (
+            event.key ===
+            "ArrowRight"
+          ) {
+            nextIndex =
+              (
+                index +
+                1
+              ) %
+              chartTabs.length;
+          }
+
+          if (
+            event.key ===
+            "ArrowLeft"
+          ) {
+            nextIndex =
+              (
+                index -
+                1 +
+                chartTabs.length
+              ) %
+              chartTabs.length;
+          }
+
+          if (
+            event.key ===
+            "Home"
+          ) {
+            nextIndex =
+              0;
+          }
+
+          if (
+            event.key ===
+            "End"
+          ) {
+            nextIndex =
+              chartTabs.length -
+              1;
+          }
+
+          const nextButton =
+            chartTabs[
+              nextIndex
+            ];
+
+          const nextView =
+            nextButton
+              ?.dataset
+              .resultChartTab;
+
+          if (
+            !nextButton ||
+            !isChartView(
+              nextView
+            )
+          ) {
+            return;
+          }
+
+          nextButton.focus();
+
+          activateChartView(
+            nextView
+          );
+        }
+      );
+    }
+  );
+
+  /* =========================================================
+     SIGN IN HOUSE
+  ========================================================= */
+
+  const getHouseSignNumber = (
+    ascendantSignNumber:
+      number,
+
+    houseNumber:
+      number
+  ): number => {
+    return (
+      (
+        (
+          ascendantSignNumber +
+          houseNumber -
+          2
+        ) %
+        12
+      ) +
+      1
+    );
+  };
+
+  /* =========================================================
+     GENERIC TABLE HELPERS
+  ========================================================= */
+
+  const createCell = (
+    tagName:
+      "th" |
+      "td",
+
+    text:
+      string
+  ): HTMLTableCellElement => {
+    const cell =
+      document.createElement(
+        tagName
+      );
+
+    cell.textContent =
+      text;
+
+    return cell;
+  };
+
+  const appendDivisionalRow = (
+    tbody:
+      HTMLTableSectionElement,
+
+    position:
+      DivisionalChartPosition
+  ): void => {
+    const row =
+      document.createElement(
+        "tr"
+      );
+
+    const bodyCell =
+      createCell(
+        "th",
+        position.abbreviation
+      );
+
+    bodyCell.scope =
+      "row";
+
+    row.append(
+      bodyCell,
+
+      createCell(
+        "td",
+        position.signName
+      ),
+
+      createCell(
+        "td",
+        String(
+          position.house
+        )
+      ),
+
+      createCell(
+        "td",
+
+        `${position.formattedDegree}${
+          position.retrograde
+            ? " R"
+            : ""
+        }`
+      ),
+
+      createCell(
+        "td",
+
+        `${position.sourceSignName} ${position.sourceFormattedDegree}`
+      )
+    );
+
+    tbody.append(
+      row
+    );
+  };
+
+  /* =========================================================
+     D9
+  ========================================================= */
+
+  const renderNavamsaChart = (
+    d9:
+      DivisionalChartResult,
+
+    d1:
+      BirthChartResultData
+  ): void => {
+    setOutputText(
+      "[data-d9-status]",
+      "D9 DERIVED"
+    );
+
+    setOutputText(
+      "[data-d9-ascendant-sign]",
+      d9.ascendant.signName
+    );
+
+    setOutputText(
+      "[data-d9-ascendant-degree]",
+      d9.ascendant.formattedDegree
+    );
+
+    setOutputText(
+      "[data-d9-summary-ascendant]",
+
+      `${d9.ascendant.signName} ${d9.ascendant.formattedDegree}`
+    );
+
+    setOutputText(
+      "[data-d9-profile]",
+
+      d1.input.name ||
+        "UNNAMED CHART"
+    );
+
+    setOutputText(
+      "[data-d9-context]",
+
+      `DERIVED FROM D1 // ${d1.input.birthDate} // ${d1.input.birthTime}`
+    );
+
+    for (
+      let houseNumber = 1;
+      houseNumber <= 12;
+      houseNumber += 1
+    ) {
+      const house =
+        queryOutput<SVGGElement>(
+          `[data-d9-house="${houseNumber}"]`
+        );
+
+      if (
+        !house
+      ) {
+        continue;
+      }
+
+      const signNumber =
+        getHouseSignNumber(
+          d9.ascendant
+            .signNumber,
+
+          houseNumber
+        );
+
+      const sign =
+        house.querySelector<SVGTextElement>(
+          "[data-d9-house-sign]"
+        );
+
+      const ascendant =
+        house.querySelector<SVGTextElement>(
+          "[data-d9-house-ascendant]"
+        );
+
+      const planets =
+        house.querySelector<SVGTextElement>(
+          "[data-d9-house-planets]"
+        );
+
+      if (
+        sign
+      ) {
+        sign.textContent =
+          String(
+            signNumber
+          );
+      }
+
+      if (
+        ascendant
+      ) {
+        ascendant.textContent =
+          houseNumber ===
+          1
+            ? `ASC ${d9.ascendant.formattedDegree}`
+            : "";
+      }
+
+      if (
+        !planets
+      ) {
+        continue;
+      }
+
+      planets.replaceChildren();
+
+      const housePlanets =
+        d9.planets.filter(
+          (
+            planet
+          ) =>
+            planet.house ===
+            houseNumber
+        );
+
+      house.dataset
+        .planetCount =
+        String(
+          Math.min(
+            housePlanets.length,
+            5
+          )
+        );
+
+      housePlanets.forEach(
+        (
+          planet,
+          index
+        ) => {
+          const line =
+            document.createElementNS(
+              svgNamespace,
+              "tspan"
+            );
+
+          line.setAttribute(
+            "x",
+            "0"
+          );
+
+          line.setAttribute(
+            "dy",
+
+            index ===
+              0
+              ? "1.15em"
+              : "1.2em"
+          );
+
+          line.textContent =
+            `${planet.abbreviation} ` +
+            `${planet.formattedDegree}` +
+            (
+              planet.retrograde
+                ? " R"
+                : ""
+            );
+
+          planets.append(
+            line
+          );
+        }
+      );
+    }
+  };
+
+  const renderNavamsaTable = (
+    d9:
+      DivisionalChartResult
+  ): void => {
+    const tbody =
+      queryOutput<HTMLTableSectionElement>(
+        "[data-d9-table-body]"
+      );
+
+    if (
+      !tbody
+    ) {
+      return;
+    }
+
+    tbody.replaceChildren();
+
+    appendDivisionalRow(
+      tbody,
+      d9.ascendant
+    );
+
+    d9.planets.forEach(
+      (
+        planet
+      ) => {
+        appendDivisionalRow(
+          tbody,
+          planet
+        );
+      }
+    );
+  };
+
+  const renderNavamsaNotes = (
+    d9:
+      DivisionalChartResult
+  ): void => {
+    const list =
+      queryOutput<HTMLUListElement>(
+        "[data-d9-notes]"
+      );
+
+    if (
+      !list
+    ) {
+      return;
+    }
+
+    list.replaceChildren();
+
+    d9.notes.forEach(
+      (
+        note
+      ) => {
+        const item =
+          document.createElement(
+            "li"
+          );
+
+        item.textContent =
+          note;
+
+        list.append(
+          item
+        );
+      }
+    );
+  };
+
+  const setD9Status = (
+    value:
+      "WAIT" |
+      "READY" |
+      "ERROR"
+  ): void => {
+    const status =
+      queryOutput<HTMLElement>(
+        "[data-d9-tab-status]"
+      );
+
+    if (
+      !status
+    ) {
+      return;
+    }
+
+    status.textContent =
+      value;
+
+    status.classList.toggle(
+      "is-ready",
+      value === "READY"
+    );
+  };
+
+  /* =========================================================
+     OTHER VARGAS
+  ========================================================= */
+
+  type OtherVargaCode =
+    | "D7"
+    | "D10"
+    | "D12";
+
+  let latestD1:
+    BirthChartResultData |
+    null = null;
+
+  const otherCharts =
+    new Map<
+      OtherVargaCode,
+      DivisionalChartResult
+    >();
+
+  const otherButtons =
+    Array.from(
+      outputRoot
+        ?.querySelectorAll<HTMLButtonElement>(
+          "[data-other-varga-select]"
+        ) ??
+        []
+    );
+
+  const isOtherVargaCode = (
+    value:
+      string |
+      undefined
+  ): value is OtherVargaCode => {
+    return (
+      value === "D7" ||
+      value === "D10" ||
+      value === "D12"
+    );
+  };
+
+  const setOtherTopStatus = (
+    status:
+      "WAIT" |
+      "READY" |
+      "ERROR"
+  ): void => {
+    const element =
+      queryOutput<HTMLElement>(
+        "[data-other-tab-status]"
+      );
+
+    if (
+      element
+    ) {
+      element.textContent =
+        status;
+
+      element.classList.toggle(
+        "is-ready",
+        status === "READY"
+      );
+    }
+
+    setOutputText(
+      "[data-other-varga-status]",
+
+      status === "READY"
+        ? "VARGAS DERIVED"
+        : status === "ERROR"
+          ? "VARGA ERROR"
+          : "AWAITING D1 DATA"
+    );
+
+    (
+      [
+        "D7",
+        "D10",
+        "D12",
+      ] as OtherVargaCode[]
+    ).forEach(
+      (
+        code
+      ) => {
+        const badge =
+          queryOutput<HTMLElement>(
+            `[data-other-varga-button-status="${code}"]`
+          );
+
+        if (
+          !badge
+        ) {
+          return;
+        }
+
+        badge.textContent =
+          status;
+
+        badge.classList.toggle(
+          "is-ready",
+          status === "READY"
+        );
+      }
+    );
+  };
+
+  const renderOtherChartSvg = (
+    chart:
+      DivisionalChartResult
+  ): void => {
+    for (
+      let houseNumber = 1;
+      houseNumber <= 12;
+      houseNumber += 1
+    ) {
+      const house =
+        queryOutput<SVGGElement>(
+          `[data-other-house="${houseNumber}"]`
+        );
+
+      if (
+        !house
+      ) {
+        continue;
+      }
+
+      const signNumber =
+        getHouseSignNumber(
+          chart.ascendant
+            .signNumber,
+
+          houseNumber
+        );
+
+      const sign =
+        house.querySelector<SVGTextElement>(
+          "[data-other-house-sign]"
+        );
+
+      const ascendant =
+        house.querySelector<SVGTextElement>(
+          "[data-other-house-ascendant]"
+        );
+
+      const planets =
+        house.querySelector<SVGTextElement>(
+          "[data-other-house-planets]"
+        );
+
+      if (
+        sign
+      ) {
+        sign.textContent =
+          String(
+            signNumber
+          );
+      }
+
+      if (
+        ascendant
+      ) {
+        ascendant.textContent =
+          houseNumber ===
+          1
+            ? `ASC ${chart.ascendant.formattedDegree}`
+            : "";
+      }
+
+      if (
+        !planets
+      ) {
+        continue;
+      }
+
+      planets.replaceChildren();
+
+      const housePlanets =
+        chart.planets.filter(
+          (
+            planet
+          ) =>
+            planet.house ===
+            houseNumber
+        );
+
+      house.dataset
+        .planetCount =
+        String(
+          Math.min(
+            housePlanets.length,
+            5
+          )
+        );
+
+      housePlanets.forEach(
+        (
+          planet,
+          index
+        ) => {
+          const line =
+            document.createElementNS(
+              svgNamespace,
+              "tspan"
+            );
+
+          line.setAttribute(
+            "x",
+            "0"
+          );
+
+          line.setAttribute(
+            "dy",
+
+            index ===
+              0
+              ? "1.15em"
+              : "1.2em"
+          );
+
+          line.textContent =
+            `${planet.abbreviation} ` +
+            `${planet.formattedDegree}` +
+            (
+              planet.retrograde
+                ? " R"
+                : ""
+            );
+
+          planets.append(
+            line
+          );
+        }
+      );
+    }
+  };
+
+  const renderOtherTable = (
+    chart:
+      DivisionalChartResult
+  ): void => {
+    const tbody =
+      queryOutput<HTMLTableSectionElement>(
+        "[data-other-varga-table-body]"
+      );
+
+    if (
+      !tbody
+    ) {
+      return;
+    }
+
+    tbody.replaceChildren();
+
+    appendDivisionalRow(
+      tbody,
+      chart.ascendant
+    );
+
+    chart.planets.forEach(
+      (
+        planet
+      ) => {
+        appendDivisionalRow(
+          tbody,
+          planet
+        );
+      }
+    );
+  };
+
+  const renderOtherNotes = (
+    chart:
+      DivisionalChartResult
+  ): void => {
+    const list =
+      queryOutput<HTMLUListElement>(
+        "[data-other-varga-notes]"
+      );
+
+    if (
+      !list
+    ) {
+      return;
+    }
+
+    list.replaceChildren();
+
+    chart.notes.forEach(
+      (
+        note
+      ) => {
+        const item =
+          document.createElement(
+            "li"
+          );
+
+        item.textContent =
+          note;
+
+        list.append(
+          item
+        );
+      }
+    );
+  };
+
+  const renderOtherVarga = (
+    code:
+      OtherVargaCode
+  ): void => {
+    const chart =
+      otherCharts.get(
+        code
+      );
+
+    if (
+      !chart ||
+      !latestD1
+    ) {
+      return;
+    }
+
+    setOutputText(
+      "[data-other-varga-code]",
+
+      `${chart.code} // ${chart.name.toUpperCase()}`
+    );
+
+    setOutputText(
+      "[data-other-varga-name]",
+
+      `${chart.name} Matrix`
+    );
+
+    setOutputText(
+      "[data-other-varga-ascendant-sign]",
+      chart.ascendant.signName
+    );
+
+    setOutputText(
+      "[data-other-varga-ascendant-degree]",
+      chart.ascendant.formattedDegree
+    );
+
+    setOutputText(
+      "[data-other-summary-code]",
+      chart.code
+    );
+
+    setOutputText(
+      "[data-other-summary-ascendant]",
+
+      `${chart.ascendant.signName} ${chart.ascendant.formattedDegree}`
+    );
+
+    setOutputText(
+      "[data-other-summary-division]",
+
+      String(
+        chart.division
+      )
+    );
+
+    setOutputText(
+      "[data-other-summary-segment]",
+
+      chart.segmentLabel
+    );
+
+    setOutputText(
+      "[data-other-table-title]",
+
+      `${chart.code} ${chart.name} Placements`
+    );
+
+    setOutputText(
+      "[data-other-notes-title]",
+
+      `${chart.code} DERIVATION`
+    );
+
+    otherButtons.forEach(
+      (
+        button
+      ) => {
+        const active =
+          button.dataset
+            .otherVargaSelect ===
+          code;
+
+        button.classList.toggle(
+          "is-active",
+          active
+        );
+
+        button.setAttribute(
+          "aria-selected",
+          String(active)
+        );
+      }
+    );
+
+    renderOtherChartSvg(
+      chart
+    );
+
+    renderOtherTable(
+      chart
+    );
+
+    renderOtherNotes(
+      chart
+    );
+
+    notifyContentChanged();
+  };
+
+  otherButtons.forEach(
+    (
+      button
+    ) => {
+      button.addEventListener(
+        "click",
+        () => {
+          const code =
+            button.dataset
+              .otherVargaSelect;
+
+          if (
+            isOtherVargaCode(
+              code
+            )
+          ) {
+            renderOtherVarga(
+              code
+            );
+          }
+        }
+      );
+    }
+  );
+
+  /* =========================================================
+     RECEIVE CALCULATED D1
+  ========================================================= */
+
+  const handleBirthChartCalculated = (
+    event:
+      Event
+  ): void => {
+    const customEvent =
+      event as
+        CustomEvent<
+          BirthChartResultData
+        >;
+
+    const d1 =
+      customEvent.detail;
+
+    if (
+      !d1 ||
+      !d1.ascendant ||
+      !Array.isArray(
+        d1.planets
+      )
+    ) {
+      setD9Status(
+        "ERROR"
+      );
+
+      setOtherTopStatus(
+        "ERROR"
+      );
+
+      return;
+    }
+
+    latestD1 =
+      d1;
+
+    /* =======================================================
+       D9
+    ======================================================= */
+
+    try {
+      const d9 =
+        calculateNavamsaChart(
+          d1
+        );
+
+      renderNavamsaChart(
+        d9,
+        d1
+      );
+
+      renderNavamsaTable(
+        d9
+      );
+
+      renderNavamsaNotes(
+        d9
+      );
+
+      setD9Status(
+        "READY"
+      );
+    } catch (
+      error
+    ) {
+      console.error(
+        "Navamsa calculation failed:",
+        error
+      );
+
+      setD9Status(
+        "ERROR"
+      );
+
+      setOutputText(
+        "[data-d9-status]",
+        "D9 ERROR"
+      );
+    }
+
+    /* =======================================================
+       D7 / D10 / D12
+    ======================================================= */
+
+    try {
+      otherCharts.clear();
+
+      const codes:
+        OtherVargaCode[] = [
+        "D7",
+        "D10",
+        "D12",
+      ];
+
+      codes.forEach(
+        (
+          code
+        ) => {
+          const result =
+            calculateDivisionalChart(
+              d1,
+
+              code as
+                DivisionalChartCode
+            );
+
+          otherCharts.set(
+            code,
+            result
+          );
+        }
+      );
+
+      setOtherTopStatus(
+        "READY"
+      );
+
+      /*
+       * Default view inside Other Charts.
+       */
+      renderOtherVarga(
+        "D7"
+      );
+    } catch (
+      error
+    ) {
+      console.error(
+        "Additional Varga calculation failed:",
+        error
+      );
+
+      setOtherTopStatus(
+        "ERROR"
+      );
+    }
+
+    /*
+     * A new birth-chart calculation always
+     * returns the visitor to D1.
+     */
+
+    activateChartView(
+      "d1"
+    );
+
+    notifyContentChanged();
+  };
+
+  window.addEventListener(
+    "astrology:birth-chart-calculated",
+    handleBirthChartCalculated
+  );
+
+  /* =========================================================
+     RESET
+  ========================================================= */
+
+  const resetDivisionalCharts =
+    (): void => {
+      latestD1 =
+        null;
+
+      otherCharts.clear();
+
+      activateChartView(
+        "d1"
+      );
+
+      setD9Status(
+        "WAIT"
+      );
+
+      setOtherTopStatus(
+        "WAIT"
+      );
+
+      setOutputText(
+        "[data-d9-status]",
+        "AWAITING D1 DATA"
+      );
+
+      setOutputText(
+        "[data-d9-ascendant-sign]",
+        "—"
+      );
+
+      setOutputText(
+        "[data-d9-ascendant-degree]",
+        "—"
+      );
+
+      setOutputText(
+        "[data-d9-summary-ascendant]",
+        "—"
+      );
+
+      queryOutput<HTMLTableSectionElement>(
+        "[data-d9-table-body]"
+      )?.replaceChildren();
+
+      setOutputText(
+        "[data-other-varga-code]",
+        "D7 // SAPTAMSA"
+      );
+
+      setOutputText(
+        "[data-other-varga-name]",
+        "Saptamsa Matrix"
+      );
+
+      setOutputText(
+        "[data-other-varga-ascendant-sign]",
+        "—"
+      );
+
+      setOutputText(
+        "[data-other-varga-ascendant-degree]",
+        "—"
+      );
+
+      setOutputText(
+        "[data-other-summary-code]",
+        "D7"
+      );
+
+      setOutputText(
+        "[data-other-summary-ascendant]",
+        "—"
+      );
+
+      setOutputText(
+        "[data-other-summary-division]",
+        "7"
+      );
+
+      setOutputText(
+        "[data-other-summary-segment]",
+        "—"
+      );
+
+      queryOutput<HTMLTableSectionElement>(
+        "[data-other-varga-table-body]"
+      )?.replaceChildren();
+
+      const otherNotes =
+        queryOutput<HTMLUListElement>(
+          "[data-other-varga-notes]"
+        );
+
+      if (
+        otherNotes
+      ) {
+        otherNotes.innerHTML =
+          "<li>Waiting for a calculated D1 chart.</li>";
+      }
+
+      otherButtons.forEach(
+        (
+          button
+        ) => {
+          const active =
+            button.dataset
+              .otherVargaSelect ===
+            "D7";
+
+          button.classList.toggle(
+            "is-active",
+            active
+          );
+
+          button.setAttribute(
+            "aria-selected",
+            String(active)
+          );
+        }
+      );
+
+      /*
+       * Clear both D9 and generic Varga
+       * SVG contents.
+       */
+
+      for (
+        let houseNumber = 1;
+        houseNumber <= 12;
+        houseNumber += 1
+      ) {
+        const d9House =
+          queryOutput<SVGGElement>(
+            `[data-d9-house="${houseNumber}"]`
+          );
+
+        d9House
+          ?.querySelector<SVGTextElement>(
+            "[data-d9-house-sign]"
+          )
+          ?.replaceChildren();
+
+        d9House
+          ?.querySelector<SVGTextElement>(
+            "[data-d9-house-ascendant]"
+          )
+          ?.replaceChildren();
+
+        d9House
+          ?.querySelector<SVGTextElement>(
+            "[data-d9-house-planets]"
+          )
+          ?.replaceChildren();
+
+        const otherHouse =
+          queryOutput<SVGGElement>(
+            `[data-other-house="${houseNumber}"]`
+          );
+
+        const sign =
+          otherHouse
+            ?.querySelector<SVGTextElement>(
+              "[data-other-house-sign]"
+            );
+
+        const ascendant =
+          otherHouse
+            ?.querySelector<SVGTextElement>(
+              "[data-other-house-ascendant]"
+            );
+
+        const planets =
+          otherHouse
+            ?.querySelector<SVGTextElement>(
+              "[data-other-house-planets]"
+            );
+
+        if (
+          sign
+        ) {
+          sign.textContent =
+            "—";
+        }
+
+        if (
+          ascendant
+        ) {
+          ascendant.textContent =
+            "";
+        }
+
+        planets
+          ?.replaceChildren();
+
+        if (
+          otherHouse
+        ) {
+          delete otherHouse
+            .dataset
+            .planetCount;
+        }
+      }
+
+      notifyContentChanged();
+    };
+
+  window.addEventListener(
+    "astrology:birth-chart-reset",
+    resetDivisionalCharts
+  );
+
+  activateChartView(
+    "d1"
+  );
+</script>

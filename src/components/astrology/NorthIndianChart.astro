@@ -14,66 +14,203 @@ const zodiacSigns = [
   "Pisces",
 ] as const;
 
-const housePositions = [
+/*
+ * =========================================================
+ * NORTH INDIAN CHART GEOMETRY
+ * =========================================================
+ *
+ * Houses are fixed.
+ *
+ *              H1
+ *
+ *        H2           H12
+ *
+ *   H3                     H11
+ *
+ * H4                         H10
+ *
+ *   H5                     H9
+ *
+ *        H6           H8
+ *
+ *              H7
+ *
+ *
+ * The x/y coordinates below are based on the
+ * actual geometric centres of the twelve chart
+ * compartments rather than approximate positions.
+ */
+
+const houseLayouts = [
+  /*
+   * CENTRAL TOP HOUSE
+   */
   {
     number: 1,
     x: 300,
-    y: 92,
+    y: 150,
+
+    houseLabelY: -31,
+    signY: -7,
+    ascendantY: 16,
+    planetY: 30,
   },
+
+  /*
+   * TOP LEFT TRIANGLE
+   */
   {
     number: 2,
-    x: 177,
-    y: 178,
+    x: 150,
+    y: 50,
+
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 21,
   },
+
+  /*
+   * UPPER LEFT TRIANGLE
+   */
   {
     number: 3,
-    x: 92,
-    y: 90,
+    x: 50,
+    y: 150,
+
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 22,
   },
+
+  /*
+   * CENTRAL LEFT HOUSE
+   */
   {
     number: 4,
-    x: 88,
+    x: 150,
     y: 300,
+
+    houseLabelY: -24,
+    signY: 2,
+    ascendantY: 0,
+    planetY: 26,
   },
+
+  /*
+   * LOWER LEFT TRIANGLE
+   */
   {
     number: 5,
-    x: 92,
-    y: 510,
+    x: 50,
+    y: 450,
+
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 22,
   },
+
+  /*
+   * BOTTOM LEFT TRIANGLE
+   *
+   * Planet labels are placed above the sign
+   * because the lower edge of the chart is close.
+   */
   {
     number: 6,
-    x: 177,
-    y: 422,
+    x: 150,
+    y: 550,
+
+    houseLabelY: -3,
+    signY: 20,
+    ascendantY: 0,
+    planetY: -58,
   },
+
+  /*
+   * CENTRAL BOTTOM HOUSE
+   */
   {
     number: 7,
     x: 300,
-    y: 508,
+    y: 450,
+
+    houseLabelY: -31,
+    signY: -7,
+    ascendantY: 0,
+    planetY: 28,
   },
+
+  /*
+   * BOTTOM RIGHT TRIANGLE
+   */
   {
     number: 8,
-    x: 423,
-    y: 422,
+    x: 450,
+    y: 550,
+
+    houseLabelY: -3,
+    signY: 20,
+    ascendantY: 0,
+    planetY: -58,
   },
+
+  /*
+   * LOWER RIGHT TRIANGLE
+   */
   {
     number: 9,
-    x: 508,
-    y: 510,
+    x: 550,
+    y: 450,
+
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 22,
   },
+
+  /*
+   * CENTRAL RIGHT HOUSE
+   */
   {
     number: 10,
-    x: 512,
+    x: 450,
     y: 300,
+
+    houseLabelY: -24,
+    signY: 2,
+    ascendantY: 0,
+    planetY: 26,
   },
+
+  /*
+   * UPPER RIGHT TRIANGLE
+   */
   {
     number: 11,
-    x: 508,
-    y: 90,
+    x: 550,
+    y: 150,
+
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 22,
   },
+
+  /*
+   * TOP RIGHT TRIANGLE
+   */
   {
     number: 12,
-    x: 423,
-    y: 178,
+    x: 450,
+    y: 50,
+
+    houseLabelY: -17,
+    signY: 6,
+    ascendantY: 0,
+    planetY: 21,
   },
 ] as const;
 ---
@@ -83,6 +220,10 @@ const housePositions = [
   data-north-indian-chart
   aria-labelledby="generated-chart-title"
 >
+  <!-- ==================================================
+       STATUS BAR
+  =================================================== -->
+
   <div class="north-indian-chart__statusbar">
     <div>
       <span
@@ -100,6 +241,10 @@ const housePositions = [
     </span>
   </div>
 
+  <!-- ==================================================
+       HEADER
+  =================================================== -->
+
   <div class="north-indian-chart__heading">
     <div>
       <p>
@@ -112,17 +257,27 @@ const housePositions = [
     </div>
 
     <div class="north-indian-chart__ascendant">
-      <span>ASCENDANT</span>
+      <span>
+        ASCENDANT
+      </span>
 
-      <strong data-chart-ascendant-sign>
+      <strong
+        data-chart-ascendant-sign
+      >
         —
       </strong>
 
-      <small data-chart-ascendant-degree>
+      <small
+        data-chart-ascendant-degree
+      >
         —
       </small>
     </div>
   </div>
+
+  <!-- ==================================================
+       CHART
+  =================================================== -->
 
   <div class="north-indian-chart__frame">
     <svg
@@ -131,16 +286,31 @@ const housePositions = [
       role="img"
       aria-labelledby="generated-chart-svg-title generated-chart-svg-description"
     >
-      <title id="generated-chart-svg-title">
-        Generated North Indian Vedic
-        birth chart
+      <title
+        id="generated-chart-svg-title"
+      >
+        Generated North Indian Vedic birth chart
       </title>
 
-      <desc id="generated-chart-svg-description">
-        A twelve-house North Indian D1
-        chart generated from the supplied
-        birth information.
+      <desc
+        id="generated-chart-svg-description"
+      >
+        Twelve fixed houses in North Indian
+        Vedic astrology format showing the
+        calculated zodiac signs and planets.
       </desc>
+
+      <!-- Chart background -->
+
+      <rect
+        class="north-indian-chart__background"
+        x="4"
+        y="4"
+        width="592"
+        height="592"
+      />
+
+      <!-- Outer square -->
 
       <rect
         class="north-indian-chart__outer"
@@ -150,8 +320,10 @@ const housePositions = [
         height="592"
       />
 
+      <!-- Central diamond -->
+
       <path
-        class="north-indian-chart__line"
+        class="north-indian-chart__line north-indian-chart__line--major"
         d="
           M 300 4
           L 596 300
@@ -161,6 +333,8 @@ const housePositions = [
         "
       />
 
+      <!-- Top-left to bottom-right -->
+
       <path
         class="north-indian-chart__line"
         d="
@@ -168,6 +342,8 @@ const housePositions = [
           L 596 596
         "
       />
+
+      <!-- Top-right to bottom-left -->
 
       <path
         class="north-indian-chart__line"
@@ -177,64 +353,97 @@ const housePositions = [
         "
       />
 
+      <!-- Centre locator -->
+
+      <circle
+        class="north-indian-chart__centre-dot"
+        cx="300"
+        cy="300"
+        r="2.5"
+      />
+
+      <!-- ==================================================
+           12 FIXED HOUSES
+      =================================================== -->
+
       {
-        housePositions.map(
-          (house) => (
-            <g
-              class:list={[
-                "north-indian-chart__house",
+        houseLayouts.map((house) => (
+          <g
+            class:list={[
+              "north-indian-chart__house",
 
-                house.number === 1 &&
-                  "north-indian-chart__house--ascendant",
-              ]}
-              data-chart-house={
-                house.number
-              }
-              transform={`translate(${house.x} ${house.y})`}
+              house.number === 1 &&
+                "north-indian-chart__house--ascendant",
+            ]}
+            data-chart-house={house.number}
+            transform={`translate(${house.x} ${house.y})`}
+          >
+            <!-- House identifier -->
+
+            <text
+              class="north-indian-chart__house-number"
+              text-anchor="middle"
+              x="0"
+              y={house.houseLabelY}
             >
-              <text
-                class="north-indian-chart__house-number"
-                text-anchor="middle"
-                x="0"
-                y="-24"
-              >
-                H{house.number}
-              </text>
+              H{house.number}
+            </text>
 
-              <text
-                class="north-indian-chart__sign"
-                data-house-sign
-                text-anchor="middle"
-                x="0"
-                y="-5"
-              >
-                —
-              </text>
+            <!--
+              Zodiac sign number.
 
-              <text
-                class="north-indian-chart__asc-label"
-                data-house-ascendant
-                text-anchor="middle"
-                x="0"
-                y="14"
-              ></text>
+              1  Aries
+              2  Taurus
+              3  Gemini
+              4  Cancer
+              5  Leo
+              6  Virgo
+              7  Libra
+              8  Scorpio
+              9  Sagittarius
+              10 Capricorn
+              11 Aquarius
+              12 Pisces
+            -->
 
-              <text
-                class="north-indian-chart__planets"
-                data-house-planets
-                text-anchor="middle"
-                x="0"
-                y={
-                  house.number === 1
-                    ? 31
-                    : 13
-                }
-              ></text>
-            </g>
-          )
-        )
+            <text
+              class="north-indian-chart__sign"
+              data-house-sign
+              text-anchor="middle"
+              x="0"
+              y={house.signY}
+            >
+              —
+            </text>
+
+            <!-- Ascendant degree -->
+
+            <text
+              class="north-indian-chart__asc-label"
+              data-house-ascendant
+              text-anchor="middle"
+              x="0"
+              y={house.ascendantY}
+            ></text>
+
+            <!--
+              Planet text is populated dynamically by
+              BirthChartForm.astro after calculation.
+            -->
+
+            <text
+              class="north-indian-chart__planets"
+              data-house-planets
+              text-anchor="middle"
+              x="0"
+              y={house.planetY}
+            ></text>
+          </g>
+        ))
       }
     </svg>
+
+    <!-- Decorative corners -->
 
     <span
       class="north-indian-chart__corner north-indian-chart__corner--top-left"
@@ -257,21 +466,36 @@ const housePositions = [
     ></span>
   </div>
 
-  <div class="north-indian-chart__legend">
+  <!-- ==================================================
+       ZODIAC NUMBER LEGEND
+  =================================================== -->
+
+  <div
+    class="north-indian-chart__legend"
+    aria-label="Zodiac sign number key"
+  >
     {
-      zodiacSigns.map(
-        (sign, index) => (
-          <span>
-            {index + 1} {sign}
-          </span>
-        )
-      )
+      zodiacSigns.map((sign, index) => (
+        <span>
+          <strong>
+            {index + 1}
+          </strong>
+
+          {sign}
+        </span>
+      ))
     }
   </div>
 
+  <!-- ==================================================
+       CHART INFORMATION
+  =================================================== -->
+
   <figcaption class="north-indian-chart__caption">
     <div>
-      <span>PROFILE</span>
+      <span>
+        PROFILE
+      </span>
 
       <strong data-chart-profile>
         UNNAMED CHART
@@ -279,7 +503,9 @@ const housePositions = [
     </div>
 
     <div>
-      <span>BIRTH INPUT</span>
+      <span>
+        BIRTH INPUT
+      </span>
 
       <strong data-chart-context>
         AWAITING INPUT
@@ -287,3 +513,808 @@ const housePositions = [
     </div>
   </figcaption>
 </figure>
+
+<style>
+  /* =========================================================
+     CONTAINER
+  ========================================================= */
+
+  .north-indian-chart {
+    display: grid;
+
+    width: 100%;
+    min-width: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    border:
+      1px solid
+      var(--astro-border);
+
+    border-left:
+      2px solid
+      var(--astro-mint);
+
+    background:
+      var(--astro-panel);
+  }
+
+  /* =========================================================
+     STATUS BAR
+  ========================================================= */
+
+  .north-indian-chart__statusbar {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    min-height: 38px;
+
+    padding:
+      8px
+      12px;
+
+    border-bottom:
+      1px solid
+      var(--astro-border);
+
+    background:
+      var(--astro-bg);
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+
+    line-height: 1.3;
+
+    letter-spacing:
+      0.07em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .north-indian-chart__statusbar > div {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+  }
+
+  .north-indian-chart__statusbar strong {
+    color:
+      var(--astro-mint);
+
+    font-weight: 400;
+  }
+
+  .north-indian-chart__signal {
+    display: block;
+
+    width: 7px;
+    height: 7px;
+
+    background:
+      var(--astro-mint);
+
+    box-shadow:
+      0
+      0
+      8px
+      color-mix(
+        in srgb,
+        var(--astro-mint) 55%,
+        transparent
+      );
+
+    animation:
+      north-chart-signal-pulse
+      1500ms
+      ease-in-out
+      infinite;
+  }
+
+  /* =========================================================
+     HEADER
+  ========================================================= */
+
+  .north-indian-chart__heading {
+    display: flex;
+
+    align-items:
+      flex-start;
+
+    justify-content:
+      space-between;
+
+    gap: 18px;
+
+    padding:
+      18px
+      20px;
+
+    border-bottom:
+      1px solid
+      var(--astro-border-soft);
+  }
+
+  .north-indian-chart__heading p {
+    margin:
+      0
+      0
+      7px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+
+    line-height: 1.3;
+
+    letter-spacing:
+      0.08em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .north-indian-chart__heading h3 {
+    margin: 0;
+
+    color:
+      var(--astro-green);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      clamp(
+        1.25rem,
+        2vw,
+        1.8rem
+      );
+
+    font-weight: 400;
+
+    line-height: 1.15;
+
+    letter-spacing:
+      0.045em;
+
+    text-transform:
+      uppercase;
+  }
+
+  /* =========================================================
+     ASCENDANT BOX
+  ========================================================= */
+
+  .north-indian-chart__ascendant {
+    flex:
+      0
+      0
+      auto;
+
+    min-width: 150px;
+
+    padding:
+      10px
+      12px;
+
+    border:
+      1px solid
+      var(--astro-lime);
+
+    background:
+      var(--astro-bg);
+
+    text-align: right;
+  }
+
+  .north-indian-chart__ascendant span,
+  .north-indian-chart__ascendant strong,
+  .north-indian-chart__ascendant small {
+    display: block;
+
+    font-family:
+      var(--astro-display-font);
+
+    text-transform:
+      uppercase;
+  }
+
+  .north-indian-chart__ascendant span {
+    margin-bottom: 5px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-size:
+      var(--astro-text-micro);
+  }
+
+  .north-indian-chart__ascendant strong {
+    color:
+      #c9ff8f;
+
+    font-size:
+      var(--astro-text-meta);
+
+    font-weight: 400;
+  }
+
+  .north-indian-chart__ascendant small {
+    margin-top: 5px;
+
+    color:
+      var(--astro-white);
+
+    font-size:
+      var(--astro-text-micro);
+  }
+
+  /* =========================================================
+     SVG FRAME
+  ========================================================= */
+
+  .north-indian-chart__frame {
+    position: relative;
+
+    width: 100%;
+    max-width: 720px;
+
+    margin:
+      0
+      auto;
+
+    padding:
+      clamp(
+        18px,
+        2.6vw,
+        30px
+      );
+  }
+
+  .north-indian-chart__svg {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    aspect-ratio: 1;
+
+    background:
+      #020704;
+  }
+
+  .north-indian-chart__background {
+    fill:
+      #020704;
+  }
+
+  /* =========================================================
+     CHART GEOMETRY
+  ========================================================= */
+
+  .north-indian-chart__outer,
+  .north-indian-chart__line {
+    fill: none;
+
+    vector-effect:
+      non-scaling-stroke;
+  }
+
+  .north-indian-chart__outer {
+    stroke:
+      #99e86b;
+
+    stroke-width: 2;
+  }
+
+  .north-indian-chart__line {
+    stroke:
+      #68ad49;
+
+    stroke-width:
+      1.25;
+
+    opacity: 0.85;
+  }
+
+  .north-indian-chart__line--major {
+    stroke:
+      #7fd457;
+
+    stroke-width:
+      1.5;
+  }
+
+  .north-indian-chart__centre-dot {
+    fill:
+      #78c958;
+
+    opacity:
+      0.45;
+  }
+
+  /* =========================================================
+     HOUSE NUMBERS
+  ========================================================= */
+
+  .north-indian-chart__house-number {
+    fill:
+      #71816b;
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size: 8px;
+
+    letter-spacing:
+      1px;
+
+    paint-order:
+      stroke;
+
+    stroke:
+      #020704;
+
+    stroke-width:
+      3px;
+
+    stroke-linejoin:
+      round;
+  }
+
+  /* =========================================================
+     ZODIAC NUMBERS
+  ========================================================= */
+
+  .north-indian-chart__sign {
+    fill:
+      #e4ff9a !important;
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      25px;
+
+    font-weight: 400;
+
+    paint-order:
+      stroke;
+
+    stroke:
+      #020704;
+
+    stroke-width:
+      5px;
+
+    stroke-linejoin:
+      round;
+
+    filter:
+      drop-shadow(
+        0
+        0
+        4px
+        rgba(
+          193,
+          255,
+          118,
+          0.35
+        )
+      );
+  }
+
+  .north-indian-chart__house--ascendant
+    .north-indian-chart__sign {
+    fill:
+      #84ff6d !important;
+
+    font-size:
+      28px;
+  }
+
+  /* =========================================================
+     ASCENDANT
+  ========================================================= */
+
+  .north-indian-chart__asc-label {
+    fill:
+      #50f0a5;
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      9px;
+
+    letter-spacing:
+      0.4px;
+
+    paint-order:
+      stroke;
+
+    stroke:
+      #020704;
+
+    stroke-width:
+      3px;
+
+    stroke-linejoin:
+      round;
+  }
+
+  /* =========================================================
+     PLANETS
+  ========================================================= */
+
+  .north-indian-chart__planets {
+    fill:
+      #ffffff;
+
+    font-family:
+      var(--astro-body-font);
+
+    font-size:
+      10.5px;
+
+    font-weight: 700;
+
+    letter-spacing:
+      -0.15px;
+
+    paint-order:
+      stroke;
+
+    stroke:
+      #020704;
+
+    stroke-width:
+      3px;
+
+    stroke-linejoin:
+      round;
+  }
+
+  /* =========================================================
+     CORNERS
+  ========================================================= */
+
+  .north-indian-chart__corner {
+    position: absolute;
+
+    display: block;
+
+    width: 14px;
+    height: 14px;
+
+    pointer-events: none;
+  }
+
+  .north-indian-chart__corner--top-left {
+    top: 11px;
+    left: 11px;
+
+    border-top:
+      1px solid
+      var(--astro-mint);
+
+    border-left:
+      1px solid
+      var(--astro-mint);
+  }
+
+  .north-indian-chart__corner--top-right {
+    top: 11px;
+    right: 11px;
+
+    border-top:
+      1px solid
+      var(--astro-mint);
+
+    border-right:
+      1px solid
+      var(--astro-mint);
+  }
+
+  .north-indian-chart__corner--bottom-left {
+    bottom: 11px;
+    left: 11px;
+
+    border-bottom:
+      1px solid
+      var(--astro-mint);
+
+    border-left:
+      1px solid
+      var(--astro-mint);
+  }
+
+  .north-indian-chart__corner--bottom-right {
+    right: 11px;
+    bottom: 11px;
+
+    border-right:
+      1px solid
+      var(--astro-mint);
+
+    border-bottom:
+      1px solid
+      var(--astro-mint);
+  }
+
+  /* =========================================================
+     ZODIAC KEY
+  ========================================================= */
+
+  .north-indian-chart__legend {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap: 1px;
+
+    border-top:
+      1px solid
+      var(--astro-border);
+
+    border-bottom:
+      1px solid
+      var(--astro-border);
+
+    background:
+      var(--astro-border);
+  }
+
+  .north-indian-chart__legend span {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    min-width: 0;
+
+    padding:
+      9px
+      10px;
+
+    background:
+      var(--astro-bg);
+
+    color:
+      var(--astro-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      0.5rem;
+
+    line-height: 1.3;
+
+    letter-spacing:
+      0.035em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .north-indian-chart__legend strong {
+    color:
+      #e4ff9a;
+
+    font-size:
+      0.62rem;
+
+    font-weight: 400;
+  }
+
+  /* =========================================================
+     CAPTION
+  ========================================================= */
+
+  .north-indian-chart__caption {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap: 1px;
+
+    background:
+      var(--astro-border);
+  }
+
+  .north-indian-chart__caption > div {
+    min-width: 0;
+
+    padding:
+      12px
+      14px;
+
+    background:
+      var(--astro-bg);
+  }
+
+  .north-indian-chart__caption span,
+  .north-indian-chart__caption strong {
+    display: block;
+  }
+
+  .north-indian-chart__caption span {
+    margin-bottom:
+      5px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+
+    letter-spacing:
+      0.07em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .north-indian-chart__caption strong {
+    color:
+      var(--astro-white);
+
+    font-size:
+      var(--astro-text-meta);
+
+    font-weight: 400;
+
+    line-height: 1.5;
+
+    overflow-wrap:
+      anywhere;
+  }
+
+  /* =========================================================
+     ANIMATION
+  ========================================================= */
+
+  @keyframes north-chart-signal-pulse {
+    0%,
+    100% {
+      opacity:
+        0.35;
+    }
+
+    50% {
+      opacity:
+        1;
+    }
+  }
+
+  /* =========================================================
+     RESPONSIVE
+  ========================================================= */
+
+  @media (max-width: 600px) {
+    .north-indian-chart__statusbar,
+    .north-indian-chart__heading {
+      align-items:
+        stretch;
+
+      flex-direction:
+        column;
+    }
+
+    .north-indian-chart__ascendant {
+      width:
+        100%;
+
+      text-align:
+        left;
+    }
+
+    .north-indian-chart__frame {
+      padding:
+        12px;
+    }
+
+    .north-indian-chart__legend {
+      grid-template-columns:
+        repeat(
+          3,
+          minmax(
+            0,
+            1fr
+          )
+        );
+    }
+
+    .north-indian-chart__caption {
+      grid-template-columns:
+        1fr;
+    }
+
+    .north-indian-chart__house-number {
+      font-size:
+        7px;
+    }
+
+    .north-indian-chart__sign {
+      font-size:
+        20px;
+    }
+
+    .north-indian-chart__house--ascendant
+      .north-indian-chart__sign {
+      font-size:
+        22px;
+    }
+
+    .north-indian-chart__asc-label {
+      font-size:
+        7px;
+    }
+
+    .north-indian-chart__planets {
+      font-size:
+        8.5px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .north-indian-chart__legend {
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(
+            0,
+            1fr
+          )
+        );
+    }
+  }
+
+  @media (
+    prefers-reduced-motion:
+    reduce
+  ) {
+    .north-indian-chart__signal {
+      animation:
+        none;
+    }
+  }
+</style>

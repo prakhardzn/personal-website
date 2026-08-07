@@ -1,0 +1,1473 @@
+---
+import InternalPageLayout
+  from "../../layouts/InternalPageLayout.astro";
+
+import {
+  auditTolerances,
+  formatArcminutes,
+  runAccuracyAudit,
+} from "../../lib/astrology/accuracyAudit";
+
+const report =
+  runAccuracyAudit();
+
+const statusLabel =
+  report.passed
+    ? "ALL SYSTEMS PASS"
+    : "AUDIT FAILURE DETECTED";
+---
+
+<InternalPageLayout
+  title="Astrology Accuracy Audit | Prakhar's Universe"
+  description="Private accuracy diagnostics for the Vedic birth chart calculation engine."
+  message="The planets have entered quality assurance."
+  pageClass="astrology-audit-page"
+>
+  <!-- ==================================================
+       SIDEBAR
+  =================================================== -->
+
+  <div
+    slot="sidebar"
+    class="audit-sidebar"
+  >
+    <section
+      class="audit-terminal"
+    >
+      <header>
+        <span
+          class:list={[
+            "audit-terminal__dot",
+
+            report.passed
+              ? "is-pass"
+              : "is-fail",
+          ]}
+          aria-hidden="true"
+        ></span>
+
+        <strong>
+          CELESTIAL QA
+        </strong>
+      </header>
+
+      <div
+        class="audit-terminal__body"
+      >
+        <p>
+          INTERNAL DIAGNOSTIC
+        </p>
+
+        <h1>
+          Accuracy Audit
+        </h1>
+
+        <span>
+          This page compares the website's
+          calculation engine against fixed
+          Swiss Ephemeris Lahiri reference
+          values.
+        </span>
+      </div>
+
+      <dl
+        class="audit-terminal__stats"
+      >
+        <div>
+          <dt>
+            FIXTURES
+          </dt>
+
+          <dd>
+            {
+              report.passedFixtures
+            }
+            /
+            {
+              report.totalFixtures
+            }
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            BODIES
+          </dt>
+
+          <dd>
+            {
+              report.passedBodies
+            }
+            /
+            {
+              report.totalBodies
+            }
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            STATUS
+          </dt>
+
+          <dd
+            class:list={[
+              report.passed
+                ? "is-pass"
+                : "is-fail",
+            ]}
+          >
+            {
+              report.passed
+                ? "PASS"
+                : "FAIL"
+            }
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- Thresholds -->
+
+    <section
+      class="audit-info"
+    >
+      <p>
+        PASS THRESHOLDS
+      </p>
+
+      <dl>
+        <div>
+          <dt>
+            PLANETS
+          </dt>
+
+          <dd>
+            ≤
+            {
+              auditTolerances
+                .planetArcminutes
+            }
+            ′
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            ASCENDANT
+          </dt>
+
+          <dd>
+            ≤
+            {
+              auditTolerances
+                .ascendantArcminutes
+            }
+            ′
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            AYANAMSHA
+          </dt>
+
+          <dd>
+            ≤
+            {
+              auditTolerances
+                .ayanamshaArcminutes
+            }
+            ′
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            UTC
+          </dt>
+
+          <dd>
+            ≤
+            {
+              auditTolerances
+                .utcSeconds
+            }
+            SEC
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- Reference -->
+
+    <section
+      class="audit-info"
+    >
+      <p>
+        REFERENCE CONFIG
+      </p>
+
+      <dl>
+        <div>
+          <dt>
+            EPHEMERIS
+          </dt>
+
+          <dd>
+            Swiss Ephemeris
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            ZODIAC
+          </dt>
+
+          <dd>
+            Sidereal
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            AYANAMSHA
+          </dt>
+
+          <dd>
+            Lahiri
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            NODE
+          </dt>
+
+          <dd>
+            Mean
+          </dd>
+        </div>
+
+        <div>
+          <dt>
+            HOUSES
+          </dt>
+
+          <dd>
+            Whole Sign
+          </dd>
+        </div>
+      </dl>
+    </section>
+  </div>
+
+  <!-- ==================================================
+       CONTENT
+  =================================================== -->
+
+  <main
+    slot="content"
+    class="audit-content"
+  >
+    <header
+      class="audit-page-header"
+    >
+      <p>
+        CHAPTER 07 // VALIDATION
+      </p>
+
+      <h1>
+        Calculation Accuracy
+      </h1>
+
+      <span>
+        Every row below compares the current
+        website calculation against an
+        independent reference value.
+      </span>
+
+      <div
+        class:list={[
+          "audit-overall-status",
+
+          report.passed
+            ? "is-pass"
+            : "is-fail",
+        ]}
+      >
+        <span
+          aria-hidden="true"
+        >
+          {
+            report.passed
+              ? "✓"
+              : "!"
+          }
+        </span>
+
+        <strong>
+          {statusLabel}
+        </strong>
+      </div>
+    </header>
+
+    <!-- ==================================================
+         FIXTURES
+    =================================================== -->
+
+    <div
+      class="audit-fixtures"
+    >
+      {
+        report.fixtures.map(
+          (
+            fixtureResult,
+            fixtureIndex
+          ) => (
+            <section
+              class:list={[
+                "audit-fixture",
+
+                fixtureResult.passed
+                  ? "is-pass"
+                  : "is-fail",
+              ]}
+            >
+              <header
+                class="audit-fixture__header"
+              >
+                <div>
+                  <p>
+                    TEST{" "}
+                    {String(
+                      fixtureIndex +
+                      1
+                    ).padStart(
+                      2,
+                      "0"
+                    )}
+                  </p>
+
+                  <h2>
+                    {
+                      fixtureResult
+                        .fixture
+                        .label
+                    }
+                  </h2>
+
+                  <span>
+                    {
+                      fixtureResult
+                        .fixture
+                        .description
+                    }
+                  </span>
+                </div>
+
+                <strong
+                  class:list={[
+                    "audit-badge",
+
+                    fixtureResult.passed
+                      ? "is-pass"
+                      : "is-fail",
+                  ]}
+                >
+                  {
+                    fixtureResult.passed
+                      ? "PASS"
+                      : "FAIL"
+                  }
+                </strong>
+              </header>
+
+              {
+                fixtureResult.error ? (
+                  <div
+                    class="audit-error"
+                  >
+                    <strong>
+                      CALCULATION ERROR
+                    </strong>
+
+                    <p>
+                      {
+                        fixtureResult
+                          .error
+                      }
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <!-- Metadata -->
+
+                    <div
+                      class="audit-metadata"
+                    >
+                      <div>
+                        <span>
+                          UTC EXPECTED
+                        </span>
+
+                        <strong>
+                          {
+                            fixtureResult
+                              .expectedUtc
+                          }
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          UTC ACTUAL
+                        </span>
+
+                        <strong>
+                          {
+                            fixtureResult
+                              .actualUtc
+                          }
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          UTC CHECK
+                        </span>
+
+                        <strong
+                          class:list={[
+                            fixtureResult
+                              .utcPassed
+                              ? "is-pass"
+                              : "is-fail",
+                          ]}
+                        >
+                          {
+                            fixtureResult
+                              .utcPassed
+                              ? "PASS"
+                              : `FAIL // ${fixtureResult.utcErrorSeconds.toFixed(
+                                  1
+                                )} SEC`
+                          }
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          AYANAMSHA Δ
+                        </span>
+
+                        <strong
+                          class:list={[
+                            fixtureResult
+                              .ayanamshaPassed
+                              ? "is-pass"
+                              : "is-fail",
+                          ]}
+                        >
+                          {
+                            formatArcminutes(
+                              fixtureResult
+                                .ayanamshaErrorArcminutes
+                            )
+                          }
+                        </strong>
+                      </div>
+                    </div>
+
+                    <!-- Table -->
+
+                    <div
+                      class="audit-table-wrapper"
+                    >
+                      <table
+                        class="audit-table"
+                      >
+                        <thead>
+                          <tr>
+                            <th>
+                              BODY
+                            </th>
+
+                            <th>
+                              REFERENCE
+                            </th>
+
+                            <th>
+                              CURRENT
+                            </th>
+
+                            <th>
+                              Δ LONG.
+                            </th>
+
+                            <th>
+                              SIGN
+                            </th>
+
+                            <th>
+                              HOUSE
+                            </th>
+
+                            <th>
+                              NAK.
+                            </th>
+
+                            <th>
+                              PADA
+                            </th>
+
+                            <th>
+                              MOTION
+                            </th>
+
+                            <th>
+                              RESULT
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {
+                            fixtureResult
+                              .bodyResults
+                              .map(
+                                (
+                                  body
+                                ) => (
+                                  <tr
+                                    class:list={[
+                                      body.passed
+                                        ? "is-pass"
+                                        : "is-fail",
+                                    ]}
+                                  >
+                                    <th
+                                      scope="row"
+                                    >
+                                      {
+                                        body.name
+                                      }
+                                    </th>
+
+                                    <td>
+                                      {
+                                        body.expectedDisplay
+                                      }
+                                    </td>
+
+                                    <td>
+                                      {
+                                        body.actualDisplay
+                                      }
+                                    </td>
+
+                                    <td
+                                      class:list={[
+                                        body.longitudePassed
+                                          ? "is-pass"
+                                          : "is-fail",
+                                      ]}
+                                    >
+                                      {
+                                        Number.isFinite(
+                                          body.longitudeErrorArcminutes
+                                        )
+                                          ? formatArcminutes(
+                                              body.longitudeErrorArcminutes
+                                            )
+                                          : "—"
+                                      }
+                                    </td>
+
+                                    <td>
+                                      {
+                                        body.signPassed
+                                          ? "✓"
+                                          : "✕"
+                                      }
+                                    </td>
+
+                                    <td>
+                                      {
+                                        body.housePassed
+                                          ? "✓"
+                                          : "✕"
+                                      }
+                                    </td>
+
+                                    <td>
+                                      {
+                                        body.nakshatraPassed
+                                          ? "✓"
+                                          : "✕"
+                                      }
+                                    </td>
+
+                                    <td>
+                                      {
+                                        body.padaPassed
+                                          ? "✓"
+                                          : "✕"
+                                      }
+                                    </td>
+
+                                    <td>
+                                      {
+                                        body.retrogradePassed
+                                          ? "✓"
+                                          : "✕"
+                                      }
+                                    </td>
+
+                                    <td>
+                                      <strong
+                                        class:list={[
+                                          "audit-row-status",
+
+                                          body.passed
+                                            ? "is-pass"
+                                            : "is-fail",
+                                        ]}
+                                      >
+                                        {
+                                          body.passed
+                                            ? "PASS"
+                                            : "FAIL"
+                                        }
+                                      </strong>
+                                    </td>
+                                  </tr>
+                                )
+                              )
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                )
+              }
+            </section>
+          )
+        )
+      }
+    </div>
+  </main>
+</InternalPageLayout>
+
+<style is:global>
+  /* =========================================================
+     PAGE
+  ========================================================= */
+
+  .astrology-audit-page {
+    --audit-pass:
+      #78ff8a;
+
+    --audit-fail:
+      #ff8d79;
+
+    --audit-line:
+      rgba(
+        136,
+        255,
+        126,
+        0.18
+      );
+  }
+
+  .audit-sidebar,
+  .audit-content {
+    min-width: 0;
+  }
+
+  .audit-sidebar {
+    display: grid;
+
+    align-content: start;
+
+    gap: 14px;
+  }
+
+  /* =========================================================
+     TERMINAL
+  ========================================================= */
+
+  .audit-terminal,
+  .audit-info,
+  .audit-fixture {
+    border:
+      1px solid
+      var(--astro-border);
+
+    background:
+      var(--astro-panel);
+  }
+
+  .audit-terminal {
+    border-left:
+      2px solid
+      var(--astro-green);
+  }
+
+  .audit-terminal > header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    min-height: 40px;
+
+    padding:
+      9px
+      12px;
+
+    border-bottom:
+      1px solid
+      var(--astro-border);
+
+    background:
+      var(--astro-bg);
+
+    color:
+      var(--astro-green);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-meta);
+
+    letter-spacing:
+      0.07em;
+  }
+
+  .audit-terminal__dot {
+    display: block;
+
+    width: 7px;
+    height: 7px;
+  }
+
+  .audit-terminal__dot.is-pass {
+    background:
+      var(--audit-pass);
+
+    box-shadow:
+      0
+      0
+      8px
+      var(--audit-pass);
+  }
+
+  .audit-terminal__dot.is-fail {
+    background:
+      var(--audit-fail);
+
+    box-shadow:
+      0
+      0
+      8px
+      var(--audit-fail);
+  }
+
+  .audit-terminal__body {
+    padding:
+      20px
+      18px;
+  }
+
+  .audit-terminal__body p,
+  .audit-info > p {
+    margin:
+      0
+      0
+      8px;
+
+    color:
+      var(--astro-mint);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+
+    letter-spacing:
+      0.08em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .audit-terminal__body h1 {
+    margin:
+      0
+      0
+      12px;
+
+    color:
+      var(--astro-green);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      clamp(
+        1.4rem,
+        2.5vw,
+        2rem
+      );
+
+    font-weight: 400;
+
+    text-transform:
+      uppercase;
+  }
+
+  .audit-terminal__body > span {
+    color:
+      var(--astro-muted);
+
+    font-size:
+      var(--astro-text-meta);
+
+    line-height: 1.65;
+  }
+
+  .audit-terminal__stats {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap: 1px;
+
+    margin: 0;
+
+    border-top:
+      1px solid
+      var(--astro-border);
+
+    background:
+      var(--astro-border);
+  }
+
+  .audit-terminal__stats > div {
+    min-width: 0;
+
+    padding:
+      10px
+      8px;
+
+    background:
+      var(--astro-bg);
+  }
+
+  .audit-terminal__stats dt,
+  .audit-terminal__stats dd {
+    margin: 0;
+  }
+
+  .audit-terminal__stats dt {
+    margin-bottom: 6px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      0.46rem;
+  }
+
+  .audit-terminal__stats dd {
+    color:
+      var(--astro-white);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-meta);
+  }
+
+  /* =========================================================
+     INFO
+  ========================================================= */
+
+  .audit-info {
+    padding:
+      15px;
+  }
+
+  .audit-info dl {
+    display: grid;
+
+    gap: 1px;
+
+    margin: 0;
+
+    background:
+      var(--astro-border);
+  }
+
+  .audit-info dl > div {
+    display: flex;
+
+    justify-content:
+      space-between;
+
+    gap: 10px;
+
+    padding:
+      9px
+      10px;
+
+    background:
+      var(--astro-bg);
+  }
+
+  .audit-info dt,
+  .audit-info dd {
+    margin: 0;
+  }
+
+  .audit-info dt {
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+  }
+
+  .audit-info dd {
+    color:
+      var(--astro-white);
+
+    font-size:
+      var(--astro-text-micro);
+
+    text-align: right;
+  }
+
+  /* =========================================================
+     CONTENT
+  ========================================================= */
+
+  .audit-content {
+    display: grid;
+
+    align-content: start;
+
+    gap: 18px;
+
+    padding-bottom:
+      30px;
+  }
+
+  .audit-page-header {
+    padding:
+      24px;
+
+    border:
+      1px solid
+      var(--astro-border);
+
+    border-left:
+      2px solid
+      var(--astro-green);
+
+    background:
+      var(--astro-panel);
+  }
+
+  .audit-page-header > p {
+    margin:
+      0
+      0
+      8px;
+
+    color:
+      var(--astro-mint);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-meta);
+
+    letter-spacing:
+      0.09em;
+  }
+
+  .audit-page-header h1 {
+    margin:
+      0
+      0
+      10px;
+
+    color:
+      var(--astro-green);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      clamp(
+        1.8rem,
+        4vw,
+        3rem
+      );
+
+    font-weight: 400;
+
+    text-transform:
+      uppercase;
+  }
+
+  .audit-page-header > span {
+    color:
+      var(--astro-muted);
+
+    font-size:
+      var(--astro-text-body);
+
+    line-height:
+      1.65;
+  }
+
+  .audit-overall-status {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top:
+      18px;
+
+    padding:
+      12px
+      14px;
+
+    border:
+      1px solid
+      currentColor;
+
+    background:
+      var(--astro-bg);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-meta);
+
+    letter-spacing:
+      0.06em;
+
+    text-transform:
+      uppercase;
+  }
+
+  /* =========================================================
+     FIXTURES
+  ========================================================= */
+
+  .audit-fixtures {
+    display: grid;
+
+    gap: 18px;
+  }
+
+  .audit-fixture {
+    overflow: hidden;
+  }
+
+  .audit-fixture.is-pass {
+    border-left:
+      2px solid
+      var(--audit-pass);
+  }
+
+  .audit-fixture.is-fail {
+    border-left:
+      2px solid
+      var(--audit-fail);
+  }
+
+  .audit-fixture__header {
+    display: flex;
+
+    align-items:
+      flex-start;
+
+    justify-content:
+      space-between;
+
+    gap: 18px;
+
+    padding:
+      18px;
+
+    border-bottom:
+      1px solid
+      var(--astro-border);
+  }
+
+  .audit-fixture__header p {
+    margin:
+      0
+      0
+      6px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+  }
+
+  .audit-fixture__header h2 {
+    margin:
+      0
+      0
+      8px;
+
+    color:
+      var(--astro-white);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-heading);
+
+    font-weight: 400;
+  }
+
+  .audit-fixture__header
+    div
+    > span {
+    color:
+      var(--astro-muted);
+
+    font-size:
+      var(--astro-text-meta);
+
+    line-height:
+      1.55;
+  }
+
+  .audit-badge {
+    flex:
+      0
+      0
+      auto;
+
+    padding:
+      7px
+      9px;
+
+    border:
+      1px solid
+      currentColor;
+
+    background:
+      var(--astro-bg);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      var(--astro-text-micro);
+
+    font-weight:
+      400;
+  }
+
+  /* =========================================================
+     PASS / FAIL
+  ========================================================= */
+
+  .is-pass {
+    color:
+      var(--audit-pass) !important;
+  }
+
+  .is-fail {
+    color:
+      var(--audit-fail) !important;
+  }
+
+  /* =========================================================
+     METADATA
+  ========================================================= */
+
+  .audit-metadata {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap: 1px;
+
+    background:
+      var(--astro-border);
+  }
+
+  .audit-metadata > div {
+    min-width: 0;
+
+    padding:
+      11px
+      12px;
+
+    background:
+      var(--astro-bg);
+  }
+
+  .audit-metadata span,
+  .audit-metadata strong {
+    display: block;
+  }
+
+  .audit-metadata span {
+    margin-bottom: 6px;
+
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      0.48rem;
+  }
+
+  .audit-metadata strong {
+    color:
+      var(--astro-white);
+
+    font-size:
+      var(--astro-text-micro);
+
+    font-weight: 400;
+
+    line-height: 1.5;
+
+    overflow-wrap:
+      anywhere;
+  }
+
+  /* =========================================================
+     TABLE
+  ========================================================= */
+
+  .audit-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+
+    scrollbar-color:
+      var(--astro-green)
+      var(--astro-bg);
+
+    scrollbar-width:
+      thin;
+  }
+
+  .audit-table {
+    width: 100%;
+
+    min-width:
+      950px;
+
+    border-collapse:
+      collapse;
+
+    background:
+      var(--astro-bg);
+  }
+
+  .audit-table th,
+  .audit-table td {
+    padding:
+      10px
+      9px;
+
+    border-bottom:
+      1px solid
+      var(--astro-border-soft);
+
+    color:
+      var(--astro-white);
+
+    font-size:
+      var(--astro-text-micro);
+
+    line-height: 1.4;
+
+    text-align:
+      left;
+
+    white-space:
+      nowrap;
+  }
+
+  .audit-table thead th {
+    color:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-weight: 400;
+
+    letter-spacing:
+      0.045em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .audit-table tbody
+    th {
+    color:
+      var(--astro-mint);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-weight: 400;
+  }
+
+  .audit-table tbody
+    tr.is-fail {
+    background:
+      rgba(
+        255,
+        80,
+        70,
+        0.045
+      );
+  }
+
+  .audit-row-status {
+    padding:
+      4px
+      6px;
+
+    border:
+      1px solid
+      currentColor;
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      0.48rem;
+
+    font-weight:
+      400;
+  }
+
+  /* =========================================================
+     ERROR
+  ========================================================= */
+
+  .audit-error {
+    padding:
+      18px;
+
+    border-left:
+      2px solid
+      var(--audit-fail);
+
+    background:
+      var(--astro-bg);
+  }
+
+  .audit-error strong {
+    color:
+      var(--audit-fail);
+
+    font-family:
+      var(--astro-display-font);
+  }
+
+  .audit-error p {
+    margin:
+      8px
+      0
+      0;
+
+    color:
+      var(--astro-muted);
+  }
+
+  /* =========================================================
+     RESPONSIVE
+  ========================================================= */
+
+  @media (
+    max-width:
+      900px
+  ) {
+    .audit-metadata {
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(
+            0,
+            1fr
+          )
+        );
+    }
+  }
+
+  @media (
+    max-width:
+      600px
+  ) {
+    .audit-fixture__header {
+      flex-direction:
+        column;
+    }
+
+    .audit-metadata {
+      grid-template-columns:
+        1fr;
+    }
+
+    .audit-terminal__stats {
+      grid-template-columns:
+        1fr;
+    }
+  }
+</style>
