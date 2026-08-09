@@ -91,27 +91,41 @@ img {
 
 .visually-hidden {
   position: absolute !important;
+
   width: 1px !important;
   height: 1px !important;
+
   padding: 0 !important;
   margin: -1px !important;
+
   overflow: hidden !important;
+
   clip: rect(0, 0, 0, 0) !important;
+
   white-space: nowrap !important;
+
   border: 0 !important;
 }
 
+
+/* =========================================================
+   SITE SHELL
+========================================================= */
+
 .site-shell {
   position: relative;
+
   isolation: isolate;
 
   width: 100vw;
+
   height: 100vh;
   height: 100dvh;
 
   overflow: hidden;
 
   background-color: var(--terminal-bg);
+
   background-image:
     linear-gradient(
       rgb(2 7 5 / 10%),
@@ -126,7 +140,9 @@ img {
 
 .site-shell::before {
   position: absolute;
+
   inset: 0.25%;
+
   z-index: var(--frame-layer);
 
   border:
@@ -137,13 +153,18 @@ img {
   border-radius: var(--small-radius);
 
   pointer-events: none;
+
   content: "";
 }
 
 .site-shell::after {
   position: absolute;
+
   inset: 0.75%;
-  z-index: calc(var(--frame-layer) - 1);
+
+  z-index: calc(
+    var(--frame-layer) - 1
+  );
 
   border:
     var(--border-thin)
@@ -153,24 +174,43 @@ img {
   border-radius: var(--panel-radius);
 
   pointer-events: none;
+
   content: "";
 }
+
+
+/* =========================================================
+   TOP SYSTEM BAR
+========================================================= */
 
 .system-bar {
   position: absolute;
 
   top: 1.35%;
   left: 1.15%;
+
   z-index: var(--interface-layer);
 
   display: flex;
+
   align-items: center;
   justify-content: space-between;
 
   width: 97.7%;
-  height: clamp(48px, 5.8vh, 64px);
 
-  padding: clamp(4px, 0.35vw, 7px);
+  height:
+    clamp(
+      48px,
+      5.8vh,
+      64px
+    );
+
+  padding:
+    clamp(
+      4px,
+      0.35vw,
+      7px
+    );
 
   border:
     var(--border-medium)
@@ -182,22 +222,41 @@ img {
   background: var(--panel-black);
 }
 
+
+/* =========================================================
+   SYSTEM MESSAGE
+========================================================= */
+
 .system-message {
   position: absolute;
 
   top: 50%;
   left: 50%;
+
   z-index: 1;
 
   display: flex !important;
+
   align-items: center;
   justify-content: center;
 
-  width: min(64%, 960px) !important;
-  max-width: calc(100% - 320px) !important;
+  width:
+    min(
+      64%,
+      960px
+    ) !important;
+
+  max-width:
+    calc(
+      100% - 320px
+    ) !important;
+
   min-width: 0;
 
-  padding: 0 10px;
+  padding:
+    0
+    10px;
+
   margin: 0 !important;
 
   overflow: visible !important;
@@ -205,43 +264,77 @@ img {
   color: var(--neon-green);
 
   font-family: var(--font-interface);
-  font-size: clamp(9px, 0.95vw, 18px);
+
+  font-size:
+    clamp(
+      9px,
+      0.95vw,
+      18px
+    );
+
   line-height: 1.25;
+
   letter-spacing: 0.04em;
 
   text-align: center;
+
   text-shadow:
     0 0 7px
     rgb(140 255 88 / 24%);
+
   white-space: nowrap;
 
   pointer-events: none;
 
-  transform: translate(-50%, -50%);
+  transform:
+    translate(
+      -50%,
+      -50%
+    );
 }
+
+
+/* =========================================================
+   TOP ACTIONS
+========================================================= */
 
 .system-actions {
   position: relative;
+
   z-index: 2;
 
   display: flex;
+
   align-items: stretch;
   justify-content: flex-end;
 
-  gap: clamp(6px, 0.55vw, 11px);
+  gap:
+    clamp(
+      6px,
+      0.55vw,
+      11px
+    );
 
   height: 100%;
 }
 
 .icon-button {
   position: relative;
+
   z-index: 2;
 
   display: grid;
+
   place-items: center;
 
   height: 100%;
-  min-width: clamp(46px, 4vw, 70px);
+
+  min-width:
+    clamp(
+      46px,
+      4vw,
+      70px
+    );
 
   padding: 0;
 
@@ -253,10 +346,18 @@ img {
   border-radius: var(--radius-control);
 
   background: var(--terminal-panel);
+
   color: var(--neon-green);
 
   font-family: var(--font-display);
-  font-size: clamp(13px, 1.35vw, 25px);
+
+  font-size:
+    clamp(
+      13px,
+      1.35vw,
+      25px
+    );
+
   font-weight: 700;
 
   transition:
@@ -267,38 +368,62 @@ img {
 }
 
 .icon-button--back {
-  width: clamp(52px, 4.8vw, 82px);
+  width:
+    clamp(
+      52px,
+      4.8vw,
+      82px
+    );
 }
 
 .icon-button--power {
-  min-width: clamp(42px, 3.5vw, 61px);
+  min-width:
+    clamp(
+      42px,
+      3.5vw,
+      61px
+    );
 }
 
 .icon-button:hover:not(:disabled),
 .icon-button:focus-visible {
   background: var(--neon-green);
+
   color: var(--space-black);
 
   box-shadow:
     0 0 13px
     rgb(140 255 88 / 30%);
 
-  transform: translateY(-1px);
+  transform:
+    translateY(-1px);
 }
 
 .icon-button:focus-visible {
-  outline: 2px solid var(--interface-white);
+  outline:
+    2px
+    solid
+    var(--interface-white);
+
   outline-offset: 2px;
 }
 
 .icon-button:disabled {
   cursor: not-allowed;
+
   opacity: 0.46;
 }
 
+
+/* =========================================================
+   PLANET MAP
+========================================================= */
+
 .planet-map {
   position: absolute;
+
   inset: 0;
+
   z-index: var(--planet-layer);
 
   width: 100%;
@@ -314,16 +439,154 @@ img {
   bottom: 0;
   left: 50%;
 
-  width: min(100vw, 177.7778dvh);
+  z-index: 10;
+
+  width:
+    min(
+      100vw,
+      177.7778dvh
+    );
+
   height: 100%;
 
   pointer-events: none;
 
-  transform: translateX(-50%);
+  transform:
+    translateX(-50%);
 }
+
+
+/* =========================================================
+   BACKGROUND TRAFFIC
+========================================================= */
+
+.background-traffic {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 4;
+
+  overflow: hidden;
+
+  pointer-events: none;
+}
+
+.background-vehicle {
+  position: absolute;
+
+  display: block;
+
+  opacity: 1;
+
+  pointer-events: none;
+
+  will-change: transform;
+}
+
+.background-vehicle__image {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  max-width: none;
+
+  object-fit: contain;
+
+  user-select: none;
+
+  pointer-events: none;
+
+  transform-origin: center;
+
+  will-change: transform;
+}
+
+.background-vehicle--ufo {
+  top: 24%;
+  left: 8%;
+
+  width:
+    clamp(
+      36px,
+      3.4vw,
+      64px
+    );
+
+  animation:
+    background-ufo-crossing
+    30s
+    linear
+    -8s
+    infinite;
+}
+
+.background-vehicle__image--ufo {
+  opacity: 0.98;
+
+  filter:
+    brightness(1.08)
+    saturate(1.02)
+    drop-shadow(
+      0 12px 18px
+      rgb(0 0 0 / 44%)
+    );
+
+  animation:
+    background-ufo-bank
+    9.6s
+    ease-in-out
+    -2.8s
+    infinite;
+}
+
+.background-vehicle--spaceship {
+  top: 61%;
+  right: 7%;
+
+  width:
+    clamp(
+      54px,
+      4.8vw,
+      90px
+    );
+
+  animation:
+    background-spaceship-crossing
+    42s
+    linear
+    -13s
+    infinite;
+}
+
+.background-vehicle__image--spaceship {
+  opacity: 0.94;
+
+  filter:
+    brightness(1.02)
+    saturate(0.98)
+    drop-shadow(
+      0 11px 17px
+      rgb(0 0 0 / 40%)
+    );
+
+  animation:
+    background-spaceship-bank
+    14s
+    ease-in-out
+    -5s
+    infinite;
+}
+
+
+/* =========================================================
+   DESTINATION NAV
+========================================================= */
 
 .destination-list {
   position: absolute;
+
   inset: 0;
 
   width: 100%;
@@ -344,6 +607,7 @@ img {
   pointer-events: auto;
 
   color: inherit;
+
   text-decoration: none;
 }
 
@@ -355,8 +619,14 @@ img {
   background: transparent;
 }
 
+
+/* =========================================================
+   PLANET ARTWORK
+========================================================= */
+
 .planet-artwork {
   position: absolute;
+
   z-index: 5;
 
   display: block;
@@ -378,8 +648,10 @@ img {
     scale 180ms ease;
 }
 
-.planet-link:hover .planet-artwork,
-.planet-link:focus-visible .planet-artwork {
+.planet-link:hover
+.planet-artwork,
+.planet-link:focus-visible
+.planet-artwork {
   scale: 1.035;
 
   filter:
@@ -392,6 +664,7 @@ img {
 
 .planet-artwork--layered {
   overflow: visible;
+
   aspect-ratio: 3 / 2;
 }
 
@@ -416,7 +689,9 @@ img {
 .astrology-planet-motion,
 .library-planet-motion {
   position: absolute;
+
   inset: 0;
+
   display: block;
 }
 
@@ -425,28 +700,55 @@ img {
 .astrology-planet-layer,
 .library-planet-layer {
   position: absolute;
+
   inset: 0;
+
   display: block;
+
   width: 100%;
   height: 100%;
+
   object-fit: contain;
+
   pointer-events: none;
+
   user-select: none;
 }
 
+
+/* =========================================================
+   ABOUT PLANET
+========================================================= */
+
 .about-planet-motion {
   transform-origin: 50% 54%;
-  animation: about-planet-float 7s ease-in-out infinite;
+
+  animation:
+    about-planet-float
+    10.5s
+    ease-in-out
+    -2.3s
+    infinite;
 }
 
 .about-planet-layer--glow {
-  animation: about-planet-glow 5.2s ease-in-out infinite;
+  animation:
+    about-planet-glow
+    5.2s
+    ease-in-out
+    infinite;
 }
 
 .about-planet-layer--texture {
   opacity: 0.16;
+
   mix-blend-mode: screen;
-  animation: about-planet-shimmer 4.8s ease-in-out infinite;
+
+  animation:
+    about-planet-shimmer
+    4.8s
+    ease-in-out
+    infinite;
 }
 
 .about-planet-layer--shadow {
@@ -455,282 +757,541 @@ img {
 
 .about-planet-layer--blink {
   opacity: 0;
-  animation: about-planet-blink 8.8s steps(1, end) infinite;
+
+  animation:
+    about-planet-blink
+    8.8s
+    steps(1, end)
+    infinite;
 }
 
 .about-planet-layer--debris {
   transform-origin: 50% 52%;
-  animation: about-planet-debris 8.5s ease-in-out infinite;
+
+  animation:
+    about-planet-debris
+    8.5s
+    ease-in-out
+    infinite;
 }
 
+
+/* =========================================================
+   NEWS WEEKLY PLANET
+========================================================= */
+
 .weekly-planet-motion {
-  transform-origin: 50% 52%;
-  animation: weekly-planet-float 8.2s ease-in-out infinite;
+  transform-origin: 47.66% 49.63%;
+
+  will-change: transform;
+
+  animation:
+    weekly-planet-float
+    18s
+    ease-in-out
+    -6s
+    infinite;
 }
 
 .weekly-planet-layer--halo {
-  animation: weekly-anomaly-halo 5.8s ease-in-out infinite;
+  opacity: 0.12;
+
+  transform-origin: 47.66% 49.63%;
+
+  animation:
+    weekly-halo-breathe
+    14s
+    ease-in-out
+    -4s
+    infinite;
 }
 
-.weekly-planet-layer--purple {
-  opacity: 0.32;
-  mix-blend-mode: screen;
-  animation: weekly-purple-surge 7.2s ease-in-out infinite;
+.weekly-planet-layer--base {
+  opacity: 1;
 }
 
-.weekly-planet-layer--stone {
-  opacity: 0.08;
-  mix-blend-mode: screen;
-  animation: weekly-stone-flicker 6.4s ease-in-out infinite;
+.weekly-purple-system,
+.weekly-vortex-system {
+  position: absolute;
+
+  inset: 0;
+
+  display: block;
+
+  pointer-events: none;
 }
 
-.weekly-planet-layer--vortex-spill {
-  transform-origin: 50.5% 50.6%;
-  mix-blend-mode: screen;
-  animation: weekly-vortex-glow 4.8s ease-in-out infinite;
+.weekly-purple-system {
+  transform-origin: 47.66% 49.63%;
 }
 
-.weekly-planet-layer--vortex-energy {
-  transform-origin: 50.5% 50.6%;
-  mix-blend-mode: screen;
-  animation: weekly-vortex-spin 5.6s ease-in-out infinite;
+.weekly-planet-layer--purple-orbit {
+  opacity: 1;
+
+  transform-origin: 47.66% 49.63%;
+
+  mix-blend-mode: normal;
+
+  will-change: transform;
+
+  animation:
+    weekly-purple-orbit-v6
+    76s
+    linear
+    -21s
+    infinite;
+}
+
+.weekly-vortex-system {
+  transform-origin: 46.24% 50.15%;
+}
+
+.weekly-planet-layer--green-whirlpool {
+  transform-origin: 46.24% 50.15%;
+
+  mix-blend-mode: normal;
+
+  will-change:
+    transform,
+    filter;
+}
+
+.weekly-planet-layer--green-whirlpool-main {
+  opacity: 0.98;
+
+  clip-path:
+    circle(
+      21%
+      at
+      46.24%
+      50.15%
+    );
+
+  animation:
+    weekly-green-whirlpool-main
+    28s
+    linear
+    -9s
+    infinite;
+}
+
+.weekly-planet-layer--green-whirlpool-inner {
+  opacity: 0.62;
+
+  clip-path:
+    circle(
+      12.8%
+      at
+      46.24%
+      50.15%
+    );
+
+  filter:
+    brightness(1.045)
+    saturate(1.04);
+
+  animation:
+    weekly-green-whirlpool-inner
+    17s
+    linear
+    -5s
+    infinite;
 }
 
 .weekly-planet-layer--vortex-core {
-  transform-origin: 50.5% 50.6%;
-  mix-blend-mode: screen;
-  animation: weekly-vortex-heartbeat 4.2s ease-in-out infinite;
+  opacity: 0.9;
+
+  transform-origin: 46.24% 50.15%;
+
+  mix-blend-mode: normal;
+
+  will-change:
+    transform,
+    filter;
+
+  animation:
+    weekly-vortex-core-gravity
+    9.2s
+    ease-in-out
+    -3s
+    infinite;
 }
 
-.weekly-planet-layer--scan {
-  background:
-    radial-gradient(
-      circle at 50% 50%,
-      rgb(182 255 84 / 0%) 0%,
-      rgb(182 255 84 / 0%) 21%,
-      rgb(182 255 84 / 8%) 23%,
-      rgb(182 255 84 / 26%) 26%,
-      rgb(182 255 84 / 6%) 29%,
-      transparent 33%
+.weekly-planet-layer--structures-foreground {
+  opacity: 1;
+
+  clip-path:
+    circle(
+      25%
+      at
+      46.24%
+      50.15%
     );
+
+  pointer-events: none;
+}
+
+.weekly-planet-layer--stone {
+  opacity: 0.055;
+
   mix-blend-mode: screen;
-  -webkit-mask:
-    url("/assets/planets/weekly-planet/weekly-planet-silhouette-mask.png")
-    center / contain no-repeat;
-  mask:
-    url("/assets/planets/weekly-planet/weekly-planet-silhouette-mask.png")
-    center / contain no-repeat;
-  transform-origin: 50.5% 50.6%;
-  animation: weekly-vortex-scan 6.8s linear infinite;
+
+  animation:
+    weekly-stone-glint
+    16s
+    ease-in-out
+    -6s
+    infinite;
+}
+
+.weekly-planet-layer--detached {
+  opacity: 1;
+
+  transform-origin: 47.66% 49.63%;
+
+  animation:
+    weekly-debris-drift
+    20s
+    ease-in-out
+    -7s
+    infinite;
 }
 
 .weekly-planet-layer--shadow {
   opacity: 0.45;
 }
 
-.weekly-planet-layer--detached {
-  transform-origin: 50% 50%;
-  animation: weekly-detached-drift 9.4s ease-in-out infinite;
-}
 
-.weekly-vortex-ring {
-  position: absolute;
-  top: 50.7%;
-  left: 50.5%;
-  width: 14%;
-  height: 20%;
-  border: 2px solid rgb(177 255 88 / 56%);
-  border-radius: 50%;
-  opacity: 0;
-  pointer-events: none;
-  box-shadow:
-    0 0 8px rgb(177 255 88 / 28%),
-    inset 0 0 8px rgb(177 255 88 / 18%);
-  transform: translate(-50%, -50%) scale(0.72);
-}
-
-.weekly-vortex-ring--one {
-  animation: weekly-vortex-ring-wave 4s ease-out infinite;
-}
-
-.weekly-vortex-ring--two {
-  animation: weekly-vortex-ring-wave 4s 1.33s ease-out infinite;
-}
-
-.weekly-vortex-ring--three {
-  animation: weekly-vortex-ring-wave 4s 2.66s ease-out infinite;
-}
-
-.weekly-vortex-particles {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.weekly-vortex-particle {
-  position: absolute;
-  top: 50.6%;
-  left: 50.5%;
-  width: clamp(3px, 0.36vw, 7px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: #b5ff67;
-  opacity: 0;
-  box-shadow:
-    0 0 6px rgb(163 255 82 / 96%),
-    0 0 14px rgb(163 255 82 / 52%);
-  animation: weekly-vortex-particle-flight 6.3s ease-out infinite;
-}
-
-.weekly-vortex-particle--1 {
-  --particle-x: -105px;
-  --particle-y: -88px;
-  animation-delay: 0s;
-}
-
-.weekly-vortex-particle--2 {
-  --particle-x: 98px;
-  --particle-y: -96px;
-  animation-delay: 0.52s;
-}
-
-.weekly-vortex-particle--3 {
-  --particle-x: -132px;
-  --particle-y: 24px;
-  animation-delay: 1.04s;
-}
-
-.weekly-vortex-particle--4 {
-  --particle-x: 136px;
-  --particle-y: 18px;
-  animation-delay: 1.56s;
-}
-
-.weekly-vortex-particle--5 {
-  --particle-x: -76px;
-  --particle-y: -138px;
-  animation-delay: 2.08s;
-}
-
-.weekly-vortex-particle--6 {
-  --particle-x: 50px;
-  --particle-y: -145px;
-  animation-delay: 2.6s;
-}
-
-.weekly-vortex-particle--7 {
-  --particle-x: -92px;
-  --particle-y: 120px;
-  animation-delay: 3.12s;
-}
-
-.weekly-vortex-particle--8 {
-  --particle-x: 112px;
-  --particle-y: 110px;
-  animation-delay: 3.64s;
-}
-
-.weekly-vortex-particle--9 {
-  --particle-x: -156px;
-  --particle-y: -30px;
-  animation-delay: 4.16s;
-}
-
-.weekly-vortex-particle--10 {
-  --particle-x: 156px;
-  --particle-y: -38px;
-  animation-delay: 4.68s;
-}
-
-.weekly-vortex-particle--11 {
-  --particle-x: -30px;
-  --particle-y: 150px;
-  animation-delay: 5.2s;
-}
-
-.weekly-vortex-particle--12 {
-  --particle-x: 32px;
-  --particle-y: 154px;
-  animation-delay: 5.72s;
-}
+/* =========================================================
+   ASTROLOGY PLANET
+========================================================= */
 
 .astrology-planet-motion {
+  position: absolute;
+
+  inset: 0;
+
+  display: block;
+
   transform-origin: 52% 52%;
-  animation: astrology-planet-float 8.4s ease-in-out infinite;
+
+  will-change: transform;
+
+  animation:
+    astrology-planet-float
+    12.8s
+    ease-in-out
+    -4.2s
+    infinite;
 }
+
+
+/*
+  The central pulse is intentionally separate from the image.
+
+  It creates the feeling that the zodiac wheel is emitting
+  energy rather than simply bobbing up and down.
+*/
+
+.astrology-planet-motion::before {
+  position: absolute;
+
+  top: 50.3%;
+  left: 54.55%;
+
+  z-index: 8;
+
+  width: 10%;
+
+  aspect-ratio: 1;
+
+  border:
+    1px
+    solid
+    rgb(255 221 118 / 48%);
+
+  border-radius: 50%;
+
+  opacity: 0;
+
+  box-shadow:
+    0 0 10px
+    rgb(255 221 118 / 26%);
+
+  pointer-events: none;
+
+  transform:
+    translate(
+      -50%,
+      -50%
+    )
+    scale(0.56);
+
+  content: "";
+
+  animation:
+    astrology-centre-ripple
+    4.2s
+    ease-out
+    -1.1s
+    infinite;
+}
+
+
+/* Atmosphere */
 
 .astrology-planet-layer--glow {
-  animation: astrology-planet-glow 5.8s ease-in-out infinite;
+  transform-origin: 52% 52%;
+
+  will-change:
+    opacity,
+    transform,
+    filter;
+
+  animation:
+    astrology-planet-glow
+    6.4s
+    ease-in-out
+    -1.6s
+    infinite;
 }
+
+
+/* Clouds */
 
 .astrology-planet-layer--clouds {
-  opacity: 0.17;
+  opacity: 0.19;
+
   mix-blend-mode: screen;
-  animation: astrology-cloud-shimmer 6.7s ease-in-out infinite;
+
+  transform-origin: 52% 52%;
+
+  will-change:
+    opacity,
+    transform,
+    filter;
+
+  animation:
+    astrology-cloud-shimmer
+    8.8s
+    ease-in-out
+    -2.4s
+    infinite;
 }
 
+
+/* Gold zodiac details */
+
 .astrology-planet-layer--gold {
-  opacity: 0.18;
+  opacity: 0.24;
+
   mix-blend-mode: screen;
-  animation: astrology-gold-twinkle 4.6s ease-in-out infinite;
+
+  will-change:
+    opacity,
+    filter;
+
+  animation:
+    astrology-gold-twinkle
+    4.7s
+    ease-in-out
+    -0.7s
+    infinite;
 }
+
+
+/* Central compass/star */
 
 .astrology-planet-layer--central-star {
   transform-origin: 54.55% 50.3%;
+
   mix-blend-mode: screen;
-  animation: astrology-central-star 3.8s ease-in-out infinite;
+
+  will-change:
+    opacity,
+    transform,
+    filter;
+
+  animation:
+    astrology-central-star
+    3.7s
+    ease-in-out
+    -1.2s
+    infinite;
 }
 
 .astrology-planet-layer--shadow {
   opacity: 0.44;
 }
 
+
+/*
+  The entire zodiac sphere itself does not spin.
+
+  Only the separate orbital track moves so the astrology
+  illustration remains readable.
+*/
+
 .astrology-planet-layer--orbit {
+  opacity: 0.9;
+
   transform-origin: 50% 55%;
-  animation: astrology-orbit-drift 10.5s ease-in-out infinite;
+
+  will-change:
+    transform,
+    opacity,
+    filter;
+
+  animation:
+    astrology-orbit-precession
+    34s
+    linear
+    -9s
+    infinite;
 }
+
+
+/*
+  The moon layer is a transparent full-size canvas.
+
+  Rotating the canvas around the planet centre means the
+  actual illustrated moon circles the zodiac planet.
+*/
 
 .astrology-planet-layer--moon {
-  transform-origin: 24.2% 27.6%;
-  animation: astrology-moon-drift 7.4s ease-in-out infinite;
+  transform-origin: 50% 55%;
+
+  will-change:
+    transform,
+    filter;
+
+  animation:
+    astrology-moon-orbit
+    25s
+    linear
+    -7s
+    infinite;
 }
 
+
+/* Detached celestial details drift at a different rhythm. */
+
 .astrology-planet-layer--detached {
-  transform-origin: 50% 50%;
-  animation: astrology-detached-drift 9.2s ease-in-out infinite;
+  transform-origin: 50% 52%;
+
+  will-change: transform;
+
+  animation:
+    astrology-detached-drift
+    12.6s
+    ease-in-out
+    -3.5s
+    infinite;
 }
+
+
+/*
+  Hovering wakes up the celestial system slightly.
+
+  It is intentionally not extremely fast.
+*/
+
+.planet-link:hover
+.astrology-planet-layer--orbit,
+.planet-link:focus-visible
+.astrology-planet-layer--orbit {
+  animation-duration: 23s;
+}
+
+.planet-link:hover
+.astrology-planet-layer--moon,
+.planet-link:focus-visible
+.astrology-planet-layer--moon {
+  animation-duration: 17s;
+}
+
+.planet-link:hover
+.astrology-planet-layer--central-star,
+.planet-link:focus-visible
+.astrology-planet-layer--central-star {
+  filter:
+    brightness(1.24)
+    drop-shadow(
+      0 0 12px
+      rgb(255 220 83 / 68%)
+    );
+}
+
+
+/* =========================================================
+   LIBRARY PLANET
+========================================================= */
 
 .library-planet-motion {
   transform-origin: 50% 54%;
-  animation: library-planet-float 8.8s ease-in-out infinite;
+
+  animation:
+    library-planet-float
+    12.4s
+    ease-in-out
+    -7.4s
+    infinite;
 }
 
 .library-planet-layer--halo {
-  animation: library-planet-halo 5.8s ease-in-out infinite;
+  animation:
+    library-planet-halo
+    5.8s
+    ease-in-out
+    infinite;
 }
 
 .library-planet-layer--metal {
   opacity: 0.08;
+
   mix-blend-mode: screen;
-  animation: library-metal-flicker 6.2s ease-in-out infinite;
+
+  animation:
+    library-metal-flicker
+    6.2s
+    ease-in-out
+    infinite;
 }
 
 .library-planet-layer--portal-spill {
   transform-origin: 50.7% 52.7%;
+
   mix-blend-mode: screen;
-  animation: library-portal-spill 4.8s ease-in-out infinite;
+
+  animation:
+    library-portal-spill
+    4.8s
+    ease-in-out
+    infinite;
 }
 
 .library-planet-layer--portal-energy {
   transform-origin: 50.7% 52.7%;
+
   mix-blend-mode: screen;
-  animation: library-portal-swirl 5.6s ease-in-out infinite;
+
+  animation:
+    library-portal-swirl
+    5.6s
+    ease-in-out
+    infinite;
 }
 
 .library-planet-layer--portal-core {
   transform-origin: 50.7% 52.7%;
+
   mix-blend-mode: screen;
-  animation: library-portal-heartbeat 4.4s ease-in-out infinite;
+
+  animation:
+    library-portal-heartbeat
+    4.4s
+    ease-in-out
+    infinite;
 }
 
 .library-planet-layer--scan {
@@ -745,47 +1306,100 @@ img {
       transparent 58%,
       transparent 100%
     );
+
   mix-blend-mode: screen;
+
   -webkit-mask:
     url("/assets/planets/library-planet/library-planet-silhouette-mask.png")
-    center / contain no-repeat;
+    center / contain
+    no-repeat;
+
   mask:
     url("/assets/planets/library-planet/library-planet-silhouette-mask.png")
-    center / contain no-repeat;
-  animation: library-archive-scan 8.6s ease-in-out infinite;
+    center / contain
+    no-repeat;
+
+  animation:
+    library-archive-scan
+    8.6s
+    ease-in-out
+    infinite;
 }
 
 .library-planet-layer--shadow {
   opacity: 0.45;
 }
 
+
+/* =========================================================
+   LIBRARY PORTAL RINGS
+========================================================= */
+
 .library-portal-ring {
   position: absolute;
+
   top: 52.8%;
   left: 50.7%;
+
   width: 17%;
   height: 25.5%;
-  border: 2px solid rgb(160 255 92 / 58%);
+
+  border:
+    2px
+    solid
+    rgb(160 255 92 / 58%);
+
   border-radius: 48%;
+
   opacity: 0;
+
   pointer-events: none;
+
   box-shadow:
-    0 0 9px rgb(117 255 60 / 35%),
-    inset 0 0 9px rgb(117 255 60 / 24%);
-  transform: translate(-50%, -50%) scale(0.7);
+    0 0 9px
+    rgb(117 255 60 / 35%),
+    inset
+    0 0 9px
+    rgb(117 255 60 / 24%);
+
+  transform:
+    translate(
+      -50%,
+      -50%
+    )
+    scale(0.7);
 }
 
 .library-portal-ring--one {
-  animation: library-portal-ring-wave 4.2s ease-out infinite;
+  animation:
+    library-portal-ring-wave
+    4.2s
+    ease-out
+    infinite;
 }
 
 .library-portal-ring--two {
-  animation: library-portal-ring-wave 4.2s 1.4s ease-out infinite;
+  animation:
+    library-portal-ring-wave
+    4.2s
+    1.4s
+    ease-out
+    infinite;
 }
 
 .library-portal-ring--three {
-  animation: library-portal-ring-wave 4.2s 2.8s ease-out infinite;
+  animation:
+    library-portal-ring-wave
+    4.2s
+    2.8s
+    ease-out
+    infinite;
 }
+
+
+/* =========================================================
+   LIBRARY DETAILS
+========================================================= */
 
 .library-reel-highlight {
   background:
@@ -797,15 +1411,26 @@ img {
       rgb(255 255 236 / 65%) 315deg,
       transparent 345deg
     );
+
   mix-blend-mode: screen;
+
   -webkit-mask:
     url("/assets/planets/library-planet/library-planet-film-reel-mask.png")
-    center / contain no-repeat;
+    center / contain
+    no-repeat;
+
   mask:
     url("/assets/planets/library-planet/library-planet-film-reel-mask.png")
-    center / contain no-repeat;
+    center / contain
+    no-repeat;
+
   transform-origin: 34.3% 31.1%;
-  animation: library-reel-glint 4.2s linear infinite;
+
+  animation:
+    library-reel-glint
+    4.2s
+    linear
+    infinite;
 }
 
 .library-lens-highlight {
@@ -816,15 +1441,26 @@ img {
       rgb(220 255 235 / 25%) 12%,
       transparent 30%
     );
+
   mix-blend-mode: screen;
+
   -webkit-mask:
     url("/assets/planets/library-planet/library-planet-camera-lens-mask.png")
-    center / contain no-repeat;
+    center / contain
+    no-repeat;
+
   mask:
     url("/assets/planets/library-planet/library-planet-camera-lens-mask.png")
-    center / contain no-repeat;
+    center / contain
+    no-repeat;
+
   transform-origin: 63.9% 14.8%;
-  animation: library-lens-focus 5.3s ease-in-out infinite;
+
+  animation:
+    library-lens-focus
+    5.3s
+    ease-in-out
+    infinite;
 }
 
 .library-lower-mechanism-highlight {
@@ -836,120 +1472,184 @@ img {
       rgb(200 255 178 / 45%) 70deg,
       transparent 104deg
     );
+
   mix-blend-mode: screen;
+
   -webkit-mask:
     url("/assets/planets/library-planet/library-planet-lower-mechanism-mask.png")
-    center / contain no-repeat;
+    center / contain
+    no-repeat;
+
   mask:
     url("/assets/planets/library-planet/library-planet-lower-mechanism-mask.png")
-    center / contain no-repeat;
+    center / contain
+    no-repeat;
+
   transform-origin: 56.1% 82.3%;
-  animation: library-lower-mechanism 7.6s linear infinite;
+
+  animation:
+    library-lower-mechanism
+    7.6s
+    linear
+    infinite;
 }
+
+
+/* =========================================================
+   LIBRARY PARTICLES
+========================================================= */
 
 .library-portal-particles {
   position: absolute;
+
   inset: 0;
+
   pointer-events: none;
 }
 
 .library-portal-particle {
   position: absolute;
+
   top: 53%;
   left: 50.6%;
-  width: clamp(3px, 0.38vw, 7px);
+
+  width:
+    clamp(
+      3px,
+      0.38vw,
+      7px
+    );
+
   aspect-ratio: 1;
+
   border-radius: 50%;
+
   background: #a9ff6b;
+
   opacity: 0;
+
   box-shadow:
-    0 0 6px #7aff35,
-    0 0 13px rgb(112 255 56 / 66%);
-  animation: library-portal-particle-flight 6.6s ease-out infinite;
+    0 0 6px
+    #7aff35,
+    0 0 13px
+    rgb(112 255 56 / 66%);
+
+  animation:
+    library-portal-particle-flight
+    6.6s
+    ease-out
+    infinite;
 }
 
 .library-portal-particle--1 {
   --particle-x: -110px;
   --particle-y: -75px;
+
   animation-delay: 0s;
 }
 
 .library-portal-particle--2 {
   --particle-x: 94px;
   --particle-y: -95px;
+
   animation-delay: 0.55s;
 }
 
 .library-portal-particle--3 {
   --particle-x: -135px;
   --particle-y: 25px;
+
   animation-delay: 1.1s;
 }
 
 .library-portal-particle--4 {
   --particle-x: 128px;
   --particle-y: 18px;
+
   animation-delay: 1.65s;
 }
 
 .library-portal-particle--5 {
   --particle-x: -70px;
   --particle-y: -132px;
+
   animation-delay: 2.2s;
 }
 
 .library-portal-particle--6 {
   --particle-x: 48px;
   --particle-y: -140px;
+
   animation-delay: 2.75s;
 }
 
 .library-portal-particle--7 {
   --particle-x: -92px;
   --particle-y: 110px;
+
   animation-delay: 3.3s;
 }
 
 .library-portal-particle--8 {
   --particle-x: 110px;
   --particle-y: 102px;
+
   animation-delay: 3.85s;
 }
 
 .library-portal-particle--9 {
   --particle-x: -155px;
   --particle-y: -35px;
+
   animation-delay: 4.4s;
 }
 
 .library-portal-particle--10 {
   --particle-x: 156px;
   --particle-y: -42px;
+
   animation-delay: 4.95s;
 }
 
 .library-portal-particle--11 {
   --particle-x: -35px;
   --particle-y: 145px;
+
   animation-delay: 5.5s;
 }
 
 .library-portal-particle--12 {
   --particle-x: 35px;
   --particle-y: 150px;
+
   animation-delay: 6.05s;
 }
 
+
+/* =========================================================
+   PLANET LABELS
+========================================================= */
+
 .planet-label {
   position: absolute;
+
   z-index: 8;
 
   display: grid;
+
   place-items: center;
 
   padding:
-    clamp(5px, 0.48vw, 9px)
-    clamp(8px, 0.82vw, 15px);
+    clamp(
+      5px,
+      0.48vw,
+      9px
+    )
+    clamp(
+      8px,
+      0.82vw,
+      15px
+    );
 
   border:
     var(--border-thin)
@@ -958,16 +1658,28 @@ img {
 
   border-radius: var(--small-radius);
 
-  background: rgb(2 7 5 / 96%);
+  background:
+    rgb(2 7 5 / 96%);
+
   color: var(--neon-green);
 
   font-family: var(--font-display);
-  font-size: clamp(9px, 0.96vw, 18px);
+
+  font-size:
+    clamp(
+      9px,
+      0.96vw,
+      18px
+    );
+
   font-weight: 700;
+
   line-height: 1;
+
   letter-spacing: 0.12em;
 
   text-align: center;
+
   text-transform: uppercase;
 
   transition:
@@ -977,234 +1689,358 @@ img {
     transform 150ms ease;
 }
 
-.planet-link:hover .planet-label,
-.planet-link:focus-visible .planet-label {
+.planet-link:hover
+.planet-label,
+.planet-link:focus-visible
+.planet-label {
   background: var(--neon-green);
+
   color: var(--space-black);
 
   box-shadow:
     0 0 13px
     rgb(140 255 88 / 28%);
 
-  transform: translateY(-2px);
+  transform:
+    translateY(-2px);
 }
 
-.destination--about .planet-artwork {
+
+/* =========================================================
+   ABOUT POSITION
+========================================================= */
+
+.destination--about
+.planet-artwork {
   top: 48%;
   left: 4.5%;
 
-  width: clamp(
-    230px,
-    27%,
-    470px
-  );
+  width:
+    clamp(
+      230px,
+      27%,
+      470px
+    );
 }
 
-.destination--about .planet-label {
+.destination--about
+.planet-label {
   top: 43%;
   left: 0.8%;
 
-  width: clamp(
-    150px,
-    12.5%,
-    205px
-  );
+  width:
+    clamp(
+      150px,
+      12.5%,
+      205px
+    );
 
-  min-height: clamp(
-    42px,
-    5.4vh,
-    60px
-  );
+  min-height:
+    clamp(
+      42px,
+      5.4vh,
+      60px
+    );
 }
 
-.destination--about .planet-label::after {
+.destination--about
+.planet-label::after {
   position: absolute;
 
-  top: calc(100% - 1px);
+  top:
+    calc(
+      100% - 1px
+    );
+
   left: 70%;
 
-  width: clamp(
-    75px,
-    7.5vw,
-    135px
-  );
+  width:
+    clamp(
+      75px,
+      7.5vw,
+      135px
+    );
 
   height: 2px;
 
   background: var(--neon-green);
 
-  transform: rotate(31deg);
-  transform-origin: left center;
+  transform:
+    rotate(31deg);
+
+  transform-origin:
+    left center;
 
   pointer-events: none;
+
   content: "";
 }
 
-.destination--weekly .planet-artwork {
+
+/* =========================================================
+   WEEKLY POSITION
+========================================================= */
+
+.destination--weekly
+.planet-artwork {
   top: 13.5%;
   left: 27.5%;
 
-  width: clamp(
-    380px,
-    41%,
-    690px
-  );
+  width:
+    clamp(
+      380px,
+      41%,
+      690px
+    );
 }
 
-.destination--weekly .planet-label {
+.destination--weekly
+.planet-label {
   top: 14.5%;
   left: 16.5%;
 
-  width: clamp(
-    150px,
-    12.5%,
-    205px
-  );
+  width:
+    clamp(
+      150px,
+      12.5%,
+      205px
+    );
 
-  min-height: clamp(
-    42px,
-    5.4vh,
-    60px
-  );
+  min-height:
+    clamp(
+      42px,
+      5.4vh,
+      60px
+    );
 }
 
-.destination--weekly .planet-label::after {
+.destination--weekly
+.planet-label::after {
   position: absolute;
 
-  top: calc(100% - 1px);
+  top:
+    calc(
+      100% - 1px
+    );
+
   left: 72%;
 
-  width: clamp(
-    80px,
-    8vw,
-    145px
-  );
+  width:
+    clamp(
+      80px,
+      8vw,
+      145px
+    );
 
   height: 2px;
 
   background: var(--neon-green);
 
-  transform: rotate(35deg);
-  transform-origin: left center;
+  transform:
+    rotate(35deg);
+
+  transform-origin:
+    left center;
 
   pointer-events: none;
+
   content: "";
 }
 
-.destination--astrology .planet-artwork {
+
+/* =========================================================
+   ASTROLOGY POSITION
+========================================================= */
+
+.destination--astrology
+.planet-artwork {
   top: 13.5%;
   left: 64.5%;
 
-  width: clamp(
-    270px,
-    29%,
-    500px
-  );
+  width:
+    clamp(
+      270px,
+      29%,
+      500px
+    );
 }
 
-.destination--astrology .planet-label {
-  top: 17.5%;
-  right: 0.8%;
 
-  width: clamp(
-    155px,
-    13%,
-    215px
-  );
+/*
+  FIXED:
 
-  min-height: clamp(
-    43px,
-    5.5vh,
-    62px
-  );
+  This tag used to sit almost directly underneath the
+  top system bar.
+
+  It now sits in the clean negative space immediately to
+  the RIGHT of the planet.
+*/
+
+.destination--astrology
+.planet-label {
+  top: 22%;
+  right: 0.9%;
+
+  width:
+    clamp(
+      155px,
+      12.6%,
+      205px
+    );
+
+  min-height:
+    clamp(
+      43px,
+      5.5vh,
+      62px
+    );
 }
 
-.destination--astrology .planet-label::after {
+
+/*
+  Connector now starts from the LEFT EDGE of the label.
+
+  It is deliberately shorter so it reaches only the outer
+  edge of the astrology artwork instead of cutting through
+  the zodiac face.
+*/
+
+.destination--astrology
+.planet-label::after {
   position: absolute;
 
-  top: calc(100% - 1px);
-  right: 72%;
+  top: 56%;
+  right: 100%;
 
-  width: clamp(
-    60px,
-    6vw,
-    110px
-  );
+  width:
+    clamp(
+      54px,
+      4.8vw,
+      86px
+    );
 
   height: 2px;
 
-  background: var(--neon-green);
+  background:
+    var(--neon-green);
 
-  transform: rotate(-36deg);
-  transform-origin: right center;
+  transform:
+    rotate(10deg);
+
+  transform-origin:
+    right center;
 
   pointer-events: none;
+
   content: "";
 }
 
-.destination--libraries .planet-artwork {
+
+/* =========================================================
+   LIBRARIES POSITION
+========================================================= */
+
+.destination--libraries
+.planet-artwork {
   top: 54%;
   left: 66%;
 
-  width: clamp(
-    190px,
-    21%,
-    360px
-  );
+  width:
+    clamp(
+      190px,
+      21%,
+      360px
+    );
 }
 
-.destination--libraries .planet-label {
+.destination--libraries
+.planet-label {
   top: 56.5%;
   right: 4.5%;
 
-  width: clamp(
-    155px,
-    13%,
-    215px
-  );
+  width:
+    clamp(
+      155px,
+      13%,
+      215px
+    );
 
-  min-height: clamp(
-    42px,
-    5.4vh,
-    60px
-  );
+  min-height:
+    clamp(
+      42px,
+      5.4vh,
+      60px
+    );
 }
 
-.destination--libraries .planet-label::after {
+.destination--libraries
+.planet-label::after {
   position: absolute;
 
-  top: calc(100% - 1px);
+  top:
+    calc(
+      100% - 1px
+    );
+
   right: 72%;
 
-  width: clamp(
-    52px,
-    5vw,
-    95px
-  );
+  width:
+    clamp(
+      52px,
+      5vw,
+      95px
+    );
 
   height: 2px;
 
   background: var(--neon-green);
 
-  transform: rotate(-19deg);
-  transform-origin: right center;
+  transform:
+    rotate(-19deg);
+
+  transform-origin:
+    right center;
 
   pointer-events: none;
+
   content: "";
 }
+
+
+/* =========================================================
+   ABOUT ANIMATIONS
+========================================================= */
 
 @keyframes about-planet-float {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
+    transform:
+      translate3d(
+        0,
+        0,
+        0
+      )
+      rotate(0deg);
   }
 
-  45% {
-    transform: translate3d(0, -9px, 0) rotate(0.35deg);
+  38% {
+    transform:
+      translate3d(
+        -1px,
+        -5px,
+        0
+      )
+      rotate(0.18deg);
   }
 
-  70% {
-    transform: translate3d(0, -4px, 0) rotate(-0.2deg);
+  72% {
+    transform:
+      translate3d(
+        1px,
+        -2px,
+        0
+      )
+      rotate(-0.1deg);
   }
 }
 
@@ -1212,12 +2048,16 @@ img {
   0%,
   100% {
     opacity: 0.42;
-    transform: scale(0.985);
+
+    transform:
+      scale(0.985);
   }
 
   50% {
     opacity: 0.86;
-    transform: scale(1.018);
+
+    transform:
+      scale(1.018);
   }
 }
 
@@ -1225,17 +2065,23 @@ img {
   0%,
   100% {
     opacity: 0.08;
-    filter: brightness(1);
+
+    filter:
+      brightness(1);
   }
 
   46% {
     opacity: 0.34;
-    filter: brightness(1.55);
+
+    filter:
+      brightness(1.55);
   }
 
   58% {
     opacity: 0.15;
-    filter: brightness(1.12);
+
+    filter:
+      brightness(1.12);
   }
 }
 
@@ -1259,345 +2105,725 @@ img {
 @keyframes about-planet-debris {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    transform:
+      translate3d(
+        0,
+        0,
+        0
+      )
+      rotate(0deg)
+      scale(1);
   }
 
   50% {
-    transform: translate3d(7px, -5px, 0) rotate(0.8deg) scale(1.008);
+    transform:
+      translate3d(
+        7px,
+        -5px,
+        0
+      )
+      rotate(0.8deg)
+      scale(1.008);
   }
 }
+
+
+/* =========================================================
+   WEEKLY ANIMATIONS
+========================================================= */
 
 @keyframes weekly-planet-float {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
+    transform:
+      translate3d(
+        0,
+        0,
+        0
+      )
+      rotate(0deg);
   }
 
-  42% {
-    transform: translate3d(0, -9px, 0) rotate(-0.24deg);
+  40% {
+    transform:
+      translate3d(
+        -1px,
+        -3px,
+        0
+      )
+      rotate(-0.025deg);
   }
 
-  70% {
-    transform: translate3d(0, -3px, 0) rotate(0.16deg);
+  74% {
+    transform:
+      translate3d(
+        1px,
+        -4px,
+        0
+      )
+      rotate(0.025deg);
   }
 }
 
-@keyframes weekly-anomaly-halo {
+@keyframes weekly-halo-breathe {
   0%,
   100% {
-    opacity: 0.24;
-    transform: scale(0.992);
+    opacity: 0.1;
+
+    transform:
+      scale(0.998);
   }
 
   50% {
-    opacity: 0.7;
-    transform: scale(1.02);
+    opacity: 0.15;
+
+    transform:
+      scale(1.003);
   }
 }
 
-@keyframes weekly-purple-surge {
-  0%,
-  100% {
-    opacity: 0.22;
-    transform: rotate(-1.4deg) scale(0.995);
-    filter: brightness(1);
-  }
-
-  50% {
-    opacity: 0.48;
-    transform: rotate(2deg) scale(1.02);
-    filter: brightness(1.2);
-  }
-}
-
-@keyframes weekly-stone-flicker {
-  0%,
-  100% {
-    opacity: 0.05;
-    filter: brightness(1);
-  }
-
-  34% {
-    opacity: 0.12;
-    filter: brightness(1.18);
-  }
-
-  70% {
-    opacity: 0.08;
-    filter: brightness(1.06);
-  }
-}
-
-@keyframes weekly-vortex-glow {
-  0%,
-  100% {
-    opacity: 0.26;
-    transform: scale(0.985);
-    filter: brightness(1);
-  }
-
-  50% {
-    opacity: 0.82;
-    transform: scale(1.04);
-    filter: brightness(1.42);
-  }
-}
-
-@keyframes weekly-vortex-spin {
-  0%,
-  100% {
-    opacity: 0.8;
-    transform: rotate(-2.6deg) scale(0.985);
-    filter: brightness(1.08);
-  }
-
-  50% {
-    opacity: 1;
-    transform: rotate(3.2deg) scale(1.035);
-    filter: brightness(1.45);
-  }
-}
-
-@keyframes weekly-vortex-heartbeat {
-  0%,
-  34%,
-  100% {
-    opacity: 0.72;
-    transform: scale(0.94);
-    filter:
-      brightness(1.15)
-      drop-shadow(0 0 5px rgb(176 255 84 / 38%));
-  }
-
-  42% {
-    opacity: 1;
-    transform: scale(1.1);
-    filter:
-      brightness(1.95)
-      drop-shadow(0 0 17px rgb(176 255 84 / 88%));
-  }
-
-  54% {
-    opacity: 0.82;
-    transform: scale(0.98);
-  }
-
-  62% {
-    opacity: 1;
-    transform: scale(1.04);
-  }
-}
-
-@keyframes weekly-vortex-scan {
+@keyframes weekly-purple-orbit-v6 {
   from {
-    opacity: 0.2;
-    transform: rotate(0deg);
-  }
-
-  50% {
-    opacity: 0.72;
+    transform:
+      rotate(0deg);
   }
 
   to {
-    opacity: 0.2;
-    transform: rotate(360deg);
+    transform:
+      rotate(360deg);
   }
 }
 
-@keyframes weekly-detached-drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
+@keyframes weekly-green-whirlpool-main {
+  0% {
+    transform:
+      rotate(0deg)
+      scale(1.004);
+
+    filter:
+      brightness(1);
+  }
+
+  25% {
+    transform:
+      rotate(90deg)
+      scale(0.999);
   }
 
   50% {
-    transform: translate3d(6px, -5px, 0) rotate(0.45deg);
-  }
-}
-
-@keyframes weekly-vortex-ring-wave {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.62);
-  }
-
-  18% {
-    opacity: 0.58;
-  }
-
-  78% {
-    opacity: 0.14;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(1.35);
-  }
-}
-
-@keyframes weekly-vortex-particle-flight {
-  0%,
-  18% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.35);
-  }
-
-  24% {
-    opacity: 0.92;
-  }
-
-  72% {
-    opacity: 0.34;
-  }
-
-  100% {
-    opacity: 0;
     transform:
-      translate(
-        calc(-50% + var(--particle-x)),
-        calc(-50% + var(--particle-y))
-      )
-      scale(1.12);
+      rotate(180deg)
+      scale(0.992);
+
+    filter:
+      brightness(1.025);
+  }
+
+  75% {
+    transform:
+      rotate(270deg)
+      scale(0.998);
+  }
+
+  100% {
+    transform:
+      rotate(360deg)
+      scale(1.004);
+
+    filter:
+      brightness(1);
   }
 }
+
+@keyframes weekly-green-whirlpool-inner {
+  0% {
+    transform:
+      rotate(0deg)
+      scale(1.012);
+  }
+
+  25% {
+    transform:
+      rotate(90deg)
+      scale(0.997);
+  }
+
+  50% {
+    transform:
+      rotate(180deg)
+      scale(0.982);
+  }
+
+  75% {
+    transform:
+      rotate(270deg)
+      scale(0.996);
+  }
+
+  100% {
+    transform:
+      rotate(360deg)
+      scale(1.012);
+  }
+}
+
+@keyframes weekly-vortex-core-gravity {
+  0%,
+  100% {
+    transform:
+      scale(0.992);
+
+    filter:
+      brightness(0.97);
+  }
+
+  48% {
+    transform:
+      scale(0.964);
+
+    filter:
+      brightness(1.02);
+  }
+
+  58% {
+    transform:
+      scale(0.975);
+  }
+}
+
+@keyframes weekly-stone-glint {
+  0%,
+  100% {
+    opacity: 0.035;
+
+    filter:
+      brightness(1);
+  }
+
+  48% {
+    opacity: 0.06;
+
+    filter:
+      brightness(1.08);
+  }
+
+  55% {
+    opacity: 0.075;
+
+    filter:
+      brightness(1.14);
+  }
+
+  64% {
+    opacity: 0.04;
+
+    filter:
+      brightness(1.02);
+  }
+}
+
+@keyframes weekly-debris-drift {
+  0%,
+  100% {
+    transform:
+      translate3d(
+        0,
+        0,
+        0
+      )
+      rotate(0deg);
+  }
+
+  36% {
+    transform:
+      translate3d(
+        1px,
+        -2px,
+        0
+      )
+      rotate(0.1deg);
+  }
+
+  70% {
+    transform:
+      translate3d(
+        -1px,
+        -3px,
+        0
+      )
+      rotate(-0.08deg);
+  }
+}
+
+
+/* =========================================================
+   ASTROLOGY ANIMATIONS
+========================================================= */
 
 @keyframes astrology-planet-float {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
+    transform:
+      translate3d(
+        0,
+        0,
+        0
+      )
+      rotate(-0.08deg);
   }
 
-  45% {
-    transform: translate3d(0, -8px, 0) rotate(-0.25deg);
+  24% {
+    transform:
+      translate3d(
+        2px,
+        -3px,
+        0
+      )
+      rotate(0.06deg);
   }
 
-  72% {
-    transform: translate3d(0, -3px, 0) rotate(0.22deg);
+  52% {
+    transform:
+      translate3d(
+        0,
+        -7px,
+        0
+      )
+      rotate(0.16deg);
+  }
+
+  78% {
+    transform:
+      translate3d(
+        -2px,
+        -3px,
+        0
+      )
+      rotate(-0.04deg);
   }
 }
+
+
+/* Glow breath */
 
 @keyframes astrology-planet-glow {
   0%,
   100% {
-    opacity: 0.38;
-    transform: scale(0.986);
+    opacity: 0.34;
+
+    transform:
+      scale(0.987);
+
+    filter:
+      brightness(0.98);
   }
 
-  50% {
-    opacity: 0.78;
-    transform: scale(1.017);
+  45% {
+    opacity: 0.82;
+
+    transform:
+      scale(1.022);
+
+    filter:
+      brightness(1.16);
+  }
+
+  66% {
+    opacity: 0.6;
+
+    transform:
+      scale(1.008);
+
+    filter:
+      brightness(1.06);
   }
 }
+
+
+/* Cloud movement */
 
 @keyframes astrology-cloud-shimmer {
   0%,
   100% {
     opacity: 0.1;
-    transform: translate3d(-2px, 0, 0) scale(1);
-    filter: brightness(1);
+
+    transform:
+      translate3d(
+        -4px,
+        1px,
+        0
+      )
+      rotate(-0.18deg)
+      scale(0.998);
+
+    filter:
+      brightness(0.98);
   }
 
-  50% {
-    opacity: 0.32;
-    transform: translate3d(4px, -2px, 0) scale(1.004);
-    filter: brightness(1.25);
+  34% {
+    opacity: 0.27;
+
+    transform:
+      translate3d(
+        1px,
+        -2px,
+        0
+      )
+      rotate(0.08deg)
+      scale(1.002);
+
+    filter:
+      brightness(1.17);
+  }
+
+  69% {
+    opacity: 0.35;
+
+    transform:
+      translate3d(
+        5px,
+        -1px,
+        0
+      )
+      rotate(0.22deg)
+      scale(1.004);
+
+    filter:
+      brightness(1.3);
   }
 }
+
+
+/* Uneven zodiac twinkles */
 
 @keyframes astrology-gold-twinkle {
   0%,
   100% {
-    opacity: 0.1;
-    filter: brightness(1);
+    opacity: 0.12;
+
+    filter:
+      brightness(0.96)
+      drop-shadow(
+        0 0 0
+        rgb(255 220 104 / 0%)
+      );
   }
 
-  22% {
-    opacity: 0.28;
-    filter: brightness(1.45);
+  15% {
+    opacity: 0.34;
+
+    filter:
+      brightness(1.45)
+      drop-shadow(
+        0 0 4px
+        rgb(255 220 104 / 28%)
+      );
   }
 
-  37% {
-    opacity: 0.13;
-    filter: brightness(1.06);
+  31% {
+    opacity: 0.16;
+
+    filter:
+      brightness(1.06);
   }
 
-  66% {
-    opacity: 0.36;
-    filter: brightness(1.65);
+  58% {
+    opacity: 0.48;
+
+    filter:
+      brightness(1.9)
+      drop-shadow(
+        0 0 7px
+        rgb(255 220 104 / 52%)
+      );
   }
 
-  78% {
-    opacity: 0.15;
-    filter: brightness(1.1);
+  76% {
+    opacity: 0.19;
+
+    filter:
+      brightness(1.12);
   }
 }
+
+
+/* Central zodiac star */
 
 @keyframes astrology-central-star {
   0%,
   100% {
-    opacity: 0.62;
-    transform: scale(0.97) rotate(-0.7deg);
+    opacity: 0.58;
+
+    transform:
+      scale(0.95)
+      rotate(-0.6deg);
+
     filter:
-      brightness(1.1)
-      drop-shadow(0 0 4px rgb(255 218 86 / 35%));
+      brightness(1.04)
+      drop-shadow(
+        0 0 4px
+        rgb(255 218 86 / 34%)
+      );
   }
 
-  50% {
+  42% {
     opacity: 1;
-    transform: scale(1.085) rotate(0.9deg);
+
+    transform:
+      scale(1.12)
+      rotate(0.55deg);
+
     filter:
-      brightness(1.7)
-      drop-shadow(0 0 13px rgb(255 220 83 / 82%));
+      brightness(1.92)
+      drop-shadow(
+        0 0 16px
+        rgb(255 220 83 / 88%)
+      );
+  }
+
+  58% {
+    opacity: 0.84;
+
+    transform:
+      scale(1.04)
+      rotate(0deg);
+
+    filter:
+      brightness(1.42)
+      drop-shadow(
+        0 0 9px
+        rgb(255 220 83 / 58%)
+      );
   }
 }
 
-@keyframes astrology-orbit-drift {
-  0%,
+
+/* Ring of energy emitted by the central star */
+
+@keyframes astrology-centre-ripple {
+  0% {
+    opacity: 0;
+
+    transform:
+      translate(
+        -50%,
+        -50%
+      )
+      scale(0.52);
+  }
+
+  18% {
+    opacity: 0.7;
+  }
+
+  72% {
+    opacity: 0.18;
+  }
+
   100% {
+    opacity: 0;
+
+    transform:
+      translate(
+        -50%,
+        -50%
+      )
+      scale(1.75);
+  }
+}
+
+
+/* Slow celestial orbit rotation */
+
+@keyframes astrology-orbit-precession {
+  0% {
+    opacity: 0.72;
+
+    transform:
+      rotate(0deg)
+      scale(0.995);
+
+    filter:
+      brightness(0.96);
+  }
+
+  25% {
+    opacity: 1;
+
+    filter:
+      brightness(1.15);
+  }
+
+  50% {
     opacity: 0.82;
-    transform: rotate(-0.35deg) translate3d(-2px, 1px, 0);
+
+    transform:
+      rotate(180deg)
+      scale(1.008);
+
+    filter:
+      brightness(1.02);
   }
 
-  50% {
+  75% {
     opacity: 1;
-    transform: rotate(0.65deg) translate3d(4px, -2px, 0);
+
+    filter:
+      brightness(1.18);
+  }
+
+  100% {
+    opacity: 0.72;
+
+    transform:
+      rotate(360deg)
+      scale(0.995);
+
+    filter:
+      brightness(0.96);
   }
 }
 
-@keyframes astrology-moon-drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(-0.4deg);
+
+/* Moon actually travels around the planet */
+
+@keyframes astrology-moon-orbit {
+  0% {
+    transform:
+      rotate(0deg);
+
+    filter:
+      brightness(0.88)
+      drop-shadow(
+        0 0 0
+        rgb(215 241 255 / 0%)
+      );
+  }
+
+  24% {
+    filter:
+      brightness(1.06)
+      drop-shadow(
+        0 0 4px
+        rgb(215 241 255 / 24%)
+      );
   }
 
   50% {
-    transform: translate3d(-5px, -7px, 0) rotate(1deg);
+    transform:
+      rotate(180deg);
+
+    filter:
+      brightness(1.22)
+      drop-shadow(
+        0 0 8px
+        rgb(215 241 255 / 42%)
+      );
+  }
+
+  76% {
+    filter:
+      brightness(1.03)
+      drop-shadow(
+        0 0 3px
+        rgb(215 241 255 / 18%)
+      );
+  }
+
+  100% {
+    transform:
+      rotate(360deg);
+
+    filter:
+      brightness(0.88)
+      drop-shadow(
+        0 0 0
+        rgb(215 241 255 / 0%)
+      );
   }
 }
+
+
+/* Small detached celestial objects */
 
 @keyframes astrology-detached-drift {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
+    transform:
+      translate3d(
+        0,
+        0,
+        0
+      )
+      rotate(0deg);
   }
 
-  50% {
-    transform: translate3d(5px, -4px, 0) rotate(0.45deg);
+  28% {
+    transform:
+      translate3d(
+        3px,
+        -5px,
+        0
+      )
+      rotate(0.24deg);
+  }
+
+  58% {
+    transform:
+      translate3d(
+        6px,
+        -2px,
+        0
+      )
+      rotate(0.48deg);
+  }
+
+  82% {
+    transform:
+      translate3d(
+        2px,
+        2px,
+        0
+      )
+      rotate(0.16deg);
   }
 }
+
+
+/* =========================================================
+   LIBRARY ANIMATIONS
+========================================================= */
 
 @keyframes library-planet-float {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
+    transform:
+      translate3d(
+        0,
+        0,
+        0
+      )
+      rotate(0deg);
   }
 
-  44% {
-    transform: translate3d(0, -8px, 0) rotate(0.24deg);
+  42% {
+    transform:
+      translate3d(
+        -1px,
+        -4px,
+        0
+      )
+      rotate(0.12deg);
   }
 
-  72% {
-    transform: translate3d(0, -3px, 0) rotate(-0.16deg);
+  74% {
+    transform:
+      translate3d(
+        1px,
+        -2px,
+        0
+      )
+      rotate(-0.08deg);
   }
 }
 
@@ -1605,12 +2831,16 @@ img {
   0%,
   100% {
     opacity: 0.22;
-    transform: scale(0.99);
+
+    transform:
+      scale(0.99);
   }
 
   50% {
     opacity: 0.66;
-    transform: scale(1.018);
+
+    transform:
+      scale(1.018);
   }
 }
 
@@ -1618,17 +2848,23 @@ img {
   0%,
   100% {
     opacity: 0.05;
-    filter: brightness(1);
+
+    filter:
+      brightness(1);
   }
 
   35% {
     opacity: 0.14;
-    filter: brightness(1.22);
+
+    filter:
+      brightness(1.22);
   }
 
   68% {
     opacity: 0.09;
-    filter: brightness(1.08);
+
+    filter:
+      brightness(1.08);
   }
 }
 
@@ -1636,14 +2872,22 @@ img {
   0%,
   100% {
     opacity: 0.34;
-    transform: scale(0.985);
-    filter: brightness(1);
+
+    transform:
+      scale(0.985);
+
+    filter:
+      brightness(1);
   }
 
   50% {
     opacity: 0.9;
-    transform: scale(1.025);
-    filter: brightness(1.45);
+
+    transform:
+      scale(1.025);
+
+    filter:
+      brightness(1.45);
   }
 }
 
@@ -1651,14 +2895,24 @@ img {
   0%,
   100% {
     opacity: 0.78;
-    transform: rotate(-2.4deg) scale(0.99);
-    filter: brightness(1.05);
+
+    transform:
+      rotate(-2.4deg)
+      scale(0.99);
+
+    filter:
+      brightness(1.05);
   }
 
   50% {
     opacity: 1;
-    transform: rotate(3.2deg) scale(1.035);
-    filter: brightness(1.55);
+
+    transform:
+      rotate(3.2deg)
+      scale(1.035);
+
+    filter:
+      brightness(1.55);
   }
 }
 
@@ -1667,28 +2921,44 @@ img {
   32%,
   100% {
     opacity: 0.72;
-    transform: scale(0.94);
+
+    transform:
+      scale(0.94);
+
     filter:
       brightness(1.15)
-      drop-shadow(0 0 5px rgb(135 255 69 / 50%));
+      drop-shadow(
+        0 0 5px
+        rgb(135 255 69 / 50%)
+      );
   }
 
   38% {
     opacity: 1;
-    transform: scale(1.09);
+
+    transform:
+      scale(1.09);
+
     filter:
       brightness(2)
-      drop-shadow(0 0 17px rgb(143 255 74 / 96%));
+      drop-shadow(
+        0 0 17px
+        rgb(143 255 74 / 96%)
+      );
   }
 
   46% {
     opacity: 0.84;
-    transform: scale(0.99);
+
+    transform:
+      scale(0.99);
   }
 
   53% {
     opacity: 1;
-    transform: scale(1.045);
+
+    transform:
+      scale(1.045);
   }
 }
 
@@ -1696,7 +2966,9 @@ img {
   0%,
   16% {
     opacity: 0;
-    transform: translateY(-65%);
+
+    transform:
+      translateY(-65%);
   }
 
   25% {
@@ -1710,14 +2982,22 @@ img {
   78%,
   100% {
     opacity: 0;
-    transform: translateY(62%);
+
+    transform:
+      translateY(62%);
   }
 }
 
 @keyframes library-portal-ring-wave {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.62);
+
+    transform:
+      translate(
+        -50%,
+        -50%
+      )
+      scale(0.62);
   }
 
   18% {
@@ -1730,17 +3010,25 @@ img {
 
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.28);
+
+    transform:
+      translate(
+        -50%,
+        -50%
+      )
+      scale(1.28);
   }
 }
 
 @keyframes library-reel-glint {
   from {
-    transform: rotate(0deg);
+    transform:
+      rotate(0deg);
   }
 
   to {
-    transform: rotate(360deg);
+    transform:
+      rotate(360deg);
   }
 }
 
@@ -1748,24 +3036,32 @@ img {
   0%,
   100% {
     opacity: 0.18;
-    transform: scale(0.92);
+
+    transform:
+      scale(0.92);
   }
 
   48% {
     opacity: 0.74;
-    transform: scale(1.1);
+
+    transform:
+      scale(1.1);
   }
 
   55% {
     opacity: 0.28;
-    transform: scale(0.98);
+
+    transform:
+      scale(0.98);
   }
 }
 
 @keyframes library-lower-mechanism {
   from {
     opacity: 0.2;
-    transform: rotate(0deg);
+
+    transform:
+      rotate(0deg);
   }
 
   50% {
@@ -1774,7 +3070,9 @@ img {
 
   to {
     opacity: 0.2;
-    transform: rotate(360deg);
+
+    transform:
+      rotate(360deg);
   }
 }
 
@@ -1782,7 +3080,13 @@ img {
   0%,
   18% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.35);
+
+    transform:
+      translate(
+        -50%,
+        -50%
+      )
+      scale(0.35);
   }
 
   24% {
@@ -1795,38 +3099,76 @@ img {
 
   100% {
     opacity: 0;
+
     transform:
       translate(
-        calc(-50% + var(--particle-x)),
-        calc(-50% + var(--particle-y))
+        calc(
+          -50% +
+          var(--particle-x)
+        ),
+        calc(
+          -50% +
+          var(--particle-y)
+        )
       )
       scale(1.15);
   }
 }
+
+
+/* =========================================================
+   BOTTOM DOCK
+========================================================= */
 
 .bottom-dock {
   position: absolute;
 
   bottom: 1.25%;
   left: 1.15%;
+
   z-index: var(--interface-layer);
 
   display: grid;
 
   grid-template-columns:
-    minmax(260px, 22%)
-    minmax(0, 1fr);
+    minmax(
+      260px,
+      22%
+    )
+    minmax(
+      0,
+      1fr
+    );
 
   align-items: center;
 
-  gap: clamp(14px, 1.4vw, 28px);
+  gap:
+    clamp(
+      14px,
+      1.4vw,
+      28px
+    );
 
   width: 97.7%;
-  height: clamp(72px, 9.5vh, 96px);
+
+  height:
+    clamp(
+      72px,
+      9.5vh,
+      96px
+    );
 
   padding:
-    clamp(6px, 0.5vw, 10px)
-    clamp(12px, 0.9vw, 18px);
+    clamp(
+      6px,
+      0.5vw,
+      10px
+    )
+    clamp(
+      12px,
+      0.9vw,
+      18px
+    );
 
   border:
     var(--border-medium)
@@ -1838,18 +3180,41 @@ img {
   background: var(--panel-black);
 }
 
+
+/* =========================================================
+   SYSTEM STATUS
+========================================================= */
+
 .system-status {
   display: grid;
+
   align-content: center;
 
-  gap: clamp(4px, 0.45vh, 7px);
+  gap:
+    clamp(
+      4px,
+      0.45vh,
+      7px
+    );
 
   min-width: 0;
 
-  padding-left: clamp(4px, 0.5vw, 10px);
+  padding-left:
+    clamp(
+      4px,
+      0.5vw,
+      10px
+    );
 
   font-family: var(--font-interface);
-  font-size: clamp(8px, 0.7vw, 13px);
+
+  font-size:
+    clamp(
+      8px,
+      0.7vw,
+      13px
+    );
+
   line-height: 1.15;
 }
 
@@ -1858,13 +3223,17 @@ img {
 
   grid-template-columns:
     max-content
-    minmax(0, 1fr);
+    minmax(
+      0,
+      1fr
+    );
 
   align-items: baseline;
 
   column-gap: 0.5em;
 
   min-width: 0;
+
   margin: 0;
 }
 
@@ -1872,16 +3241,19 @@ img {
   color: var(--terminal-green-muted);
 
   font-family: var(--font-display);
+
   letter-spacing: 0.06em;
 }
 
 #current-time,
 #current-coordinates {
   font-family: var(--font-interface);
+
   font-variant-numeric: tabular-nums;
 }
 
-.status-row--time #current-time {
+.status-row--time
+#current-time {
   color: var(--terminal-mint);
 }
 
@@ -1891,8 +3263,14 @@ img {
   color: var(--terminal-green);
 
   text-overflow: ellipsis;
+
   white-space: nowrap;
 }
+
+
+/* =========================================================
+   DOCK ACTIONS
+========================================================= */
 
 .dock-actions {
   display: grid;
@@ -1900,29 +3278,53 @@ img {
   grid-template-columns:
     repeat(
       4,
-      minmax(145px, 1fr)
+      minmax(
+        145px,
+        1fr
+      )
     );
 
   align-items: center;
   justify-content: center;
 
-  gap: clamp(10px, 1.5vw, 28px);
+  gap:
+    clamp(
+      10px,
+      1.5vw,
+      28px
+    );
 
   min-width: 0;
 }
 
 .dock-card {
   display: flex;
+
   align-items: center;
   justify-content: center;
 
   width: 100%;
-  height: clamp(52px, 6.8vh, 67px);
+
+  height:
+    clamp(
+      52px,
+      6.8vh,
+      67px
+    );
+
   min-width: 0;
 
   padding:
-    clamp(6px, 0.5vw, 10px)
-    clamp(10px, 0.75vw, 15px);
+    clamp(
+      6px,
+      0.5vw,
+      10px
+    )
+    clamp(
+      10px,
+      0.75vw,
+      15px
+    );
 
   overflow: hidden;
 
@@ -1934,6 +3336,7 @@ img {
   border-radius: var(--radius-card);
 
   background: var(--terminal-panel);
+
   color: var(--neon-green);
 
   text-align: left;
@@ -1951,27 +3354,40 @@ img {
   border-color: var(--neon-green);
 
   background: var(--neon-green);
+
   color: var(--space-black);
 
   box-shadow:
     0 0 12px
     rgb(140 255 88 / 24%);
 
-  transform: translateY(-1px);
+  transform:
+    translateY(-1px);
 }
 
 .dock-card:focus-visible {
-  outline: 2px solid var(--interface-white);
+  outline:
+    2px
+    solid
+    var(--interface-white);
+
   outline-offset: 2px;
 }
 
 .dock-card__inner {
   display: flex;
+
   align-items: center;
 
-  gap: clamp(8px, 0.85vw, 15px);
+  gap:
+    clamp(
+      8px,
+      0.85vw,
+      15px
+    );
 
   width: 100%;
+
   min-width: 0;
 }
 
@@ -1979,10 +3395,22 @@ img {
   flex: 0 0 auto;
 
   display: grid;
+
   place-items: center;
 
-  width: clamp(27px, 2.25vw, 42px);
-  height: clamp(27px, 2.25vw, 42px);
+  width:
+    clamp(
+      27px,
+      2.25vw,
+      42px
+    );
+
+  height:
+    clamp(
+      27px,
+      2.25vw,
+      42px
+    );
 }
 
 .dock-card__icon svg {
@@ -1992,23 +3420,35 @@ img {
   overflow: visible;
 
   fill: none;
+
   stroke: currentColor;
+
   stroke-width: 2.25;
+
   stroke-linecap: round;
+
   stroke-linejoin: round;
 }
 
 .dock-card__icon-fill {
   fill: currentColor;
+
   stroke: none;
 }
 
 .dock-card__copy {
   display: flex;
+
   flex-direction: column;
+
   justify-content: center;
 
-  gap: clamp(2px, 0.28vh, 4px);
+  gap:
+    clamp(
+      2px,
+      0.28vh,
+      4px
+    );
 
   min-width: 0;
 }
@@ -2017,13 +3457,24 @@ img {
   overflow: hidden;
 
   font-family: var(--font-display);
-  font-size: clamp(9px, 0.9vw, 17px);
+
+  font-size:
+    clamp(
+      9px,
+      0.9vw,
+      17px
+    );
+
   font-weight: 700;
+
   line-height: 1;
+
   letter-spacing: 0.08em;
 
   text-overflow: ellipsis;
+
   text-transform: uppercase;
+
   white-space: nowrap;
 }
 
@@ -2033,35 +3484,79 @@ img {
   color: var(--terminal-muted);
 
   font-family: var(--font-interface);
-  font-size: clamp(6px, 0.46vw, 9px);
+
+  font-size:
+    clamp(
+      6px,
+      0.46vw,
+      9px
+    );
+
   line-height: 1.1;
+
   letter-spacing: 0.02em;
 
   text-overflow: ellipsis;
+
   text-transform: uppercase;
+
   white-space: nowrap;
 }
 
-.dock-card:hover .dock-card__description,
-.dock-card:focus-visible .dock-card__description {
+.dock-card:hover
+.dock-card__description,
+.dock-card:focus-visible
+.dock-card__description {
   color: var(--space-black);
 }
 
+
+/* =========================================================
+   TYPEWRITER
+========================================================= */
+
 .system-message.is-typing::after,
-.information-panel [data-panel-line].is-typing::after {
+.information-panel
+[data-panel-line].is-typing::after {
   display: inline-block;
+
   margin-left: 0.18em;
+
   color: var(--neon-green);
+
   content: "▋";
-  animation: information-cursor-blink 620ms steps(1, end) infinite;
+
+  animation:
+    information-cursor-blink
+    620ms
+    steps(1, end)
+    infinite;
 }
 
+
+/* =========================================================
+   INFORMATION PANEL
+========================================================= */
+
 .information-panel[open] {
-  animation: information-panel-open 260ms cubic-bezier(0.2, 0.85, 0.35, 1) both;
+  animation:
+    information-panel-open
+    260ms
+    cubic-bezier(
+      0.2,
+      0.85,
+      0.35,
+      1
+    )
+    both;
 }
 
 .information-panel[open]::backdrop {
-  animation: information-backdrop-open 220ms ease-out both;
+  animation:
+    information-backdrop-open
+    220ms
+    ease-out
+    both;
 }
 
 .information-panel__section[hidden] {
@@ -2069,24 +3564,39 @@ img {
 }
 
 .information-panel__section.is-panel-entering {
-  animation: information-content-enter 240ms ease-out both;
+  animation:
+    information-content-enter
+    240ms
+    ease-out
+    both;
 }
 
 .information-panel__command {
   margin-top: 0;
+
   color: var(--neon-green);
+
   font-family: var(--font-display);
+
   font-size: 0.72rem;
+
   letter-spacing: 0.08em;
+
   text-transform: uppercase;
 }
 
-.information-panel [data-panel-line] {
+.information-panel
+[data-panel-line] {
   min-height: 1em;
 }
 
 .information-panel {
-  width: min(88vw, 620px);
+  width:
+    min(
+      88vw,
+      620px
+    );
+
   max-height: 74vh;
 
   padding: 0;
@@ -2101,18 +3611,23 @@ img {
   border-radius: var(--panel-radius);
 
   background: var(--terminal-panel);
+
   color: var(--interface-white);
 
   font-family: var(--font-interface);
 }
 
 .information-panel::backdrop {
-  background: rgb(0 0 0 / 80%);
-  backdrop-filter: blur(4px);
+  background:
+    rgb(0 0 0 / 80%);
+
+  backdrop-filter:
+    blur(4px);
 }
 
 .information-panel__header {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
 
@@ -2136,7 +3651,14 @@ img {
   color: var(--neon-green);
 
   font-family: var(--font-display);
-  font-size: clamp(16px, 1.5vw, 26px);
+
+  font-size:
+    clamp(
+      16px,
+      1.5vw,
+      26px
+    );
+
   letter-spacing: 0.1em;
 
   text-transform: uppercase;
@@ -2144,9 +3666,11 @@ img {
 
 .information-panel__close {
   display: grid;
+
   place-items: center;
 
   width: 2.3rem;
+
   aspect-ratio: 1;
 
   padding: 0;
@@ -2159,6 +3683,7 @@ img {
   border-radius: var(--radius-control);
 
   background: transparent;
+
   color: var(--neon-green);
 
   font-size: 1.4rem;
@@ -2167,11 +3692,16 @@ img {
 .information-panel__close:hover,
 .information-panel__close:focus-visible {
   background: var(--neon-green);
+
   color: var(--space-black);
 }
 
 .information-panel__close:focus-visible {
-  outline: 2px solid var(--interface-white);
+  outline:
+    2px
+    solid
+    var(--interface-white);
+
   outline-offset: 2px;
 }
 
@@ -2185,6 +3715,7 @@ img {
   color: var(--terminal-white);
 
   font-size: 0.95rem;
+
   line-height: 1.7;
 
   scrollbar-color:
@@ -2225,14 +3756,24 @@ img {
   background: var(--terminal-green);
 }
 
+
+/* =========================================================
+   SYSTEM TOAST
+========================================================= */
+
 .system-toast {
   position: fixed;
 
   bottom: 12%;
   left: 50%;
+
   z-index: var(--modal-layer);
 
-  max-width: min(88vw, 580px);
+  max-width:
+    min(
+      88vw,
+      580px
+    );
 
   padding:
     var(--space-3)
@@ -2246,11 +3787,20 @@ img {
   border-radius: var(--radius-control);
 
   background: var(--terminal-panel);
+
   color: var(--neon-green);
 
   font-family: var(--font-display);
-  font-size: clamp(9px, 0.85vw, 15px);
+
+  font-size:
+    clamp(
+      9px,
+      0.85vw,
+      15px
+    );
+
   line-height: 1.4;
+
   letter-spacing: 0.07em;
 
   text-align: center;
@@ -2259,73 +3809,330 @@ img {
     0 0 12px
     rgb(140 255 88 / 20%);
 
-  transform: translateX(-50%);
+  transform:
+    translateX(-50%);
 }
+
+
+/* =========================================================
+   SPACE TRAFFIC ANIMATIONS
+========================================================= */
+
+@keyframes background-ufo-crossing {
+  0% {
+    transform:
+      translate3d(
+        -34vw,
+        10px,
+        0
+      )
+      scale(0.95);
+  }
+
+  16% {
+    transform:
+      translate3d(
+        -10vw,
+        5px,
+        0
+      )
+      scale(0.965);
+  }
+
+  34% {
+    transform:
+      translate3d(
+        22vw,
+        -2px,
+        0
+      )
+      scale(0.985);
+  }
+
+  56% {
+    transform:
+      translate3d(
+        62vw,
+        2px,
+        0
+      )
+      scale(1);
+  }
+
+  76% {
+    transform:
+      translate3d(
+        98vw,
+        -5px,
+        0
+      )
+      scale(1.01);
+  }
+
+  100% {
+    transform:
+      translate3d(
+        132vw,
+        -8px,
+        0
+      )
+      scale(1);
+  }
+}
+
+@keyframes background-ufo-bank {
+  0%,
+  100% {
+    transform:
+      translate3d(
+        0,
+        0,
+        0
+      )
+      rotate(-0.45deg);
+  }
+
+  42% {
+    transform:
+      translate3d(
+        0,
+        -2px,
+        0
+      )
+      rotate(0.28deg);
+  }
+
+  72% {
+    transform:
+      translate3d(
+        0,
+        1px,
+        0
+      )
+      rotate(-0.08deg);
+  }
+}
+
+@keyframes background-spaceship-crossing {
+  0% {
+    transform:
+      translate3d(
+        38vw,
+        32px,
+        0
+      )
+      scale(0.86);
+  }
+
+  18% {
+    transform:
+      translate3d(
+        11vw,
+        22px,
+        0
+      )
+      scale(0.875);
+  }
+
+  38% {
+    transform:
+      translate3d(
+        -24vw,
+        11px,
+        0
+      )
+      scale(0.895);
+  }
+
+  60% {
+    transform:
+      translate3d(
+        -63vw,
+        -4px,
+        0
+      )
+      scale(0.915);
+  }
+
+  80% {
+    transform:
+      translate3d(
+        -99vw,
+        -20px,
+        0
+      )
+      scale(0.935);
+  }
+
+  100% {
+    transform:
+      translate3d(
+        -137vw,
+        -36px,
+        0
+      )
+      scale(0.95);
+  }
+}
+
+@keyframes background-spaceship-bank {
+  0%,
+  100% {
+    transform:
+      translate3d(
+        0,
+        0,
+        0
+      )
+      rotate(0.25deg);
+  }
+
+  50% {
+    transform:
+      translate3d(
+        0,
+        1px,
+        0
+      )
+      rotate(-0.18deg);
+  }
+}
+
+
+/* =========================================================
+   INFORMATION PANEL ANIMATIONS
+========================================================= */
 
 @keyframes information-panel-open {
   from {
     opacity: 0;
-    transform: translateY(16px) scale(0.96);
+
+    transform:
+      translateY(16px)
+      scale(0.96);
   }
+
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+
+    transform:
+      translateY(0)
+      scale(1);
   }
 }
 
 @keyframes information-backdrop-open {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes information-content-enter {
   from {
     opacity: 0;
-    transform: translateY(8px);
+
+    transform:
+      translateY(8px);
   }
+
   to {
     opacity: 1;
-    transform: translateY(0);
+
+    transform:
+      translateY(0);
   }
 }
 
 @keyframes information-cursor-blink {
-  0%, 45% { opacity: 1; }
-  46%, 100% { opacity: 0; }
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  46%,
+  100% {
+    opacity: 0;
+  }
 }
+
+
+/* =========================================================
+   PAUSE / SLEEP
+========================================================= */
 
 .animations-paused *,
 .animations-paused *::before,
 .animations-paused *::after {
-  animation-play-state: paused !important;
+  animation-play-state:
+    paused !important;
 }
 
-.sleep-mode .planet-map,
-.sleep-mode .bottom-dock,
-.sleep-mode .system-message,
-.sleep-mode .icon-button--back,
-.sleep-mode .icon-button--pause {
+.sleep-mode
+.planet-map,
+.sleep-mode
+.background-traffic,
+.sleep-mode
+.bottom-dock,
+.sleep-mode
+.system-message,
+.sleep-mode
+.icon-button--back,
+.sleep-mode
+.icon-button--pause {
   opacity: 0.1;
+
   pointer-events: none;
 }
 
-.sleep-mode .icon-button--power {
+.sleep-mode
+.icon-button--power {
   opacity: 1;
+
   pointer-events: auto;
 }
 
-@media (max-width: 1150px) {
-  .system-message {
-    width: min(58%, 720px) !important;
-    max-width: calc(100% - 275px) !important;
 
-    font-size: clamp(8px, 1.05vw, 13px);
+/* =========================================================
+   SMALLER DESKTOPS
+========================================================= */
+
+@media (
+  max-width: 1150px
+) {
+  .system-message {
+    width:
+      min(
+        58%,
+        720px
+      ) !important;
+
+    max-width:
+      calc(
+        100% - 275px
+      ) !important;
+
+    font-size:
+      clamp(
+        8px,
+        1.05vw,
+        13px
+      );
   }
 
   .bottom-dock {
     grid-template-columns:
-      minmax(175px, 19%)
-      minmax(0, 1fr);
+      minmax(
+        175px,
+        19%
+      )
+      minmax(
+        0,
+        1fr
+      );
 
     gap: 9px;
   }
@@ -2342,14 +4149,51 @@ img {
     width: 26px;
     height: 26px;
   }
+
+  .background-vehicle--ufo {
+    top: 30%;
+
+    width:
+      clamp(
+        32px,
+        4.8vw,
+        54px
+      );
+  }
+
+  .background-vehicle--spaceship {
+    top: 60%;
+
+    width:
+      clamp(
+        48px,
+        6.8vw,
+        78px
+      );
+  }
 }
 
-@media (max-width: 850px) {
+
+/* =========================================================
+   NARROW DESKTOPS
+========================================================= */
+
+@media (
+  max-width: 850px
+) {
   .system-message {
-    width: calc(100% - 255px) !important;
-    max-width: calc(100% - 255px) !important;
+    width:
+      calc(
+        100% - 255px
+      ) !important;
+
+    max-width:
+      calc(
+        100% - 255px
+      ) !important;
 
     font-size: 8px;
+
     letter-spacing: 0.01em;
   }
 
@@ -2362,15 +4206,54 @@ img {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+  .background-traffic {
+    display: block;
+  }
+
+  .background-vehicle,
+  .background-vehicle__image {
+    animation:
+      none !important;
+  }
+
+  .background-vehicle--ufo {
+    top: 27%;
+    left: 11%;
+
+    transform:
+      none !important;
+  }
+
+  .background-vehicle--spaceship {
+    top: 59%;
+    right: 9%;
+
+    transform:
+      none !important;
+  }
+
   *,
   *::before,
   *::after {
-    scroll-behavior: auto !important;
+    scroll-behavior:
+      auto !important;
 
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+    animation-duration:
+      0.01ms !important;
 
-    transition-duration: 0.01ms !important;
+    animation-iteration-count:
+      1 !important;
+
+    transition-duration:
+      0.01ms !important;
   }
 }

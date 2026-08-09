@@ -24,15 +24,6 @@ const aboutLayers = [
   ["about-planet-debris.png", "about-planet-layer--debris"],
 ] as const;
 
-const weeklyLayers = [
-  ["weekly-planet-halo.png", "weekly-planet-layer--halo"],
-  ["weekly-planet-base.png", "weekly-planet-layer--base"],
-  ["weekly-planet-purple-anomaly.png", "weekly-planet-layer--purple"],
-  ["weekly-planet-stone-glint.png", "weekly-planet-layer--stone"],
-  ["weekly-planet-vortex-spill.png", "weekly-planet-layer--vortex-spill"],
-  ["weekly-planet-vortex-energy.png", "weekly-planet-layer--vortex-energy"],
-  ["weekly-planet-vortex-core.png", "weekly-planet-layer--vortex-core"],
-] as const;
 
 const astrologyLayers = [
   ["astrology-planet-glow.png", "astrology-planet-layer--glow"],
@@ -107,6 +98,26 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
     <main class="planet-map">
       <h1 class="visually-hidden">Explore Prakhar's universe</h1>
 
+      <div class="background-traffic" aria-hidden="true">
+        <span class="background-vehicle background-vehicle--ufo">
+          <img
+            class="background-vehicle__image background-vehicle__image--ufo"
+            src="/assets/background-elements/ufo.png"
+            alt=""
+            draggable="false"
+          />
+        </span>
+
+        <span class="background-vehicle background-vehicle--spaceship">
+          <img
+            class="background-vehicle__image background-vehicle__image--spaceship"
+            src="/assets/background-elements/spaceship.png"
+            alt=""
+            draggable="false"
+          />
+        </span>
+      </div>
+
       <nav class="planet-navigation" aria-label="Main website sections">
         <ul class="destination-list">
           <li class="destination destination--about">
@@ -137,23 +148,76 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                 aria-hidden="true"
               >
                 <span class="weekly-planet-motion">
-                  {weeklyLayers.map(([file, layerClass]) => (
+                  <img
+                    class="weekly-planet-layer weekly-planet-layer--halo"
+                    src={planetAsset("weekly-planet", "weekly-planet-halo.png")}
+                    alt=""
+                    draggable="false"
+                  />
+
+                  <!-- Stable planet body and architecture. -->
+                  <img
+                    class="weekly-planet-layer weekly-planet-layer--base"
+                    src={planetAsset("weekly-planet", "weekly-planet-base.png")}
+                    alt=""
+                    draggable="false"
+                  />
+
+                  <!--
+                    Derived transparent overlay containing only the outer purple current.
+                    It rotates around the planet centre while the structures stay fixed.
+                  -->
+                  <span class="weekly-purple-system" aria-hidden="true">
                     <img
-                      class={`weekly-planet-layer ${layerClass}`}
-                      src={planetAsset("weekly-planet", file)}
+                      class="weekly-planet-layer weekly-planet-layer--purple-orbit"
+                      src={planetAsset("weekly-planet", "weekly-purple-orbit.png")}
                       alt=""
                       draggable="false"
                     />
-                  ))}
+                  </span>
 
-                  <span class="weekly-planet-layer weekly-planet-layer--scan"></span>
-                  <span class="weekly-vortex-ring weekly-vortex-ring--one"></span>
-                  <span class="weekly-vortex-ring weekly-vortex-ring--two"></span>
-                  <span class="weekly-vortex-ring weekly-vortex-ring--three"></span>
+                  <!--
+                    Derived transparent green whirlpool overlay.
+                    The full current and inner current rotate around the REAL vortex centre.
+                  -->
+                  <span class="weekly-vortex-system" aria-hidden="true">
+                    <img
+                      class="weekly-planet-layer weekly-planet-layer--green-whirlpool weekly-planet-layer--green-whirlpool-main"
+                      src={planetAsset("weekly-planet", "weekly-green-whirlpool.png")}
+                      alt=""
+                      draggable="false"
+                    />
 
+                    <img
+                      class="weekly-planet-layer weekly-planet-layer--green-whirlpool weekly-planet-layer--green-whirlpool-inner"
+                      src={planetAsset("weekly-planet", "weekly-green-whirlpool.png")}
+                      alt=""
+                      draggable="false"
+                    />
+
+                    <img
+                      class="weekly-planet-layer weekly-planet-layer--vortex-core"
+                      src={planetAsset("weekly-planet", "weekly-planet-vortex-core.png")}
+                      alt=""
+                      draggable="false"
+                    />
+                  </span>
+
+                  <!--
+                    A derived foreground mask redraws the central stone structures above
+                    the moving liquid so the whirlpool can slide underneath them.
+                  -->
                   <img
-                    class="weekly-planet-layer weekly-planet-layer--shadow"
-                    src={planetAsset("weekly-planet", "weekly-planet-shadow.png")}
+                    class="weekly-planet-layer weekly-planet-layer--structures-foreground"
+                    src={planetAsset("weekly-planet", "weekly-structures-foreground.png")}
+                    alt=""
+                    draggable="false"
+                  />
+
+                  <!-- Structures and debris remain visually anchored above the moving currents. -->
+                  <img
+                    class="weekly-planet-layer weekly-planet-layer--stone"
+                    src={planetAsset("weekly-planet", "weekly-planet-stone-glint.png")}
                     alt=""
                     draggable="false"
                   />
@@ -165,11 +229,12 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                     draggable="false"
                   />
 
-                  <span class="weekly-vortex-particles">
-                    {particleNumbers.map((number) => (
-                      <span class={`weekly-vortex-particle weekly-vortex-particle--${number}`}></span>
-                    ))}
-                  </span>
+                  <img
+                    class="weekly-planet-layer weekly-planet-layer--shadow"
+                    src={planetAsset("weekly-planet", "weekly-planet-shadow.png")}
+                    alt=""
+                    draggable="false"
+                  />
                 </span>
               </span>
               <span class="planet-label">News Weekly</span>
@@ -332,7 +397,6 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
         </button>
       </section>
     </footer>
-
     <dialog class="information-panel" id="information-panel" aria-labelledby="panel-title">
       <header class="information-panel__header">
         <h2 id="panel-title">Information</h2>
@@ -421,7 +485,6 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
   const panelSections = Array.from(document.querySelectorAll<HTMLElement>("[data-panel-content]"));
   const animatedPanelLines = Array.from(document.querySelectorAll<HTMLElement>("[data-panel-line]"));
   const closeInformationButton = document.querySelector<HTMLButtonElement>("#close-information-panel");
-  const systemMessage = document.querySelector<HTMLElement>("[data-typewriter]");
 
   let toastTimer: number | undefined;
   let panelAnimationSequence = 0;
@@ -483,19 +546,6 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
     }, 3000);
   };
 
-  const runTopTypewriter = async (): Promise<void> => {
-    if (!systemMessage) return;
-    const originalText = systemMessage.textContent?.replace(/\s+/g, " ").trim() ?? "";
-    systemMessage.textContent = "";
-    systemMessage.classList.add("is-typing");
-
-    for (const character of originalText) {
-      systemMessage.textContent += character;
-      await wait(character === " " ? 14 : 44);
-    }
-
-    systemMessage.classList.remove("is-typing");
-  };
 
   const isPanelName = (value: string | undefined): value is PanelName =>
     value === "info" || value === "sitemap" || value === "credits" || value === "links";
@@ -590,11 +640,9 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
     cancelPanelAnimation();
     informationPanel?.close();
   };
-
   updateVisitorTime();
   window.setInterval(updateVisitorTime, 30000);
   showVisitorLocation();
-  void runTopTypewriter();
 
   pauseButton?.addEventListener("click", () => {
     const paused = document.body.classList.toggle("animations-paused");
