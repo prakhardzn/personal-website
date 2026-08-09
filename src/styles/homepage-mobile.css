@@ -1,0 +1,761 @@
+/* =========================================================
+   HOMEPAGE // DEDICATED MOBILE TERMINAL
+
+   This stylesheet is intentionally separate from homepage.css.
+   Desktop keeps the existing four-planet composition.
+   Phones switch to a compact orbital directory inspired by
+   old personal-web / handheld terminal interfaces.
+========================================================= */
+
+.mobile-brand,
+.mobile-home-directory,
+.mobile-home-panels {
+  display: none;
+}
+
+/* =========================================================
+   PHONE LAYOUT
+========================================================= */
+
+@media (max-width: 700px) {
+  html,
+  body {
+    width: 100%;
+    min-width: 0;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: var(--terminal-bg);
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .site-shell {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 0 0 12px;
+    overflow: visible;
+    overflow-x: clip;
+    background-attachment: scroll;
+    background-position: center top;
+    background-size: auto 100vh;
+  }
+
+  .site-shell::before {
+    position: fixed;
+    inset: 2px;
+    z-index: 95;
+    border-radius: 3px;
+  }
+
+  .site-shell::after {
+    position: fixed;
+    inset: 7px;
+    z-index: 94;
+    border-radius: 5px;
+  }
+
+  /* =======================================================
+     MOBILE SYSTEM BAR
+  ======================================================= */
+
+  .system-bar {
+    position: sticky;
+    top: 6px;
+    left: auto;
+    z-index: 90;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    width: calc(100% - 14px);
+    height: 46px;
+    margin: 6px 7px 0;
+    padding: 4px;
+    border-width: 1px;
+    border-radius: 4px;
+    background: rgb(2 7 5 / 96%);
+    box-shadow: 0 5px 18px rgb(0 0 0 / 38%);
+    backdrop-filter: blur(8px);
+  }
+
+  .mobile-brand {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 7px;
+    padding: 0 7px;
+    color: var(--neon-green);
+    font-family: var(--font-display);
+    font-size: clamp(10px, 3.3vw, 13px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .mobile-brand__signal {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font-size: 8px;
+    box-shadow: 0 0 8px rgb(140 255 88 / 18%);
+  }
+
+  .mobile-brand__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .system-bar > .icon-button--back,
+  .system-bar > .system-message {
+    display: none !important;
+  }
+
+  .system-actions {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, 38px);
+    align-items: center;
+    gap: 4px;
+    width: auto;
+    height: 38px;
+  }
+
+  .system-actions .icon-button {
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    padding: 0;
+    border-width: 1px;
+    border-radius: 3px;
+    font-size: 14px;
+  }
+
+  /* =======================================================
+     DESKTOP SPACE MAP OFF ON PHONES
+  ======================================================= */
+
+  .planet-map {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 8px 7px 0;
+    overflow: visible;
+  }
+
+  .planet-navigation,
+  .background-traffic {
+    display: none !important;
+  }
+
+  /* =======================================================
+     ORBITAL DIRECTORY
+  ======================================================= */
+
+  .mobile-home-directory {
+    position: relative;
+    isolation: isolate;
+    display: block;
+    width: 100%;
+    min-height: 548px;
+    padding: 18px 12px 20px;
+    overflow: hidden;
+    border: 1px solid var(--neon-green);
+    border-radius: 5px;
+    background:
+      linear-gradient(rgb(2 7 5 / 37%), rgb(2 7 5 / 72%)),
+      radial-gradient(circle at 50% 47%, rgb(140 255 88 / 9%) 0 1px, transparent 2px),
+      rgb(2 7 5 / 76%);
+    box-shadow:
+      inset 0 0 0 4px rgb(2 7 5 / 82%),
+      inset 0 0 0 5px rgb(140 255 88 / 18%);
+  }
+
+  .mobile-home-directory::before,
+  .mobile-home-directory::after {
+    position: absolute;
+    z-index: -2;
+    border: 1px solid rgb(140 255 88 / 15%);
+    border-radius: 50%;
+    pointer-events: none;
+    content: "";
+  }
+
+  .mobile-home-directory::before {
+    top: 82px;
+    left: 50%;
+    width: 470px;
+    height: 470px;
+    transform: translateX(-50%);
+  }
+
+  .mobile-home-directory::after {
+    top: 128px;
+    left: 50%;
+    width: 360px;
+    height: 360px;
+    border-style: dashed;
+    transform: translateX(-50%) rotate(8deg);
+  }
+
+  .mobile-directory__orbit {
+    position: absolute;
+    top: 175px;
+    left: 50%;
+    z-index: -1;
+    width: 260px;
+    height: 260px;
+    border: 1px solid rgb(69 232 154 / 16%);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translateX(-50%);
+  }
+
+  .mobile-directory__orbit::before,
+  .mobile-directory__orbit::after {
+    position: absolute;
+    inset: 16%;
+    border: 1px solid rgb(178 231 124 / 12%);
+    border-radius: 50%;
+    content: "";
+  }
+
+  .mobile-directory__orbit::after {
+    inset: 33%;
+    border-style: dotted;
+  }
+
+  .mobile-directory__header {
+    position: relative;
+    z-index: 4;
+    margin-bottom: 18px;
+    padding: 0 6px 14px;
+    border-bottom: 1px solid rgb(140 255 88 / 28%);
+  }
+
+  .mobile-directory__header p {
+    margin: 0 0 7px;
+    color: var(--terminal-mint);
+    font-family: var(--font-display);
+    font-size: 8px;
+    line-height: 1.3;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .mobile-directory__header h2 {
+    margin: 0;
+    color: var(--neon-green);
+    font-family: var(--font-display);
+    font-size: clamp(20px, 7vw, 28px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgb(140 255 88 / 19%);
+  }
+
+  .mobile-directory__nav {
+    position: relative;
+    z-index: 5;
+    display: grid;
+    gap: 11px;
+    padding: 4px 4px 0 28px;
+  }
+
+  .mobile-destination {
+    position: relative;
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) 22px;
+    align-items: center;
+    min-width: 0;
+    height: 76px;
+    padding: 7px 10px 7px 28px;
+    border: 1px solid var(--neon-green);
+    border-radius: 999px;
+    background: rgb(2 7 5 / 93%);
+    color: var(--interface-white);
+    text-decoration: none;
+    box-shadow:
+      inset 0 0 0 1px rgb(140 255 88 / 5%),
+      0 5px 16px rgb(0 0 0 / 24%);
+    transition:
+      border-color 140ms ease,
+      background-color 140ms ease,
+      transform 140ms ease,
+      box-shadow 140ms ease;
+  }
+
+  .mobile-destination::before {
+    position: absolute;
+    top: 50%;
+    left: -16px;
+    z-index: -1;
+    width: 24px;
+    height: 1px;
+    background: var(--neon-green);
+    opacity: 0.72;
+    content: "";
+  }
+
+  .mobile-destination:active {
+    background: rgb(7 19 11 / 98%);
+    transform: scale(0.986);
+  }
+
+  .mobile-destination__planet {
+    position: absolute;
+    top: 50%;
+    left: -36px;
+    z-index: 4;
+    display: grid;
+    place-items: center;
+    width: 66px;
+    height: 66px;
+    overflow: hidden;
+    border: 1px solid var(--neon-green);
+    border-radius: 50%;
+    background: #020705;
+    box-shadow:
+      0 0 0 4px rgb(2 7 5 / 94%),
+      0 0 0 5px rgb(140 255 88 / 38%),
+      0 0 14px rgb(140 255 88 / 11%);
+    transform: translateY(-50%);
+  }
+
+  .mobile-destination__planet img {
+    display: block;
+    width: 102px;
+    max-width: none;
+    height: 70px;
+    object-fit: contain;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .mobile-destination__copy {
+    grid-column: 2;
+    display: grid;
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .mobile-destination__meta {
+    overflow: hidden;
+    color: var(--terminal-mint);
+    font-family: var(--font-display);
+    font-size: 7px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .mobile-destination strong {
+    overflow: hidden;
+    color: var(--neon-green);
+    font-family: var(--font-display);
+    font-size: clamp(12px, 4.1vw, 16px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .mobile-destination__arrow {
+    grid-column: 3;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgb(140 255 88 / 32%);
+    border-radius: 50%;
+    color: var(--neon-green);
+    font-family: var(--font-interface);
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .mobile-destination--weekly .mobile-destination__planet {
+    border-color: var(--terminal-lime);
+  }
+
+  .mobile-destination--astrology .mobile-destination__planet {
+    border-color: var(--terminal-mint);
+  }
+
+  .mobile-destination--libraries .mobile-destination__planet {
+    border-color: #a4ff64;
+  }
+
+  /* Tiny, cheap mobile personality animations. */
+
+  .mobile-destination--about .mobile-destination__planet img {
+    animation: mobile-planet-breathe 7s ease-in-out infinite;
+  }
+
+  .mobile-destination--weekly .mobile-destination__planet img {
+    animation: mobile-planet-drift 10s ease-in-out -2s infinite;
+  }
+
+  .mobile-destination--astrology .mobile-destination__planet img {
+    animation: mobile-planet-pulse 6s ease-in-out -1s infinite;
+  }
+
+  .mobile-destination--libraries .mobile-destination__planet img {
+    animation: mobile-planet-breathe 8s ease-in-out -3s infinite;
+  }
+
+  /* =======================================================
+     MOBILE QUICK CONTROLS
+  ======================================================= */
+
+  .bottom-dock {
+    position: relative;
+    inset: auto;
+    display: block;
+    width: auto;
+    height: auto;
+    margin: 8px 7px 0;
+    padding: 5px;
+    border-width: 1px;
+    border-radius: 4px;
+    background: rgb(2 7 5 / 95%);
+  }
+
+  .bottom-dock .system-status {
+    display: none;
+  }
+
+  .dock-actions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    width: 100%;
+  }
+
+  .dock-card {
+    width: 100%;
+    min-width: 0;
+    height: 40px;
+    padding: 3px;
+    border: 1px solid var(--terminal-mint);
+    border-radius: 999px;
+    background: rgb(2 7 5 / 98%);
+  }
+
+  .dock-card__inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .dock-card__icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dock-card__copy {
+    display: block;
+    min-width: 0;
+  }
+
+  .dock-card__title {
+    display: block;
+    overflow: hidden;
+    font-size: clamp(6px, 2vw, 8px);
+    letter-spacing: 0.03em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dock-card__description {
+    display: none !important;
+  }
+
+  /* =======================================================
+     LATEST TRANSMISSION + SYSTEM LOG
+  ======================================================= */
+
+  .mobile-home-panels {
+    display: grid;
+    gap: 8px;
+    width: auto;
+    margin: 8px 7px 0;
+  }
+
+  .mobile-feed-panel {
+    overflow: hidden;
+    border: 1px solid var(--neon-green);
+    border-radius: 3px;
+    background: rgb(2 7 5 / 95%);
+  }
+
+  .mobile-feed-panel__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 30px;
+    padding: 6px 8px;
+    background: var(--neon-green);
+    color: var(--terminal-bg);
+    font-family: var(--font-display);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .mobile-feed-panel__body {
+    padding: 12px 11px 11px;
+    background:
+      linear-gradient(rgb(2 7 5 / 88%), rgb(2 7 5 / 94%)),
+      radial-gradient(circle at 80% 15%, rgb(140 255 88 / 9%), transparent 38%);
+  }
+
+  .mobile-feed-panel__stamp {
+    margin: 0 0 7px;
+    color: var(--terminal-mint) !important;
+    font-family: var(--font-display);
+    font-size: 7px !important;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .mobile-feed-panel__body h2 {
+    margin: 0 0 8px;
+    color: var(--neon-green);
+    font-family: var(--font-display);
+    font-size: 14px;
+    line-height: 1.25;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .mobile-feed-panel__body p {
+    margin: 0 0 11px;
+    color: var(--terminal-white);
+    font-family: var(--font-interface);
+    font-size: 10px;
+    line-height: 1.55;
+  }
+
+  .mobile-feed-panel__body a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    min-height: 28px;
+    padding-top: 8px;
+    border-top: 1px solid rgb(140 255 88 / 23%);
+    color: var(--neon-green);
+    font-family: var(--font-display);
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .mobile-system-log {
+    display: grid;
+    gap: 0;
+    padding: 5px 9px 8px;
+  }
+
+  .mobile-system-log p {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr);
+    gap: 7px;
+    margin: 0;
+    padding: 7px 2px;
+    border-bottom: 1px solid rgb(41 70 36 / 72%);
+    font-family: var(--font-interface);
+    font-size: 8px;
+    line-height: 1.35;
+  }
+
+  .mobile-system-log p:last-child {
+    border-bottom: 0;
+  }
+
+  .mobile-system-log span {
+    color: var(--terminal-mint);
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+  }
+
+  .mobile-system-log strong {
+    min-width: 0;
+    color: var(--neon-green);
+    font-weight: 400;
+  }
+
+  /* =======================================================
+     MOBILE MODAL
+  ======================================================= */
+
+  .information-panel {
+    width: calc(100vw - 28px);
+    max-width: 520px;
+    max-height: min(78dvh, 680px);
+    border-width: 1px;
+  }
+
+  .information-panel__header {
+    min-height: 54px;
+    padding: 10px 12px;
+  }
+
+  .information-panel__header h2 {
+    font-size: 14px;
+  }
+
+  .information-panel__close {
+    width: 36px;
+    height: 36px;
+  }
+
+  .information-panel__content {
+    max-height: calc(78dvh - 56px);
+    padding: 16px 14px;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+  }
+
+  .information-panel__command {
+    font-size: 0.62rem;
+    line-height: 1.55;
+  }
+
+  .information-panel__content::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .system-toast {
+    bottom: 18px;
+    width: calc(100vw - 32px);
+    max-width: none;
+    font-size: 8px;
+  }
+
+  .sleep-mode .mobile-home-panels {
+    opacity: 0.1;
+    pointer-events: none;
+  }
+}
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 390px) {
+  .mobile-home-directory {
+    min-height: 530px;
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+
+  .mobile-directory__nav {
+    gap: 9px;
+    padding-left: 25px;
+  }
+
+  .mobile-destination {
+    height: 72px;
+    padding-right: 8px;
+    padding-left: 25px;
+  }
+
+  .mobile-destination__planet {
+    left: -33px;
+    width: 62px;
+    height: 62px;
+  }
+
+  .mobile-destination__planet img {
+    width: 94px;
+    height: 66px;
+  }
+
+  .mobile-destination__meta {
+    font-size: 6px;
+  }
+
+  .dock-card__icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .dock-card__title {
+    font-size: 6px;
+  }
+}
+
+/* =========================================================
+   MOBILE MOTION
+========================================================= */
+
+@keyframes mobile-planet-breathe {
+  0%,
+  100% {
+    transform: scale(0.98);
+    filter: brightness(0.96);
+  }
+
+  50% {
+    transform: scale(1.025);
+    filter: brightness(1.08);
+  }
+}
+
+@keyframes mobile-planet-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(1px, -2px, 0) scale(1.015);
+  }
+}
+
+@keyframes mobile-planet-pulse {
+  0%,
+  100% {
+    opacity: 0.94;
+    filter: brightness(0.95) saturate(0.98);
+  }
+
+  50% {
+    opacity: 1;
+    filter: brightness(1.12) saturate(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-destination__planet img {
+    animation: none !important;
+  }
+}

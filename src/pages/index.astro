@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/homepage.css";
+import "../styles/homepage-mobile.css";
 
 const baseUrl = import.meta.env.BASE_URL;
 const buildSiteUrl = (path: string): string =>
@@ -56,6 +57,11 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
 >
   <div class="site-shell" id="site-shell">
     <header class="system-bar">
+      <div class="mobile-brand" aria-label="Prakhar's universe">
+        <span class="mobile-brand__signal" aria-hidden="true">◉</span>
+        <span class="mobile-brand__name">PRAKHAR'S UNIVERSE</span>
+      </div>
+
       <button
         class="icon-button icon-button--back"
         type="button"
@@ -101,6 +107,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
       <div class="background-traffic" aria-hidden="true">
         <span class="background-vehicle background-vehicle--ufo">
           <img
+            loading="lazy"
+            decoding="async"
             class="background-vehicle__image background-vehicle__image--ufo"
             src="/assets/background-elements/ufo.png"
             alt=""
@@ -110,6 +118,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
 
         <span class="background-vehicle background-vehicle--spaceship">
           <img
+            loading="lazy"
+            decoding="async"
             class="background-vehicle__image background-vehicle__image--spaceship"
             src="/assets/background-elements/spaceship.png"
             alt=""
@@ -129,6 +139,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                 <span class="about-planet-motion">
                   {aboutLayers.map(([file, layerClass]) => (
                     <img
+                      loading="lazy"
+                      decoding="async"
                       class={`about-planet-layer ${layerClass}`}
                       src={planetAsset("about-me", file)}
                       alt=""
@@ -149,6 +161,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
               >
                 <span class="weekly-planet-motion">
                   <img
+                    loading="lazy"
+                    decoding="async"
                     class="weekly-planet-layer weekly-planet-layer--halo"
                     src={planetAsset("weekly-planet", "weekly-planet-halo.png")}
                     alt=""
@@ -157,6 +171,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
 
                   <!-- Stable planet body and architecture. -->
                   <img
+                    loading="lazy"
+                    decoding="async"
                     class="weekly-planet-layer weekly-planet-layer--base"
                     src={planetAsset("weekly-planet", "weekly-planet-base.png")}
                     alt=""
@@ -169,6 +185,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                   -->
                   <span class="weekly-purple-system" aria-hidden="true">
                     <img
+                      loading="lazy"
+                      decoding="async"
                       class="weekly-planet-layer weekly-planet-layer--purple-orbit"
                       src={planetAsset("weekly-planet", "weekly-purple-orbit.png")}
                       alt=""
@@ -182,6 +200,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                   -->
                   <span class="weekly-vortex-system" aria-hidden="true">
                     <img
+                      loading="lazy"
+                      decoding="async"
                       class="weekly-planet-layer weekly-planet-layer--green-whirlpool weekly-planet-layer--green-whirlpool-main"
                       src={planetAsset("weekly-planet", "weekly-green-whirlpool.png")}
                       alt=""
@@ -189,6 +209,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                     />
 
                     <img
+                      loading="lazy"
+                      decoding="async"
                       class="weekly-planet-layer weekly-planet-layer--green-whirlpool weekly-planet-layer--green-whirlpool-inner"
                       src={planetAsset("weekly-planet", "weekly-green-whirlpool.png")}
                       alt=""
@@ -196,6 +218,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                     />
 
                     <img
+                      loading="lazy"
+                      decoding="async"
                       class="weekly-planet-layer weekly-planet-layer--vortex-core"
                       src={planetAsset("weekly-planet", "weekly-planet-vortex-core.png")}
                       alt=""
@@ -208,6 +232,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                     the moving liquid so the whirlpool can slide underneath them.
                   -->
                   <img
+                    loading="lazy"
+                    decoding="async"
                     class="weekly-planet-layer weekly-planet-layer--structures-foreground"
                     src={planetAsset("weekly-planet", "weekly-structures-foreground.png")}
                     alt=""
@@ -216,6 +242,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
 
                   <!-- Structures and debris remain visually anchored above the moving currents. -->
                   <img
+                    loading="lazy"
+                    decoding="async"
                     class="weekly-planet-layer weekly-planet-layer--stone"
                     src={planetAsset("weekly-planet", "weekly-planet-stone-glint.png")}
                     alt=""
@@ -223,6 +251,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                   />
 
                   <img
+                    loading="lazy"
+                    decoding="async"
                     class="weekly-planet-layer weekly-planet-layer--detached"
                     src={planetAsset("weekly-planet", "weekly-planet-detached.png")}
                     alt=""
@@ -230,6 +260,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                   />
 
                   <img
+                    loading="lazy"
+                    decoding="async"
                     class="weekly-planet-layer weekly-planet-layer--shadow"
                     src={planetAsset("weekly-planet", "weekly-planet-shadow.png")}
                     alt=""
@@ -250,6 +282,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                 <span class="astrology-planet-motion">
                   {astrologyLayers.map(([file, layerClass]) => (
                     <img
+                      loading="lazy"
+                      decoding="async"
                       class={`astrology-planet-layer ${layerClass}`}
                       src={planetAsset("astrology-planet", file)}
                       alt=""
@@ -271,6 +305,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                 <span class="library-planet-motion">
                   {libraryLayers.slice(0, 2).map(([file, layerClass]) => (
                     <img
+                      loading="lazy"
+                      decoding="async"
                       class={`library-planet-layer ${layerClass}`}
                       src={planetAsset("library-planet", file)}
                       alt=""
@@ -282,6 +318,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
 
                   {libraryLayers.slice(2, 6).map(([file, layerClass]) => (
                     <img
+                      loading="lazy"
+                      decoding="async"
                       class={`library-planet-layer ${layerClass}`}
                       src={planetAsset("library-planet", file)}
                       alt=""
@@ -297,6 +335,8 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
                   <span class="library-planet-layer library-lower-mechanism-highlight"></span>
 
                   <img
+                    loading="lazy"
+                    decoding="async"
                     class="library-planet-layer library-planet-layer--shadow"
                     src={planetAsset("library-planet", "library-planet-shadow.png")}
                     alt=""
@@ -315,6 +355,85 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
           </li>
         </ul>
       </nav>
+
+      <section class="mobile-home-directory" aria-labelledby="mobile-directory-title">
+        <div class="mobile-directory__orbit" aria-hidden="true"></div>
+
+        <header class="mobile-directory__header">
+          <p>PORTABLE UNIVERSE // NAVIGATION NODE</p>
+          <h2 id="mobile-directory-title">ORBITAL DIRECTORY</h2>
+        </header>
+
+        <nav class="mobile-directory__nav" aria-label="Mobile website sections">
+          <a class="mobile-destination mobile-destination--about" href={aboutUrl}>
+            <span class="mobile-destination__planet" aria-hidden="true">
+              <img
+                src={planetAsset("about-me", "about-planet-base.png")}
+                alt=""
+                loading="eager"
+                decoding="async"
+                draggable="false"
+              />
+            </span>
+            <span class="mobile-destination__copy">
+              <span class="mobile-destination__meta">USER FILE // 001</span>
+              <strong>ABOUT ME</strong>
+            </span>
+            <span class="mobile-destination__arrow" aria-hidden="true">›</span>
+          </a>
+
+          <a class="mobile-destination mobile-destination--weekly" href={weeklyUrl}>
+            <span class="mobile-destination__planet" aria-hidden="true">
+              <img
+                src={planetAsset("weekly-planet", "weekly-planet-base.png")}
+                alt=""
+                loading="eager"
+                decoding="async"
+                draggable="false"
+              />
+            </span>
+            <span class="mobile-destination__copy">
+              <span class="mobile-destination__meta">TRANSMISSION // 002</span>
+              <strong>NEWS WEEKLY</strong>
+            </span>
+            <span class="mobile-destination__arrow" aria-hidden="true">›</span>
+          </a>
+
+          <a class="mobile-destination mobile-destination--astrology" href={astrologyUrl}>
+            <span class="mobile-destination__planet" aria-hidden="true">
+              <img
+                src={planetAsset("astrology-planet", "astrology-planet-base.png")}
+                alt=""
+                loading="eager"
+                decoding="async"
+                draggable="false"
+              />
+            </span>
+            <span class="mobile-destination__copy">
+              <span class="mobile-destination__meta">CELESTIAL FILE // 003</span>
+              <strong>ASTROLOGY</strong>
+            </span>
+            <span class="mobile-destination__arrow" aria-hidden="true">›</span>
+          </a>
+
+          <a class="mobile-destination mobile-destination--libraries" href={librariesUrl}>
+            <span class="mobile-destination__planet" aria-hidden="true">
+              <img
+                src={planetAsset("library-planet", "library-planet-base.png")}
+                alt=""
+                loading="eager"
+                decoding="async"
+                draggable="false"
+              />
+            </span>
+            <span class="mobile-destination__copy">
+              <span class="mobile-destination__meta">ARCHIVE NODE // 004</span>
+              <strong>LIBRARIES</strong>
+            </span>
+            <span class="mobile-destination__arrow" aria-hidden="true">›</span>
+          </a>
+        </nav>
+      </section>
     </main>
 
     <footer class="bottom-dock">
@@ -397,6 +516,36 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
         </button>
       </section>
     </footer>
+
+    <section class="mobile-home-panels" aria-label="Mobile homepage updates">
+      <article class="mobile-feed-panel mobile-feed-panel--latest">
+        <header class="mobile-feed-panel__bar">
+          <span>LATEST TRANSMISSION</span>
+          <span aria-hidden="true">⌁</span>
+        </header>
+
+        <div class="mobile-feed-panel__body">
+          <p class="mobile-feed-panel__stamp">WEEKLY ARCHIVE // SIGNAL RECEIVED</p>
+          <h2>STORIES FROM MY WEEK</h2>
+          <p>Discoveries, breakdowns and things that survived long enough to become files.</p>
+          <a href={weeklyUrl}>OPEN ARCHIVE <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+
+      <article class="mobile-feed-panel mobile-feed-panel--log">
+        <header class="mobile-feed-panel__bar">
+          <span>SYSTEM LOG</span>
+          <span aria-hidden="true">≡</span>
+        </header>
+
+        <div class="mobile-system-log">
+          <p><span>MOBILE</span><strong>PORTABLE TERMINAL ONLINE</strong></p>
+          <p><span>ASTRO</span><strong>CELESTIAL INDEX CONNECTED</strong></p>
+          <p><span>WORK</span><strong>PROJECT ARCHIVE SYNCED</strong></p>
+        </div>
+      </article>
+    </section>
+
     <dialog class="information-panel" id="information-panel" aria-labelledby="panel-title">
       <header class="information-panel__header">
         <h2 id="panel-title">Information</h2>
