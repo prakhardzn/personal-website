@@ -1,24 +1,1107 @@
-PROJECT FILE 001
+\---
+import InternalPageLayout from "../../layouts/InternalPageLayout.astro";
 
-QAID
+import {
+  getCollection,
+  render,
+  type CollectionEntry,
+} from "astro:content";
 
-SHORT FILM · DIRECTOR AND DOP
+import "../../styles/work-project.css";
 
-COMPLETED
 
-────────────────────
+/* =========================================================
+   STATIC PROJECT ROUTES
+========================================================= */
 
-ABOUT THE PROJECT
-...
+export async function getStaticPaths() {
+  const projects =
+    await getCollection("work");
 
-MY ROLE
-...
+  return projects
+    .filter(
+      (project) =>
+        !project.data.draft
+    )
+    .map(
+      (project) => ({
+        params: {
+          id: project.id,
+        },
 
-THE PROJECT
-...
+        props: {
+          project,
+        },
+      })
+    );
+}
 
-PROCESS
-...
 
-WHAT I LEARNED
-...
+interface Props {
+  project:
+    CollectionEntry<"work">;
+}
+
+
+const {
+  project,
+} =
+  Astro.props as Props;
+
+
+const {
+  Content,
+} =
+  await render(project);
+
+
+/* =========================================================
+   SITE URL
+========================================================= */
+
+const baseUrl =
+  import.meta.env.BASE_URL;
+
+
+const buildSiteUrl = (
+  path: string
+): string => {
+  const cleanPath =
+    path.replace(
+      /^\/+/,
+      ""
+    );
+
+  return `${baseUrl}${cleanPath}`;
+};
+
+
+const workArchiveUrl =
+  `${buildSiteUrl("/about")}#work`;
+
+
+/* =========================================================
+   PROJECT STATE
+========================================================= */
+
+const isWorking =
+  project.data.statusType ===
+  "working";
+
+
+/* =========================================================
+   GALLERY
+========================================================= */
+
+const gallery =
+  project.data.gallery ?? [];
+
+
+/*
+ * All-portrait galleries become poster walls.
+ *
+ * Dune
+ * → poster wall
+ *
+ * Qaid / Kshitij / Zoo
+ * → horizontal gallery
+ */
+
+const isPosterGallery =
+  gallery.length > 0 &&
+  gallery.every(
+    (image) =>
+      image.orientation ===
+      "portrait"
+  );
+
+
+/* =========================================================
+   LOCAL VIDEO
+========================================================= */
+
+const localVideoPath =
+  project.data.localVideo?.trim() ??
+  "";
+
+
+const localVideo =
+  localVideoPath
+    ? buildSiteUrl(
+        localVideoPath
+      )
+    : null;
+
+
+const getLocalVideoType = (
+  path: string
+): string => {
+  const lowerPath =
+    path.toLowerCase();
+
+
+  if (
+    lowerPath.endsWith(
+      ".webm"
+    )
+  ) {
+    return "video/webm";
+  }
+
+
+  if (
+    lowerPath.endsWith(
+      ".mov"
+    )
+  ) {
+    return "video/quicktime";
+  }
+
+
+  if (
+    lowerPath.endsWith(
+      ".ogg"
+    ) ||
+    lowerPath.endsWith(
+      ".ogv"
+    )
+  ) {
+    return "video/ogg";
+  }
+
+
+  return "video/mp4";
+};
+
+
+const localVideoType =
+  localVideoPath
+    ? getLocalVideoType(
+        localVideoPath
+      )
+    : null;
+
+
+/* =========================================================
+   YOUTUBE
+========================================================= */
+
+const cleanYouTubeId = (
+  value:
+    string |
+    null |
+    undefined
+): string | null => {
+  if (!value) {
+    return null;
+  }
+
+
+  const cleaned =
+    value.trim();
+
+
+  if (
+    /^[A-Za-z0-9_-]{6,}$/.test(
+      cleaned
+    )
+  ) {
+    return cleaned;
+  }
+
+
+  return null;
+};
+
+
+const getYouTubeId = (
+  value: string
+): string | null => {
+  const input =
+    value.trim();
+
+
+  if (!input) {
+    return null;
+  }
+
+
+  const directId =
+    cleanYouTubeId(
+      input
+    );
+
+
+  if (
+    directId &&
+    !input.includes("/")
+  ) {
+    return directId;
+  }
+
+
+  try {
+    const url =
+      new URL(input);
+
+
+    const hostname =
+      url.hostname
+        .replace(
+          /^www\./,
+          ""
+        )
+        .toLowerCase();
+
+
+    /* youtu.be/VIDEO_ID */
+
+    if (
+      hostname ===
+      "youtu.be"
+    ) {
+      const id =
+        url.pathname
+          .split("/")
+          .filter(Boolean)[0];
+
+
+      return cleanYouTubeId(
+        id
+      );
+    }
+
+
+    const validHosts = [
+      "youtube.com",
+      "m.youtube.com",
+      "music.youtube.com",
+      "youtube-nocookie.com",
+    ];
+
+
+    if (
+      !validHosts.includes(
+        hostname
+      )
+    ) {
+      return null;
+    }
+
+
+    /* youtube.com/watch?v=VIDEO_ID */
+
+    const watchId =
+      url.searchParams.get(
+        "v"
+      );
+
+
+    if (watchId) {
+      return cleanYouTubeId(
+        watchId
+      );
+    }
+
+
+    /*
+     * youtube.com/embed/VIDEO_ID
+     * youtube.com/shorts/VIDEO_ID
+     * youtube.com/live/VIDEO_ID
+     */
+
+    const pathParts =
+      url.pathname
+        .split("/")
+        .filter(Boolean);
+
+
+    if (
+      [
+        "embed",
+        "shorts",
+        "live",
+      ].includes(
+        pathParts[0]
+      )
+    ) {
+      return cleanYouTubeId(
+        pathParts[1]
+      );
+    }
+
+
+    return null;
+  } catch {
+    return null;
+  }
+};
+
+
+const youtubeId =
+  getYouTubeId(
+    project.data.youtubeUrl
+  );
+
+
+const youtubeEmbedUrl =
+  youtubeId
+    ? `https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0`
+    : null;
+
+
+/* =========================================================
+   VIDEO TITLE
+========================================================= */
+
+const videoTitle =
+  project.data.videoTitle ||
+  `${project.data.title} — Project Video`;
+
+
+/* =========================================================
+   MEDIA STATE
+========================================================= */
+
+const hasVideo =
+  Boolean(
+    youtubeEmbedUrl ||
+    localVideo
+  );
+
+
+const mediaRecord =
+  hasVideo &&
+  gallery.length > 0
+    ? "VIDEO + IMAGES"
+    : hasVideo
+      ? "VIDEO"
+      : gallery.length > 0
+        ? "IMAGES"
+        : "TEXT";
+---
+
+<InternalPageLayout
+  title={`${project.data.title} | Prakhar's Universe`}
+  description={project.data.description}
+  message="Project archive unlocked. Please return all unstable ideas to their original folders."
+  pageClass="work-project-page"
+>
+  <!-- =====================================================
+       LEFT COLUMN
+  ====================================================== -->
+
+  <div
+    slot="sidebar"
+    class="work-project-sidebar"
+  >
+    <a
+      class="work-project-back"
+      href={workArchiveUrl}
+    >
+      <span
+        class="work-project-back__arrow"
+        aria-hidden="true"
+      >
+        ←
+      </span>
+
+      <span>
+        RETURN TO PROJECT FILES
+      </span>
+    </a>
+
+
+    <section
+      class="work-project-identity"
+      aria-labelledby="work-project-sidebar-title"
+    >
+      <header
+        class="work-project-identity__header"
+      >
+        <div>
+          <span
+            class="work-project-signal-dot"
+            aria-hidden="true"
+          ></span>
+
+          <strong>
+            PROJECT ARCHIVE
+          </strong>
+        </div>
+
+        <span>
+          SYS: ONLINE
+        </span>
+      </header>
+
+
+      <div
+        class="work-project-identity__body"
+      >
+        <p
+          class="work-project-eyebrow"
+        >
+          {project.data.number}
+        </p>
+
+
+        <h1
+          id="work-project-sidebar-title"
+        >
+          {project.data.title}
+        </h1>
+
+
+        <p
+          class="work-project-identity__metadata"
+        >
+          {project.data.metadata}
+        </p>
+
+
+        <div
+          class:list={[
+            "work-project-status",
+            isWorking &&
+              "work-project-status--working",
+          ]}
+        >
+          <span
+            class="work-project-status__dot"
+            aria-hidden="true"
+          ></span>
+
+          <strong>
+            {project.data.status}
+          </strong>
+        </div>
+
+
+        <p
+          class="work-project-identity__description"
+        >
+          {project.data.description}
+        </p>
+      </div>
+
+
+      <dl
+        class="work-project-record"
+      >
+        <div>
+          <dt>
+            FILE ID
+          </dt>
+
+          <dd>
+            {project.id.toUpperCase()}
+          </dd>
+        </div>
+
+
+        <div>
+          <dt>
+            FORMAT
+          </dt>
+
+          <dd>
+            MARKDOWN
+          </dd>
+        </div>
+
+
+        <div>
+          <dt>
+            MEDIA
+          </dt>
+
+          <dd>
+            {mediaRecord}
+          </dd>
+        </div>
+
+
+        <div>
+          <dt>
+            ACCESS
+          </dt>
+
+          <dd>
+            PUBLIC
+          </dd>
+        </div>
+
+
+        <div>
+          <dt>
+            RECORD
+          </dt>
+
+          <dd>
+            CONNECTED
+          </dd>
+        </div>
+      </dl>
+
+
+      <footer
+        class="work-project-identity__footer"
+      >
+        <span>
+          CONTENT NODE
+        </span>
+
+        <strong>
+          ACTIVE
+        </strong>
+      </footer>
+    </section>
+  </div>
+
+
+  <!-- =====================================================
+       RIGHT COLUMN
+  ====================================================== -->
+
+  <div
+    slot="content"
+    class="work-project-main"
+  >
+    <article
+      class="work-project-file"
+    >
+      <!-- =================================================
+           FILE HEADER
+      ================================================== -->
+
+      <header
+        class="work-project-file__terminal"
+      >
+        <div>
+          <span
+            class="work-project-signal-dot"
+            aria-hidden="true"
+          ></span>
+
+          <strong>
+            OPEN FILE // {project.data.number}
+          </strong>
+        </div>
+
+        <span>
+          READ MODE
+        </span>
+      </header>
+
+
+      <!-- =================================================
+           PROJECT GALLERY
+      ================================================== -->
+
+      {
+        gallery.length > 0 && (
+          <section
+            class:list={[
+              "work-project-gallery",
+              isPosterGallery &&
+                "work-project-gallery--posters",
+            ]}
+            aria-label={`${project.data.title} project images`}
+          >
+            <div
+              class="work-project-gallery__viewport"
+              data-work-gallery
+              tabindex="0"
+              aria-label={`${project.data.title} image gallery`}
+            >
+              <div
+                class="work-project-gallery__track"
+              >
+                {
+                  gallery.map(
+                    (
+                      image,
+                      index
+                    ) => {
+                      const frameNumber =
+                        String(
+                          index + 1
+                        ).padStart(
+                          2,
+                          "0"
+                        );
+
+
+                      return (
+                        <figure
+                          class:list={[
+                            "work-project-gallery__item",
+                            `work-project-gallery__item--${image.orientation}`,
+                          ]}
+                        >
+                          <div
+                            class:list={[
+                              "work-project-gallery__image-shell",
+                              `work-project-gallery__image-shell--${image.orientation}`,
+                            ]}
+                            data-project-gallery-shell
+                          >
+                            <img
+                              src={buildSiteUrl(
+                                image.src
+                              )}
+                              alt={image.alt}
+                              loading={
+                                index < 4
+                                  ? "eager"
+                                  : "lazy"
+                              }
+                              decoding="async"
+                              draggable="false"
+                              data-project-gallery-image
+                            />
+
+                            <span
+                              class="work-project-gallery__missing"
+                              aria-hidden="true"
+                            >
+                              IMAGE FILE MISSING
+                            </span>
+                          </div>
+
+
+                          <figcaption>
+                            <span>
+                              {
+                                isPosterGallery
+                                  ? `POSTER ${frameNumber}`
+                                  : `FRAME ${frameNumber}`
+                              }
+                            </span>
+
+                            {
+                              image.caption && (
+                                <strong>
+                                  {image.caption}
+                                </strong>
+                              )
+                            }
+                          </figcaption>
+                        </figure>
+                      );
+                    }
+                  )
+                }
+              </div>
+            </div>
+          </section>
+        )
+      }
+
+
+      <!-- =================================================
+           YOUTUBE VIDEO
+
+           Used by Qaid / Kshitij.
+      ================================================== -->
+
+      {
+        youtubeEmbedUrl && (
+          <section
+            class="work-project-media"
+            aria-labelledby="work-project-youtube-title"
+          >
+            <header
+              class="work-project-media__header"
+            >
+              <div>
+                <span
+                  class="work-project-signal-dot"
+                  aria-hidden="true"
+                ></span>
+
+                <h2
+                  id="work-project-youtube-title"
+                >
+                  FEATURED MEDIA
+                </h2>
+              </div>
+
+              <span>
+                VIDEO // YOUTUBE
+              </span>
+            </header>
+
+
+            <div
+              class="work-project-video-shell"
+            >
+              <div
+                class="work-project-video"
+              >
+                <iframe
+                  src={youtubeEmbedUrl}
+                  title={videoTitle}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen
+                ></iframe>
+              </div>
+            </div>
+
+
+            <footer
+              class="work-project-media__footer"
+            >
+              <span>
+                PRIMARY PROJECT MEDIA
+              </span>
+
+              <a
+                href={project.data.youtubeUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                OPEN ON YOUTUBE ↗
+              </a>
+            </footer>
+          </section>
+        )
+      }
+
+
+      <!-- =================================================
+           LOCAL VIDEO
+
+           Used by Zoo Title Sequence.
+
+           If a project has both YouTube + localVideo,
+           YouTube takes priority.
+      ================================================== -->
+
+      {
+        !youtubeEmbedUrl &&
+        localVideo &&
+        localVideoType && (
+          <section
+            class="work-project-media"
+            aria-labelledby="work-project-local-video-title"
+          >
+            <header
+              class="work-project-media__header"
+            >
+              <div>
+                <span
+                  class="work-project-signal-dot"
+                  aria-hidden="true"
+                ></span>
+
+                <h2
+                  id="work-project-local-video-title"
+                >
+                  FEATURED MEDIA
+                </h2>
+              </div>
+
+              <span>
+                VIDEO // LOCAL ARCHIVE
+              </span>
+            </header>
+
+
+            <div
+              class="work-project-video-shell"
+            >
+              <div
+                class="work-project-video work-project-video--local"
+              >
+                <video
+                  class="work-project-local-video"
+                  controls
+                  preload="metadata"
+                  playsinline
+                  aria-label={videoTitle}
+                >
+                  <source
+                    src={localVideo}
+                    type={localVideoType}
+                  />
+
+                  Your browser does not support HTML5 video playback.
+                </video>
+              </div>
+            </div>
+
+
+            <footer
+              class="work-project-media__footer"
+            >
+              <span>
+                LOCAL PROJECT FILE
+              </span>
+
+              <strong>
+                HTML5 PLAYBACK // READY
+              </strong>
+            </footer>
+          </section>
+        )
+      }
+
+
+      <!-- =================================================
+           MARKDOWN CONTENT
+      ================================================== -->
+
+      <div
+        class="work-project-section-marker"
+      >
+        <span>
+          FILE CONTENT
+        </span>
+
+        <strong>
+          MARKDOWN // LIVE
+        </strong>
+      </div>
+
+
+      <div
+        class="work-project-markdown"
+      >
+        <Content />
+      </div>
+
+
+      <!-- =================================================
+           END OF FILE
+      ================================================== -->
+
+      <footer
+        class="work-project-file__footer"
+      >
+        <span>
+          END OF PROJECT FILE
+        </span>
+
+        <a
+          href={workArchiveUrl}
+        >
+          RETURN TO ARCHIVE →
+        </a>
+      </footer>
+    </article>
+  </div>
+</InternalPageLayout>
+
+
+<script>
+  /* =========================================================
+     IMAGE ERROR HANDLING
+  ========================================================= */
+
+  function initialiseProjectImages(): void {
+    const images =
+      document.querySelectorAll<HTMLImageElement>(
+        "[data-project-gallery-image]"
+      );
+
+
+    images.forEach(
+      (
+        image
+      ) => {
+        const markAsMissing =
+          (): void => {
+            const shell =
+              image.closest<HTMLElement>(
+                "[data-project-gallery-shell]"
+              );
+
+
+            if (!shell) {
+              return;
+            }
+
+
+            shell.classList.add(
+              "is-missing"
+            );
+
+
+            image.hidden =
+              true;
+
+
+            console.warn(
+              "Project image could not be loaded:",
+              image.src
+            );
+          };
+
+
+        if (
+          image.complete &&
+          image.naturalWidth === 0
+        ) {
+          markAsMissing();
+
+          return;
+        }
+
+
+        image.addEventListener(
+          "error",
+          markAsMissing,
+          {
+            once: true,
+          }
+        );
+      }
+    );
+  }
+
+
+  /* =========================================================
+     HORIZONTAL GALLERY
+  ========================================================= */
+
+  function initialiseWorkProjectGalleries(): void {
+    const galleries =
+      document.querySelectorAll<HTMLElement>(
+        "[data-work-gallery]"
+      );
+
+
+    galleries.forEach(
+      (
+        gallery
+      ) => {
+        if (
+          gallery.dataset
+            .galleryInitialised ===
+          "true"
+        ) {
+          return;
+        }
+
+
+        gallery.dataset
+          .galleryInitialised =
+          "true";
+
+
+        gallery.addEventListener(
+          "wheel",
+          (
+            event:
+              WheelEvent
+          ) => {
+            const maximumScroll =
+              Math.max(
+                0,
+                gallery.scrollWidth -
+                gallery.clientWidth
+              );
+
+
+            if (
+              maximumScroll === 0
+            ) {
+              return;
+            }
+
+
+            const movement =
+              Math.abs(
+                event.deltaX
+              ) >
+              Math.abs(
+                event.deltaY
+              )
+                ? event.deltaX
+                : event.deltaY;
+
+
+            if (
+              movement === 0
+            ) {
+              return;
+            }
+
+
+            const atStart =
+              gallery.scrollLeft <=
+              1;
+
+
+            const atEnd =
+              gallery.scrollLeft >=
+              maximumScroll - 1;
+
+
+            if (
+              movement < 0 &&
+              atStart
+            ) {
+              return;
+            }
+
+
+            if (
+              movement > 0 &&
+              atEnd
+            ) {
+              return;
+            }
+
+
+            event.preventDefault();
+
+
+            gallery.scrollLeft +=
+              movement;
+          },
+          {
+            passive: false,
+          }
+        );
+      }
+    );
+  }
+
+
+  /* =========================================================
+     INITIALISE
+  ========================================================= */
+
+  function initialiseWorkProjectPage(): void {
+    initialiseProjectImages();
+
+    initialiseWorkProjectGalleries();
+  }
+
+
+  if (
+    document.readyState ===
+    "loading"
+  ) {
+    document.addEventListener(
+      "DOMContentLoaded",
+      initialiseWorkProjectPage,
+      {
+        once: true,
+      }
+    );
+  } else {
+    initialiseWorkProjectPage();
+  }
+
+
+  document.addEventListener(
+    "astro:page-load",
+    initialiseWorkProjectPage
+  );
+</script>

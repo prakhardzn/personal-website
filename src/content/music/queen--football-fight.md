@@ -1,0 +1,23 @@
+---
+title: "Football Fight"
+artist: "Queen"
+album: "Flash / Football Fight"
+year: "1980"
+
+recordingId: "c12bba10-2b3c-4b91-9650-df91a9509755"
+artistId: "0383dadf-2a4e-4d10-a46a-e9e041da8eb3"
+releaseId: "77bdaab7-ac16-4b77-8f25-193aed477cbb"
+releaseGroupId: "29734cf5-e209-4343-bd12-fa9802e4e741"
+
+durationMs: 90000
+cover: "/assets/library/music/queen-flash-football-fight-29734cf5.jpg"
+
+status: "saved"
+favourite: false
+myRating: null
+shelf: "Queen"
+tags: ["Queen","Flash / Football Fight"]
+addedAt: "2026-08-08T23:13:34.741Z"
+---
+
+Write your personal note about Football Fight here.

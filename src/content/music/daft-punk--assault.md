@@ -1,0 +1,23 @@
+---
+title: "Assault"
+artist: "Daft Punk"
+album: "The New Wave"
+year: "1994"
+
+recordingId: "d3cf1fff-e63c-4b5d-af26-8b9f177ca7a1"
+artistId: "056e4f3e-d505-4dad-8ec1-d04f521cbb56"
+releaseId: "da158a6b-abfe-4206-8dc3-9f1bcf3bc3f8"
+releaseGroupId: "35a4f900-60c1-3f79-8cdb-193941b78768"
+
+durationMs: 346000
+cover: "/assets/library/music/daft-punk-the-new-wave-35a4f900.jpg"
+
+status: "saved"
+favourite: false
+myRating: null
+shelf: "Daft Punk"
+tags: ["Daft Punk","The New Wave"]
+addedAt: "2026-08-08T22:59:23.277Z"
+---
+
+Write your personal note about Assault here.

@@ -1,0 +1,23 @@
+---
+title: "Don’t Stop Me Now (…revisited)"
+artist: "Queen"
+album: "Bohemian Rhapsody: The Original Soundtrack"
+year: "2018"
+
+recordingId: "cb3cc4f7-bf0d-4f72-9fd9-2474e02e0981"
+artistId: "0383dadf-2a4e-4d10-a46a-e9e041da8eb3"
+releaseId: "f71b5300-21e3-4383-bb5c-9aad7c82060e"
+releaseGroupId: "dad96738-7212-4ce1-a9e1-c6b84c97ff1a"
+
+durationMs: 217733
+cover: "/assets/library/music/queen-bohemian-rhapsody-the-original-soundtrack-dad96738.jpg"
+
+status: "saved"
+favourite: false
+myRating: null
+shelf: "Queen"
+tags: ["Queen","Bohemian Rhapsody: The Original Soundtrack"]
+addedAt: "2026-08-08T23:15:44.235Z"
+---
+
+Write your personal note about Don’t Stop Me Now (…revisited) here.

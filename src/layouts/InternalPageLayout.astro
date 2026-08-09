@@ -23,12 +23,7 @@ const homeUrl = import.meta.env.BASE_URL;
   title={title}
   description={description}
 >
-  <div
-    class:list={[
-      "internal-page-shell",
-      pageClass,
-    ]}
-  >
+  <div class="internal-page-shell">
     <!-- ==================================================
          TOP SYSTEM BAR
     =================================================== -->
@@ -45,14 +40,12 @@ const homeUrl = import.meta.env.BASE_URL;
         </span>
       </button>
 
-
       <p
         class="internal-system-message"
         data-typewriter
       >
         {message}
       </p>
-
 
       <div class="internal-system-actions">
         <a
@@ -79,12 +72,16 @@ const homeUrl = import.meta.env.BASE_URL;
       </div>
     </header>
 
-
     <!-- ==================================================
          PAGE CONTENT
     =================================================== -->
 
-    <main class="internal-page-grid">
+    <main
+      class:list={[
+        "internal-page-grid",
+        pageClass,
+      ]}
+    >
       <aside class="internal-page-sidebar">
         <slot name="sidebar" />
       </aside>
@@ -93,7 +90,6 @@ const homeUrl = import.meta.env.BASE_URL;
         <slot name="content" />
       </section>
     </main>
-
 
     <!-- ==================================================
          SETTINGS DIALOG
@@ -139,80 +135,156 @@ const homeUrl = import.meta.env.BASE_URL;
   </div>
 </BaseLayout>
 
-
 <script>
-  const homeLink =
-    document.querySelector<HTMLAnchorElement>(
-      "#internal-home-link"
-    );
+  const initialiseInternalPageControls = (): void => {
+    const backButton =
+      document.querySelector<HTMLButtonElement>(
+        "#internal-back-button"
+      );
 
-  const backButton =
-    document.querySelector<HTMLButtonElement>(
-      "#internal-back-button"
-    );
+    const settingsButton =
+      document.querySelector<HTMLButtonElement>(
+        "#internal-settings-button"
+      );
 
-  const settingsButton =
-    document.querySelector<HTMLButtonElement>(
-      "#internal-settings-button"
-    );
+    const settingsClose =
+      document.querySelector<HTMLButtonElement>(
+        "#internal-settings-close"
+      );
 
-  const settingsDialog =
-    document.querySelector<HTMLDialogElement>(
-      "#internal-settings-dialog"
-    );
+    const settingsDialog =
+      document.querySelector<HTMLDialogElement>(
+        "#internal-settings-dialog"
+      );
 
-  const settingsCloseButton =
-    document.querySelector<HTMLButtonElement>(
-      "#internal-settings-close"
-    );
+    /* ==================================================
+       BACK BUTTON
+    =================================================== */
 
+    if (
+      backButton &&
+      backButton.dataset.bound !== "true"
+    ) {
+      backButton.dataset.bound = "true";
 
-  backButton?.addEventListener(
-    "click",
-    () => {
-      if (window.history.length > 1) {
-        window.history.back();
-        return;
-      }
+      backButton.addEventListener(
+        "click",
+        () => {
+          const fallbackHomeUrl =
+            import.meta.env.BASE_URL;
 
-      window.location.assign(
-        homeLink?.href ?? "/"
+          const referrer =
+            document.referrer;
+
+          /*
+            If the visitor arrived from another page on
+            this same website, normal browser Back is
+            appropriate.
+          */
+
+          if (referrer) {
+            try {
+              const previousUrl =
+                new URL(referrer);
+
+              if (
+                previousUrl.origin ===
+                window.location.origin
+              ) {
+                window.history.back();
+                return;
+              }
+            } catch {
+              /*
+                Ignore malformed referrer and use the
+                homepage fallback below.
+              */
+            }
+          }
+
+          /*
+            Direct visit, refreshed page, external source,
+            or no usable history:
+            safely return to homepage.
+          */
+
+          window.location.assign(
+            fallbackHomeUrl
+          );
+        }
       );
     }
-  );
 
+    /* ==================================================
+       SETTINGS BUTTON
+    =================================================== */
 
-  settingsButton?.addEventListener(
-    "click",
-    () => {
-      if (
-        settingsDialog &&
-        !settingsDialog.open
-      ) {
-        settingsDialog.showModal();
-      }
+    if (
+      settingsButton &&
+      settingsButton.dataset.bound !== "true"
+    ) {
+      settingsButton.dataset.bound = "true";
+
+      settingsButton.addEventListener(
+        "click",
+        () => {
+          if (!settingsDialog) {
+            return;
+          }
+
+          if (!settingsDialog.open) {
+            settingsDialog.showModal();
+          }
+        }
+      );
     }
-  );
 
+    /* ==================================================
+       SETTINGS CLOSE
+    =================================================== */
 
-  settingsCloseButton?.addEventListener(
-    "click",
-    () => {
-      settingsDialog?.close();
+    if (
+      settingsClose &&
+      settingsClose.dataset.bound !== "true"
+    ) {
+      settingsClose.dataset.bound = "true";
+
+      settingsClose.addEventListener(
+        "click",
+        () => {
+          settingsDialog?.close();
+        }
+      );
     }
-  );
 
+    /* ==================================================
+       CLICK OUTSIDE DIALOG TO CLOSE
+    =================================================== */
 
-  settingsDialog?.addEventListener(
-    "click",
-    (
-      event: MouseEvent
-    ) => {
-      if (
-        event.target === settingsDialog
-      ) {
-        settingsDialog.close();
-      }
+    if (
+      settingsDialog &&
+      settingsDialog.dataset.bound !== "true"
+    ) {
+      settingsDialog.dataset.bound = "true";
+
+      settingsDialog.addEventListener(
+        "click",
+        (event: MouseEvent) => {
+          if (
+            event.target ===
+            settingsDialog
+          ) {
+            settingsDialog.close();
+          }
+        }
+      );
     }
+  };
+
+  initialiseInternalPageControls();
+
+  document.addEventListener(
+    "astro:page-load",
+    initialiseInternalPageControls
   );
 </script>

@@ -1,0 +1,3153 @@
+---
+interface Fact {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  categoryKey: string;
+  slug: string;
+  name: string;
+  alternate?: string;
+  index: number;
+  accent?: string;
+  facts?: readonly Fact[];
+}
+
+const {
+  categoryKey,
+  slug,
+  name,
+  alternate,
+  index,
+  accent = "#8cff58",
+  facts = [],
+} = Astro.props;
+
+/* =========================================================
+   RECORD INFORMATION
+========================================================= */
+
+const recordNumber =
+  String(index + 1).padStart(2, "0");
+
+const archiveLabels: Record<string, string> = {
+  planets: "NAVAGRAHA",
+  "zodiac-signs": "ZODIAC",
+  nakshatras: "NAKSHATRA",
+  houses: "BHAVA",
+};
+
+const archiveLabel =
+  archiveLabels[categoryKey] ??
+  "CELESTIAL";
+
+const firstFact =
+  facts[0] ?? null;
+
+/* =========================================================
+   UNIQUE SVG IDS
+========================================================= */
+
+const safeId =
+  `${categoryKey}-${slug}`.replace(
+    /[^a-zA-Z0-9-_]/g,
+    "-"
+  );
+
+const planetGradientId =
+  `planet-gradient-${safeId}`;
+
+const planetClipId =
+  `planet-clip-${safeId}`;
+
+const moonMaskId =
+  `moon-mask-${safeId}`;
+
+const houseHatchId =
+  `house-hatch-${safeId}`;
+
+/* =========================================================
+   STATIC TERMINAL TICKS
+========================================================= */
+
+const outerTicks =
+  Array.from(
+    { length: 36 },
+    (_, tickIndex) => ({
+      angle: tickIndex * 10,
+      major: tickIndex % 3 === 0,
+    })
+  );
+
+const innerTicks =
+  Array.from(
+    { length: 48 },
+    (_, tickIndex) => ({
+      angle: tickIndex * 7.5,
+    })
+  );
+
+/* =========================================================
+   ZODIAC VECTOR PATHS
+
+   Everything remains SVG linework.
+   No system emoji / Unicode zodiac rendering.
+========================================================= */
+
+const zodiacPaths:
+  Record<string, string[]> = {
+    aries: [
+      `
+        M260 314
+        L260 229
+        C260 200 247 177 227 166
+        C205 154 183 164 179 184
+        C175 205 189 224 208 225
+        C226 226 240 211 244 190
+      `,
+      `
+        M260 229
+        C260 200 273 177 293 166
+        C315 154 337 164 341 184
+        C345 205 331 224 312 225
+        C294 226 280 211 276 190
+      `,
+    ],
+
+    taurus: [
+      `
+        M205 196
+        C187 187 176 171 175 151
+        C196 159 215 176 224 197
+      `,
+      `
+        M315 196
+        C333 187 344 171 345 151
+        C324 159 305 176 296 197
+      `,
+      `
+        M260 195
+        C221 195 197 222 197 258
+        C197 294 222 319 260 319
+        C298 319 323 294 323 258
+        C323 222 299 195 260 195
+        Z
+      `,
+    ],
+
+    gemini: [
+      `
+        M205 178
+        C232 187 288 187 315 178
+      `,
+      `
+        M205 322
+        C232 313 288 313 315 322
+      `,
+      `
+        M225 185
+        C231 219 231 281 225 315
+      `,
+      `
+        M295 185
+        C289 219 289 281 295 315
+      `,
+    ],
+
+    cancer: [
+      `
+        M329 210
+        C308 181 254 181 226 202
+        C206 217 206 239 220 251
+      `,
+      `
+        M191 290
+        C212 319 266 319 294 298
+        C314 283 314 261 300 249
+      `,
+      `
+        M219 221
+        C219 207 230 198 244 198
+        C258 198 268 208 268 221
+        C268 235 258 245 244 245
+        C230 245 219 235 219 221
+        Z
+      `,
+      `
+        M301 279
+        C301 293 290 302 276 302
+        C262 302 252 292 252 279
+        C252 265 262 255 276 255
+        C290 255 301 265 301 279
+        Z
+      `,
+    ],
+
+    leo: [
+      `
+        M211 252
+        C211 224 230 204 256 204
+        C284 204 300 224 297 248
+        C294 271 272 279 253 271
+        C235 263 230 241 241 225
+      `,
+      `
+        M297 247
+        C320 251 337 268 338 291
+        C339 313 324 330 304 327
+        C286 324 278 309 283 294
+      `,
+    ],
+
+    virgo: [
+      `
+        M188 307
+        L188 210
+        C188 194 206 194 206 212
+        L206 276
+      `,
+      `
+        M206 220
+        C206 197 232 197 232 220
+        L232 277
+      `,
+      `
+        M232 220
+        C232 197 258 197 258 220
+        L258 277
+      `,
+      `
+        M258 220
+        C258 197 284 197 284 220
+        L284 269
+        C284 293 299 306 318 300
+        C337 294 337 270 321 263
+        C307 257 295 266 295 281
+      `,
+    ],
+
+    libra: [
+      `
+        M175 294
+        L345 294
+      `,
+      `
+        M175 319
+        L345 319
+      `,
+      `
+        M205 294
+        C208 260 230 240 260 240
+        C290 240 312 260 315 294
+      `,
+    ],
+
+    scorpio: [
+      `
+        M186 307
+        L186 209
+        C186 192 205 192 205 211
+        L205 276
+      `,
+      `
+        M205 221
+        C205 196 232 196 232 221
+        L232 276
+      `,
+      `
+        M232 221
+        C232 196 259 196 259 221
+        L259 276
+      `,
+      `
+        M259 221
+        C259 196 286 196 286 221
+        L286 277
+        C286 299 301 310 319 307
+        L342 300
+      `,
+      `
+        M325 286
+        L342 300
+        L326 314
+      `,
+    ],
+
+    sagittarius: [
+      `
+        M200 310
+        L324 186
+      `,
+      `
+        M275 186
+        L324 186
+        L324 235
+      `,
+      `
+        M216 245
+        L270 299
+      `,
+    ],
+
+    capricorn: [
+      `
+        M183 213
+        C204 193 227 198 235 220
+        L235 291
+      `,
+      `
+        M235 225
+        C244 196 276 195 285 225
+        L285 274
+      `,
+      `
+        M285 274
+        C285 306 304 323 326 314
+        C348 305 351 274 334 262
+        C317 250 299 259 298 278
+        C297 299 315 308 333 299
+      `,
+    ],
+
+    aquarius: [
+      `
+        M173 226
+        L205 207
+        L232 226
+        L263 207
+        L291 226
+        L323 207
+        L347 222
+      `,
+      `
+        M173 279
+        L205 260
+        L232 279
+        L263 260
+        L291 279
+        L323 260
+        L347 275
+      `,
+    ],
+
+    pisces: [
+      `
+        M214 185
+        C244 212 244 288 214 315
+      `,
+      `
+        M306 185
+        C276 212 276 288 306 315
+      `,
+      `
+        M192 250
+        L328 250
+      `,
+    ],
+  };
+
+const currentZodiacPaths =
+  zodiacPaths[slug] ?? [];
+
+/* =========================================================
+   NAKSHATRA SCHEMATIC
+========================================================= */
+
+const nakshatraSeed =
+  index + 1;
+
+const nakshatraPoints =
+  Array.from(
+    { length: 7 },
+    (_, pointIndex) => {
+      const angle =
+        (
+          pointIndex * 53 +
+          nakshatraSeed * 17
+        ) *
+        (Math.PI / 180);
+
+      const radius =
+        42 +
+        (
+          (
+            pointIndex * 29 +
+            nakshatraSeed * 13
+          ) %
+          78
+        );
+
+      return {
+        x:
+          260 +
+          Math.cos(angle) *
+            radius,
+
+        y:
+          230 +
+          Math.sin(angle) *
+            radius,
+      };
+    }
+  );
+
+const nakshatraLines =
+  nakshatraPoints
+    .slice(1)
+    .map(
+      (
+        point,
+        pointIndex
+      ) => ({
+        x1:
+          nakshatraPoints[
+            pointIndex
+          ].x,
+
+        y1:
+          nakshatraPoints[
+            pointIndex
+          ].y,
+
+        x2:
+          point.x,
+
+        y2:
+          point.y,
+      })
+    );
+
+/* =========================================================
+   HOUSE MAP
+
+   NORTH INDIAN CHART GEOMETRY
+
+   IMPORTANT:
+   There is NO large house number anymore.
+
+   We always render the complete chart.
+   index + 1 decides which physical sector gets highlighted.
+
+   Chart:
+   outer square: 150 → 370
+   top midpoint: 260,115
+   right midpoint: 370,225
+   bottom midpoint: 260,335
+   left midpoint: 150,225
+   centre: 260,225
+========================================================= */
+
+const activeHouse =
+  Math.min(
+    12,
+    Math.max(
+      1,
+      index + 1
+    )
+  );
+
+const houseSectors = [
+  {
+    number: 1,
+    points:
+      "260,115 315,170 260,225 205,170",
+    cx: 260,
+    cy: 165,
+  },
+
+  {
+    number: 2,
+    points:
+      "150,115 260,115 205,170",
+    cx: 205,
+    cy: 134,
+  },
+
+  {
+    number: 3,
+    points:
+      "150,115 205,170 150,225",
+    cx: 168,
+    cy: 170,
+  },
+
+  {
+    number: 4,
+    points:
+      "150,225 205,280 260,225 205,170",
+    cx: 205,
+    cy: 225,
+  },
+
+  {
+    number: 5,
+    points:
+      "150,225 205,280 150,335",
+    cx: 168,
+    cy: 280,
+  },
+
+  {
+    number: 6,
+    points:
+      "150,335 205,280 260,335",
+    cx: 205,
+    cy: 316,
+  },
+
+  {
+    number: 7,
+    points:
+      "260,335 315,280 260,225 205,280",
+    cx: 260,
+    cy: 285,
+  },
+
+  {
+    number: 8,
+    points:
+      "260,335 315,280 370,335",
+    cx: 315,
+    cy: 316,
+  },
+
+  {
+    number: 9,
+    points:
+      "370,335 315,280 370,225",
+    cx: 352,
+    cy: 280,
+  },
+
+  {
+    number: 10,
+    points:
+      "370,225 315,280 260,225 315,170",
+    cx: 315,
+    cy: 225,
+  },
+
+  {
+    number: 11,
+    points:
+      "370,225 315,170 370,115",
+    cx: 352,
+    cy: 170,
+  },
+
+  {
+    number: 12,
+    points:
+      "370,115 315,170 260,115",
+    cx: 315,
+    cy: 134,
+  },
+];
+
+const activeHouseSector =
+  houseSectors.find(
+    (sector) =>
+      sector.number ===
+      activeHouse
+  );
+---
+
+<div
+  class:list={[
+    "astro-entity-visual",
+    `astro-entity-visual--${categoryKey}`,
+  ]}
+  style={`--entity-accent: ${accent};`}
+  role="img"
+  aria-label={
+    categoryKey === "houses"
+      ? `${name} shown as the highlighted sector in a twelve-house North Indian chart`
+      : `${name} celestial terminal representation`
+  }
+>
+  <svg
+    class="astro-entity-visual__svg"
+    viewBox="0 0 520 520"
+    preserveAspectRatio="xMidYMid meet"
+    aria-hidden="true"
+  >
+    <defs>
+      <!-- ================================================
+           PLANET GRADIENT
+      ================================================= -->
+
+      <radialGradient
+        id={planetGradientId}
+        cx="35%"
+        cy="30%"
+        r="76%"
+      >
+        <stop
+          offset="0%"
+          stop-color="#1a2a19"
+        />
+
+        <stop
+          offset="48%"
+          stop-color="#0b170d"
+        />
+
+        <stop
+          offset="78%"
+          stop-color="#050c07"
+        />
+
+        <stop
+          offset="100%"
+          stop-color="#020705"
+        />
+      </radialGradient>
+
+      <!-- ================================================
+           PLANET CLIP
+      ================================================= -->
+
+      <clipPath
+        id={planetClipId}
+      >
+        <circle
+          cx="260"
+          cy="230"
+          r="91"
+        />
+      </clipPath>
+
+      <!-- ================================================
+           MOON MASK
+      ================================================= -->
+
+      <mask
+        id={moonMaskId}
+      >
+        <rect
+          width="520"
+          height="520"
+          fill="black"
+        />
+
+        <circle
+          cx="245"
+          cy="230"
+          r="89"
+          fill="white"
+        />
+
+        <circle
+          cx="289"
+          cy="204"
+          r="89"
+          fill="black"
+        />
+      </mask>
+
+      <!-- ================================================
+           HOUSE ACTIVE-SECTOR HATCH
+
+           This gives the selected bhava a technical
+           terminal-map texture rather than a flat block.
+      ================================================= -->
+
+      <pattern
+        id={houseHatchId}
+        patternUnits="userSpaceOnUse"
+        width="8"
+        height="8"
+        patternTransform="rotate(45)"
+      >
+        <line
+          x1="0"
+          y1="0"
+          x2="0"
+          y2="8"
+          class="astro-house__hatch-line"
+        />
+      </pattern>
+    </defs>
+
+    <!-- ==================================================
+         BACKGROUND
+    =================================================== -->
+
+    <rect
+      x="8"
+      y="8"
+      width="504"
+      height="504"
+      rx="5"
+      class="astro-entity-svg__background"
+    />
+
+    <!-- ==================================================
+         TERMINAL FRAME
+    =================================================== -->
+
+    <path
+      class="astro-entity-svg__frame"
+      d="
+        M36 88
+        L36 36
+        L88 36
+
+        M432 36
+        L484 36
+        L484 88
+
+        M484 432
+        L484 484
+        L432 484
+
+        M88 484
+        L36 484
+        L36 432
+      "
+    />
+
+    <path
+      class="
+        astro-entity-svg__frame
+        astro-entity-svg__frame--soft
+      "
+      d="
+        M51 101
+        L51 51
+        L101 51
+
+        M419 51
+        L469 51
+        L469 101
+
+        M469 419
+        L469 469
+        L419 469
+
+        M101 469
+        L51 469
+        L51 419
+      "
+    />
+
+    <!-- ==================================================
+         CROSSHAIR
+    =================================================== -->
+
+    <line
+      class="astro-entity-svg__crosshair"
+      x1="72"
+      y1="225"
+      x2="448"
+      y2="225"
+    />
+
+    <line
+      class="astro-entity-svg__crosshair"
+      x1="260"
+      y1="62"
+      x2="260"
+      y2="393"
+    />
+
+    <!-- ==================================================
+         TECHNICAL RINGS
+    =================================================== -->
+
+    <circle
+      class="
+        astro-entity-svg__orbit
+        astro-entity-svg__orbit--outer
+      "
+      cx="260"
+      cy="225"
+      r="176"
+    />
+
+    <circle
+      class="
+        astro-entity-svg__orbit
+        astro-entity-svg__orbit--middle
+      "
+      cx="260"
+      cy="225"
+      r="153"
+    />
+
+    <circle
+      class="
+        astro-entity-svg__orbit
+        astro-entity-svg__orbit--inner
+      "
+      cx="260"
+      cy="225"
+      r="123"
+    />
+
+    <!-- ==================================================
+         OUTER TICKS
+    =================================================== -->
+
+    <g>
+      {
+        outerTicks.map(
+          (tick) => (
+            <line
+              class:list={[
+                "astro-entity-svg__tick",
+                tick.major &&
+                  "astro-entity-svg__tick--major",
+              ]}
+              x1="260"
+              y1={
+                tick.major
+                  ? "48"
+                  : "54"
+              }
+              x2="260"
+              y2={
+                tick.major
+                  ? "66"
+                  : "63"
+              }
+              transform={`rotate(${tick.angle} 260 225)`}
+            />
+          )
+        )
+      }
+    </g>
+
+    <!-- ==================================================
+         MICRO TICKS
+    =================================================== -->
+
+    <g class="astro-entity-svg__microticks">
+      {
+        innerTicks.map(
+          (tick) => (
+            <line
+              x1="260"
+              y1="72"
+              x2="260"
+              y2="79"
+              transform={`rotate(${tick.angle} 260 225)`}
+            />
+          )
+        )
+      }
+    </g>
+
+    <!-- ==================================================
+         CARDINAL TARGETS
+    =================================================== -->
+
+    <g class="astro-entity-svg__targets">
+      <circle
+        cx="260"
+        cy="49"
+        r="7"
+      />
+
+      <circle
+        cx="436"
+        cy="225"
+        r="7"
+      />
+
+      <circle
+        cx="260"
+        cy="401"
+        r="7"
+      />
+
+      <circle
+        cx="84"
+        cy="225"
+        r="7"
+      />
+
+      <circle
+        cx="260"
+        cy="49"
+        r="2"
+        class="astro-entity-svg__target-core"
+      />
+
+      <circle
+        cx="436"
+        cy="225"
+        r="2"
+        class="astro-entity-svg__target-core"
+      />
+
+      <circle
+        cx="260"
+        cy="401"
+        r="2"
+        class="astro-entity-svg__target-core"
+      />
+
+      <circle
+        cx="84"
+        cy="225"
+        r="2"
+        class="astro-entity-svg__target-core"
+      />
+    </g>
+
+    <!-- ==================================================
+         PLANETS
+    =================================================== -->
+
+    {
+      categoryKey ===
+        "planets" && (
+        <g class="astro-entity-svg__subject">
+
+          <!-- ===============================
+               SUN
+          ================================ -->
+
+          {
+            slug === "sun" && (
+              <>
+                <g class="astro-sun-rays">
+                  {
+                    Array.from({
+                      length: 16,
+                    }).map(
+                      (
+                        _,
+                        rayIndex
+                      ) => (
+                        <line
+                          x1="260"
+                          y1="119"
+                          x2="260"
+                          y2={
+                            rayIndex %
+                              2 ===
+                            0
+                              ? "94"
+                              : "102"
+                          }
+                          transform={`rotate(${rayIndex * 22.5} 260 225)`}
+                        />
+                      )
+                    )
+                  }
+                </g>
+
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="88"
+                  class="astro-planet-disc"
+                />
+
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="67"
+                  class="astro-sun-core"
+                />
+
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="38"
+                  class="
+                    astro-sun-core
+                    astro-sun-core--inner
+                  "
+                />
+
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="8"
+                  class="astro-entity-svg__bright-core"
+                />
+              </>
+            )
+          }
+
+          <!-- ===============================
+               MOON
+          ================================ -->
+
+          {
+            slug === "moon" && (
+              <>
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="90"
+                  class="astro-planet-disc"
+                />
+
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="89"
+                  class="astro-moon-crescent"
+                  mask={`url(#${moonMaskId})`}
+                />
+
+                <g class="astro-moon-detail">
+                  <circle
+                    cx="210"
+                    cy="203"
+                    r="8"
+                  />
+
+                  <circle
+                    cx="198"
+                    cy="250"
+                    r="5"
+                  />
+
+                  <circle
+                    cx="228"
+                    cy="280"
+                    r="6"
+                  />
+                </g>
+              </>
+            )
+          }
+
+          <!-- ===============================
+               MARS
+          ================================ -->
+
+          {
+            slug === "mars" && (
+              <>
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="91"
+                  fill={`url(#${planetGradientId})`}
+                  class="
+                    astro-planet-disc
+                    astro-mars-disc
+                  "
+                />
+
+                <path
+                  class="astro-mars-terminator"
+                  d="
+                    M296 141
+                    C336 172
+                      345 234
+                      317 280
+                    C300 307
+                      276 319
+                      258 317
+                  "
+                />
+
+                <g
+                  class="astro-mars-contours"
+                  clip-path={`url(#${planetClipId})`}
+                >
+                  <path
+                    d="
+                      M168 196
+                      C191 179
+                        218 182
+                        236 195
+                      C255 208
+                        278 207
+                        298 191
+                      C316 177
+                        335 178
+                        354 192
+                    "
+                  />
+
+                  <path
+                    d="
+                      M168 230
+                      C198 214
+                        222 216
+                        242 232
+                      C265 249
+                        289 243
+                        309 228
+                      C326 216
+                        342 218
+                        354 228
+                    "
+                  />
+
+                  <path
+                    d="
+                      M177 270
+                      C200 256
+                        225 258
+                        245 271
+                      C265 284
+                        291 286
+                        316 270
+                    "
+                  />
+
+                  <path
+                    d="
+                      M196 164
+                      C210 175
+                        223 177
+                        236 169
+                    "
+                  />
+                </g>
+
+                <g class="astro-mars-craters">
+                  <ellipse
+                    cx="213"
+                    cy="183"
+                    rx="12"
+                    ry="7"
+                  />
+
+                  <ellipse
+                    cx="300"
+                    cy="198"
+                    rx="8"
+                    ry="5"
+                  />
+
+                  <ellipse
+                    cx="283"
+                    cy="266"
+                    rx="15"
+                    ry="8"
+                  />
+
+                  <circle
+                    cx="209"
+                    cy="254"
+                    r="6"
+                  />
+                </g>
+
+                <path
+                  class="astro-mars-rift"
+                  d="
+                    M179 242
+                    C205 221
+                      226 247
+                      251 237
+                    C277 226
+                      292 248
+                      317 234
+                    C329 227
+                      340 227
+                      350 231
+                  "
+                />
+
+                <g class="astro-mars-symbol">
+                  <circle
+                    cx="260"
+                    cy="345"
+                    r="14"
+                  />
+
+                  <path
+                    d="
+                      M271 334
+                      L296 309
+
+                      M280 309
+                      L296 309
+                      L296 325
+                    "
+                  />
+                </g>
+              </>
+            )
+          }
+
+          <!-- ===============================
+               MERCURY
+          ================================ -->
+
+          {
+            slug ===
+              "mercury" && (
+              <>
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="82"
+                  fill={`url(#${planetGradientId})`}
+                  class="astro-planet-disc"
+                />
+
+                <g class="astro-mercury-craters">
+                  <circle
+                    cx="221"
+                    cy="192"
+                    r="13"
+                  />
+
+                  <circle
+                    cx="289"
+                    cy="183"
+                    r="8"
+                  />
+
+                  <circle
+                    cx="304"
+                    cy="240"
+                    r="15"
+                  />
+
+                  <circle
+                    cx="236"
+                    cy="267"
+                    r="9"
+                  />
+
+                  <circle
+                    cx="205"
+                    cy="232"
+                    r="6"
+                  />
+                </g>
+              </>
+            )
+          }
+
+          <!-- ===============================
+               JUPITER
+          ================================ -->
+
+          {
+            slug ===
+              "jupiter" && (
+              <>
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="96"
+                  class="astro-planet-disc"
+                />
+
+                <g
+                  class="astro-jupiter-lines"
+                  clip-path={`url(#${planetClipId})`}
+                >
+                  <path
+                    d="
+                      M163 174
+                      C212 187
+                        309 187
+                        357 174
+                    "
+                  />
+
+                  <path
+                    d="
+                      M160 201
+                      C214 213
+                        310 213
+                        360 201
+                    "
+                  />
+
+                  <path
+                    d="
+                      M159 230
+                      C217 243
+                        306 243
+                        360 230
+                    "
+                  />
+
+                  <path
+                    d="
+                      M165 259
+                      C215 271
+                        309 271
+                        355 259
+                    "
+                  />
+
+                  <path
+                    d="
+                      M177 286
+                      C218 295
+                        301 295
+                        344 286
+                    "
+                  />
+                </g>
+
+                <ellipse
+                  cx="307"
+                  cy="250"
+                  rx="19"
+                  ry="9"
+                  class="astro-jupiter-spot"
+                />
+              </>
+            )
+          }
+
+          <!-- ===============================
+               VENUS
+          ================================ -->
+
+          {
+            slug === "venus" && (
+              <>
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="89"
+                  fill={`url(#${planetGradientId})`}
+                  class="astro-planet-disc"
+                />
+
+                <g
+                  class="astro-venus-clouds"
+                  clip-path={`url(#${planetClipId})`}
+                >
+                  <path
+                    d="
+                      M168 178
+                      C215 162
+                        298 170
+                        351 190
+                    "
+                  />
+
+                  <path
+                    d="
+                      M164 211
+                      C212 197
+                        311 199
+                        357 220
+                    "
+                  />
+
+                  <path
+                    d="
+                      M166 244
+                      C220 231
+                        307 237
+                        354 255
+                    "
+                  />
+
+                  <path
+                    d="
+                      M180 277
+                      C221 267
+                        297 272
+                        343 286
+                    "
+                  />
+                </g>
+              </>
+            )
+          }
+
+          <!-- ===============================
+               SATURN
+          ================================ -->
+
+          {
+            slug === "saturn" && (
+              <>
+                <ellipse
+                  cx="260"
+                  cy="225"
+                  rx="142"
+                  ry="39"
+                  class="
+                    astro-saturn-ring
+                    astro-saturn-ring--rear
+                  "
+                />
+
+                <ellipse
+                  cx="260"
+                  cy="225"
+                  rx="120"
+                  ry="31"
+                  class="
+                    astro-saturn-ring
+                    astro-saturn-ring--inner
+                  "
+                />
+
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="72"
+                  fill={`url(#${planetGradientId})`}
+                  class="astro-planet-disc"
+                />
+
+                <path
+                  class="astro-saturn-band"
+                  d="
+                    M203 205
+                    C228 197
+                      292 197
+                      317 205
+
+                    M201 235
+                    C228 228
+                      292 228
+                      319 235
+                  "
+                />
+
+                <path
+                  class="astro-saturn-front"
+                  d="
+                    M126 234
+                    C165 266
+                      355 266
+                      394 234
+                  "
+                />
+              </>
+            )
+          }
+
+          <!-- ===============================
+               RAHU
+          ================================ -->
+
+          {
+            slug === "rahu" && (
+              <>
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="89"
+                  class="astro-node-orbit"
+                />
+
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="55"
+                  class="astro-node-shadow"
+                />
+
+                <path
+                  class="astro-node-path"
+                  d="
+                    M180 225
+                    C209 176
+                      237 180
+                      260 225
+
+                    C283 270
+                      311 274
+                      340 225
+                  "
+                />
+
+                <circle
+                  cx="260"
+                  cy="225"
+                  r="9"
+                  class="astro-entity-svg__bright-core"
+                />
+              </>
+            )
+          }
+
+          <!-- ===============================
+               KETU
+          ================================ -->
+
+          {
+            slug === "ketu" && (
+              <>
+                <circle
+                  cx="260"
+                  cy="208"
+                  r="74"
+                  class="astro-node-orbit"
+                />
+
+                <circle
+                  cx="260"
+                  cy="208"
+                  r="44"
+                  class="astro-node-shadow"
+                />
+
+                <path
+                  class="astro-ketu-tail"
+                  d="
+                    M242 275
+                    C222 318
+                      234 348
+                      260 374
+
+                    C286 348
+                      298 318
+                      278 275
+
+                    M249 293
+                    C247 315
+                      251 332
+                      260 346
+
+                    M271 293
+                    C273 315
+                      269 332
+                      260 346
+                  "
+                />
+
+                <circle
+                  cx="260"
+                  cy="208"
+                  r="8"
+                  class="astro-entity-svg__bright-core"
+                />
+              </>
+            )
+          }
+        </g>
+      )
+    }
+
+    <!-- ==================================================
+         ZODIAC
+    =================================================== -->
+
+    {
+      categoryKey ===
+        "zodiac-signs" && (
+        <g
+          class="
+            astro-entity-svg__subject
+            astro-zodiac
+          "
+        >
+          <circle
+            cx="260"
+            cy="225"
+            r="114"
+            class="astro-zodiac__outer"
+          />
+
+          <circle
+            cx="260"
+            cy="225"
+            r="84"
+            class="astro-zodiac__inner"
+          />
+
+          <path
+            class="astro-zodiac__diamond"
+            d="
+              M260 88
+              L397 225
+              L260 362
+              L123 225
+              Z
+            "
+          />
+
+          <g class="astro-zodiac__glyph">
+            {
+              currentZodiacPaths.map(
+                (path) => (
+                  <path
+                    d={path}
+                    transform="translate(0 -25)"
+                  />
+                )
+              )
+            }
+          </g>
+
+          <g class="astro-zodiac__anchors">
+            <circle
+              cx="260"
+              cy="92"
+              r="3"
+            />
+
+            <circle
+              cx="393"
+              cy="225"
+              r="3"
+            />
+
+            <circle
+              cx="260"
+              cy="358"
+              r="3"
+            />
+
+            <circle
+              cx="127"
+              cy="225"
+              r="3"
+            />
+          </g>
+        </g>
+      )
+    }
+
+    <!-- ==================================================
+         NAKSHATRA
+    =================================================== -->
+
+    {
+      categoryKey ===
+        "nakshatras" && (
+        <g
+          class="
+            astro-entity-svg__subject
+            astro-nakshatra
+          "
+        >
+          <circle
+            cx="260"
+            cy="225"
+            r="116"
+            class="astro-nakshatra__field"
+          />
+
+          <circle
+            cx="260"
+            cy="225"
+            r="92"
+            class="
+              astro-nakshatra__field
+              astro-nakshatra__field--inner
+            "
+          />
+
+          <g class="astro-nakshatra__connections">
+            {
+              nakshatraLines.map(
+                (line) => (
+                  <line
+                    x1={line.x1}
+                    y1={line.y1 - 5}
+                    x2={line.x2}
+                    y2={line.y2 - 5}
+                  />
+                )
+              )
+            }
+          </g>
+
+          <g class="astro-nakshatra__stars">
+            {
+              nakshatraPoints.map(
+                (
+                  point,
+                  pointIndex
+                ) => (
+                  <>
+                    <circle
+                      cx={point.x}
+                      cy={
+                        point.y -
+                        5
+                      }
+                      r={
+                        pointIndex ===
+                        0
+                          ? 7
+                          : 4.5
+                      }
+                    />
+
+                    <circle
+                      cx={point.x}
+                      cy={
+                        point.y -
+                        5
+                      }
+                      r={
+                        pointIndex ===
+                        0
+                          ? 2.4
+                          : 1.4
+                      }
+                      class="astro-nakshatra__star-core"
+                    />
+                  </>
+                )
+              )
+            }
+          </g>
+
+          <circle
+            cx="260"
+            cy="225"
+            r="20"
+            class="astro-nakshatra__index-core"
+          />
+
+          <text
+            x="260"
+            y="229"
+            text-anchor="middle"
+            class="astro-nakshatra__index"
+          >
+            {recordNumber}
+          </text>
+        </g>
+      )
+    }
+
+    <!-- ==================================================
+         HOUSES
+
+         NEW VERSION:
+
+         - Complete North Indian chart is always visible.
+         - No giant house number.
+         - Relevant bhava is physically highlighted.
+         - Highlight includes fill + hatch + target reticle.
+    =================================================== -->
+
+    {
+      categoryKey ===
+        "houses" && (
+        <g
+          class="
+            astro-entity-svg__subject
+            astro-house
+          "
+        >
+          <!-- -------------------------------------------
+               CHART SURFACE
+          -------------------------------------------- -->
+
+          <rect
+            x="150"
+            y="115"
+            width="220"
+            height="220"
+            class="astro-house__chart-bg"
+          />
+
+          <!-- -------------------------------------------
+               12 INTERACTIVE / VISUAL SECTORS
+
+               Non-active sectors stay transparent.
+               Active sector gets highlighted.
+          -------------------------------------------- -->
+
+          <g class="astro-house__sectors">
+            {
+              houseSectors.map(
+                (sector) => (
+                  <>
+                    <polygon
+                      points={
+                        sector.points
+                      }
+                      class:list={[
+                        "astro-house__sector",
+                        sector.number ===
+                          activeHouse &&
+                          "is-active",
+                      ]}
+                    />
+
+                    {
+                      sector.number ===
+                        activeHouse && (
+                        <polygon
+                          points={
+                            sector.points
+                          }
+                          class="astro-house__active-hatch"
+                          fill={`url(#${houseHatchId})`}
+                        />
+                      )
+                    }
+                  </>
+                )
+              )
+            }
+          </g>
+
+          <!-- -------------------------------------------
+               NORTH INDIAN CHART SKELETON
+          -------------------------------------------- -->
+
+          <g class="astro-house__skeleton">
+            <!-- outer square -->
+            <rect
+              x="150"
+              y="115"
+              width="220"
+              height="220"
+            />
+
+            <!-- central diamond -->
+            <path
+              d="
+                M260 115
+                L370 225
+                L260 335
+                L150 225
+                Z
+              "
+            />
+
+            <!-- corner-to-corner diagonals -->
+            <line
+              x1="150"
+              y1="115"
+              x2="370"
+              y2="335"
+            />
+
+            <line
+              x1="370"
+              y1="115"
+              x2="150"
+              y2="335"
+            />
+          </g>
+
+          <!-- -------------------------------------------
+               ACTIVE HOUSE TARGET
+
+               Tiny reticle replaces the giant number.
+          -------------------------------------------- -->
+
+          {
+            activeHouseSector && (
+              <g class="astro-house__target">
+                <circle
+                  cx={
+                    activeHouseSector.cx
+                  }
+                  cy={
+                    activeHouseSector.cy
+                  }
+                  r="14"
+                />
+
+                <circle
+                  cx={
+                    activeHouseSector.cx
+                  }
+                  cy={
+                    activeHouseSector.cy
+                  }
+                  r="4"
+                  class="astro-house__target-core"
+                />
+
+                <line
+                  x1={
+                    activeHouseSector.cx -
+                    20
+                  }
+                  y1={
+                    activeHouseSector.cy
+                  }
+                  x2={
+                    activeHouseSector.cx -
+                    9
+                  }
+                  y2={
+                    activeHouseSector.cy
+                  }
+                />
+
+                <line
+                  x1={
+                    activeHouseSector.cx +
+                    9
+                  }
+                  y1={
+                    activeHouseSector.cy
+                  }
+                  x2={
+                    activeHouseSector.cx +
+                    20
+                  }
+                  y2={
+                    activeHouseSector.cy
+                  }
+                />
+
+                <line
+                  x1={
+                    activeHouseSector.cx
+                  }
+                  y1={
+                    activeHouseSector.cy -
+                    20
+                  }
+                  x2={
+                    activeHouseSector.cx
+                  }
+                  y2={
+                    activeHouseSector.cy -
+                    9
+                  }
+                />
+
+                <line
+                  x1={
+                    activeHouseSector.cx
+                  }
+                  y1={
+                    activeHouseSector.cy +
+                    9
+                  }
+                  x2={
+                    activeHouseSector.cx
+                  }
+                  y2={
+                    activeHouseSector.cy +
+                    20
+                  }
+                />
+              </g>
+            )
+          }
+
+          <!-- -------------------------------------------
+               TECHNICAL CORNER MARKERS
+          -------------------------------------------- -->
+
+          <g class="astro-house__corner-markers">
+            <path
+              d="
+                M143 130
+                L143 108
+                L165 108
+              "
+            />
+
+            <path
+              d="
+                M355 108
+                L377 108
+                L377 130
+              "
+            />
+
+            <path
+              d="
+                M377 320
+                L377 342
+                L355 342
+              "
+            />
+
+            <path
+              d="
+                M165 342
+                L143 342
+                L143 320
+              "
+            />
+          </g>
+        </g>
+      )
+    }
+
+    <!-- ==================================================
+         NAMEPLATE
+    =================================================== -->
+
+    <g class="astro-entity-svg__nameplate">
+      <rect
+        x="154"
+        y="413"
+        width="212"
+        height="50"
+        rx="3"
+      />
+
+      <text
+        x="260"
+        y="434"
+        text-anchor="middle"
+        class="astro-entity-svg__name"
+      >
+        {name.toUpperCase()}
+      </text>
+
+      <text
+        x="260"
+        y="450"
+        text-anchor="middle"
+        class="astro-entity-svg__alternate"
+      >
+        {
+          alternate
+            ? alternate.toUpperCase()
+            : `${archiveLabel} // ${recordNumber}`
+        }
+      </text>
+    </g>
+
+    <!-- ==================================================
+         MICRO TERMINAL LABELS
+    =================================================== -->
+
+    <g class="astro-entity-svg__microcopy">
+      <text
+        x="57"
+        y="76"
+      >
+        {archiveLabel}
+      </text>
+
+      <text
+        x="463"
+        y="76"
+        text-anchor="end"
+      >
+        REC {recordNumber}
+      </text>
+
+      <text
+        x="57"
+        y="447"
+      >
+        {
+          categoryKey ===
+          "houses"
+            ? "SECTOR LOCK"
+            : firstFact?.label ??
+              "SIGNAL"
+        }
+      </text>
+
+      <text
+        x="463"
+        y="447"
+        text-anchor="end"
+      >
+        {
+          categoryKey ===
+          "houses"
+            ? "ACTIVE"
+            : "STABLE"
+        }
+      </text>
+    </g>
+  </svg>
+
+  <!-- =====================================================
+       TERMINAL SCAN LINE
+  ====================================================== -->
+
+  <span
+    class="astro-entity-visual__scanline"
+    aria-hidden="true"
+  ></span>
+</div>
+
+<style>
+  /* =========================================================
+     ROOT
+  ========================================================= */
+
+  .astro-entity-visual {
+    position: relative;
+
+    width:
+      min(
+        94%,
+        430px
+      );
+
+    max-width:
+      calc(
+        100% - 8px
+      );
+
+    max-height:
+      calc(
+        100% - 8px
+      );
+
+    aspect-ratio: 1;
+
+    overflow: hidden;
+
+    border:
+      1px solid
+      var(--astro-border);
+
+    border-radius: 5px;
+
+    background:
+      var(--astro-bg);
+
+    isolation: isolate;
+  }
+
+  @supports (width: 1cqw) {
+    .astro-entity-visual {
+      width:
+        min(
+          94cqw,
+          96cqh,
+          430px
+        );
+    }
+  }
+
+  .astro-entity-visual::after {
+    position: absolute;
+
+    inset: 6px;
+
+    z-index: 5;
+
+    border:
+      1px solid
+      color-mix(
+        in srgb,
+        var(--entity-accent) 18%,
+        transparent
+      );
+
+    border-radius: 3px;
+
+    pointer-events: none;
+
+    content: "";
+  }
+
+  /* =========================================================
+     SVG
+  ========================================================= */
+
+  .astro-entity-visual__svg {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+  }
+
+  .astro-entity-svg__background {
+    fill:
+      var(--astro-bg);
+  }
+
+  /* =========================================================
+     FRAME
+  ========================================================= */
+
+  .astro-entity-svg__frame {
+    fill: none;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1;
+
+    opacity: 0.76;
+  }
+
+  .astro-entity-svg__frame--soft {
+    stroke:
+      var(--astro-border);
+
+    opacity: 0.72;
+  }
+
+  /* =========================================================
+     CROSSHAIRS
+  ========================================================= */
+
+  .astro-entity-svg__crosshair {
+    stroke:
+      var(--astro-border-soft);
+
+    stroke-width: 1;
+  }
+
+  /* =========================================================
+     ORBITS
+  ========================================================= */
+
+  .astro-entity-svg__orbit {
+    fill: none;
+
+    vector-effect:
+      non-scaling-stroke;
+  }
+
+  .astro-entity-svg__orbit--outer {
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1;
+
+    opacity: 0.72;
+  }
+
+  .astro-entity-svg__orbit--middle {
+    stroke:
+      var(--astro-green-muted);
+
+    stroke-width: 1;
+
+    stroke-dasharray:
+      3 7;
+
+    opacity: 0.7;
+  }
+
+  .astro-entity-svg__orbit--inner {
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1;
+
+    stroke-dasharray:
+      1 6;
+
+    opacity: 0.4;
+  }
+
+  /* =========================================================
+     TICKS
+  ========================================================= */
+
+  .astro-entity-svg__tick {
+    stroke:
+      var(--astro-green-muted);
+
+    stroke-width: 1;
+  }
+
+  .astro-entity-svg__tick--major {
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 2;
+  }
+
+  .astro-entity-svg__microticks
+  line {
+    stroke:
+      var(--astro-border);
+
+    stroke-width: 1;
+  }
+
+  /* =========================================================
+     TARGETS
+  ========================================================= */
+
+  .astro-entity-svg__targets
+  circle {
+    fill:
+      var(--astro-bg);
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1;
+  }
+
+  .astro-entity-svg__targets
+  .astro-entity-svg__target-core {
+    fill:
+      var(--entity-accent);
+
+    stroke: none;
+  }
+
+  /* =========================================================
+     PLANET BASE
+  ========================================================= */
+
+  .astro-planet-disc {
+    fill:
+      #07110a;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1.8;
+
+    filter:
+      drop-shadow(
+        0
+        0
+        6px
+        color-mix(
+          in srgb,
+          var(--entity-accent)
+          25%,
+          transparent
+        )
+      );
+  }
+
+  /* =========================================================
+     SUN
+  ========================================================= */
+
+  .astro-sun-rays
+  line {
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 2;
+
+    stroke-linecap: round;
+
+    opacity: 0.75;
+  }
+
+  .astro-sun-core {
+    fill: none;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1.4;
+  }
+
+  .astro-sun-core--inner {
+    stroke-dasharray:
+      3 5;
+
+    opacity: 0.62;
+  }
+
+  .astro-entity-svg__bright-core {
+    fill:
+      var(--entity-accent);
+
+    filter:
+      drop-shadow(
+        0
+        0
+        5px
+        var(--entity-accent)
+      );
+  }
+
+  /* =========================================================
+     MOON
+  ========================================================= */
+
+  .astro-moon-crescent {
+    fill:
+      var(--entity-accent);
+
+    opacity: 0.55;
+
+    filter:
+      drop-shadow(
+        0
+        0
+        5px
+        var(--entity-accent)
+      );
+  }
+
+  .astro-moon-detail
+  circle {
+    fill: none;
+
+    stroke:
+      var(--astro-green-muted);
+
+    stroke-width: 1;
+
+    opacity: 0.55;
+  }
+
+  /* =========================================================
+     MARS
+  ========================================================= */
+
+  .astro-mars-disc {
+    fill:
+      #07110a;
+  }
+
+  .astro-mars-contours
+  path {
+    fill: none;
+
+    stroke:
+      var(--astro-green-muted);
+
+    stroke-width: 1;
+
+    opacity: 0.72;
+  }
+
+  .astro-mars-craters
+  ellipse,
+  .astro-mars-craters
+  circle {
+    fill:
+      #050b07;
+
+    stroke:
+      color-mix(
+        in srgb,
+        var(--entity-accent) 58%,
+        var(--astro-border)
+      );
+
+    stroke-width: 1;
+  }
+
+  .astro-mars-rift {
+    fill: none;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1.7;
+
+    opacity: 0.85;
+  }
+
+  .astro-mars-terminator {
+    fill: none;
+
+    stroke:
+      var(--astro-border);
+
+    stroke-width: 13;
+
+    opacity: 0.38;
+  }
+
+  .astro-mars-symbol {
+    fill: none;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 2;
+
+    stroke-linecap: square;
+
+    stroke-linejoin: miter;
+  }
+
+  /* =========================================================
+     MERCURY
+  ========================================================= */
+
+  .astro-mercury-craters
+  circle {
+    fill:
+      #050b07;
+
+    stroke:
+      var(--astro-green-muted);
+
+    stroke-width: 1;
+  }
+
+  /* =========================================================
+     JUPITER
+  ========================================================= */
+
+  .astro-jupiter-lines
+  path {
+    fill: none;
+
+    stroke:
+      color-mix(
+        in srgb,
+        var(--entity-accent) 66%,
+        var(--astro-green-muted)
+      );
+
+    stroke-width: 2;
+
+    opacity: 0.72;
+  }
+
+  .astro-jupiter-spot {
+    fill: none;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1.5;
+  }
+
+  /* =========================================================
+     VENUS
+  ========================================================= */
+
+  .astro-venus-clouds
+  path {
+    fill: none;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1.7;
+
+    stroke-linecap: round;
+
+    opacity: 0.62;
+  }
+
+  /* =========================================================
+     SATURN
+  ========================================================= */
+
+  .astro-saturn-ring {
+    fill: none;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 2;
+  }
+
+  .astro-saturn-ring--rear {
+    opacity: 0.42;
+  }
+
+  .astro-saturn-ring--inner {
+    stroke:
+      var(--astro-green-muted);
+
+    stroke-width: 1;
+
+    opacity: 0.72;
+  }
+
+  .astro-saturn-front {
+    fill: none;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 3;
+  }
+
+  .astro-saturn-band {
+    fill: none;
+
+    stroke:
+      var(--astro-green-muted);
+
+    stroke-width: 1;
+  }
+
+  /* =========================================================
+     RAHU / KETU
+  ========================================================= */
+
+  .astro-node-orbit {
+    fill:
+      var(--astro-bg);
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1.8;
+
+    stroke-dasharray:
+      5 5;
+  }
+
+  .astro-node-shadow {
+    fill:
+      #050b07;
+
+    stroke:
+      var(--astro-green-muted);
+
+    stroke-width: 1;
+  }
+
+  .astro-node-path,
+  .astro-ketu-tail {
+    fill: none;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 2.5;
+
+    stroke-linecap: round;
+
+    stroke-linejoin: round;
+  }
+
+  /* =========================================================
+     ZODIAC
+  ========================================================= */
+
+  .astro-zodiac__outer,
+  .astro-zodiac__inner {
+    fill:
+      var(--astro-bg);
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1.3;
+  }
+
+  .astro-zodiac__inner {
+    stroke-dasharray:
+      3 5;
+
+    opacity: 0.65;
+  }
+
+  .astro-zodiac__diamond {
+    fill: none;
+
+    stroke:
+      var(--astro-green-muted);
+
+    stroke-width: 1;
+
+    opacity: 0.6;
+  }
+
+  .astro-zodiac__glyph
+  path {
+    fill: none;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 7.5;
+
+    stroke-linecap: round;
+
+    stroke-linejoin: round;
+
+    filter:
+      drop-shadow(
+        0
+        0
+        3px
+        color-mix(
+          in srgb,
+          var(--entity-accent)
+          30%,
+          transparent
+        )
+      );
+  }
+
+  .astro-zodiac__anchors
+  circle {
+    fill:
+      var(--entity-accent);
+  }
+
+  /* =========================================================
+     NAKSHATRA
+  ========================================================= */
+
+  .astro-nakshatra__field {
+    fill: none;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1.3;
+  }
+
+  .astro-nakshatra__field--inner {
+    stroke:
+      var(--astro-green-muted);
+
+    stroke-dasharray:
+      2 6;
+  }
+
+  .astro-nakshatra__connections
+  line {
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1.3;
+
+    opacity: 0.72;
+  }
+
+  .astro-nakshatra__stars
+  circle {
+    fill:
+      var(--astro-bg);
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1.3;
+  }
+
+  .astro-nakshatra__stars
+  .astro-nakshatra__star-core {
+    fill:
+      var(--entity-accent);
+
+    stroke: none;
+
+    filter:
+      drop-shadow(
+        0
+        0
+        4px
+        var(--entity-accent)
+      );
+  }
+
+  .astro-nakshatra__index-core {
+    fill:
+      var(--astro-bg);
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width: 1.3;
+  }
+
+  .astro-nakshatra__index {
+    fill:
+      var(--entity-accent);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      11px;
+  }
+
+  /* =========================================================
+     HOUSE // NEW BHAVA MAP
+  ========================================================= */
+
+  /*
+   * The square itself is deliberately dark.
+   * It sits on top of the circular HUD without
+   * becoming visually disconnected from it.
+   */
+
+  .astro-house__chart-bg {
+    fill:
+      color-mix(
+        in srgb,
+        var(--astro-bg) 92%,
+        var(--entity-accent)
+      );
+
+    stroke:
+      none;
+  }
+
+  /*
+   * Every house exists as an actual polygon.
+   * Normally those polygons are transparent.
+   */
+
+  .astro-house__sector {
+    fill:
+      transparent;
+
+    stroke:
+      transparent;
+
+    stroke-width:
+      1;
+
+    vector-effect:
+      non-scaling-stroke;
+  }
+
+  /*
+   * Selected bhava:
+   *
+   * - translucent accent fill
+   * - brighter physical boundary
+   * - subtle glow
+   *
+   * This is now the main visual information.
+   */
+
+  .astro-house__sector.is-active {
+    fill:
+      color-mix(
+        in srgb,
+        var(--entity-accent) 25%,
+        transparent
+      );
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width:
+      2.2;
+
+    filter:
+      drop-shadow(
+        0
+        0
+        5px
+        color-mix(
+          in srgb,
+          var(--entity-accent) 58%,
+          transparent
+        )
+      );
+
+    animation:
+      astro-house-sector-pulse
+      2.6s
+      ease-in-out
+      infinite;
+  }
+
+  /*
+   * Fine diagonal terminal hatching.
+   */
+
+  .astro-house__active-hatch {
+    pointer-events:
+      none;
+
+    opacity:
+      0.42;
+  }
+
+  .astro-house__hatch-line {
+    stroke:
+      var(--entity-accent);
+
+    stroke-width:
+      1;
+  }
+
+  /*
+   * Complete North Indian chart skeleton.
+   * This remains visible on EVERY house.
+   */
+
+  .astro-house__skeleton
+  rect,
+  .astro-house__skeleton
+  path,
+  .astro-house__skeleton
+  line {
+    fill:
+      none;
+
+    stroke:
+      var(--astro-green-muted);
+
+    stroke-width:
+      1.4;
+
+    vector-effect:
+      non-scaling-stroke;
+
+    opacity:
+      0.9;
+  }
+
+  /*
+   * Outer square gets a little more weight.
+   */
+
+  .astro-house__skeleton
+  rect {
+    stroke:
+      var(--entity-accent);
+
+    stroke-width:
+      1.7;
+
+    opacity:
+      0.82;
+  }
+
+  /*
+   * Target reticle on the active bhava.
+   *
+   * No number.
+   * The location itself becomes the information.
+   */
+
+  .astro-house__target
+  circle,
+  .astro-house__target
+  line {
+    fill:
+      var(--astro-bg);
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width:
+      1.3;
+
+    vector-effect:
+      non-scaling-stroke;
+  }
+
+  .astro-house__target
+  line {
+    fill:
+      none;
+
+    opacity:
+      0.8;
+  }
+
+  .astro-house__target
+  .astro-house__target-core {
+    fill:
+      var(--entity-accent);
+
+    stroke:
+      var(--entity-accent);
+
+    filter:
+      drop-shadow(
+        0
+        0
+        5px
+        var(--entity-accent)
+      );
+  }
+
+  /*
+   * Four small technical framing corners.
+   */
+
+  .astro-house__corner-markers
+  path {
+    fill:
+      none;
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width:
+      1;
+
+    opacity:
+      0.5;
+  }
+
+  @keyframes astro-house-sector-pulse {
+    0%,
+    100% {
+      fill:
+        color-mix(
+          in srgb,
+          var(--entity-accent) 18%,
+          transparent
+        );
+
+      opacity:
+        0.82;
+    }
+
+    50% {
+      fill:
+        color-mix(
+          in srgb,
+          var(--entity-accent) 30%,
+          transparent
+        );
+
+      opacity:
+        1;
+    }
+  }
+
+  /* =========================================================
+     NAMEPLATE
+  ========================================================= */
+
+  .astro-entity-svg__nameplate
+  rect {
+    fill:
+      var(--astro-bg);
+
+    stroke:
+      var(--entity-accent);
+
+    stroke-width:
+      1;
+  }
+
+  .astro-entity-svg__name {
+    fill:
+      var(--entity-accent);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      12px;
+
+    letter-spacing:
+      2px;
+  }
+
+  .astro-entity-svg__alternate {
+    fill:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      7px;
+
+    letter-spacing:
+      1px;
+  }
+
+  /* =========================================================
+     MICRO COPY
+  ========================================================= */
+
+  .astro-entity-svg__microcopy
+  text {
+    fill:
+      var(--astro-green-muted);
+
+    font-family:
+      var(--astro-display-font);
+
+    font-size:
+      6px;
+
+    letter-spacing:
+      1px;
+  }
+
+  /* =========================================================
+     SCAN LINE
+  ========================================================= */
+
+  .astro-entity-visual__scanline {
+    position: absolute;
+
+    top: 9%;
+
+    right: 6%;
+    left: 6%;
+
+    z-index: 4;
+
+    height: 1px;
+
+    pointer-events: none;
+
+    background:
+      linear-gradient(
+        90deg,
+        transparent,
+        color-mix(
+          in srgb,
+          var(--entity-accent) 44%,
+          transparent
+        ),
+        transparent
+      );
+
+    opacity: 0;
+
+    animation:
+      astro-entity-scan
+      6.5s
+      linear
+      infinite;
+  }
+
+  @keyframes astro-entity-scan {
+    0% {
+      transform:
+        translateY(0);
+
+      opacity:
+        0;
+    }
+
+    12% {
+      opacity:
+        0.45;
+    }
+
+    85% {
+      opacity:
+        0.28;
+    }
+
+    100% {
+      transform:
+        translateY(
+          335px
+        );
+
+      opacity:
+        0;
+    }
+  }
+
+  /* =========================================================
+     PAUSE SUPPORT
+  ========================================================= */
+
+  :global(.animations-paused)
+  .astro-entity-visual__scanline,
+
+  :global(.animations-paused)
+  .astro-house__sector.is-active {
+    animation-play-state:
+      paused !important;
+  }
+
+  /* =========================================================
+     REDUCED MOTION
+  ========================================================= */
+
+  @media
+    (
+      prefers-reduced-motion:
+        reduce
+    ) {
+
+    .astro-entity-visual__scanline,
+    .astro-house__sector.is-active {
+      animation:
+        none;
+    }
+  }
+</style>

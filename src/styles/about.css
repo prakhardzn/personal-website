@@ -1268,6 +1268,36 @@
     color 140ms ease;
 }
 
+.about-file-card--project-link {
+  color:
+    var(--terminal-white);
+
+  text-decoration:
+    none;
+
+  cursor:
+    pointer;
+}
+
+.about-file-card--project-link:visited {
+  color:
+    var(--terminal-white);
+}
+
+.about-file-card--project-link:focus-visible {
+  outline:
+    2px solid
+    var(--about-card-accent);
+
+  outline-offset:
+    3px;
+}
+
+.about-file-card--project-link:hover,
+.about-file-card--project-link:focus-visible {
+  text-decoration:
+    none;
+}
 
 .about-file-card:nth-child(4n + 1) {
   --about-card-accent:

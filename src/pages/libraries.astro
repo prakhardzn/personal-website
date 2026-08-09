@@ -2,37 +2,478 @@
 import InternalPageLayout from "../layouts/InternalPageLayout.astro";
 import "../styles/libraries.css";
 
+import { getCollection } from "astro:content";
+
 import {
+  libraryCategories,
   defaultLibraryCategory,
   getLibraryEntries,
-  libraryCategories,
-  libraryEntries,
 } from "../data/library";
 
-const categorySummaries = libraryCategories.map((category) => {
-  const entries = getLibraryEntries(category.key);
+import type {
+  LibraryCategoryKey,
+  LibraryEntry,
+} from "../data/library";
 
-  const completedCount = entries.filter(
-    (entry) => entry.state === "completed"
-  ).length;
 
-  const pendingCount = entries.filter(
-    (entry) => entry.state === "pending"
-  ).length;
+/* =========================================================
+   TYPES
+========================================================= */
 
-  return {
-    ...category,
-    entries,
-    totalCount: entries.length,
-    completedCount,
-    pendingCount,
+type DisplayLibraryEntry =
+  LibraryEntry & {
+    poster: string | null;
+    imdbId?: string | null;
+    imdbRating?: string | null;
   };
-});
 
-const defaultCategory =
-  categorySummaries.find(
-    (category) => category.key === defaultLibraryCategory.key
-  ) ?? categorySummaries[0];
+
+interface MusicSignal {
+  id: string;
+  title: string;
+  artist: string;
+  album: string | null;
+  year: string | null;
+  recordingId: string;
+  releaseId: string | null;
+  releaseGroupId: string | null;
+  durationMs: number | null;
+  cover: string | null;
+  status: "saved" | "discover-later";
+  favourite: boolean;
+  myRating: number | null;
+  shelf: string;
+  tags: string[];
+  note: string;
+}
+
+
+/* =========================================================
+   MOVIES
+========================================================= */
+
+const markdownMovies =
+  (
+    await getCollection("movies")
+  ).sort(
+    (first, second) =>
+      second.data.addedAt.localeCompare(
+        first.data.addedAt
+      )
+  );
+
+
+const savedMovieEntries:
+  DisplayLibraryEntry[] =
+  markdownMovies.map(
+    (movie, index) => {
+      const data = movie.data;
+
+      const personalNote =
+        movie.body?.trim() ||
+        "No personal note yet.";
+
+      const statusLabel =
+        data.status === "watched"
+          ? "WATCHED"
+          : "WATCHLIST";
+
+      const state =
+        data.status === "watched"
+          ? "completed"
+          : "pending";
+
+      return {
+        id: `movie-${movie.id}`,
+
+        category: "movies",
+
+        title: data.title,
+
+        creator:
+          data.director ??
+          "Director unavailable",
+
+        year: data.year,
+
+        mediaType: "MOVIE",
+
+        state,
+
+        statusLabel,
+
+        favourite:
+          data.favourite,
+
+        rating:
+          data.myRating,
+
+        note:
+          personalNote,
+
+        synopsis:
+          data.plot ??
+          "No plot information available.",
+
+        shelf:
+          data.shelf,
+
+        coverCode:
+          `MOV-${String(
+            index + 1
+          ).padStart(3, "0")}`,
+
+        coverCaption:
+          data.title,
+
+        coverTone:
+          "green",
+
+        tags:
+          data.tags.length
+            ? data.tags
+            : data.genre,
+
+        facts: [
+          {
+            label: "DIRECTOR",
+            value:
+              data.director ??
+              "Unknown",
+          },
+
+          {
+            label: "RUNTIME",
+            value:
+              data.runtime ??
+              "Unknown",
+          },
+
+          {
+            label: "GENRE",
+            value:
+              data.genre.length
+                ? data.genre.join(", ")
+                : "Unknown",
+          },
+
+          {
+            label: "IMDb",
+            value:
+              data.imdbRating
+                ? `${data.imdbRating}/10`
+                : "Unrated",
+          },
+
+          {
+            label: "IMDb ID",
+            value:
+              data.imdbId,
+          },
+
+          {
+            label: "RELEASED",
+            value:
+              data.released ??
+              "Unknown",
+          },
+
+          {
+            label: "LANGUAGE",
+            value:
+              data.language.length
+                ? data.language.join(", ")
+                : "Unknown",
+          },
+
+          {
+            label: "COUNTRY",
+            value:
+              data.country.length
+                ? data.country.join(", ")
+                : "Unknown",
+          },
+        ],
+
+        poster:
+          data.poster,
+
+        imdbId:
+          data.imdbId,
+
+        imdbRating:
+          data.imdbRating,
+      };
+    }
+  );
+
+
+/* =========================================================
+   GAMES
+========================================================= */
+
+const gameEntries:
+  DisplayLibraryEntry[] =
+  getLibraryEntries("games").map(
+    (entry) => ({
+      ...entry,
+
+      poster: null,
+
+      imdbId: null,
+
+      imdbRating: null,
+    })
+  );
+
+
+const genericEntries:
+  DisplayLibraryEntry[] = [
+    ...savedMovieEntries,
+    ...gameEntries,
+  ];
+
+
+/* =========================================================
+   MUSIC
+========================================================= */
+
+const markdownMusic =
+  await getCollection("music");
+
+
+const musicSignals:
+  MusicSignal[] =
+  markdownMusic.map(
+    (song) => ({
+      id:
+        song.id,
+
+      title:
+        song.data.title,
+
+      artist:
+        song.data.artist,
+
+      album:
+        song.data.album,
+
+      year:
+        song.data.year,
+
+      recordingId:
+        song.data.recordingId,
+
+      releaseId:
+        song.data.releaseId,
+
+      releaseGroupId:
+        song.data.releaseGroupId,
+
+      durationMs:
+        song.data.durationMs,
+
+      cover:
+        song.data.cover,
+
+      status:
+        song.data.status,
+
+      favourite:
+        song.data.favourite,
+
+      myRating:
+        song.data.myRating,
+
+      shelf:
+        song.data.shelf,
+
+      tags:
+        song.data.tags,
+
+      note:
+        song.body?.trim() ||
+        "No personal note yet.",
+    })
+  );
+
+
+/* =========================================================
+   MUSIC ARTISTS
+========================================================= */
+
+const preferredArtistOrder = [
+  "Daft Punk",
+  "Toby Fox",
+  "Tame Impala",
+  "The Beatles",
+  "Maroon 5",
+  "Michael Jackson",
+  "Queen",
+  "Eminem",
+  "Dua Lipa",
+];
+
+
+const discoveredArtists =
+  Array.from(
+    new Set(
+      musicSignals.map(
+        (signal) =>
+          signal.artist
+      )
+    )
+  );
+
+
+const orderedArtists = [
+  ...preferredArtistOrder.filter(
+    (artist) =>
+      discoveredArtists.includes(
+        artist
+      )
+  ),
+
+  ...discoveredArtists
+    .filter(
+      (artist) =>
+        !preferredArtistOrder.includes(
+          artist
+        )
+    )
+    .sort(
+      (first, second) =>
+        first.localeCompare(second)
+    ),
+];
+
+
+const artistSummaries =
+  orderedArtists.map(
+    (artist) => {
+      const songs =
+        musicSignals.filter(
+          (song) =>
+            song.artist === artist
+        );
+
+      const albums =
+        new Set(
+          songs.map(
+            (song) =>
+              song.album ??
+              "Loose Signals"
+          )
+        );
+
+      const cover =
+        songs.find(
+          (song) =>
+            Boolean(song.cover)
+        )?.cover ??
+        null;
+
+      return {
+        artist,
+
+        count:
+          songs.length,
+
+        albums:
+          albums.size,
+
+        cover,
+      };
+    }
+  );
+
+
+/* =========================================================
+   CATEGORY HELPERS
+========================================================= */
+
+const getGenericEntries =
+  (
+    category:
+      LibraryCategoryKey
+  ) =>
+    genericEntries.filter(
+      (entry) =>
+        entry.category ===
+        category
+    );
+
+
+const getCategoryCount =
+  (
+    category:
+      LibraryCategoryKey
+  ) => {
+    if (
+      category === "music"
+    ) {
+      return musicSignals.length;
+    }
+
+    return getGenericEntries(
+      category
+    ).length;
+  };
+
+
+const movieCount =
+  getCategoryCount("movies");
+
+const gameCount =
+  getCategoryCount("games");
+
+const musicCount =
+  getCategoryCount("music");
+
+
+const archiveNodes = [
+  {
+    key: "movies",
+    number: "01",
+    title: "MOVIE FILES",
+    short: "CINEMA STORAGE",
+    count: movieCount,
+    unit: "FILES",
+    description:
+      "Films, short films and moving images stored inside the visual archive.",
+  },
+
+  {
+    key: "games",
+    number: "02",
+    title: "GAME VAULT",
+    short: "INTERACTIVE STORAGE",
+    count: gameCount,
+    unit: "FILES",
+    description:
+      "Games played, completed, abandoned or remembered for suspiciously long periods.",
+  },
+
+  {
+    key: "music",
+    number: "03",
+    title: "AUDIO SIGNALS",
+    short: "FREQUENCY ARCHIVE",
+    count: musicCount,
+    unit: "SIGNALS",
+    description:
+      "Songs and artists repeatedly transmitted into the headphones.",
+  },
+] as const;
+
+
+const musicDataJson =
+  JSON.stringify(
+    musicSignals
+  ).replace(
+    /</g,
+    "\\u003c"
+  );
 ---
 
 <InternalPageLayout
@@ -41,869 +482,2235 @@ const defaultCategory =
   message="This archive is poorly organised, emotionally biased and somehow still operational."
   pageClass="libraries-page"
 >
-  <!-- ==================================================
-       LEFT COLUMN
-  =================================================== -->
+  <!-- =====================================================
+       LEFT SYSTEM MONITOR
+  ====================================================== -->
 
   <div
     slot="sidebar"
     class="library-left-column"
   >
-    <figure
-      class="library-terminal"
-      aria-labelledby="library-terminal-title"
+    <section
+      class="library-monitor"
     >
-      <header class="library-terminal__header">
-        <div>
-          <span
-            class="library-online-dot"
-            aria-hidden="true"
-          ></span>
-
-          <strong id="library-terminal-title">
-            MEDIA CORE // L-01
-          </strong>
-        </div>
-
+      <header
+        class="library-monitor__header"
+      >
         <span>
+          ■ MEDIA INDEX // LIB-04
+        </span>
+
+        <span
+          class="library-online-status"
+        >
+          <i></i>
           SYS: ONLINE
         </span>
       </header>
 
-      <div class="library-terminal__viewport">
-        <span class="library-coordinate library-coordinate--north">
-          Y: +090
+
+      <div
+        class="library-monitor-radar"
+        aria-hidden="true"
+      >
+        <span
+          class="library-monitor-radar__ring library-monitor-radar__ring--1"
+        ></span>
+
+        <span
+          class="library-monitor-radar__ring library-monitor-radar__ring--2"
+        ></span>
+
+        <span
+          class="library-monitor-radar__ring library-monitor-radar__ring--3"
+        ></span>
+
+        <span
+          class="library-monitor-radar__axis library-monitor-radar__axis--x"
+        ></span>
+
+        <span
+          class="library-monitor-radar__axis library-monitor-radar__axis--y"
+        ></span>
+
+        <span
+          class="library-monitor-radar__scanner"
+        ></span>
+
+        <span
+          class="library-monitor-radar__blip library-monitor-radar__blip--1"
+        >
+          01
         </span>
 
-        <span class="library-coordinate library-coordinate--east">
-          X: +180
+        <span
+          class="library-monitor-radar__blip library-monitor-radar__blip--2"
+        >
+          02
         </span>
 
-        <span class="library-coordinate library-coordinate--south">
-          Y: -090
+        <span
+          class="library-monitor-radar__blip library-monitor-radar__blip--3"
+        >
+          03
         </span>
 
-        <span class="library-coordinate library-coordinate--west">
-          X: 000
-        </span>
 
         <div
-          class="library-radar"
-          aria-hidden="true"
+          class="library-monitor-radar__core"
         >
-          <span class="library-radar__ring library-radar__ring--outer">
+          <span>
+            MEDIA
           </span>
 
-          <span class="library-radar__ring library-radar__ring--middle">
-          </span>
-
-          <span class="library-radar__ring library-radar__ring--inner">
-          </span>
-
-          <span class="library-radar__horizontal">
-          </span>
-
-          <span class="library-radar__vertical">
-          </span>
-
-          <span class="library-radar__scanner">
-          </span>
-
-          <div class="library-radar__core">
-            <span>
-              MEDIA
-            </span>
-
-            <strong>
-              CORE
-            </strong>
-
-            <small>
-              L-01
-            </small>
-          </div>
-
-          {
-            categorySummaries.map((category, index) => (
-              <span
-                class:list={[
-                  "library-radar__node",
-                  `library-radar__node--${category.key}`,
-                  category.key === defaultCategory.key && "is-active",
-                ]}
-                data-library-radar-node={category.key}
-                style={`--node-index: ${index};`}
-              >
-                <i>
-                  {category.number}
-                </i>
-
-                <strong>
-                  {category.shortTitle}
-                </strong>
-              </span>
-            ))
-          }
+          <strong>
+            VAULT_
+          </strong>
         </div>
       </div>
 
-      <figcaption class="library-terminal__footer">
-        <span>
-          ARCHIVES
 
-          <strong>
-            {String(categorySummaries.length).padStart(2, "0")}
-          </strong>
-        </span>
-
-        <span>
-          RECORDS
-
-          <strong>
-            {String(libraryEntries.length).padStart(2, "0")}
-          </strong>
-        </span>
-
-        <span class="library-terminal__status">
-          <i aria-hidden="true"></i>
-
-          SIGNAL STABLE
-        </span>
-      </figcaption>
-    </figure>
-
-    <section
-      class="library-sidebar-card"
-      aria-live="polite"
-    >
-      <header class="library-sidebar-card__header">
-        <span>
-          SELECTED ARCHIVE
-        </span>
-
-        <strong id="library-sidebar-number">
-          {defaultCategory.number}
-        </strong>
-      </header>
-
-      <div class="library-sidebar-card__content">
+      <div
+        class="library-monitor-copy"
+      >
         <p>
-          CURRENT STORAGE UNIT
+          REFERENCE TERMINAL
         </p>
 
-        <h2 id="library-sidebar-title">
-          {defaultCategory.title}
-        </h2>
+        <h1>
+          THE LIBRARIES
+        </h1>
 
-        <span id="library-sidebar-description">
-          {defaultCategory.description}
+        <span>
+          A personal storage system for movies, games and frequencies that survived my attention span.
         </span>
-
-        <dl>
-          <div>
-            <dt id="library-sidebar-stat-one-label">
-              {defaultCategory.firstStatLabel}
-            </dt>
-
-            <dd id="library-sidebar-stat-one-value">
-              {String(defaultCategory.completedCount).padStart(3, "0")}
-            </dd>
-          </div>
-
-          <div>
-            <dt id="library-sidebar-stat-two-label">
-              {defaultCategory.secondStatLabel}
-            </dt>
-
-            <dd id="library-sidebar-stat-two-value">
-              {String(defaultCategory.pendingCount).padStart(3, "0")}
-            </dd>
-          </div>
-        </dl>
       </div>
 
-      <footer class="library-sidebar-card__footer">
-        <span
-          class="library-status-dot"
-          aria-hidden="true"
-        ></span>
 
-        <span id="library-sidebar-status">
-          {defaultCategory.systemStatus}
+      <div
+        class="library-system-readout"
+      >
+        <div>
+          <span>
+            MOVIES
+          </span>
+
+          <strong>
+            {
+              String(
+                movieCount
+              ).padStart(
+                3,
+                "0"
+              )
+            }
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            GAMES
+          </span>
+
+          <strong>
+            {
+              String(
+                gameCount
+              ).padStart(
+                3,
+                "0"
+              )
+            }
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            SIGNALS
+          </span>
+
+          <strong>
+            {
+              String(
+                musicCount
+              ).padStart(
+                4,
+                "0"
+              )
+            }
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            SYNC
+          </span>
+
+          <strong>
+            STABLE
+          </strong>
+        </div>
+      </div>
+
+
+      <footer
+        class="library-monitor-footer"
+      >
+        <span>
+          STORAGE
+        </span>
+
+        <span>
+          READ/WRITE
+        </span>
+
+        <span>
+          ■ ACTIVE
         </span>
       </footer>
     </section>
   </div>
 
-  <!-- ==================================================
-       RIGHT COLUMN
-  =================================================== -->
+
+  <!-- =====================================================
+       RIGHT CONTENT
+  ====================================================== -->
 
   <div
     slot="content"
     class="library-right-column"
   >
-    <!-- ==================================================
-         ENTRANCE VIEW
-    =================================================== -->
-
-    <section
-      class="library-view library-view--entrance"
-      id="library-entrance-view"
+    <div
+      class="library-interface"
     >
-      <header class="library-page-header">
-        <div>
+      <!-- =================================================
+           MEDIA ARCHIVE ROUTER
+      ================================================== -->
+
+      <section
+        class="library-entrance"
+        id="library-entrance"
+      >
+        <header
+          class="library-index-header"
+        >
           <p>
-            PERSONAL MEDIA STORAGE SYSTEM
+            ■ MEDIA STORAGE
           </p>
 
-          <h1>
-            Interdimensional Library
-          </h1>
+          <h2>
+            THE ARCHIVE
+          </h2>
 
           <span>
-            Things I watched, played and listened to instead of
-            doing something productive.
+            Select a storage node to enter its records.
           </span>
-        </div>
+        </header>
 
-        <div class="library-page-header__status">
-          <i aria-hidden="true"></i>
 
-          <span>
-            <small>
-              ARCHIVE STATUS
-            </small>
+        <div
+          class="archive-router-shell"
+        >
+          <div
+            class="archive-router-terminal-bar"
+          >
+            <span>
+              INTERDIMENSIONAL STORAGE ROUTER
+            </span>
 
-            <strong>
-              POORLY ORGANISED
-            </strong>
-          </span>
-        </div>
-      </header>
+            <span>
+              NODE LINK // STABLE
+            </span>
+          </div>
 
-      <div class="library-portal-grid">
-        {
-          categorySummaries.map((category) => (
-            <button
-              class:list={[
-                "library-portal-card",
-                `library-portal-card--${category.key}`,
-                category.key === defaultCategory.key && "is-selected",
-              ]}
-              type="button"
-              data-library-category={category.key}
-              data-number={category.number}
-              data-title={category.title}
-              data-description={category.description}
-              data-status={category.systemStatus}
-              data-first-label={category.firstStatLabel}
-              data-first-value={String(category.completedCount).padStart(
-                3,
-                "0"
-              )}
-              data-second-label={category.secondStatLabel}
-              data-second-value={String(category.pendingCount).padStart(
-                3,
-                "0"
-              )}
-              data-action-label={category.actionLabel}
-              aria-pressed={
-                category.key === defaultCategory.key ? "true" : "false"
-              }
+
+          <div
+            class="archive-router-layout"
+          >
+            <!-- ROUTER -->
+
+            <div
+              class="archive-router-stage"
             >
-              <span class="library-portal-card__header">
-                <span>
-                  STORAGE UNIT {category.number}
-                </span>
+              <span
+                class="archive-router-grid"
+                aria-hidden="true"
+              ></span>
 
-                <span>
-                  <i aria-hidden="true"></i>
 
-                  READY
-                </span>
+              <span
+                class="archive-router-orbit archive-router-orbit--1"
+                aria-hidden="true"
+              ></span>
+
+              <span
+                class="archive-router-orbit archive-router-orbit--2"
+                aria-hidden="true"
+              ></span>
+
+              <span
+                class="archive-router-orbit archive-router-orbit--3"
+                aria-hidden="true"
+              ></span>
+
+
+              <!-- ROUTES -->
+
+              <span
+                class="archive-route archive-route--movies"
+                aria-hidden="true"
+              >
+                <i></i>
               </span>
 
               <span
-                class="library-portal-card__visual"
+                class="archive-route archive-route--games"
                 aria-hidden="true"
               >
-                <span class="library-portal-card__orbit library-portal-card__orbit--outer">
-                </span>
-
-                <span class="library-portal-card__orbit library-portal-card__orbit--inner">
-                </span>
-
-                <span class="library-portal-card__symbol">
-                  {
-                    category.key === "movies"
-                      ? "▶"
-                      : category.key === "games"
-                        ? "+"
-                        : "≋"
-                  }
-                </span>
-
-                <small>
-                  {category.shortTitle}
-                </small>
+                <i></i>
               </span>
 
-              <span class="library-portal-card__content">
-                <small>
-                  {category.secondaryLabel}
-                </small>
-
-                <strong>
-                  {category.title}
-                </strong>
-
-                <span>
-                  {category.description}
-                </span>
+              <span
+                class="archive-route archive-route--music"
+                aria-hidden="true"
+              >
+                <i></i>
               </span>
 
-              <span class="library-portal-card__footer">
-                <span>
+
+              <!-- CENTRAL CORE -->
+
+              <div
+                class="archive-core"
+                aria-hidden="true"
+              >
+                <span
+                  class="archive-core__ring archive-core__ring--outer"
+                ></span>
+
+                <span
+                  class="archive-core__ring archive-core__ring--middle"
+                ></span>
+
+                <span
+                  class="archive-core__scanner"
+                ></span>
+
+                <span
+                  class="archive-core__crosshair archive-core__crosshair--x"
+                ></span>
+
+                <span
+                  class="archive-core__crosshair archive-core__crosshair--y"
+                ></span>
+
+                <div
+                  class="archive-core__label"
+                >
+                  <small>
+                    MEDIA
+                  </small>
+
                   <strong>
-                    {String(category.totalCount).padStart(2, "0")}
+                    CORE_
                   </strong>
 
-                  {category.countLabel}
+                  <em>
+                    03 NODES
+                  </em>
+                </div>
+              </div>
+
+
+              <!-- MOVIES -->
+
+              <button
+                class="archive-node archive-node--movies"
+                type="button"
+                data-open-library="movies"
+                data-router-node="movies"
+                data-router-number="01"
+                data-router-title="MOVIE FILES"
+                data-router-subtitle="CINEMA STORAGE"
+                data-router-count={String(movieCount)}
+                data-router-unit="FILES"
+                data-router-description="Films, short films and moving images stored inside the visual archive."
+              >
+                <span
+                  class="archive-node__number"
+                >
+                  01
                 </span>
 
+                <span
+                  class="archive-node__machine archive-node__machine--movie"
+                  aria-hidden="true"
+                >
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+
+                  <b></b>
+                </span>
+
+                <span
+                  class="archive-node__copy"
+                >
+                  <strong>
+                    MOVIE FILES
+                  </strong>
+
+                  <small>
+                    {
+                      movieCount
+                    } FILES
+                  </small>
+                </span>
+              </button>
+
+
+              <!-- GAMES -->
+
+              <button
+                class="archive-node archive-node--games"
+                type="button"
+                data-open-library="games"
+                data-router-node="games"
+                data-router-number="02"
+                data-router-title="GAME VAULT"
+                data-router-subtitle="INTERACTIVE STORAGE"
+                data-router-count={String(gameCount)}
+                data-router-unit="FILES"
+                data-router-description="Games played, completed, abandoned or remembered for suspiciously long periods."
+              >
+                <span
+                  class="archive-node__number"
+                >
+                  02
+                </span>
+
+                <span
+                  class="archive-node__machine archive-node__machine--game"
+                  aria-hidden="true"
+                >
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                </span>
+
+                <span
+                  class="archive-node__copy"
+                >
+                  <strong>
+                    GAME VAULT
+                  </strong>
+
+                  <small>
+                    {
+                      gameCount
+                    } FILES
+                  </small>
+                </span>
+              </button>
+
+
+              <!-- MUSIC -->
+
+              <button
+                class="archive-node archive-node--music"
+                type="button"
+                data-open-library="music"
+                data-router-node="music"
+                data-router-number="03"
+                data-router-title="AUDIO SIGNALS"
+                data-router-subtitle="FREQUENCY ARCHIVE"
+                data-router-count={String(musicCount)}
+                data-router-unit="SIGNALS"
+                data-router-description="Songs and artists repeatedly transmitted into the headphones."
+              >
+                <span
+                  class="archive-node__number"
+                >
+                  03
+                </span>
+
+                <span
+                  class="archive-node__machine archive-node__machine--music"
+                  aria-hidden="true"
+                >
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                </span>
+
+                <span
+                  class="archive-node__copy"
+                >
+                  <strong>
+                    AUDIO SIGNALS
+                  </strong>
+
+                  <small>
+                    {
+                      musicCount
+                    } SIGNALS
+                  </small>
+                </span>
+              </button>
+
+
+              <span
+                class="archive-coordinate archive-coordinate--top"
+              >
+                Y:+090
+              </span>
+
+              <span
+                class="archive-coordinate archive-coordinate--right"
+              >
+                X:+180
+              </span>
+
+              <span
+                class="archive-coordinate archive-coordinate--bottom"
+              >
+                Y:-090
+              </span>
+
+              <span
+                class="archive-coordinate archive-coordinate--left"
+              >
+                X:000
+              </span>
+            </div>
+
+
+            <!-- LIVE PREVIEW -->
+
+            <aside
+              class="archive-node-preview"
+            >
+              <div
+                class="archive-node-preview__header"
+              >
                 <span>
-                  SELECT →
+                  ACTIVE NODE
                 </span>
-              </span>
 
-              <span class="library-portal-card__selected">
-                SELECTED
-              </span>
-            </button>
-          ))
-        }
-      </div>
+                <span
+                  class="archive-node-preview__pulse"
+                >
+                  ■
+                </span>
+              </div>
 
-      <section class="library-open-panel">
-        <div>
-          <span>
-            ACTIVE STORAGE UNIT
-          </span>
 
-          <strong id="library-active-title">
-            {defaultCategory.title}
-          </strong>
-        </div>
+              <div
+                class="archive-node-preview__number"
+                id="router-preview-number"
+              >
+                01
+              </div>
 
-        <p id="library-active-description">
-          {defaultCategory.description}
-        </p>
 
-        <button
-          id="library-open-collection"
-          type="button"
-        >
-          <span id="library-open-label">
-            {defaultCategory.actionLabel}
-          </span>
+              <p
+                id="router-preview-subtitle"
+              >
+                CINEMA STORAGE
+              </p>
 
-          <span aria-hidden="true">
-            →
-          </span>
-        </button>
-      </section>
-    </section>
 
-    <!-- ==================================================
-         COLLECTION VIEW
-    =================================================== -->
+              <h3
+                id="router-preview-title"
+              >
+                MOVIE FILES
+              </h3>
 
-    <section
-      class="library-view library-view--collection"
-      id="library-collection-view"
-      hidden
-    >
-      <header class="library-collection-header">
-        <button
-          class="library-return-button"
-          id="library-return-button"
-          type="button"
-        >
-          ← ARCHIVE ENTRANCE
-        </button>
 
-        <div>
-          <p>
-            ACTIVE COLLECTION
-          </p>
+              <div
+                class="archive-node-preview__divider"
+              ></div>
 
-          <h1
-            id="library-collection-title"
-            tabindex="-1"
-          >
-            {defaultCategory.title}
-          </h1>
 
-          <span id="library-collection-description">
-            {defaultCategory.description}
-          </span>
-        </div>
+              <p
+                class="archive-node-preview__description"
+                id="router-preview-description"
+              >
+                Films, short films and moving images stored inside the visual archive.
+              </p>
 
-        <aside>
-          <small>
-            ARCHIVED ITEMS
-          </small>
 
-          <strong id="library-collection-count">
-            {String(defaultCategory.totalCount).padStart(2, "0")}
-          </strong>
-        </aside>
-      </header>
-
-      <nav
-        class="library-tabs"
-        aria-label="Library categories"
-        role="tablist"
-      >
-        {
-          categorySummaries.map((category) => (
-            <button
-              class:list={[
-                "library-tab",
-                `library-tab--${category.key}`,
-                category.key === defaultCategory.key && "is-active",
-              ]}
-              type="button"
-              role="tab"
-              data-library-tab={category.key}
-              data-title={category.title}
-              data-description={category.description}
-              data-count={String(category.totalCount).padStart(2, "0")}
-              aria-selected={
-                category.key === defaultCategory.key ? "true" : "false"
-              }
-            >
-              <span>
-                {category.number}
-              </span>
-
-              <strong>
-                {category.shortTitle}
-              </strong>
-
-              <small>
-                {String(category.totalCount).padStart(2, "0")}
-              </small>
-            </button>
-          ))
-        }
-      </nav>
-
-      <div class="library-panel-stage">
-        {
-          categorySummaries.map((category) => (
-            <section
-              class:list={[
-                "library-collection-panel",
-                `library-collection-panel--${category.key}`,
-              ]}
-              data-library-panel={category.key}
-              hidden={category.key !== defaultCategory.key}
-            >
-              <header class="library-filter-bar">
+              <dl
+                class="archive-node-preview__data"
+              >
                 <div>
+                  <dt>
+                    RECORDS
+                  </dt>
+
+                  <dd
+                    id="router-preview-count"
+                  >
+                    {
+                      movieCount
+                    }
+                  </dd>
+                </div>
+
+                <div>
+                  <dt>
+                    TYPE
+                  </dt>
+
+                  <dd
+                    id="router-preview-unit"
+                  >
+                    FILES
+                  </dd>
+                </div>
+
+                <div>
+                  <dt>
+                    LINK
+                  </dt>
+
+                  <dd>
+                    STABLE
+                  </dd>
+                </div>
+              </dl>
+
+
+              <p
+                class="archive-node-preview__command"
+              >
+                &gt; SELECT NODE TO ENTER_
+              </p>
+            </aside>
+          </div>
+
+
+          <footer
+            class="archive-router-readout"
+          >
+            <span>
+              CORE: ONLINE
+            </span>
+
+            <span>
+              NODES: 03
+            </span>
+
+            <span>
+              ARCHIVE SIZE: {
+                movieCount +
+                gameCount +
+                musicCount
+              }
+            </span>
+
+            <span>
+              SIGNAL: STABLE
+            </span>
+          </footer>
+        </div>
+      </section>
+
+
+      <!-- =================================================
+           COLLECTION VIEW
+      ================================================== -->
+
+      <section
+        class="library-collection"
+        id="library-collection"
+        hidden
+      >
+        <header
+          class="library-collection-header"
+        >
+          <button
+            class="library-return-button"
+            id="library-return-button"
+            type="button"
+          >
+            ← MEDIA INDEX
+          </button>
+
+
+          <div
+            class="library-collection-heading"
+          >
+            <p>
+              ■ ACTIVE STORAGE NODE
+            </p>
+
+            <h2
+              id="library-collection-title"
+            >
+              {
+                defaultLibraryCategory.title
+              }
+            </h2>
+
+            <span
+              id="library-collection-counter"
+            >
+              {
+                String(
+                  movieCount
+                ).padStart(
+                  2,
+                  "0"
+                )
+              } FILES DETECTED
+            </span>
+          </div>
+
+
+          <div
+            class="library-collection-signal"
+          >
+            <i></i>
+
+            <span
+              id="library-collection-status"
+            >
+              {
+                defaultLibraryCategory.systemStatus
+              }
+            </span>
+          </div>
+        </header>
+
+
+        <!-- CATEGORY TABS -->
+
+        <nav
+          class="library-category-tabs"
+          aria-label="Library categories"
+        >
+          {
+            libraryCategories.map(
+              (category) => (
+                <button
+                  class:list={[
+                    "library-category-tab",
+
+                    category.key ===
+                      defaultLibraryCategory.key &&
+                      "library-category-tab--active",
+                  ]}
+                  type="button"
+                  data-library-tab={
+                    category.key
+                  }
+                  data-library-title={
+                    category.title
+                  }
+                  data-library-status={
+                    category.systemStatus
+                  }
+                  data-library-completed-label={
+                    category.completedFilterLabel
+                  }
+                  data-library-pending-label={
+                    category.pendingFilterLabel
+                  }
+                >
                   <span>
-                    COLLECTION FILTER
+                    {
+                      category.number
+                    }
                   </span>
 
                   <strong>
-                    {category.title}
+                    {
+                      category.shortTitle
+                    }
                   </strong>
+                </button>
+              )
+            )
+          }
+        </nav>
+
+
+        <!-- =================================================
+             MOVIE SEARCH
+        ================================================== -->
+
+        <section
+          class="movie-search-terminal"
+          id="movie-search-terminal"
+        >
+          <header
+            class="terminal-strip"
+          >
+            <span>
+              ■ EXTERNAL DATABASE // OMDb
+            </span>
+
+            <span
+              id="movie-search-api-state"
+            >
+              LINK READY
+            </span>
+          </header>
+
+
+          <div
+            class="movie-search-body"
+          >
+            <div
+              class="movie-search-intro"
+            >
+              <p>
+                DATABASE QUERY
+              </p>
+
+              <h3>
+                Search movie records_
+              </h3>
+
+              <span>
+                Retrieve external metadata without leaving the archive.
+              </span>
+            </div>
+
+
+            <form
+              class="movie-search-form"
+              id="movie-search-form"
+            >
+              <label
+                for="movie-search-input"
+              >
+                QUERY
+              </label>
+
+              <div
+                class="movie-search-controls"
+              >
+                <div
+                  class="terminal-input"
+                >
+                  <span>
+                    &gt;
+                  </span>
+
+                  <input
+                    id="movie-search-input"
+                    name="movie"
+                    type="search"
+                    placeholder="INTERSTELLAR"
+                    autocomplete="off"
+                    minlength="2"
+                    required
+                  />
                 </div>
 
-                <div class="library-filter-list">
-                  <button
-                    class="library-filter is-active"
-                    type="button"
-                    data-library-filter="all"
-                    aria-pressed="true"
-                  >
-                    ALL
-                  </button>
+                <button
+                  class="terminal-button"
+                  id="movie-search-submit"
+                  type="submit"
+                >
+                  EXECUTE
+                </button>
+              </div>
+            </form>
 
-                  <button
-                    class="library-filter"
-                    type="button"
-                    data-library-filter="favourite"
-                    aria-pressed="false"
-                  >
-                    FAVOURITES
-                  </button>
 
-                  <button
-                    class="library-filter"
-                    type="button"
-                    data-library-filter="completed"
-                    aria-pressed="false"
-                  >
-                    {category.completedFilterLabel}
-                  </button>
+            <div
+              class="terminal-message"
+              id="movie-search-message"
+              aria-live="polite"
+            >
+              <i></i>
 
-                  <button
-                    class="library-filter"
-                    type="button"
-                    data-library-filter="pending"
-                    aria-pressed="false"
-                  >
-                    {category.pendingFilterLabel}
-                  </button>
-                </div>
-              </header>
+              <span>
+                OMDb connection ready.
+              </span>
+            </div>
 
-              <div class="library-card-scroll">
-                <div class="library-media-grid">
+
+            <div
+              class="movie-search-results"
+              id="movie-search-results"
+            ></div>
+
+
+            <article
+              class="movie-search-selection"
+              id="movie-search-selection"
+              hidden
+            >
+              <div
+                class="movie-search-selection__poster"
+                id="movie-search-selection-poster"
+              >
+                <span>
+                  NO POSTER
+                </span>
+              </div>
+
+
+              <div
+                class="movie-search-selection__copy"
+              >
+                <p>
+                  OMDb // FULL RECORD
+                </p>
+
+                <h3
+                  id="movie-detail-title"
+                >
+                  MOVIE FILE
+                </h3>
+
+
+                <dl
+                  class="terminal-data-grid"
+                >
+                  <div>
+                    <dt>
+                      YEAR
+                    </dt>
+
+                    <dd
+                      id="movie-detail-year"
+                    >
+                      —
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt>
+                      DIRECTOR
+                    </dt>
+
+                    <dd
+                      id="movie-detail-director"
+                    >
+                      —
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt>
+                      RUNTIME
+                    </dt>
+
+                    <dd
+                      id="movie-detail-runtime"
+                    >
+                      —
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt>
+                      GENRE
+                    </dt>
+
+                    <dd
+                      id="movie-detail-genre"
+                    >
+                      —
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt>
+                      IMDb
+                    </dt>
+
+                    <dd
+                      id="movie-detail-rating"
+                    >
+                      —
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt>
+                      RELEASED
+                    </dt>
+
+                    <dd
+                      id="movie-detail-released"
+                    >
+                      —
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt>
+                      LANGUAGE
+                    </dt>
+
+                    <dd
+                      id="movie-detail-language"
+                    >
+                      —
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt>
+                      COUNTRY
+                    </dt>
+
+                    <dd
+                      id="movie-detail-country"
+                    >
+                      —
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt>
+                      IMDb ID
+                    </dt>
+
+                    <dd
+                      id="movie-detail-imdb-id"
+                    >
+                      —
+                    </dd>
+                  </div>
+                </dl>
+
+
+                <section
+                  class="terminal-record-section"
+                >
+                  <span>
+                    CAST
+                  </span>
+
+                  <p
+                    id="movie-detail-actors"
+                  >
+                    —
+                  </p>
+                </section>
+
+
+                <section
+                  class="terminal-record-section"
+                >
+                  <span>
+                    PLOT
+                  </span>
+
+                  <p
+                    id="movie-detail-plot"
+                  >
+                    —
+                  </p>
+                </section>
+
+
+                <section
+                  class="terminal-record-section"
+                >
+                  <span>
+                    AWARDS
+                  </span>
+
+                  <p
+                    id="movie-detail-awards"
+                  >
+                    —
+                  </p>
+                </section>
+              </div>
+
+
+              <button
+                class="terminal-close"
+                id="movie-search-selection-close"
+                type="button"
+                aria-label="Close movie details"
+              >
+                ×
+              </button>
+            </article>
+          </div>
+        </section>
+
+
+        <!-- =================================================
+             MOVIES / GAMES
+        ================================================== -->
+
+        <div
+          id="generic-library-area"
+        >
+          <div
+            class="library-filter-bar"
+          >
+            <div
+              class="library-filter-bar__label"
+            >
+              <span>
+                ARCHIVE RECORDS
+              </span>
+
+              <small>
+                FILTER ACTIVE NODE
+              </small>
+            </div>
+
+
+            <div
+              class="library-filter-controls"
+            >
+              <button
+                class="library-filter-button library-filter-button--active"
+                type="button"
+                data-library-filter="all"
+              >
+                ALL
+              </button>
+
+              <button
+                class="library-filter-button"
+                type="button"
+                data-library-filter="favourites"
+              >
+                FAVOURITES
+              </button>
+
+              <button
+                class="library-filter-button"
+                type="button"
+                data-library-filter="completed"
+              >
+                <span
+                  id="library-completed-filter-label"
+                >
                   {
-                    category.entries.map((entry, index) => (
-                      <article
-                        class:list={[
-                          "library-media-card",
-                          `library-media-card--${entry.coverTone}`,
-                        ]}
-                        data-library-card
-                        data-state={entry.state}
-                        data-favourite={String(entry.favourite)}
-                        style={`--card-delay: ${index * 70}ms;`}
-                      >
-                        <button
-                          class="library-media-card__open"
-                          type="button"
-                          data-library-open-entry={entry.id}
-                          data-entry-category={entry.category}
-                          aria-label={`Open details for ${entry.title}`}
-                        >
-                        </button>
+                    defaultLibraryCategory.completedFilterLabel
+                  }
+                </span>
+              </button>
 
-                        <div class="library-media-card__cover">
-                          <span class="library-media-card__number">
-                            {category.number}.
-                            {String(index + 1).padStart(2, "0")}
-                          </span>
+              <button
+                class="library-filter-button"
+                type="button"
+                data-library-filter="pending"
+              >
+                <span
+                  id="library-pending-filter-label"
+                >
+                  {
+                    defaultLibraryCategory.pendingFilterLabel
+                  }
+                </span>
+              </button>
+            </div>
+          </div>
 
-                          <span class="library-media-card__code">
-                            {entry.coverCode}
-                          </span>
 
-                          <span class="library-media-card__caption">
-                            {entry.coverCaption}
-                          </span>
-
-                          <span class="library-media-card__scan">
-                          </span>
-                        </div>
-
-                        <div class="library-media-card__body">
-                          <div class="library-media-card__metadata">
-                            <span>
-                              {entry.mediaType}
-                            </span>
-
-                            <span>
-                              {entry.year}
-                            </span>
-                          </div>
-
-                          <h2>
-                            {entry.title}
-                          </h2>
-
-                          <p class="library-media-card__creator">
-                            {entry.creator}
-                          </p>
-
-                          <div class="library-media-card__badges">
-                            <span
-                              class:list={[
-                                "library-entry-status",
-                                `library-entry-status--${entry.state}`,
-                              ]}
-                            >
-                              {entry.statusLabel}
-                            </span>
-
-                            {
-                              entry.favourite && (
-                                <span class="library-entry-favourite">
-                                  ★ FAVOURITE
-                                </span>
-                              )
+          <div
+            class="library-media-grid"
+            id="library-media-grid"
+          >
+            {
+              genericEntries.map(
+                (entry, index) => (
+                  <button
+                    class="library-media-card"
+                    type="button"
+                    data-library-entry={
+                      entry.id
+                    }
+                    data-library-entry-category={
+                      entry.category
+                    }
+                    data-library-entry-state={
+                      entry.state
+                    }
+                    data-library-entry-favourite={
+                      entry.favourite
+                        ? "true"
+                        : "false"
+                    }
+                    style={`--record-delay: ${
+                      index * 35
+                    }ms;`}
+                    hidden={
+                      entry.category !==
+                      defaultLibraryCategory.key
+                    }
+                  >
+                    <div
+                      class="library-media-card__cover"
+                    >
+                      {
+                        entry.poster ? (
+                          <img
+                            src={
+                              entry.poster
                             }
-                          </div>
-
-                          <p class="library-media-card__note">
-                            “{entry.note}”
-                          </p>
-
-                          <footer class="library-media-card__footer">
+                            alt={`${entry.title} poster`}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div
+                            class="library-media-card__fallback"
+                          >
                             <span>
-                              {entry.shelf}
+                              {
+                                entry.coverCode
+                              }
                             </span>
 
                             <strong>
                               {
-                                entry.rating === null
-                                  ? "UNRATED"
-                                  : `${entry.rating}/10`
+                                entry.coverCaption
                               }
                             </strong>
-                          </footer>
-                        </div>
+                          </div>
+                        )
+                      }
 
-                        <span class="library-media-card__command">
-                          OPEN FILE →
+                      <span
+                        class="library-media-card__scan"
+                      ></span>
+                    </div>
+
+
+                    <div
+                      class="library-media-card__copy"
+                    >
+                      <div
+                        class="library-media-card__status"
+                      >
+                        <span>
+                          {
+                            entry.statusLabel
+                          }
                         </span>
-                      </article>
-                    ))
-                  }
-                </div>
 
-                <p
-                  class="library-empty-state"
-                  data-library-empty-state
-                  hidden
-                >
-                  NO FILES MATCH THIS FILTER. THE ARCHIVE MAY BE
-                  LYING.
+                        {
+                          entry.favourite && (
+                            <strong>
+                              ★ FAV
+                            </strong>
+                          )
+                        }
+                      </div>
+
+
+                      <h3>
+                        {
+                          entry.title
+                        }
+                      </h3>
+
+                      <p>
+                        {
+                          entry.creator
+                        }
+                      </p>
+
+
+                      <div
+                        class="library-media-card__metadata"
+                      >
+                        <span>
+                          {
+                            entry.year
+                          }
+                        </span>
+
+                        <span>
+                          {
+                            entry.mediaType
+                          }
+                        </span>
+
+                        {
+                          entry.rating !==
+                            null && (
+                            <span>
+                              {
+                                entry.rating
+                              }
+                              /10
+                            </span>
+                          )
+                        }
+                      </div>
+
+
+                      <footer>
+                        <span>
+                          {
+                            entry.shelf
+                          }
+                        </span>
+
+                        <strong>
+                          OPEN RECORD →
+                        </strong>
+                      </footer>
+                    </div>
+                  </button>
+                )
+              )
+            }
+          </div>
+
+
+          <div
+            class="library-no-results"
+            id="library-no-results"
+            hidden
+          >
+            <strong>
+              404 // STORAGE EMPTY
+            </strong>
+
+            <span>
+              No records match the current filter.
+            </span>
+          </div>
+        </div>
+
+
+        <!-- =================================================
+             MUSIC
+        ================================================== -->
+
+        <section
+          class="music-browser"
+          id="music-browser"
+          hidden
+        >
+          <div
+            class="music-artist-index"
+            id="music-artist-index"
+          >
+            <header
+              class="music-index-header"
+            >
+              <div>
+                <p>
+                  ■ FREQUENCY DIRECTORY
                 </p>
+
+                <h3>
+                  AUDIO SOURCES_
+                </h3>
+
+                <span>
+                  Choose a transmission source to inspect its stored releases.
+                </span>
               </div>
-            </section>
-          ))
-        }
-      </div>
-    </section>
 
-    <!-- ==================================================
-         DETAIL DRAWER
-    =================================================== -->
+              <strong>
+                {
+                  artistSummaries.length
+                } SOURCES // {
+                  musicSignals.length
+                } SIGNALS
+              </strong>
+            </header>
 
-    <aside
-      class="library-drawer"
-      id="library-drawer"
-      data-category="movies"
-      aria-hidden="true"
+
+            <div
+              class="music-artist-grid"
+            >
+              {
+                artistSummaries.map(
+                  (
+                    artist,
+                    index
+                  ) => (
+                    <button
+                      class="music-artist-card"
+                      type="button"
+                      data-music-artist={
+                        artist.artist
+                      }
+                    >
+                      <div
+                        class="music-artist-card__visual"
+                      >
+                        {
+                          artist.cover ? (
+                            <img
+                              src={
+                                artist.cover
+                              }
+                              alt=""
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span>
+                              SIGNAL
+                            </span>
+                          )
+                        }
+
+                        <div
+                          class="music-mini-wave"
+                        >
+                          <i></i>
+                          <i></i>
+                          <i></i>
+                          <i></i>
+                          <i></i>
+                          <i></i>
+                          <i></i>
+                        </div>
+                      </div>
+
+
+                      <div
+                        class="music-artist-card__copy"
+                      >
+                        <small>
+                          SOURCE // {
+                            String(
+                              index + 1
+                            ).padStart(
+                              2,
+                              "0"
+                            )
+                          }
+                        </small>
+
+                        <h4>
+                          {
+                            artist.artist
+                          }
+                        </h4>
+
+                        <p>
+                          {
+                            artist.count
+                          } SIGNALS // {
+                            artist.albums
+                          } RELEASES
+                        </p>
+
+                        <span>
+                          OPEN FREQUENCY →
+                        </span>
+                      </div>
+                    </button>
+                  )
+                )
+              }
+            </div>
+          </div>
+
+
+          <div
+            class="music-artist-view"
+            id="music-artist-view"
+            hidden
+          >
+            <button
+              class="music-back-button"
+              id="music-artist-back"
+              type="button"
+            >
+              ← FREQUENCY DIRECTORY
+            </button>
+
+
+            <header
+              class="music-artist-hero"
+            >
+              <div
+                class="music-artist-hero__visual"
+                id="music-artist-cover"
+              >
+                <span>
+                  AUDIO
+                </span>
+
+                <div
+                  class="music-hero-wave"
+                >
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                </div>
+              </div>
+
+
+              <div
+                class="music-artist-hero__copy"
+              >
+                <p>
+                  ACTIVE TRANSMISSION SOURCE
+                </p>
+
+                <h3
+                  id="music-artist-title"
+                >
+                  ARTIST
+                </h3>
+
+                <div
+                  class="music-artist-hero__stats"
+                >
+                  <span
+                    id="music-artist-song-count"
+                  >
+                    0 SIGNALS
+                  </span>
+
+                  <span
+                    id="music-artist-album-count"
+                  >
+                    0 RELEASES
+                  </span>
+
+                  <span>
+                    LINK STABLE
+                  </span>
+                </div>
+              </div>
+            </header>
+
+
+            <div
+              class="music-search-bar"
+            >
+              <span>
+                &gt;
+              </span>
+
+              <input
+                id="music-signal-search"
+                type="search"
+                placeholder="FILTER ACTIVE SIGNALS..."
+                autocomplete="off"
+              />
+            </div>
+
+
+            <div
+              class="music-album-list"
+              id="music-album-list"
+            ></div>
+          </div>
+        </section>
+      </section>
+    </div>
+
+
+    <!-- =====================================================
+         MOVIE / GAME DRAWER
+    ====================================================== -->
+
+    <div
+      class="library-drawer-layer"
+      id="library-drawer-layer"
       hidden
     >
       <button
-        class="library-drawer__backdrop"
+        class="library-drawer-backdrop"
         id="library-drawer-backdrop"
         type="button"
-        aria-label="Close library file"
-      >
-      </button>
+        aria-label="Close archive record"
+      ></button>
 
-      <section
-        class="library-drawer__panel"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="library-drawer-title"
-      >
-        <header class="library-drawer__header">
-          <div>
-            <span>
-              PERSONAL MEDIA ARCHIVE
-            </span>
 
-            <strong id="library-drawer-title">
-              FILE INSPECTION
-            </strong>
-          </div>
+      <aside
+        class="library-detail-drawer"
+        id="library-detail-drawer"
+      >
+        <header
+          class="library-detail-drawer__header"
+        >
+          <span>
+            ■ ARCHIVE RECORD
+          </span>
 
           <button
-            id="library-drawer-close"
+            class="terminal-close"
+            id="library-detail-close"
             type="button"
           >
-            CLOSE ×
+            ×
           </button>
         </header>
 
-        <div class="library-drawer__records">
+
+        <div
+          class="library-detail-records"
+        >
           {
-            libraryEntries.map((entry) => (
-              <article
-                class:list={[
-                  "library-detail-record",
-                  `library-detail-record--${entry.coverTone}`,
-                ]}
-                data-library-detail-record={entry.id}
-                hidden
-              >
-                <div class="library-detail-cover">
-                  <span class="library-detail-cover__type">
-                    {entry.mediaType}
-                  </span>
-
-                  <span class="library-detail-cover__orbit library-detail-cover__orbit--outer">
-                  </span>
-
-                  <span class="library-detail-cover__orbit library-detail-cover__orbit--inner">
-                  </span>
-
-                  <strong>
-                    {entry.coverCode}
-                  </strong>
-
-                  <span class="library-detail-cover__caption">
-                    {entry.coverCaption}
-                  </span>
-
-                  <span class="library-detail-cover__scan">
-                  </span>
-                </div>
-
-                <header class="library-detail-record__heading">
-                  <p>
-                    ARCHIVE RECORD // {entry.year}
-                  </p>
-
-                  <h2>
-                    {entry.title}
-                  </h2>
-
-                  <span>
-                    {entry.creator}
-                  </span>
-                </header>
-
-                <div class="library-detail-record__badges">
-                  <span
-                    class:list={[
-                      "library-entry-status",
-                      `library-entry-status--${entry.state}`,
-                    ]}
+            genericEntries.map(
+              (entry) => (
+                <article
+                  class="library-detail-record"
+                  data-library-detail-record={
+                    entry.id
+                  }
+                  hidden
+                >
+                  <div
+                    class="library-detail-cover"
                   >
-                    {entry.statusLabel}
-                  </span>
-
-                  {
-                    entry.favourite && (
-                      <span class="library-entry-favourite">
-                        ★ FAVOURITE FILE
-                      </span>
-                    )
-                  }
-
-                  <span class="library-detail-record__rating">
                     {
-                      entry.rating === null
-                        ? "UNRATED"
-                        : `${entry.rating} / 10`
-                    }
-                  </span>
-                </div>
+                      entry.poster ? (
+                        <img
+                          src={
+                            entry.poster
+                          }
+                          alt={`${entry.title} poster`}
+                        />
+                      ) : (
+                        <div
+                          class="library-detail-cover__fallback"
+                        >
+                          <span>
+                            {
+                              entry.coverCode
+                            }
+                          </span>
 
-                <blockquote>
-                  “{entry.note}”
-                </blockquote>
-
-                <section class="library-detail-record__section">
-                  <p>
-                    ARCHIVE SUMMARY
-                  </p>
-
-                  <span>
-                    {entry.synopsis}
-                  </span>
-                </section>
-
-                <dl class="library-detail-record__facts">
-                  {
-                    entry.facts.map((fact) => (
-                      <div>
-                        <dt>
-                          {fact.label}
-                        </dt>
-
-                        <dd>
-                          {fact.value}
-                        </dd>
-                      </div>
-                    ))
-                  }
-                </dl>
-
-                <section class="library-detail-record__section">
-                  <p>
-                    CLASSIFICATION TAGS
-                  </p>
-
-                  <div class="library-detail-record__tags">
-                    {
-                      entry.tags.map((tag) => (
-                        <span>
-                          {tag}
-                        </span>
-                      ))
+                          <strong>
+                            {
+                              entry.coverCaption
+                            }
+                          </strong>
+                        </div>
+                      )
                     }
                   </div>
-                </section>
 
-                <footer class="library-detail-record__shelf">
-                  <span>
-                    CURRENT SHELF
-                  </span>
 
-                  <strong>
-                    {entry.shelf}
-                  </strong>
-                </footer>
-              </article>
-            ))
+                  <div
+                    class="library-detail-copy"
+                  >
+                    <p>
+                      {
+                        entry.mediaType
+                      } // {
+                        entry.year
+                      }
+                    </p>
+
+                    <h2>
+                      {
+                        entry.title
+                      }
+                    </h2>
+
+                    <h3>
+                      {
+                        entry.creator
+                      }
+                    </h3>
+
+
+                    <div
+                      class="library-detail-status"
+                    >
+                      <span>
+                        {
+                          entry.statusLabel
+                        }
+                      </span>
+
+                      {
+                        entry.favourite && (
+                          <span>
+                            ★ FAVOURITE
+                          </span>
+                        )
+                      }
+
+                      <span>
+                        {
+                          entry.rating !==
+                            null
+                            ? `${entry.rating}/10`
+                            : "UNRATED"
+                        }
+                      </span>
+                    </div>
+
+
+                    <section
+                      class="library-detail-section"
+                    >
+                      <span>
+                        PERSONAL NOTE
+                      </span>
+
+                      <p>
+                        {
+                          entry.note
+                        }
+                      </p>
+                    </section>
+
+
+                    <section
+                      class="library-detail-section"
+                    >
+                      <span>
+                        ARCHIVE SUMMARY
+                      </span>
+
+                      <p>
+                        {
+                          entry.synopsis
+                        }
+                      </p>
+                    </section>
+
+
+                    <dl
+                      class="library-detail-facts"
+                    >
+                      {
+                        entry.facts.map(
+                          (fact) => (
+                            <div>
+                              <dt>
+                                {
+                                  fact.label
+                                }
+                              </dt>
+
+                              <dd>
+                                {
+                                  fact.value
+                                }
+                              </dd>
+                            </div>
+                          )
+                        )
+                      }
+                    </dl>
+
+
+                    <div
+                      class="library-detail-tags"
+                    >
+                      {
+                        entry.tags.map(
+                          (tag) => (
+                            <span>
+                              {
+                                tag
+                              }
+                            </span>
+                          )
+                        )
+                      }
+                    </div>
+                  </div>
+                </article>
+              )
+            )
           }
         </div>
+      </aside>
+    </div>
 
-        <footer class="library-drawer__footer">
-          <i aria-hidden="true"></i>
 
-          FILE OPEN // MEMORY ACCESS GRANTED
-        </footer>
-      </section>
-    </aside>
+    <!-- =====================================================
+         MUSIC DRAWER
+    ====================================================== -->
+
+    <div
+      class="music-detail-layer"
+      id="music-detail-layer"
+      hidden
+    >
+      <button
+        class="music-detail-backdrop"
+        id="music-detail-backdrop"
+        type="button"
+        aria-label="Close audio record"
+      ></button>
+
+
+      <aside
+        class="music-detail-drawer"
+      >
+        <header
+          class="library-detail-drawer__header"
+        >
+          <span>
+            ■ AUDIO SIGNAL
+          </span>
+
+          <button
+            class="terminal-close"
+            id="music-detail-close"
+            type="button"
+          >
+            ×
+          </button>
+        </header>
+
+
+        <div
+          class="music-detail-body"
+        >
+          <div
+            class="music-detail-cover"
+            id="music-detail-cover"
+          >
+            <span>
+              AUDIO
+            </span>
+          </div>
+
+
+          <div
+            class="music-detail-copy"
+          >
+            <p>
+              FREQUENCY RECORD
+            </p>
+
+            <h2
+              id="music-detail-title"
+            >
+              SONG
+            </h2>
+
+            <h3
+              id="music-detail-artist"
+            >
+              ARTIST
+            </h3>
+
+
+            <dl
+              class="library-detail-facts"
+            >
+              <div>
+                <dt>
+                  RELEASE
+                </dt>
+
+                <dd
+                  id="music-detail-album"
+                >
+                  —
+                </dd>
+              </div>
+
+              <div>
+                <dt>
+                  YEAR
+                </dt>
+
+                <dd
+                  id="music-detail-year"
+                >
+                  —
+                </dd>
+              </div>
+
+              <div>
+                <dt>
+                  DURATION
+                </dt>
+
+                <dd
+                  id="music-detail-duration"
+                >
+                  —
+                </dd>
+              </div>
+
+              <div>
+                <dt>
+                  STATUS
+                </dt>
+
+                <dd
+                  id="music-detail-status"
+                >
+                  —
+                </dd>
+              </div>
+
+              <div>
+                <dt>
+                  RATING
+                </dt>
+
+                <dd
+                  id="music-detail-rating"
+                >
+                  —
+                </dd>
+              </div>
+
+              <div>
+                <dt>
+                  SHELF
+                </dt>
+
+                <dd
+                  id="music-detail-shelf"
+                >
+                  —
+                </dd>
+              </div>
+            </dl>
+
+
+            <section
+              class="library-detail-section"
+            >
+              <span>
+                PERSONAL NOTE
+              </span>
+
+              <p
+                id="music-detail-note"
+              >
+                —
+              </p>
+            </section>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+
+    <script
+      id="music-data"
+      type="application/json"
+      is:inline
+      set:html={musicDataJson}
+    ></script>
   </div>
 </InternalPageLayout>
 
+
 <script>
-  const validLibraryCategories = [
-    "movies",
-    "games",
-    "music",
-  ] as const;
-
-  const validLibraryFilters = [
-    "all",
-    "favourite",
-    "completed",
-    "pending",
-  ] as const;
-
-  type LibraryCategory =
-    (typeof validLibraryCategories)[number];
-
   type LibraryFilter =
-    (typeof validLibraryFilters)[number];
+    | "all"
+    | "favourites"
+    | "completed"
+    | "pending";
 
-  const portalButtons =
+
+  interface MovieSearchResult {
+    title: string;
+    year: string;
+    imdbId: string;
+    type: string;
+    poster: string | null;
+  }
+
+
+  interface MovieSearchResponse {
+    success: boolean;
+    message?: string;
+    results?: MovieSearchResult[];
+  }
+
+
+  interface MovieDetails {
+    title: string | null;
+    year: string | null;
+    released: string | null;
+    runtime: string | null;
+    genre: string | null;
+    director: string | null;
+    actors: string | null;
+    plot: string | null;
+    language: string | null;
+    country: string | null;
+    awards: string | null;
+    poster: string | null;
+    imdbRating: string | null;
+    imdbId: string | null;
+  }
+
+
+  interface MovieDetailsResponse {
+    success: boolean;
+    message?: string;
+    movie?: MovieDetails;
+  }
+
+
+  interface MusicSignal {
+    id: string;
+    title: string;
+    artist: string;
+    album: string | null;
+    year: string | null;
+    recordingId: string;
+    releaseId: string | null;
+    releaseGroupId: string | null;
+    durationMs: number | null;
+    cover: string | null;
+    status: "saved" | "discover-later";
+    favourite: boolean;
+    myRating: number | null;
+    shelf: string;
+    tags: string[];
+    note: string;
+  }
+
+
+  /* ======================================================
+     ENTRANCE ROUTER
+  ====================================================== */
+
+  const routerNodes =
     Array.from(
       document.querySelectorAll<HTMLButtonElement>(
-        "[data-library-category]"
+        "[data-router-node]"
       )
     );
 
-  const radarNodes =
+
+  const routerPreviewNumber =
+    document.querySelector<HTMLElement>(
+      "#router-preview-number"
+    );
+
+  const routerPreviewSubtitle =
+    document.querySelector<HTMLElement>(
+      "#router-preview-subtitle"
+    );
+
+  const routerPreviewTitle =
+    document.querySelector<HTMLElement>(
+      "#router-preview-title"
+    );
+
+  const routerPreviewDescription =
+    document.querySelector<HTMLElement>(
+      "#router-preview-description"
+    );
+
+  const routerPreviewCount =
+    document.querySelector<HTMLElement>(
+      "#router-preview-count"
+    );
+
+  const routerPreviewUnit =
+    document.querySelector<HTMLElement>(
+      "#router-preview-unit"
+    );
+
+
+  function previewRouterNode(
+    node:
+      HTMLButtonElement
+  ): void {
+    routerNodes.forEach(
+      (item) => {
+        item.classList.toggle(
+          "is-targeted",
+          item === node
+        );
+      }
+    );
+
+
+    if (
+      routerPreviewNumber
+    ) {
+      routerPreviewNumber.textContent =
+        node.dataset
+          .routerNumber ??
+        "00";
+    }
+
+
+    if (
+      routerPreviewSubtitle
+    ) {
+      routerPreviewSubtitle.textContent =
+        node.dataset
+          .routerSubtitle ??
+        "STORAGE NODE";
+    }
+
+
+    if (
+      routerPreviewTitle
+    ) {
+      routerPreviewTitle.textContent =
+        node.dataset
+          .routerTitle ??
+        "ARCHIVE";
+    }
+
+
+    if (
+      routerPreviewDescription
+    ) {
+      routerPreviewDescription.textContent =
+        node.dataset
+          .routerDescription ??
+        "";
+    }
+
+
+    if (
+      routerPreviewCount
+    ) {
+      routerPreviewCount.textContent =
+        node.dataset
+          .routerCount ??
+        "0";
+    }
+
+
+    if (
+      routerPreviewUnit
+    ) {
+      routerPreviewUnit.textContent =
+        node.dataset
+          .routerUnit ??
+        "FILES";
+    }
+  }
+
+
+  routerNodes.forEach(
+    (node) => {
+      node.addEventListener(
+        "mouseenter",
+        () => {
+          previewRouterNode(
+            node
+          );
+        }
+      );
+
+
+      node.addEventListener(
+        "focus",
+        () => {
+          previewRouterNode(
+            node
+          );
+        }
+      );
+    }
+  );
+
+
+  if (
+    routerNodes[0]
+  ) {
+    previewRouterNode(
+      routerNodes[0]
+    );
+  }
+
+
+  /* ======================================================
+     LIBRARY NAVIGATION
+  ====================================================== */
+
+  const entrance =
+    document.querySelector<HTMLElement>(
+      "#library-entrance"
+    );
+
+
+  const collection =
+    document.querySelector<HTMLElement>(
+      "#library-collection"
+    );
+
+
+  const returnButton =
+    document.querySelector<HTMLButtonElement>(
+      "#library-return-button"
+    );
+
+
+  const collectionTitle =
+    document.querySelector<HTMLElement>(
+      "#library-collection-title"
+    );
+
+
+  const collectionCounter =
+    document.querySelector<HTMLElement>(
+      "#library-collection-counter"
+    );
+
+
+  const collectionStatus =
+    document.querySelector<HTMLElement>(
+      "#library-collection-status"
+    );
+
+
+  const movieSearchTerminal =
+    document.querySelector<HTMLElement>(
+      "#movie-search-terminal"
+    );
+
+
+  const genericLibraryArea =
+    document.querySelector<HTMLElement>(
+      "#generic-library-area"
+    );
+
+
+  const musicBrowser =
+    document.querySelector<HTMLElement>(
+      "#music-browser"
+    );
+
+
+  const completedFilterLabel =
+    document.querySelector<HTMLElement>(
+      "#library-completed-filter-label"
+    );
+
+
+  const pendingFilterLabel =
+    document.querySelector<HTMLElement>(
+      "#library-pending-filter-label"
+    );
+
+
+  const openLibraryButtons =
     Array.from(
-      document.querySelectorAll<HTMLElement>(
-        "[data-library-radar-node]"
+      document.querySelectorAll<HTMLButtonElement>(
+        "[data-open-library]"
       )
     );
+
 
   const categoryTabs =
     Array.from(
@@ -912,683 +2719,2184 @@ const defaultCategory =
       )
     );
 
-  const categoryPanels =
+
+  const filterButtons =
     Array.from(
-      document.querySelectorAll<HTMLElement>(
-        "[data-library-panel]"
+      document.querySelectorAll<HTMLButtonElement>(
+        "[data-library-filter]"
       )
     );
 
-  const entranceView =
+
+  const mediaCards =
+    Array.from(
+      document.querySelectorAll<HTMLButtonElement>(
+        "[data-library-entry]"
+      )
+    );
+
+
+  const noResults =
     document.querySelector<HTMLElement>(
-      "#library-entrance-view"
+      "#library-no-results"
     );
 
-  const collectionView =
+
+  let activeCategory =
+    "movies";
+
+
+  let activeFilter:
+    LibraryFilter =
+    "all";
+
+
+  function getCategoryTab(
+    category:
+      string
+  ) {
+    return categoryTabs.find(
+      (tab) =>
+        tab.dataset
+          .libraryTab ===
+        category
+    );
+  }
+
+
+  function resetFilters():
+    void {
+    activeFilter =
+      "all";
+
+
+    filterButtons.forEach(
+      (button) => {
+        const active =
+          button.dataset
+            .libraryFilter ===
+          "all";
+
+        button.classList.toggle(
+          "library-filter-button--active",
+          active
+        );
+      }
+    );
+  }
+
+
+  function updateCategory(
+    category:
+      string
+  ): void {
+    const tab =
+      getCategoryTab(
+        category
+      );
+
+
+    if (!tab) {
+      return;
+    }
+
+
+    activeCategory =
+      category;
+
+
+    resetFilters();
+
+
+    categoryTabs.forEach(
+      (button) => {
+        const active =
+          button.dataset
+            .libraryTab ===
+          category;
+
+        button.classList.toggle(
+          "library-category-tab--active",
+          active
+        );
+      }
+    );
+
+
+    if (
+      collectionTitle
+    ) {
+      collectionTitle.textContent =
+        tab.dataset
+          .libraryTitle ??
+        "ARCHIVE";
+    }
+
+
+    if (
+      collectionStatus
+    ) {
+      collectionStatus.textContent =
+        tab.dataset
+          .libraryStatus ??
+        "STABLE";
+    }
+
+
+    if (
+      completedFilterLabel
+    ) {
+      completedFilterLabel.textContent =
+        tab.dataset
+          .libraryCompletedLabel ??
+        "COMPLETED";
+    }
+
+
+    if (
+      pendingFilterLabel
+    ) {
+      pendingFilterLabel.textContent =
+        tab.dataset
+          .libraryPendingLabel ??
+        "PENDING";
+    }
+
+
+    const isMovies =
+      category ===
+      "movies";
+
+
+    const isMusic =
+      category ===
+      "music";
+
+
+    if (
+      movieSearchTerminal
+    ) {
+      movieSearchTerminal.hidden =
+        !isMovies;
+    }
+
+
+    if (
+      genericLibraryArea
+    ) {
+      genericLibraryArea.hidden =
+        isMusic;
+    }
+
+
+    if (
+      musicBrowser
+    ) {
+      musicBrowser.hidden =
+        !isMusic;
+    }
+
+
+    if (
+      isMusic
+    ) {
+      showMusicArtistDirectory();
+
+      if (
+        collectionCounter
+      ) {
+        collectionCounter.textContent =
+          `${String(
+            musicSignals.length
+          ).padStart(
+            2,
+            "0"
+          )} SIGNALS DETECTED`;
+      }
+
+      return;
+    }
+
+
+    applyGenericFilter();
+  }
+
+
+  function openCollection(
+    category:
+      string
+  ): void {
+    if (
+      !entrance ||
+      !collection
+    ) {
+      return;
+    }
+
+
+    updateCategory(
+      category
+    );
+
+
+    entrance.hidden =
+      true;
+
+    collection.hidden =
+      false;
+
+    collection.scrollIntoView({
+      block: "start",
+    });
+  }
+
+
+  function showEntrance():
+    void {
+    if (
+      !entrance ||
+      !collection
+    ) {
+      return;
+    }
+
+
+    collection.hidden =
+      true;
+
+    entrance.hidden =
+      false;
+
+    showMusicArtistDirectory();
+  }
+
+
+  openLibraryButtons.forEach(
+    (button) => {
+      button.addEventListener(
+        "click",
+        () => {
+          const category =
+            button.dataset
+              .openLibrary;
+
+          if (category) {
+            openCollection(
+              category
+            );
+          }
+        }
+      );
+    }
+  );
+
+
+  categoryTabs.forEach(
+    (button) => {
+      button.addEventListener(
+        "click",
+        () => {
+          const category =
+            button.dataset
+              .libraryTab;
+
+          if (category) {
+            updateCategory(
+              category
+            );
+          }
+        }
+      );
+    }
+  );
+
+
+  returnButton?.addEventListener(
+    "click",
+    showEntrance
+  );
+
+
+  /* ======================================================
+     GENERIC FILTER
+  ====================================================== */
+
+  function applyGenericFilter():
+    void {
+    let visible =
+      0;
+
+
+    mediaCards.forEach(
+      (card) => {
+        const categoryMatch =
+          card.dataset
+            .libraryEntryCategory ===
+          activeCategory;
+
+
+        const state =
+          card.dataset
+            .libraryEntryState;
+
+
+        const favourite =
+          card.dataset
+            .libraryEntryFavourite ===
+          "true";
+
+
+        let filterMatch =
+          true;
+
+
+        if (
+          activeFilter ===
+          "favourites"
+        ) {
+          filterMatch =
+            favourite;
+        }
+
+
+        if (
+          activeFilter ===
+          "completed"
+        ) {
+          filterMatch =
+            state ===
+            "completed";
+        }
+
+
+        if (
+          activeFilter ===
+          "pending"
+        ) {
+          filterMatch =
+            state ===
+            "pending";
+        }
+
+
+        const show =
+          categoryMatch &&
+          filterMatch;
+
+
+        card.hidden =
+          !show;
+
+
+        if (show) {
+          visible += 1;
+        }
+      }
+    );
+
+
+    if (
+      collectionCounter
+    ) {
+      collectionCounter.textContent =
+        `${String(
+          visible
+        ).padStart(
+          2,
+          "0"
+        )} FILES DETECTED`;
+    }
+
+
+    if (
+      noResults
+    ) {
+      noResults.hidden =
+        visible !== 0;
+    }
+  }
+
+
+  filterButtons.forEach(
+    (button) => {
+      button.addEventListener(
+        "click",
+        () => {
+          const filter =
+            button.dataset
+              .libraryFilter as
+              | LibraryFilter
+              | undefined;
+
+
+          if (!filter) {
+            return;
+          }
+
+
+          activeFilter =
+            filter;
+
+
+          filterButtons.forEach(
+            (item) => {
+              item.classList.toggle(
+                "library-filter-button--active",
+                item === button
+              );
+            }
+          );
+
+
+          applyGenericFilter();
+        }
+      );
+    }
+  );
+
+
+  /* ======================================================
+     GENERIC DRAWER
+  ====================================================== */
+
+  const drawerLayer =
     document.querySelector<HTMLElement>(
-      "#library-collection-view"
+      "#library-drawer-layer"
     );
 
-  const openCollectionButton =
-    document.querySelector<HTMLButtonElement>(
-      "#library-open-collection"
-    );
-
-  const returnButton =
-    document.querySelector<HTMLButtonElement>(
-      "#library-return-button"
-    );
-
-  const activeTitle =
-    document.querySelector<HTMLElement>(
-      "#library-active-title"
-    );
-
-  const activeDescription =
-    document.querySelector<HTMLElement>(
-      "#library-active-description"
-    );
-
-  const openLabel =
-    document.querySelector<HTMLElement>(
-      "#library-open-label"
-    );
-
-  const sidebarNumber =
-    document.querySelector<HTMLElement>(
-      "#library-sidebar-number"
-    );
-
-  const sidebarTitle =
-    document.querySelector<HTMLElement>(
-      "#library-sidebar-title"
-    );
-
-  const sidebarDescription =
-    document.querySelector<HTMLElement>(
-      "#library-sidebar-description"
-    );
-
-  const sidebarStatus =
-    document.querySelector<HTMLElement>(
-      "#library-sidebar-status"
-    );
-
-  const sidebarStatOneLabel =
-    document.querySelector<HTMLElement>(
-      "#library-sidebar-stat-one-label"
-    );
-
-  const sidebarStatOneValue =
-    document.querySelector<HTMLElement>(
-      "#library-sidebar-stat-one-value"
-    );
-
-  const sidebarStatTwoLabel =
-    document.querySelector<HTMLElement>(
-      "#library-sidebar-stat-two-label"
-    );
-
-  const sidebarStatTwoValue =
-    document.querySelector<HTMLElement>(
-      "#library-sidebar-stat-two-value"
-    );
-
-  const collectionTitle =
-    document.querySelector<HTMLElement>(
-      "#library-collection-title"
-    );
-
-  const collectionDescription =
-    document.querySelector<HTMLElement>(
-      "#library-collection-description"
-    );
-
-  const collectionCount =
-    document.querySelector<HTMLElement>(
-      "#library-collection-count"
-    );
 
   const drawer =
     document.querySelector<HTMLElement>(
-      "#library-drawer"
+      "#library-detail-drawer"
     );
 
-  const drawerCloseButton =
-    document.querySelector<HTMLButtonElement>(
-      "#library-drawer-close"
-    );
 
   const drawerBackdrop =
     document.querySelector<HTMLButtonElement>(
       "#library-drawer-backdrop"
     );
 
-  const drawerRecords =
+
+  const drawerClose =
+    document.querySelector<HTMLButtonElement>(
+      "#library-detail-close"
+    );
+
+
+  const detailRecords =
     Array.from(
       document.querySelectorAll<HTMLElement>(
         "[data-library-detail-record]"
       )
     );
 
-  let activeCategory: LibraryCategory =
-    "movies";
-
-  let lastFocusedElement:
-    HTMLElement | null =
-      null;
-
-  function isLibraryCategory(
-    value: string | undefined
-  ): value is LibraryCategory {
-    return validLibraryCategories.includes(
-      value as LibraryCategory
-    );
-  }
-
-  function isLibraryFilter(
-    value: string | undefined
-  ): value is LibraryFilter {
-    return validLibraryFilters.includes(
-      value as LibraryFilter
-    );
-  }
-
-  function getPortal(
-    category: LibraryCategory
-  ): HTMLButtonElement | undefined {
-    return portalButtons.find(
-      (button) =>
-        button.dataset.libraryCategory ===
-        category
-    );
-  }
-
-  function updateSidebar(
-    portal: HTMLButtonElement
-  ): void {
-    const category =
-      portal.dataset.libraryCategory;
-
-    if (!isLibraryCategory(category)) {
-      return;
-    }
-
-    activeCategory =
-      category;
-
-    portalButtons.forEach((button) => {
-      const isSelected =
-        button === portal;
-
-      button.classList.toggle(
-        "is-selected",
-        isSelected
-      );
-
-      button.setAttribute(
-        "aria-pressed",
-        String(isSelected)
-      );
-    });
-
-    radarNodes.forEach((node) => {
-      node.classList.toggle(
-        "is-active",
-        node.dataset.libraryRadarNode ===
-          category
-      );
-    });
-
-    if (sidebarNumber) {
-      sidebarNumber.textContent =
-        portal.dataset.number ?? "00";
-    }
-
-    if (sidebarTitle) {
-      sidebarTitle.textContent =
-        portal.dataset.title ??
-        "UNKNOWN ARCHIVE";
-    }
-
-    if (sidebarDescription) {
-      sidebarDescription.textContent =
-        portal.dataset.description ??
-        "";
-    }
-
-    if (sidebarStatus) {
-      sidebarStatus.textContent =
-        portal.dataset.status ??
-        "SIGNAL UNKNOWN";
-    }
-
-    if (sidebarStatOneLabel) {
-      sidebarStatOneLabel.textContent =
-        portal.dataset.firstLabel ??
-        "FILES";
-    }
-
-    if (sidebarStatOneValue) {
-      sidebarStatOneValue.textContent =
-        portal.dataset.firstValue ??
-        "000";
-    }
-
-    if (sidebarStatTwoLabel) {
-      sidebarStatTwoLabel.textContent =
-        portal.dataset.secondLabel ??
-        "PENDING";
-    }
-
-    if (sidebarStatTwoValue) {
-      sidebarStatTwoValue.textContent =
-        portal.dataset.secondValue ??
-        "000";
-    }
-
-    if (activeTitle) {
-      activeTitle.textContent =
-        portal.dataset.title ??
-        "UNKNOWN ARCHIVE";
-    }
-
-    if (activeDescription) {
-      activeDescription.textContent =
-        portal.dataset.description ??
-        "";
-    }
-
-    if (openLabel) {
-      openLabel.textContent =
-        portal.dataset.actionLabel ??
-        "OPEN ARCHIVE";
-    }
-  }
-
-  function resetPanelFilter(
-    panel: HTMLElement
-  ): void {
-    const filters =
-      Array.from(
-        panel.querySelectorAll<HTMLButtonElement>(
-          "[data-library-filter]"
-        )
-      );
-
-    const cards =
-      Array.from(
-        panel.querySelectorAll<HTMLElement>(
-          "[data-library-card]"
-        )
-      );
-
-    const emptyState =
-      panel.querySelector<HTMLElement>(
-        "[data-library-empty-state]"
-      );
-
-    filters.forEach((filter) => {
-      const isAll =
-        filter.dataset.libraryFilter ===
-        "all";
-
-      filter.classList.toggle(
-        "is-active",
-        isAll
-      );
-
-      filter.setAttribute(
-        "aria-pressed",
-        String(isAll)
-      );
-    });
-
-    cards.forEach((card) => {
-      card.hidden = false;
-    });
-
-    if (emptyState) {
-      emptyState.hidden = true;
-    }
-  }
-
-  function activateCategory(
-    category: LibraryCategory
-  ): void {
-    activeCategory =
-      category;
-
-    const portal =
-      getPortal(category);
-
-    if (portal) {
-      updateSidebar(portal);
-    }
-
-    categoryTabs.forEach((tab) => {
-      const isActive =
-        tab.dataset.libraryTab ===
-        category;
-
-      tab.classList.toggle(
-        "is-active",
-        isActive
-      );
-
-      tab.setAttribute(
-        "aria-selected",
-        String(isActive)
-      );
-
-      if (isActive) {
-        if (collectionTitle) {
-          collectionTitle.textContent =
-            tab.dataset.title ??
-            "UNKNOWN COLLECTION";
-        }
-
-        if (collectionDescription) {
-          collectionDescription.textContent =
-            tab.dataset.description ??
-            "";
-        }
-
-        if (collectionCount) {
-          collectionCount.textContent =
-            tab.dataset.count ??
-            "00";
-        }
-      }
-    });
-
-    categoryPanels.forEach((panel) => {
-      const isActive =
-        panel.dataset.libraryPanel ===
-        category;
-
-      panel.hidden =
-        !isActive;
-
-      if (isActive) {
-        resetPanelFilter(panel);
-      }
-    });
-  }
-
-  function openCollection(): void {
-    activateCategory(
-      activeCategory
-    );
-
-    if (entranceView) {
-      entranceView.hidden =
-        true;
-    }
-
-    if (collectionView) {
-      collectionView.hidden =
-        false;
-    }
-
-    collectionTitle?.focus();
-  }
-
-  function returnToEntrance(): void {
-    if (collectionView) {
-      collectionView.hidden =
-        true;
-    }
-
-    if (entranceView) {
-      entranceView.hidden =
-        false;
-    }
-
-    openCollectionButton?.focus();
-  }
 
   function openDrawer(
-    entryId: string,
-    category: LibraryCategory,
-    trigger: HTMLElement
+    entryId:
+      string
   ): void {
-    if (!drawer) {
+    if (
+      !drawerLayer ||
+      !drawer
+    ) {
       return;
     }
 
-    const selectedRecord =
-      drawerRecords.find(
+
+    const target =
+      detailRecords.find(
         (record) =>
-          record.dataset.libraryDetailRecord ===
+          record.dataset
+            .libraryDetailRecord ===
           entryId
       );
 
-    if (!selectedRecord) {
+
+    if (!target) {
       return;
     }
 
-    lastFocusedElement =
-      trigger;
 
-    drawerRecords.forEach((record) => {
-      record.hidden =
-        record !== selectedRecord;
-    });
+    detailRecords.forEach(
+      (record) => {
+        record.hidden =
+          record !== target;
+      }
+    );
 
-    drawer.dataset.category =
-      category;
 
-    drawer.hidden =
+    drawerLayer.hidden =
       false;
 
-    drawer.setAttribute(
-      "aria-hidden",
-      "false"
+
+    requestAnimationFrame(
+      () => {
+        drawerLayer.classList.add(
+          "is-open"
+        );
+
+        drawer.classList.add(
+          "is-open"
+        );
+
+        drawerClose?.focus();
+      }
     );
-
-    document.body.classList.add(
-      "library-drawer-open"
-    );
-
-    window.requestAnimationFrame(() => {
-      drawer.classList.add(
-        "is-open"
-      );
-
-      drawerCloseButton?.focus();
-    });
   }
 
-  function closeDrawer(): void {
-    if (!drawer) {
+
+  function closeDrawer():
+    void {
+    if (
+      !drawerLayer ||
+      !drawer
+    ) {
       return;
     }
+
+
+    drawerLayer.classList.remove(
+      "is-open"
+    );
 
     drawer.classList.remove(
       "is-open"
     );
 
-    drawer.setAttribute(
-      "aria-hidden",
-      "true"
-    );
 
-    document.body.classList.remove(
-      "library-drawer-open"
-    );
-
-    window.setTimeout(() => {
-      if (
-        drawer.classList.contains(
-          "is-open"
-        )
-      ) {
-        return;
-      }
-
-      drawer.hidden =
-        true;
-
-      drawerRecords.forEach((record) => {
-        record.hidden =
+    window.setTimeout(
+      () => {
+        drawerLayer.hidden =
           true;
-      });
 
-      lastFocusedElement?.focus();
-
-      lastFocusedElement =
-        null;
-    }, 260);
+        detailRecords.forEach(
+          (record) => {
+            record.hidden =
+              true;
+          }
+        );
+      },
+      190
+    );
   }
 
-  portalButtons.forEach((portal) => {
-    portal.addEventListener(
-      "click",
-      () => {
-        updateSidebar(portal);
-      }
-    );
-  });
 
-  openCollectionButton?.addEventListener(
-    "click",
-    openCollection
-  );
-
-  returnButton?.addEventListener(
-    "click",
-    returnToEntrance
-  );
-
-  categoryTabs.forEach((tab) => {
-    tab.addEventListener(
-      "click",
-      () => {
-        const category =
-          tab.dataset.libraryTab;
-
-        if (!isLibraryCategory(category)) {
-          return;
-        }
-
-        activateCategory(category);
-      }
-    );
-  });
-
-  document
-    .querySelectorAll<HTMLButtonElement>(
-      "[data-library-filter]"
-    )
-    .forEach((filterButton) => {
-      filterButton.addEventListener(
+  mediaCards.forEach(
+    (card) => {
+      card.addEventListener(
         "click",
         () => {
-          const filter =
-            filterButton.dataset.libraryFilter;
+          const id =
+            card.dataset
+              .libraryEntry;
 
-          if (!isLibraryFilter(filter)) {
-            return;
-          }
-
-          const panel =
-            filterButton.closest<HTMLElement>(
-              "[data-library-panel]"
-            );
-
-          if (!panel) {
-            return;
-          }
-
-          const panelFilters =
-            Array.from(
-              panel.querySelectorAll<HTMLButtonElement>(
-                "[data-library-filter]"
-              )
-            );
-
-          const cards =
-            Array.from(
-              panel.querySelectorAll<HTMLElement>(
-                "[data-library-card]"
-              )
-            );
-
-          const emptyState =
-            panel.querySelector<HTMLElement>(
-              "[data-library-empty-state]"
-            );
-
-          panelFilters.forEach((button) => {
-            const isActive =
-              button === filterButton;
-
-            button.classList.toggle(
-              "is-active",
-              isActive
-            );
-
-            button.setAttribute(
-              "aria-pressed",
-              String(isActive)
-            );
-          });
-
-          let visibleCards =
-            0;
-
-          cards.forEach((card) => {
-            const isFavourite =
-              card.dataset.favourite ===
-              "true";
-
-            const state =
-              card.dataset.state;
-
-            const shouldShow =
-              filter === "all" ||
-              (
-                filter === "favourite" &&
-                isFavourite
-              ) ||
-              (
-                filter === "completed" &&
-                state === "completed"
-              ) ||
-              (
-                filter === "pending" &&
-                state === "pending"
-              );
-
-            card.hidden =
-              !shouldShow;
-
-            if (shouldShow) {
-              visibleCards +=
-                1;
-            }
-          });
-
-          if (emptyState) {
-            emptyState.hidden =
-              visibleCards > 0;
+          if (id) {
+            openDrawer(id);
           }
         }
       );
-    });
-
-  document
-    .querySelectorAll<HTMLButtonElement>(
-      "[data-library-open-entry]"
-    )
-    .forEach((button) => {
-      button.addEventListener(
-        "click",
-        () => {
-          const entryId =
-            button.dataset.libraryOpenEntry;
-
-          const category =
-            button.dataset.entryCategory;
-
-          if (
-            !entryId ||
-            !isLibraryCategory(category)
-          ) {
-            return;
-          }
-
-          openDrawer(
-            entryId,
-            category,
-            button
-          );
-        }
-      );
-    });
-
-  drawerCloseButton?.addEventListener(
-    "click",
-    closeDrawer
+    }
   );
+
 
   drawerBackdrop?.addEventListener(
     "click",
     closeDrawer
   );
 
-  document.addEventListener(
-    "keydown",
-    (event: KeyboardEvent) => {
-      if (
-        event.key === "Escape" &&
-        drawer?.classList.contains(
-          "is-open"
-        )
-      ) {
-        closeDrawer();
+
+  drawerClose?.addEventListener(
+    "click",
+    closeDrawer
+  );
+
+
+  /* ======================================================
+     MUSIC DATA
+  ====================================================== */
+
+  const musicDataElement =
+    document.querySelector<HTMLScriptElement>(
+      "#music-data"
+    );
+
+
+  let musicSignals:
+    MusicSignal[] = [];
+
+
+  try {
+    musicSignals =
+      JSON.parse(
+        musicDataElement
+          ?.textContent ??
+        "[]"
+      );
+  } catch {
+    musicSignals = [];
+  }
+
+
+  const musicArtistIndex =
+    document.querySelector<HTMLElement>(
+      "#music-artist-index"
+    );
+
+
+  const musicArtistView =
+    document.querySelector<HTMLElement>(
+      "#music-artist-view"
+    );
+
+
+  const musicArtistButtons =
+    Array.from(
+      document.querySelectorAll<HTMLButtonElement>(
+        "[data-music-artist]"
+      )
+    );
+
+
+  const musicArtistBack =
+    document.querySelector<HTMLButtonElement>(
+      "#music-artist-back"
+    );
+
+
+  const musicArtistCover =
+    document.querySelector<HTMLElement>(
+      "#music-artist-cover"
+    );
+
+
+  const musicArtistTitle =
+    document.querySelector<HTMLElement>(
+      "#music-artist-title"
+    );
+
+
+  const musicArtistSongCount =
+    document.querySelector<HTMLElement>(
+      "#music-artist-song-count"
+    );
+
+
+  const musicArtistAlbumCount =
+    document.querySelector<HTMLElement>(
+      "#music-artist-album-count"
+    );
+
+
+  const musicAlbumList =
+    document.querySelector<HTMLElement>(
+      "#music-album-list"
+    );
+
+
+  const musicSignalSearch =
+    document.querySelector<HTMLInputElement>(
+      "#music-signal-search"
+    );
+
+
+  let activeMusicArtist =
+    "";
+
+
+  function formatDuration(
+    milliseconds:
+      number | null
+  ): string {
+    if (
+      !milliseconds ||
+      milliseconds <= 0
+    ) {
+      return "—";
+    }
+
+
+    const totalSeconds =
+      Math.floor(
+        milliseconds / 1000
+      );
+
+
+    const minutes =
+      Math.floor(
+        totalSeconds / 60
+      );
+
+
+    const seconds =
+      totalSeconds % 60;
+
+
+    return `${minutes}:${String(
+      seconds
+    ).padStart(2, "0")}`;
+  }
+
+
+  function showMusicArtistDirectory():
+    void {
+    activeMusicArtist =
+      "";
+
+
+    if (
+      musicArtistIndex
+    ) {
+      musicArtistIndex.hidden =
+        false;
+    }
+
+
+    if (
+      musicArtistView
+    ) {
+      musicArtistView.hidden =
+        true;
+    }
+
+
+    if (
+      musicSignalSearch
+    ) {
+      musicSignalSearch.value =
+        "";
+    }
+
+
+    musicAlbumList
+      ?.replaceChildren();
+  }
+
+
+  function createAlbumSection(
+    albumName:
+      string,
+
+    songs:
+      MusicSignal[]
+  ): HTMLElement {
+    const section =
+      document.createElement(
+        "section"
+      );
+
+
+    section.className =
+      "music-album";
+
+
+    const header =
+      document.createElement(
+        "header"
+      );
+
+
+    header.className =
+      "music-album__header";
+
+
+    const cover =
+      document.createElement(
+        "div"
+      );
+
+
+    cover.className =
+      "music-album__cover";
+
+
+    const coverUrl =
+      songs.find(
+        (song) =>
+          Boolean(
+            song.cover
+          )
+      )?.cover ??
+      null;
+
+
+    if (coverUrl) {
+      const image =
+        document.createElement(
+          "img"
+        );
+
+
+      image.src =
+        coverUrl;
+
+      image.alt =
+        `${albumName} cover`;
+
+      image.loading =
+        "lazy";
+
+      cover.append(image);
+    } else {
+      const fallback =
+        document.createElement(
+          "span"
+        );
+
+      fallback.textContent =
+        "NO COVER";
+
+      cover.append(
+        fallback
+      );
+    }
+
+
+    const copy =
+      document.createElement(
+        "div"
+      );
+
+
+    copy.className =
+      "music-album__copy";
+
+
+    const label =
+      document.createElement(
+        "span"
+      );
+
+    label.textContent =
+      "RELEASE NODE";
+
+
+    const title =
+      document.createElement(
+        "h4"
+      );
+
+    title.textContent =
+      albumName;
+
+
+    const year =
+      document.createElement(
+        "p"
+      );
+
+
+    year.textContent =
+      songs.find(
+        (song) =>
+          Boolean(song.year)
+      )?.year ??
+      "YEAR UNKNOWN";
+
+
+    copy.append(
+      label,
+      title,
+      year
+    );
+
+
+    const count =
+      document.createElement(
+        "strong"
+      );
+
+
+    count.className =
+      "music-album__count";
+
+
+    count.textContent =
+      `${songs.length} SIGNAL${
+        songs.length === 1
+          ? ""
+          : "S"
+      }`;
+
+
+    header.append(
+      cover,
+      copy,
+      count
+    );
+
+
+    const list =
+      document.createElement(
+        "div"
+      );
+
+
+    list.className =
+      "music-song-list";
+
+
+    songs
+      .slice()
+      .sort(
+        (first, second) =>
+          first.title.localeCompare(
+            second.title
+          )
+      )
+      .forEach(
+        (song, index) => {
+          const button =
+            document.createElement(
+              "button"
+            );
+
+
+          button.type =
+            "button";
+
+          button.className =
+            "music-song-row";
+
+          button.dataset.musicSongId =
+            song.id;
+
+
+          const number =
+            document.createElement(
+              "span"
+            );
+
+          number.className =
+            "music-song-row__number";
+
+          number.textContent =
+            String(
+              index + 1
+            ).padStart(
+              2,
+              "0"
+            );
+
+
+          const songCopy =
+            document.createElement(
+              "span"
+            );
+
+          songCopy.className =
+            "music-song-row__copy";
+
+
+          const songTitle =
+            document.createElement(
+              "strong"
+            );
+
+          songTitle.textContent =
+            song.title;
+
+
+          const songMeta =
+            document.createElement(
+              "small"
+            );
+
+          songMeta.textContent =
+            song.year ??
+            "YEAR UNKNOWN";
+
+
+          songCopy.append(
+            songTitle,
+            songMeta
+          );
+
+
+          const duration =
+            document.createElement(
+              "span"
+            );
+
+          duration.className =
+            "music-song-row__duration";
+
+          duration.textContent =
+            formatDuration(
+              song.durationMs
+            );
+
+
+          const state =
+            document.createElement(
+              "span"
+            );
+
+          state.className =
+            "music-song-row__state";
+
+          state.textContent =
+            song.favourite
+              ? "★ FAV"
+              : (
+                  song.status ===
+                    "saved"
+                    ? "SAVED"
+                    : "LATER"
+                );
+
+
+          button.append(
+            number,
+            songCopy,
+            duration,
+            state
+          );
+
+
+          button.addEventListener(
+            "click",
+            () => {
+              openMusicDetail(
+                song
+              );
+            }
+          );
+
+
+          list.append(button);
+        }
+      );
+
+
+    section.append(
+      header,
+      list
+    );
+
+
+    return section;
+  }
+
+
+  function renderMusicArtist(
+    artist:
+      string
+  ): void {
+    const songs =
+      musicSignals.filter(
+        (song) =>
+          song.artist ===
+          artist
+      );
+
+
+    if (!songs.length) {
+      return;
+    }
+
+
+    activeMusicArtist =
+      artist;
+
+
+    if (
+      musicArtistIndex
+    ) {
+      musicArtistIndex.hidden =
+        true;
+    }
+
+
+    if (
+      musicArtistView
+    ) {
+      musicArtistView.hidden =
+        false;
+    }
+
+
+    if (
+      musicArtistTitle
+    ) {
+      musicArtistTitle.textContent =
+        artist;
+    }
+
+
+    const groups =
+      new Map<
+        string,
+        MusicSignal[]
+      >();
+
+
+    songs.forEach(
+      (song) => {
+        const album =
+          song.album ??
+          "Loose Signals";
+
+
+        const current =
+          groups.get(album) ??
+          [];
+
+
+        current.push(song);
+
+        groups.set(
+          album,
+          current
+        );
+      }
+    );
+
+
+    if (
+      musicArtistSongCount
+    ) {
+      musicArtistSongCount.textContent =
+        `${songs.length} SIGNALS`;
+    }
+
+
+    if (
+      musicArtistAlbumCount
+    ) {
+      musicArtistAlbumCount.textContent =
+        `${groups.size} RELEASES`;
+    }
+
+
+    if (
+      musicArtistCover
+    ) {
+      musicArtistCover
+        .querySelectorAll("img")
+        .forEach(
+          (image) =>
+            image.remove()
+        );
+
+
+      const cover =
+        songs.find(
+          (song) =>
+            Boolean(song.cover)
+        )?.cover ??
+        null;
+
+
+      if (cover) {
+        const image =
+          document.createElement(
+            "img"
+          );
+
+        image.src =
+          cover;
+
+        image.alt =
+          `${artist} artwork`;
+
+        musicArtistCover.prepend(
+          image
+        );
       }
     }
+
+
+    musicAlbumList
+      ?.replaceChildren();
+
+
+    Array.from(
+      groups.entries()
+    )
+      .sort(
+        (first, second) => {
+          const firstYear =
+            first[1].find(
+              (song) =>
+                song.year
+            )?.year ??
+            "9999";
+
+
+          const secondYear =
+            second[1].find(
+              (song) =>
+                song.year
+            )?.year ??
+            "9999";
+
+
+          if (
+            firstYear !==
+            secondYear
+          ) {
+            return firstYear.localeCompare(
+              secondYear
+            );
+          }
+
+
+          return first[0].localeCompare(
+            second[0]
+          );
+        }
+      )
+      .forEach(
+        ([album, albumSongs]) => {
+          musicAlbumList?.append(
+            createAlbumSection(
+              album,
+              albumSongs
+            )
+          );
+        }
+      );
+
+
+    if (
+      musicSignalSearch
+    ) {
+      musicSignalSearch.value =
+        "";
+    }
+  }
+
+
+  musicArtistButtons.forEach(
+    (button) => {
+      button.addEventListener(
+        "click",
+        () => {
+          const artist =
+            button.dataset
+              .musicArtist;
+
+          if (artist) {
+            renderMusicArtist(
+              artist
+            );
+          }
+        }
+      );
+    }
+  );
+
+
+  musicArtistBack?.addEventListener(
+    "click",
+    showMusicArtistDirectory
+  );
+
+
+  musicSignalSearch?.addEventListener(
+    "input",
+    () => {
+      const query =
+        musicSignalSearch.value
+          .trim()
+          .toLowerCase();
+
+
+      const rows =
+        Array.from(
+          document.querySelectorAll<HTMLButtonElement>(
+            "[data-music-song-id]"
+          )
+        );
+
+
+      rows.forEach(
+        (row) => {
+          const song =
+            musicSignals.find(
+              (signal) =>
+                signal.id ===
+                row.dataset
+                  .musicSongId
+            );
+
+
+          if (!song) {
+            row.hidden = true;
+
+            return;
+          }
+
+
+          const searchable =
+            [
+              song.title,
+              song.album,
+              song.year,
+            ]
+              .filter(Boolean)
+              .join(" ")
+              .toLowerCase();
+
+
+          row.hidden =
+            Boolean(
+              query &&
+              !searchable.includes(
+                query
+              )
+            );
+        }
+      );
+
+
+      document
+        .querySelectorAll<HTMLElement>(
+          ".music-album"
+        )
+        .forEach(
+          (album) => {
+            const visible =
+              Array.from(
+                album.querySelectorAll<HTMLElement>(
+                  "[data-music-song-id]"
+                )
+              ).some(
+                (row) =>
+                  !row.hidden
+              );
+
+
+            album.hidden =
+              !visible;
+          }
+        );
+    }
+  );
+
+
+  /* ======================================================
+     MUSIC DETAIL
+  ====================================================== */
+
+  const musicDetailLayer =
+    document.querySelector<HTMLElement>(
+      "#music-detail-layer"
+    );
+
+
+  const musicDetailBackdrop =
+    document.querySelector<HTMLButtonElement>(
+      "#music-detail-backdrop"
+    );
+
+
+  const musicDetailClose =
+    document.querySelector<HTMLButtonElement>(
+      "#music-detail-close"
+    );
+
+
+  const musicDetailCover =
+    document.querySelector<HTMLElement>(
+      "#music-detail-cover"
+    );
+
+
+  function setMusicText(
+    selector:
+      string,
+
+    value:
+      string
+  ): void {
+    const element =
+      document.querySelector<HTMLElement>(
+        selector
+      );
+
+
+    if (element) {
+      element.textContent =
+        value;
+    }
+  }
+
+
+  function openMusicDetail(
+    song:
+      MusicSignal
+  ): void {
+    if (
+      !musicDetailLayer
+    ) {
+      return;
+    }
+
+
+    setMusicText(
+      "#music-detail-title",
+      song.title
+    );
+
+
+    setMusicText(
+      "#music-detail-artist",
+      song.artist
+    );
+
+
+    setMusicText(
+      "#music-detail-album",
+      song.album ??
+        "Loose Signals"
+    );
+
+
+    setMusicText(
+      "#music-detail-year",
+      song.year ?? "—"
+    );
+
+
+    setMusicText(
+      "#music-detail-duration",
+      formatDuration(
+        song.durationMs
+      )
+    );
+
+
+    setMusicText(
+      "#music-detail-status",
+      song.favourite
+        ? "★ FAVOURITE"
+        : (
+            song.status ===
+              "saved"
+              ? "SAVED"
+              : "DISCOVER LATER"
+          )
+    );
+
+
+    setMusicText(
+      "#music-detail-rating",
+      song.myRating !== null
+        ? `${song.myRating}/10`
+        : "UNRATED"
+    );
+
+
+    setMusicText(
+      "#music-detail-shelf",
+      song.shelf
+    );
+
+
+    setMusicText(
+      "#music-detail-note",
+      song.note
+    );
+
+
+    if (
+      musicDetailCover
+    ) {
+      musicDetailCover
+        .querySelectorAll("img")
+        .forEach(
+          (image) =>
+            image.remove()
+        );
+
+
+      if (song.cover) {
+        const image =
+          document.createElement(
+            "img"
+          );
+
+        image.src =
+          song.cover;
+
+        image.alt =
+          `${song.title} artwork`;
+
+        musicDetailCover.prepend(
+          image
+        );
+      }
+    }
+
+
+    musicDetailLayer.hidden =
+      false;
+
+
+    requestAnimationFrame(
+      () => {
+        musicDetailLayer.classList.add(
+          "is-open"
+        );
+
+        musicDetailClose?.focus();
+      }
+    );
+  }
+
+
+  function closeMusicDetail():
+    void {
+    if (
+      !musicDetailLayer
+    ) {
+      return;
+    }
+
+
+    musicDetailLayer.classList.remove(
+      "is-open"
+    );
+
+
+    window.setTimeout(
+      () => {
+        musicDetailLayer.hidden =
+          true;
+      },
+      190
+    );
+  }
+
+
+  musicDetailBackdrop?.addEventListener(
+    "click",
+    closeMusicDetail
+  );
+
+
+  musicDetailClose?.addEventListener(
+    "click",
+    closeMusicDetail
+  );
+
+
+  /* ======================================================
+     OMDb
+  ====================================================== */
+
+  const movieSearchForm =
+    document.querySelector<HTMLFormElement>(
+      "#movie-search-form"
+    );
+
+
+  const movieSearchInput =
+    document.querySelector<HTMLInputElement>(
+      "#movie-search-input"
+    );
+
+
+  const movieSearchSubmit =
+    document.querySelector<HTMLButtonElement>(
+      "#movie-search-submit"
+    );
+
+
+  const movieSearchMessage =
+    document.querySelector<HTMLElement>(
+      "#movie-search-message"
+    );
+
+
+  const movieSearchState =
+    document.querySelector<HTMLElement>(
+      "#movie-search-api-state"
+    );
+
+
+  const movieSearchResults =
+    document.querySelector<HTMLElement>(
+      "#movie-search-results"
+    );
+
+
+  const movieSelection =
+    document.querySelector<HTMLElement>(
+      "#movie-search-selection"
+    );
+
+
+  const movieSelectionClose =
+    document.querySelector<HTMLButtonElement>(
+      "#movie-search-selection-close"
+    );
+
+
+  const moviePoster =
+    document.querySelector<HTMLElement>(
+      "#movie-search-selection-poster"
+    );
+
+
+  function setMovieText(
+    selector:
+      string,
+
+    value:
+      string | null | undefined
+  ): void {
+    const element =
+      document.querySelector<HTMLElement>(
+        selector
+      );
+
+
+    if (element) {
+      element.textContent =
+        value ?? "—";
+    }
+  }
+
+
+  function setMovieMessage(
+    message:
+      string,
+
+    state:
+      "ready" |
+      "loading" |
+      "success" |
+      "error" =
+      "ready"
+  ): void {
+    if (
+      movieSearchMessage
+    ) {
+      movieSearchMessage.dataset.state =
+        state;
+
+
+      const text =
+        movieSearchMessage.querySelector(
+          "span"
+        );
+
+
+      if (text) {
+        text.textContent =
+          message;
+      }
+    }
+
+
+    if (
+      movieSearchState
+    ) {
+      movieSearchState.textContent =
+        state === "loading"
+          ? "SEARCHING"
+          : state === "error"
+            ? "LINK ERROR"
+            : state === "success"
+              ? "RECORD FOUND"
+              : "LINK READY";
+    }
+  }
+
+
+  async function loadMovieDetails(
+    imdbId:
+      string
+  ): Promise<void> {
+    if (
+      movieSelection
+    ) {
+      movieSelection.hidden =
+        false;
+    }
+
+
+    setMovieMessage(
+      "Retrieving full record...",
+      "loading"
+    );
+
+
+    try {
+      const response =
+        await fetch(
+          `/api/omdb/details?id=${encodeURIComponent(
+            imdbId
+          )}`
+        );
+
+
+      const data =
+        (
+          await response.json()
+        ) as
+          MovieDetailsResponse;
+
+
+      if (
+        !response.ok ||
+        !data.success ||
+        !data.movie
+      ) {
+        throw new Error(
+          data.message ??
+          "Movie unavailable."
+        );
+      }
+
+
+      const movie =
+        data.movie;
+
+
+      setMovieText(
+        "#movie-detail-title",
+        movie.title
+      );
+
+      setMovieText(
+        "#movie-detail-year",
+        movie.year
+      );
+
+      setMovieText(
+        "#movie-detail-director",
+        movie.director
+      );
+
+      setMovieText(
+        "#movie-detail-runtime",
+        movie.runtime
+      );
+
+      setMovieText(
+        "#movie-detail-genre",
+        movie.genre
+      );
+
+      setMovieText(
+        "#movie-detail-rating",
+        movie.imdbRating
+          ? `${movie.imdbRating}/10`
+          : null
+      );
+
+      setMovieText(
+        "#movie-detail-released",
+        movie.released
+      );
+
+      setMovieText(
+        "#movie-detail-language",
+        movie.language
+      );
+
+      setMovieText(
+        "#movie-detail-country",
+        movie.country
+      );
+
+      setMovieText(
+        "#movie-detail-imdb-id",
+        movie.imdbId
+      );
+
+      setMovieText(
+        "#movie-detail-actors",
+        movie.actors
+      );
+
+      setMovieText(
+        "#movie-detail-plot",
+        movie.plot
+      );
+
+      setMovieText(
+        "#movie-detail-awards",
+        movie.awards
+      );
+
+
+      if (
+        moviePoster
+      ) {
+        moviePoster
+          .replaceChildren();
+
+
+        if (movie.poster) {
+          const image =
+            document.createElement(
+              "img"
+            );
+
+          image.src =
+            movie.poster;
+
+          image.alt =
+            `${movie.title ?? "Movie"} poster`;
+
+          moviePoster.append(
+            image
+          );
+        } else {
+          const fallback =
+            document.createElement(
+              "span"
+            );
+
+          fallback.textContent =
+            "NO POSTER";
+
+          moviePoster.append(
+            fallback
+          );
+        }
+      }
+
+
+      setMovieMessage(
+        "External record loaded.",
+        "success"
+      );
+    } catch (
+      error
+    ) {
+      setMovieMessage(
+        error instanceof Error
+          ? error.message
+          : "Search failed.",
+        "error"
+      );
+    }
+  }
+
+
+  function createMovieResult(
+    movie:
+      MovieSearchResult
+  ): HTMLElement {
+    const result =
+      document.createElement(
+        "article"
+      );
+
+
+    result.className =
+      "movie-result-card";
+
+
+    const visual =
+      document.createElement(
+        "div"
+      );
+
+
+    visual.className =
+      "movie-result-card__poster";
+
+
+    if (movie.poster) {
+      const image =
+        document.createElement(
+          "img"
+        );
+
+      image.src =
+        movie.poster;
+
+      image.alt =
+        `${movie.title} poster`;
+
+      visual.append(
+        image
+      );
+    } else {
+      const fallback =
+        document.createElement(
+          "span"
+        );
+
+      fallback.textContent =
+        "NO POSTER";
+
+      visual.append(
+        fallback
+      );
+    }
+
+
+    const copy =
+      document.createElement(
+        "div"
+      );
+
+
+    copy.className =
+      "movie-result-card__copy";
+
+
+    const eyebrow =
+      document.createElement(
+        "p"
+      );
+
+    eyebrow.textContent =
+      `OMDb // ${movie.imdbId}`;
+
+
+    const title =
+      document.createElement(
+        "h4"
+      );
+
+    title.textContent =
+      movie.title;
+
+
+    const meta =
+      document.createElement(
+        "span"
+      );
+
+    meta.textContent =
+      `${movie.year} // ${movie.type.toUpperCase()}`;
+
+
+    const button =
+      document.createElement(
+        "button"
+      );
+
+    button.type =
+      "button";
+
+    button.textContent =
+      "OPEN RECORD →";
+
+
+    button.addEventListener(
+      "click",
+      () => {
+        void loadMovieDetails(
+          movie.imdbId
+        );
+      }
+    );
+
+
+    copy.append(
+      eyebrow,
+      title,
+      meta,
+      button
+    );
+
+
+    result.append(
+      visual,
+      copy
+    );
+
+
+    return result;
+  }
+
+
+  movieSearchForm?.addEventListener(
+    "submit",
+    async (
+      event
+    ) => {
+      event.preventDefault();
+
+
+      const query =
+        movieSearchInput
+          ?.value
+          .trim() ??
+        "";
+
+
+      if (
+        query.length < 2
+      ) {
+        setMovieMessage(
+          "Enter at least two characters.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      movieSearchResults
+        ?.replaceChildren();
+
+
+      if (
+        movieSelection
+      ) {
+        movieSelection.hidden =
+          true;
+      }
+
+
+      setMovieMessage(
+        `Searching "${query}"...`,
+        "loading"
+      );
+
+
+      if (
+        movieSearchSubmit
+      ) {
+        movieSearchSubmit.disabled =
+          true;
+
+        movieSearchSubmit.textContent =
+          "WORKING...";
+      }
+
+
+      try {
+        const response =
+          await fetch(
+            `/api/omdb/search?q=${encodeURIComponent(
+              query
+            )}`
+          );
+
+
+        const data =
+          (
+            await response.json()
+          ) as
+            MovieSearchResponse;
+
+
+        if (
+          !response.ok ||
+          !data.success
+        ) {
+          throw new Error(
+            data.message ??
+            "Search failed."
+          );
+        }
+
+
+        const results =
+          data.results ??
+          [];
+
+
+        results.forEach(
+          (movie) => {
+            movieSearchResults?.append(
+              createMovieResult(
+                movie
+              )
+            );
+          }
+        );
+
+
+        setMovieMessage(
+          `${results.length} records detected.`,
+          "success"
+        );
+      } catch (
+        error
+      ) {
+        setMovieMessage(
+          error instanceof Error
+            ? error.message
+            : "Search failed.",
+          "error"
+        );
+      } finally {
+        if (
+          movieSearchSubmit
+        ) {
+          movieSearchSubmit.disabled =
+            false;
+
+          movieSearchSubmit.textContent =
+            "EXECUTE";
+        }
+      }
+    }
+  );
+
+
+  movieSelectionClose?.addEventListener(
+    "click",
+    () => {
+      if (
+        movieSelection
+      ) {
+        movieSelection.hidden =
+          true;
+      }
+    }
+  );
+
+
+  /* ======================================================
+     ESC
+  ====================================================== */
+
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (
+        event.key !==
+        "Escape"
+      ) {
+        return;
+      }
+
+
+      if (
+        musicDetailLayer &&
+        !musicDetailLayer.hidden
+      ) {
+        closeMusicDetail();
+
+        return;
+      }
+
+
+      if (
+        drawerLayer &&
+        !drawerLayer.hidden
+      ) {
+        closeDrawer();
+
+        return;
+      }
+
+
+      if (
+        activeCategory ===
+          "music" &&
+        activeMusicArtist
+      ) {
+        showMusicArtistDirectory();
+      }
+    }
+  );
+
+
+  updateCategory(
+    activeCategory
   );
 </script>

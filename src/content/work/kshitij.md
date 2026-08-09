@@ -7,6 +7,30 @@ status: "COMPLETED"
 statusType: "completed"
 order: 2
 draft: false
+
+youtubeUrl: "https://youtu.be/K_wZ85dmc_w"
+videoTitle: "Kshitij — Short Film"
+
+gallery:
+  - src: "/assets/work/kshitij/kshitij-01.jpeg"
+    alt: "The photographer walking through the street with his camera in Kshitij."
+    caption: "THE OBSERVER"
+
+  - src: "/assets/work/kshitij/kshitij-05.png"
+    alt: "A close view of the photographer looking through his camera in Kshitij."
+    caption: "THROUGH THE CAMERA"
+
+  - src: "/assets/work/kshitij/kshitij-04.png"
+    alt: "Two young men speaking to one another in a scene from Kshitij."
+    caption: "THE ENCOUNTER"
+
+  - src: "/assets/work/kshitij/kshitij-02.jpeg"
+    alt: "A balloon seller speaking with a woman on the roadside in Kshitij."
+    caption: "THE INTERACTION"
+
+  - src: "/assets/work/kshitij/kshitij-03.jpeg"
+    alt: "A close portrait of the balloon seller in Kshitij."
+    caption: "THE SUBJECT"
 ---
 
 ## About the project

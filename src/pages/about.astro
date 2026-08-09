@@ -442,8 +442,10 @@ const vaultFiles = [
           <div class="about-file-list">
             {
               projectFiles.map((project, index) => (
-                <article
-                  class="about-file-card"
+                <a
+                  class="about-file-card about-file-card--project-link"
+                  href={`/work/${project.id}`}
+                  aria-label={`Open ${project.data.title} project`}
                   style={`--project-delay: ${index * 70}ms;`}
                 >
                   <div class="about-file-card__top">
@@ -478,7 +480,7 @@ const vaultFiles = [
                   <span class="about-file-card__link">
                     OPEN FILE
                   </span>
-                </article>
+                </a>
               ))
             }
           </div>

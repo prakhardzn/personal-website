@@ -1,0 +1,20 @@
+---
+title: "Can You Feel It?"
+artist: "Michael Jackson"
+album: "J.Period & Spike Lee Present... Man or the Music (40 Acres Edition)"
+year: "2010"
+recordingId: "ce1ad231-ba13-45cf-8b28-8a0bdc9df617"
+artistId: "f27ec8db-af05-4f36-916e-3d57f91ecf5e"
+releaseId: "ea45300a-84f6-4e3b-822a-024d7023ddc2"
+releaseGroupId: "2c905c0e-79ca-4cc2-9dc0-ea497c770990"
+durationMs: 124734
+cover: "/assets/library/music/michael-jackson-j-period-and-spike-lee-present-man-or-the-music-40-acres-edi-2c905c0e.jpg"
+status: "saved"
+favourite: false
+myRating: null
+shelf: "Michael Jackson"
+tags: ["Michael Jackson","J.Period & Spike Lee Present... Man or the Music (40 Acres Edition)"]
+addedAt: "2026-08-09T06:08:15.282Z"
+---
+
+Write your personal note about Can You Feel It? here.
