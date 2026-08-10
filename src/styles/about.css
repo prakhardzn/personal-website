@@ -60,6 +60,9 @@
 
 /* =========================================================
    MAIN TWO-COLUMN LAYOUT
+
+   This removes the old wide corridor between the left
+   and right sides.
 ========================================================= */
 
 .about-page .internal-page-grid {
@@ -354,7 +357,7 @@
 
 
 /* =========================================================
-   PROFILE GRID
+   INVISIBLE PROFILE GRID
 ========================================================= */
 
 .about-profile-grid {
@@ -852,6 +855,9 @@
 
 /* =========================================================
    CONTENT AND SCROLLBAR
+
+   The content window now has no inner padding, which
+   removes the visible empty corridor and double frame.
 ========================================================= */
 
 .about-content-stage {
@@ -972,6 +978,8 @@
 
 /* =========================================================
    CONTENT PANELS
+
+   The inner panel no longer has another border.
 ========================================================= */
 
 .about-content-panel {
@@ -1228,9 +1236,6 @@
 ========================================================= */
 
 .about-file-card {
-  --about-card-accent:
-    var(--terminal-green);
-
   position: relative;
 
   display: flex;
@@ -1251,7 +1256,7 @@
 
   border-left:
     2px solid
-    var(--about-card-accent);
+    var(--terminal-green);
 
   border-radius:
     var(--radius-card);
@@ -1263,82 +1268,18 @@
     var(--terminal-white);
 
   transition:
-    border-color 140ms ease,
-    background 140ms ease,
-    color 140ms ease;
-}
-
-.about-file-card--project-link {
-  color:
-    var(--terminal-white);
-
-  text-decoration:
-    none;
-
-  cursor:
-    pointer;
-}
-
-.about-file-card--project-link:visited {
-  color:
-    var(--terminal-white);
-}
-
-.about-file-card--project-link:focus-visible {
-  outline:
-    2px solid
-    var(--about-card-accent);
-
-  outline-offset:
-    3px;
-}
-
-.about-file-card--project-link:hover,
-.about-file-card--project-link:focus-visible {
-  text-decoration:
-    none;
-}
-
-.about-file-card:nth-child(4n + 1) {
-  --about-card-accent:
-    var(--terminal-green);
+    border-color 120ms ease,
+    box-shadow 120ms ease;
 }
 
 
-.about-file-card:nth-child(4n + 2) {
-  --about-card-accent:
-    var(--terminal-cyan);
-}
-
-
-.about-file-card:nth-child(4n + 3) {
-  --about-card-accent:
-    var(--terminal-lime);
-}
-
-
-.about-file-card:nth-child(4n + 4) {
-  --about-card-accent:
-    var(--terminal-green-muted);
-}
-
-
-.about-file-card:hover,
-.about-file-card:focus-within {
+.about-file-card:hover {
   border-color:
-    var(--about-card-accent);
-
-  background:
-    var(--about-card-accent);
-
-  color:
-    var(--terminal-bg);
+    var(--terminal-green);
 
   box-shadow:
-    none;
-
-  transform:
-    none;
+    0 0 7px
+    rgb(140 255 88 / 12%);
 }
 
 
@@ -1376,7 +1317,7 @@
 
 .about-file-card__top > span {
   color:
-    var(--about-card-accent);
+    var(--terminal-cyan);
 
   font-family:
     var(--font-display);
@@ -1389,9 +1330,6 @@
 
   text-transform:
     uppercase;
-
-  transition:
-    color 140ms ease;
 }
 
 
@@ -1429,11 +1367,6 @@
 
   white-space:
     nowrap;
-
-  transition:
-    border-color 140ms ease,
-    background 140ms ease,
-    color 140ms ease;
 }
 
 
@@ -1508,7 +1441,7 @@
     10px;
 
   color:
-    var(--about-card-accent);
+    var(--terminal-green);
 
   font-family:
     var(--font-display);
@@ -1524,9 +1457,6 @@
 
   text-transform:
     uppercase;
-
-  transition:
-    color 140ms ease;
 }
 
 
@@ -1553,9 +1483,6 @@
 
   text-transform:
     uppercase;
-
-  transition:
-    color 140ms ease;
 }
 
 
@@ -1576,9 +1503,6 @@
 
   line-height:
     1.6;
-
-  transition:
-    color 140ms ease;
 }
 
 
@@ -1597,9 +1521,6 @@
 
   text-transform:
     uppercase;
-
-  transition:
-    color 140ms ease;
 }
 
 
@@ -1608,13 +1529,10 @@
     9px;
 
   color:
-    var(--about-card-accent);
+    var(--terminal-green);
 
   content:
     ">";
-
-  transition:
-    color 140ms ease;
 }
 
 
@@ -1628,68 +1546,17 @@
     8px;
 
   color:
-    var(--about-card-accent);
+    var(--terminal-green);
 
   content:
     "▮";
 
   opacity:
     0;
-
-  transition:
-    color 140ms ease;
 }
 
 
 .about-file-card:hover
-.about-file-card__top > span,
-.about-file-card:focus-within
-.about-file-card__top > span,
-.about-file-card:hover h2,
-.about-file-card:focus-within h2,
-.about-file-card:hover
-.about-file-card__metadata,
-.about-file-card:focus-within
-.about-file-card__metadata,
-.about-file-card:hover
-.about-file-card__description,
-.about-file-card:focus-within
-.about-file-card__description,
-.about-file-card:hover
-.about-file-card__link,
-.about-file-card:focus-within
-.about-file-card__link,
-.about-file-card:hover
-.about-file-card__link::before,
-.about-file-card:focus-within
-.about-file-card__link::before,
-.about-file-card:hover
-.about-file-card__link::after,
-.about-file-card:focus-within
-.about-file-card__link::after {
-  color:
-    var(--terminal-bg);
-}
-
-
-.about-file-card:hover
-.about-project-status,
-.about-file-card:focus-within
-.about-project-status {
-  border-color:
-    var(--terminal-bg);
-
-  background:
-    var(--terminal-bg);
-
-  color:
-    var(--about-card-accent);
-}
-
-
-.about-file-card:hover
-.about-file-card__link::after,
-.about-file-card:focus-within
 .about-file-card__link::after {
   opacity:
     1;
@@ -1732,9 +1599,6 @@
 
 
 .about-vault-card {
-  --about-card-accent:
-    var(--terminal-green);
-
   min-height:
     188px;
 
@@ -1750,7 +1614,7 @@
 
   border-left:
     2px solid
-    var(--about-card-accent);
+    var(--terminal-green);
 
   border-radius:
     var(--radius-card);
@@ -1758,56 +1622,25 @@
   background:
     var(--terminal-panel);
 
-  color:
-    var(--terminal-white);
-
   transition:
-    border-color 140ms ease,
-    background 140ms ease,
-    color 140ms ease;
+    border-color 120ms ease,
+    box-shadow 120ms ease;
 }
 
 
-.about-vault-card:nth-child(3n + 1) {
-  --about-card-accent:
-    var(--terminal-green);
-}
-
-
-.about-vault-card:nth-child(3n + 2) {
-  --about-card-accent:
-    var(--terminal-cyan);
-}
-
-
-.about-vault-card:nth-child(3n + 3) {
-  --about-card-accent:
-    var(--terminal-lime);
-}
-
-
-.about-vault-card:hover,
-.about-vault-card:focus-within {
+.about-vault-card:hover {
   border-color:
-    var(--about-card-accent);
-
-  background:
-    var(--about-card-accent);
-
-  color:
-    var(--terminal-bg);
+    var(--terminal-green);
 
   box-shadow:
-    none;
-
-  transform:
-    none;
+    0 0 7px
+    rgb(140 255 88 / 12%);
 }
 
 
 .about-vault-card > span {
   color:
-    var(--about-card-accent);
+    var(--terminal-cyan);
 
   font-family:
     var(--font-display);
@@ -1820,9 +1653,6 @@
 
   text-transform:
     uppercase;
-
-  transition:
-    color 140ms ease;
 }
 
 
@@ -1833,7 +1663,7 @@
     12px;
 
   color:
-    var(--about-card-accent);
+    var(--terminal-green);
 
   font-family:
     var(--font-display);
@@ -1849,9 +1679,6 @@
 
   text-transform:
     uppercase;
-
-  transition:
-    color 140ms ease;
 }
 
 
@@ -1867,20 +1694,6 @@
 
   line-height:
     1.6;
-
-  transition:
-    color 140ms ease;
-}
-
-
-.about-vault-card:hover > span,
-.about-vault-card:focus-within > span,
-.about-vault-card:hover h2,
-.about-vault-card:focus-within h2,
-.about-vault-card:hover p,
-.about-vault-card:focus-within p {
-  color:
-    var(--terminal-bg);
 }
 
 
@@ -2257,6 +2070,165 @@ and (
 ========================================================= */
 
 @media (max-width: 540px) {
+  /* =======================================================
+     MOBILE VISUAL RECORD
+
+     The portrait becomes a compact archive/camera record
+     instead of a full-height hero image. Desktop is unchanged.
+  ======================================================= */
+
+  .about-left-column {
+    grid-template-rows:
+      196px
+      auto;
+
+    gap:
+      8px;
+  }
+
+  .about-photo-frame {
+    display:
+      grid;
+
+    grid-template-rows:
+      26px
+      minmax(0, 1fr)
+      22px;
+
+    width:
+      100%;
+
+    height:
+      196px;
+
+    min-height:
+      196px;
+
+    overflow:
+      hidden;
+
+    border-width:
+      1px;
+
+    border-radius:
+      3px;
+
+    background:
+      var(--terminal-bg);
+  }
+
+  .about-photo-frame::before,
+  .about-photo-frame::after {
+    position:
+      relative;
+
+    z-index:
+      3;
+
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    padding:
+      0
+      9px;
+
+    background:
+      var(--terminal-bg);
+
+    color:
+      var(--terminal-green);
+
+    font-family:
+      var(--font-display);
+
+    font-size:
+      0.48rem;
+
+    line-height:
+      1;
+
+    letter-spacing:
+      0.08em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .about-photo-frame::before {
+    border-bottom:
+      1px solid
+      var(--terminal-border);
+
+    content:
+      "VISUAL RECORD // CAM-01";
+  }
+
+  .about-photo-frame::after {
+    justify-content:
+      space-between;
+
+    border-top:
+      1px solid
+      var(--terminal-border);
+
+    color:
+      var(--terminal-green-muted);
+
+    content:
+      "P-01 / FIELD CAPTURE / ARCHIVED";
+  }
+
+  .about-photo {
+    grid-row:
+      2;
+
+    width:
+      100%;
+
+    height:
+      100%;
+
+    min-height:
+      0;
+
+    object-fit:
+      cover;
+
+    object-position:
+      center 43%;
+
+    filter:
+      saturate(0.82)
+      contrast(1.08)
+      brightness(0.88);
+  }
+
+  .about-photo-frame::before,
+  .about-photo-frame::after,
+  .about-photo {
+    transition:
+      filter 160ms ease,
+      color 160ms ease,
+      background-color 160ms ease;
+  }
+
+  .about-photo-fallback {
+    grid-row:
+      2;
+
+    min-height:
+      0;
+  }
+
+  .about-profile-card,
+  .about-profile-terminal {
+    min-height:
+      0;
+  }
+
   .about-tabs {
     grid-template-columns:
       1fr;
@@ -2393,7 +2365,6 @@ and (
   .about-content-panel,
   .about-profile-panel,
   .about-file-card,
-  .about-vault-card,
   .about-identity-tag,
   .terminal-status-dot,
   .terminal-caret,
@@ -2401,8 +2372,547 @@ and (
   .about-file-card__link::after {
     animation:
       none !important;
+  }
+}
+/* =========================================================
+   MOBILE READABLE TYPE SYSTEM // 12PX MINIMUM
 
-    transition:
-      none !important;
+   Scale:
+   12 / 14 / 16 / 18 / 20 / 23 / 26 / 32px
+========================================================= */
+
+@media (max-width: 540px) {
+  .about-page {
+    --text-2xs: 0.75rem;      /* 12px */
+    --text-xs: 0.875rem;      /* 14px */
+    --text-base: 1rem;        /* 16px */
+    --text-md: 1.125rem;      /* 18px */
+    --text-lg: 1.25rem;       /* 20px */
+    --text-xl: 1.4375rem;     /* 23px */
+    --text-2xl: 2rem;         /* 32px */
+  }
+
+  .about-left-column {
+    grid-template-rows:
+      224px
+      auto;
+  }
+
+  .about-photo-frame {
+    grid-template-rows:
+      34px
+      minmax(0, 1fr)
+      32px;
+
+    height: 224px;
+    min-height: 224px;
+  }
+
+  .about-photo-frame::before,
+  .about-photo-frame::after {
+    padding: 0 10px;
+    font-size: var(--text-2xs);
+    line-height: 1.25;
+    letter-spacing: 0.035em;
+  }
+
+  .about-profile-terminal__header {
+    min-height: 56px;
+    font-size: var(--text-2xs);
+    line-height: 1.3;
+  }
+
+  .about-profile-cell--label {
+    font-size: var(--text-2xs);
+    line-height: 1.35;
+  }
+
+  .about-profile-cell--value {
+    font-size: var(--text-base);
+    line-height: 1.45;
+  }
+
+  .about-tab {
+    min-height: 58px;
+    font-size: var(--text-xs);
+    line-height: 1.25;
+  }
+
+  .about-content-panel {
+    font-size: var(--text-base);
+  }
+
+  .about-biography p {
+    font-size: var(--text-base);
+    line-height: 1.7;
+  }
+
+  .about-file-card__top,
+  .about-project-status,
+  .about-contact,
+  .about-file-card__footer {
+    font-size: var(--text-xs);
+  }
+
+  .about-file-card h2 {
+    font-size: var(--text-xl);
+    line-height: 1.2;
+  }
+}
+
+
+/* Project cards are links, but should read like interface panels. */
+.about-file-card {
+  border-left-width: 1px;
+  border-left-color: var(--terminal-border);
+  text-decoration: none;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.about-file-card:visited {
+  text-decoration: none;
+}
+
+.about-file-card:hover,
+.about-file-card:focus-visible {
+  border-color: var(--terminal-green);
+  background: var(--terminal-green);
+  color: var(--terminal-bg);
+  box-shadow: 0 0 12px rgb(140 255 88 / 22%);
+}
+
+.about-file-card:hover .about-file-card__top > span,
+.about-file-card:focus-visible .about-file-card__top > span,
+.about-file-card:hover h2,
+.about-file-card:focus-visible h2,
+.about-file-card:hover .about-file-card__metadata,
+.about-file-card:focus-visible .about-file-card__metadata,
+.about-file-card:hover .about-file-card__description,
+.about-file-card:focus-visible .about-file-card__description,
+.about-file-card:hover .about-file-card__link,
+.about-file-card:focus-visible .about-file-card__link,
+.about-file-card:hover .about-file-card__link::before,
+.about-file-card:focus-visible .about-file-card__link::before,
+.about-file-card:hover .about-file-card__link::after,
+.about-file-card:focus-visible .about-file-card__link::after {
+  color: var(--terminal-bg);
+}
+
+.about-file-card:hover .about-project-status,
+.about-file-card:focus-visible .about-project-status {
+  border-color: var(--terminal-bg);
+  background: var(--terminal-bg);
+  color: var(--terminal-green);
+}
+
+.about-file-card:focus-visible {
+  outline: 2px solid var(--terminal-white);
+  outline-offset: 3px;
+}
+
+/* White reading/action text uses the same 16px body size. */
+.about-file-card__description,
+.about-file-card__link,
+.about-contact a,
+.about-vault-card p,
+.about-content-header > span {
+  font-size: var(--site-text-body);
+}
+
+/* Remove the accent stripe from every card-like About panel. */
+.about-contact,
+.about-vault-card {
+  border-left-width: 1px;
+  border-left-color: var(--terminal-border);
+}
+
+.about-vault-card {
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.about-vault-card:hover,
+.about-vault-card:focus-within {
+  border-color: var(--terminal-green);
+  background: var(--terminal-green);
+  color: var(--terminal-bg);
+  box-shadow: 0 0 12px rgb(140 255 88 / 22%);
+}
+
+.about-vault-card:hover > span,
+.about-vault-card:focus-within > span,
+.about-vault-card:hover h2,
+.about-vault-card:focus-within h2,
+.about-vault-card:hover p,
+.about-vault-card:focus-within p {
+  color: var(--terminal-bg);
+}
+
+.about-contact:hover,
+.about-contact:focus-within {
+  border-color: var(--terminal-green);
+  background: var(--terminal-green);
+  box-shadow: 0 0 12px rgb(140 255 88 / 22%);
+}
+
+.about-contact:hover span,
+.about-contact:focus-within span,
+.about-contact:hover a,
+.about-contact:focus-within a {
+  color: var(--terminal-bg);
+}
+
+/* If a project card is wrapped by a route link, remove the browser underline
+   from the wrapper as well. Text decorations applied by an ancestor propagate
+   through descendants, so fixing only the inner card is not enough. */
+.about-file-list > a,
+.about-file-list > a:link,
+.about-file-list > a:visited,
+.about-file-list > a:hover,
+.about-file-list > a:focus-visible {
+  color: inherit;
+  text-decoration: none;
+}
+
+.about-file-list > a {
+  display: block;
+}
+
+
+/* =========================================================
+   ABOUT PAGE // REFINEMENT PASS 02
+
+   Scope:
+   - fixes the profile terminal collision
+   - gives identity tags enough room
+   - keeps aesthetic microcopy compact
+   - keeps normal reading copy readable
+   - keeps tabs clickable after Astro ClientRouter navigation
+   - does not alter the Work project gallery layout
+========================================================= */
+
+.about-page {
+  /*
+   * About has two type systems:
+   * 1) readable content copy
+   * 2) terminal metadata / labels that are part of the interface art
+   */
+  --text-2xs: 0.6875rem; /* 11px aesthetic microcopy */
+  --text-xs: 0.75rem;    /* 12px terminal labels */
+  --text-base: 1rem;     /* 16px readable copy */
+  --text-md: 1.125rem;   /* 18px emphasis */
+  --text-lg: 1.25rem;    /* 20px section headings */
+  --text-xl: 1.4375rem;  /* 23px card titles */
+  --text-2xl: 2rem;      /* 32px major headings */
+}
+
+/* ---------- Profile terminal header ---------- */
+
+.about-profile-terminal__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding-inline: 12px;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.055em;
+}
+
+.about-profile-terminal__title {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.about-profile-terminal__status {
+  display: inline-flex;
+  min-width: max-content;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.035em;
+  white-space: nowrap;
+}
+
+.terminal-caret {
+  width: 0.72em;
+  margin-left: 2px;
+}
+
+/* ---------- Profile data grid ---------- */
+
+.about-profile-grid {
+  grid-template-columns:
+    104px
+    minmax(0, 1fr)
+    158px;
+  column-gap: 8px;
+  row-gap: 2px;
+  padding: 10px 12px 12px;
+}
+
+.about-profile-cell {
+  overflow: visible;
+}
+
+.about-profile-cell--label {
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 0.055em;
+}
+
+.about-profile-cell--value {
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.35;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.about-profile-cell--badge {
+  justify-content: flex-end;
+  width: 158px;
+  min-width: 158px;
+}
+
+/* ---------- Identity tags ---------- */
+
+.about-identity-tag {
+  grid-template-columns: 42px minmax(0, 1fr);
+  width: 154px;
+  height: 29px;
+  min-width: 154px;
+}
+
+.about-identity-tag span {
+  padding: 0 4px;
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.035em;
+  white-space: nowrap;
+}
+
+.about-identity-tag strong {
+  min-width: 0;
+  padding: 0 7px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.025em;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+/* ---------- About page tabs ---------- */
+
+.about-tabs {
+  position: relative;
+  z-index: 4;
+  pointer-events: auto;
+}
+
+.about-tab {
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.about-tab:hover,
+.about-tab:focus-visible {
+  background: var(--terminal-green);
+  color: var(--terminal-bg);
+  box-shadow:
+    0 0 8px rgb(140 255 88 / 28%),
+    0 0 18px rgb(140 255 88 / 12%);
+}
+
+.about-tab.is-active {
+  background: var(--terminal-green);
+  color: var(--terminal-bg);
+}
+
+.about-content-stage {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Project links ---------- */
+
+.about-file-card--project-link {
+  color: var(--terminal-white);
+  text-decoration: none;
+}
+
+.about-file-card--project-link:visited {
+  color: var(--terminal-white);
+}
+
+/* ---------- Medium desktop protection ---------- */
+
+@media (max-width: 1250px) and (min-width: 781px) {
+  .about-profile-terminal__header {
+    padding-inline: 10px;
+    gap: 7px;
+  }
+
+  .about-profile-terminal__title {
+    font-size: 11px;
+  }
+
+  .about-profile-terminal__status {
+    font-size: 10px;
+  }
+
+  .about-profile-grid {
+    grid-template-columns:
+      86px
+      minmax(0, 1fr)
+      132px;
+    column-gap: 7px;
+    padding-inline: 9px;
+  }
+
+  .about-profile-cell--label {
+    font-size: 11px;
+  }
+
+  .about-profile-cell--value {
+    font-size: 13px;
+  }
+
+  .about-profile-cell--badge {
+    width: 132px;
+    min-width: 132px;
+  }
+
+  .about-identity-tag {
+    grid-template-columns: 36px minmax(0, 1fr);
+    width: 128px;
+    min-width: 128px;
+    height: 27px;
+  }
+
+  .about-identity-tag span {
+    font-size: 9px;
+    padding-inline: 3px;
+  }
+
+  .about-identity-tag strong {
+    padding-inline: 5px;
+    font-size: 11px;
+  }
+}
+
+/* ---------- Short desktop protection ---------- */
+
+@media (min-width: 781px) and (max-height: 760px) {
+  .about-profile-terminal__header {
+    min-height: 34px;
+  }
+
+  .about-profile-grid {
+    grid-template-columns:
+      82px
+      minmax(0, 1fr)
+      128px;
+    column-gap: 6px;
+    padding: 7px 8px 9px;
+  }
+
+  .about-profile-cell--label {
+    font-size: 10px;
+  }
+
+  .about-profile-cell--value {
+    font-size: 12px;
+  }
+
+  .about-profile-cell--badge {
+    width: 128px;
+    min-width: 128px;
+  }
+
+  .about-identity-tag {
+    grid-template-columns: 34px minmax(0, 1fr);
+    width: 124px;
+    min-width: 124px;
+    height: 24px;
+  }
+
+  .about-identity-tag span {
+    font-size: 8.5px;
+  }
+
+  .about-identity-tag strong {
+    padding-inline: 4px;
+    font-size: 10px;
+  }
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 780px) {
+  .about-profile-terminal__header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .about-profile-grid {
+    grid-template-columns:
+      88px
+      minmax(0, 1fr)
+      132px;
+  }
+
+  .about-profile-cell--badge {
+    width: 132px;
+    min-width: 132px;
+  }
+
+  .about-identity-tag {
+    width: 128px;
+    min-width: 128px;
+  }
+}
+
+@media (max-width: 540px) {
+  .about-profile-terminal__header {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+    min-height: 58px;
+    padding-block: 8px;
+  }
+
+  .about-profile-terminal__status {
+    justify-self: start;
+  }
+
+  .about-profile-grid {
+    grid-template-columns: 82px minmax(0, 1fr);
+    grid-auto-flow: row;
+  }
+
+  .about-profile-cell--badge {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    width: auto;
+    min-width: 0;
+    padding-left: 82px;
+  }
+
+  .about-identity-tag {
+    width: 136px;
+    min-width: 136px;
   }
 }

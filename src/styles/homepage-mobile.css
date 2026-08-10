@@ -1,10 +1,9 @@
 /* =========================================================
-   HOMEPAGE // DEDICATED MOBILE TERMINAL
+   HOMEPAGE // PORTAL 214 MOBILE TERMINAL
 
-   This stylesheet is intentionally separate from homepage.css.
-   Desktop keeps the existing four-planet composition.
-   Phones switch to a compact orbital directory inspired by
-   old personal-web / handheld terminal interfaces.
+   Dedicated mobile layer.
+   Desktop remains controlled by homepage.css.
+   Mobile becomes a restrained file-system / terminal interface.
 ========================================================= */
 
 .mobile-brand,
@@ -14,7 +13,7 @@
 }
 
 /* =========================================================
-   PHONE LAYOUT
+   MOBILE // 700PX AND BELOW
 ========================================================= */
 
 @media (max-width: 700px) {
@@ -53,18 +52,18 @@
     position: fixed;
     inset: 2px;
     z-index: 95;
-    border-radius: 3px;
+    border-radius: 2px;
   }
 
   .site-shell::after {
     position: fixed;
     inset: 7px;
     z-index: 94;
-    border-radius: 5px;
+    border-radius: 2px;
   }
 
   /* =======================================================
-     MOBILE SYSTEM BAR
+     HEADER
   ======================================================= */
 
   .system-bar {
@@ -76,14 +75,14 @@
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     width: calc(100% - 14px);
-    height: 46px;
+    height: 44px;
     margin: 6px 7px 0;
     padding: 4px;
-    border-width: 1px;
-    border-radius: 4px;
-    background: rgb(2 7 5 / 96%);
-    box-shadow: 0 5px 18px rgb(0 0 0 / 38%);
-    backdrop-filter: blur(8px);
+    border: 1px solid var(--neon-green);
+    border-radius: 2px;
+    background: rgb(2 7 5 / 97%);
+    box-shadow: 0 4px 14px rgb(0 0 0 / 30%);
+    backdrop-filter: blur(7px);
   }
 
   .mobile-brand {
@@ -94,23 +93,23 @@
     padding: 0 7px;
     color: var(--neon-green);
     font-family: var(--font-display);
-    font-size: clamp(10px, 3.3vw, 13px);
-    font-weight: 700;
+    font-size: clamp(10px, 3vw, 12px);
     line-height: 1;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.075em;
+    text-transform: uppercase;
     white-space: nowrap;
   }
 
   .mobile-brand__signal {
     display: grid;
-    flex: 0 0 auto;
     place-items: center;
-    width: 18px;
-    height: 18px;
-    border: 1px solid currentColor;
+    width: 12px;
+    height: 12px;
+    flex: 0 0 auto;
+    border: 1px solid var(--neon-green);
     border-radius: 50%;
-    font-size: 8px;
-    box-shadow: 0 0 8px rgb(140 255 88 / 18%);
+    font-size: 7px;
+    animation: portal-signal 2.8s ease-in-out infinite;
   }
 
   .mobile-brand__name {
@@ -118,33 +117,32 @@
     text-overflow: ellipsis;
   }
 
-  .system-bar > .icon-button--back,
-  .system-bar > .system-message {
+  .icon-button--back,
+  .system-message {
     display: none !important;
   }
 
   .system-actions {
     position: static;
     display: grid;
-    grid-template-columns: repeat(2, 38px);
-    align-items: center;
+    grid-template-columns: repeat(2, 34px);
     gap: 4px;
     width: auto;
-    height: 38px;
   }
 
   .system-actions .icon-button {
-    width: 38px;
-    min-width: 38px;
-    height: 38px;
-    padding: 0;
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    min-height: 34px;
     border-width: 1px;
-    border-radius: 3px;
-    font-size: 14px;
+    border-radius: 1px;
+    background: transparent;
+    font-size: 13px;
   }
 
   /* =======================================================
-     DESKTOP SPACE MAP OFF ON PHONES
+     MOBILE CONTENT
   ======================================================= */
 
   .planet-map {
@@ -162,269 +160,487 @@
     display: none !important;
   }
 
-  /* =======================================================
-     ORBITAL DIRECTORY
-  ======================================================= */
-
   .mobile-home-directory {
     position: relative;
-    isolation: isolate;
     display: block;
     width: 100%;
-    min-height: 548px;
-    padding: 18px 12px 20px;
     overflow: hidden;
     border: 1px solid var(--neon-green);
-    border-radius: 5px;
+    border-radius: 2px;
     background:
-      linear-gradient(rgb(2 7 5 / 37%), rgb(2 7 5 / 72%)),
-      radial-gradient(circle at 50% 47%, rgb(140 255 88 / 9%) 0 1px, transparent 2px),
-      rgb(2 7 5 / 76%);
-    box-shadow:
-      inset 0 0 0 4px rgb(2 7 5 / 82%),
-      inset 0 0 0 5px rgb(140 255 88 / 18%);
-  }
-
-  .mobile-home-directory::before,
-  .mobile-home-directory::after {
-    position: absolute;
-    z-index: -2;
-    border: 1px solid rgb(140 255 88 / 15%);
-    border-radius: 50%;
-    pointer-events: none;
-    content: "";
+      linear-gradient(rgb(2 7 5 / 94%), rgb(2 7 5 / 97%)),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0,
+        transparent 22px,
+        rgb(140 255 88 / 0.035) 22px,
+        rgb(140 255 88 / 0.035) 23px
+      );
   }
 
   .mobile-home-directory::before {
-    top: 82px;
-    left: 50%;
-    width: 470px;
-    height: 470px;
-    transform: translateX(-50%);
-  }
-
-  .mobile-home-directory::after {
-    top: 128px;
-    left: 50%;
-    width: 360px;
-    height: 360px;
-    border-style: dashed;
-    transform: translateX(-50%) rotate(8deg);
-  }
-
-  .mobile-directory__orbit {
     position: absolute;
-    top: 175px;
-    left: 50%;
-    z-index: -1;
-    width: 260px;
-    height: 260px;
-    border: 1px solid rgb(69 232 154 / 16%);
-    border-radius: 50%;
+    inset: 0;
     pointer-events: none;
-    transform: translateX(-50%);
-  }
-
-  .mobile-directory__orbit::before,
-  .mobile-directory__orbit::after {
-    position: absolute;
-    inset: 16%;
-    border: 1px solid rgb(178 231 124 / 12%);
-    border-radius: 50%;
+    background:
+      linear-gradient(90deg, rgb(140 255 88 / 0.025) 1px, transparent 1px),
+      linear-gradient(rgb(140 255 88 / 0.025) 1px, transparent 1px);
+    background-size: 24px 24px;
     content: "";
+    opacity: 0.35;
   }
 
-  .mobile-directory__orbit::after {
-    inset: 33%;
-    border-style: dotted;
+  .mobile-directory__scanline {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 49%,
+        rgb(140 255 88 / 0.035) 50%,
+        transparent 51%,
+        transparent 100%
+      );
+    background-size: 100% 5px;
+    opacity: 0.35;
   }
+
+  /* =======================================================
+     DIRECTORY HEADER
+  ======================================================= */
 
   .mobile-directory__header {
     position: relative;
-    z-index: 4;
-    margin-bottom: 18px;
-    padding: 0 6px 14px;
-    border-bottom: 1px solid rgb(140 255 88 / 28%);
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 54px;
+    align-items: stretch;
+    min-height: 76px;
+    border-bottom: 1px solid rgb(140 255 88 / 48%);
   }
 
-  .mobile-directory__header p {
-    margin: 0 0 7px;
+  .mobile-directory__heading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    padding: 12px 12px 11px;
+  }
+
+  .mobile-directory__heading p {
+    margin: 0 0 8px;
     color: var(--terminal-mint);
     font-family: var(--font-display);
-    font-size: 8px;
-    line-height: 1.3;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .mobile-directory__header h2 {
-    margin: 0;
-    color: var(--neon-green);
-    font-family: var(--font-display);
-    font-size: clamp(20px, 7vw, 28px);
-    font-weight: 700;
+    font-size: 6px;
     line-height: 1;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    text-shadow: 0 0 10px rgb(140 255 88 / 19%);
   }
+
+  .mobile-directory__heading h2 {
+    margin: 0;
+    color: var(--neon-green);
+    font-family: var(--font-display);
+    font-size: clamp(17px, 5vw, 21px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+  }
+
+  .mobile-directory__count {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 3px;
+    border-left: 1px solid rgb(140 255 88 / 48%);
+    color: var(--neon-green);
+    font-family: var(--font-display);
+    text-align: center;
+  }
+
+  .mobile-directory__count strong {
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 400;
+  }
+
+  .mobile-directory__count span {
+    color: var(--terminal-mint);
+    font-size: 6px;
+    line-height: 1;
+    letter-spacing: 0.06em;
+  }
+
+  /* =======================================================
+     NODE LIST
+  ======================================================= */
 
   .mobile-directory__nav {
     position: relative;
-    z-index: 5;
+    z-index: 2;
     display: grid;
-    gap: 11px;
-    padding: 4px 4px 0 28px;
+    gap: 0;
   }
 
   .mobile-destination {
     position: relative;
     display: grid;
-    grid-template-columns: 24px minmax(0, 1fr) 22px;
-    align-items: center;
-    min-width: 0;
-    height: 76px;
-    padding: 7px 10px 7px 28px;
-    border: 1px solid var(--neon-green);
-    border-radius: 999px;
-    background: rgb(2 7 5 / 93%);
+    grid-template-columns: 82px minmax(0, 1fr) 34px;
+    align-items: stretch;
+    min-height: 88px;
+    border-bottom: 1px solid rgb(140 255 88 / 38%);
+    background: rgb(2 7 5 / 78%);
     color: var(--interface-white);
     text-decoration: none;
-    box-shadow:
-      inset 0 0 0 1px rgb(140 255 88 / 5%),
-      0 5px 16px rgb(0 0 0 / 24%);
     transition:
-      border-color 140ms ease,
-      background-color 140ms ease,
-      transform 140ms ease,
-      box-shadow 140ms ease;
+      background-color 120ms ease,
+      border-color 120ms ease,
+      color 120ms ease,
+      box-shadow 160ms ease,
+      transform 120ms ease;
   }
 
-  .mobile-destination::before {
-    position: absolute;
-    top: 50%;
-    left: -16px;
-    z-index: -1;
-    width: 24px;
-    height: 1px;
+  .mobile-destination:last-child {
+    border-bottom: 0;
+  }
+
+  /*
+   * Terminal-hover language shared with the internal pages:
+   * neon flood + dark text + a restrained edge glow.
+   *
+   * :hover = desktop mouse while testing the mobile layout
+   * :focus-visible = keyboard accessibility
+   * :active = the real-phone touch equivalent
+   */
+  .mobile-destination:hover,
+  .mobile-destination:focus-visible,
+  .mobile-destination:active,
+  .mobile-destination.is-touch-active {
+    z-index: 4;
+    border-color: var(--neon-green);
+    outline: none;
     background: var(--neon-green);
-    opacity: 0.72;
+    color: var(--terminal-bg);
+    box-shadow:
+      inset 0 0 0 1px rgb(2 7 5 / 52%),
+      0 0 8px rgb(168 255 54 / 66%),
+      0 0 18px rgb(168 255 54 / 24%);
+    transform: translateX(2px);
+  }
+
+  .mobile-destination:hover .mobile-destination__meta,
+  .mobile-destination:hover .mobile-destination__state,
+  .mobile-destination:hover strong,
+  .mobile-destination:hover .mobile-destination__description,
+  .mobile-destination:hover .mobile-destination__arrow,
+  .mobile-destination:focus-visible .mobile-destination__meta,
+  .mobile-destination:focus-visible .mobile-destination__state,
+  .mobile-destination:focus-visible strong,
+  .mobile-destination:focus-visible .mobile-destination__description,
+  .mobile-destination:focus-visible .mobile-destination__arrow,
+  .mobile-destination:active .mobile-destination__meta,
+  .mobile-destination:active .mobile-destination__state,
+  .mobile-destination:active strong,
+  .mobile-destination:active .mobile-destination__description,
+  .mobile-destination:active .mobile-destination__arrow,
+  .mobile-destination.is-touch-active .mobile-destination__arrow {
+    color: var(--terminal-bg);
+  }
+
+  .mobile-destination:hover .mobile-destination__viewport,
+  .mobile-destination:focus-visible .mobile-destination__viewport,
+  .mobile-destination:active .mobile-destination__viewport,
+  .mobile-destination.is-touch-active .mobile-destination__viewport {
+    border-right-color: var(--terminal-bg);
+    background:
+      radial-gradient(
+        circle at 50% 50%,
+        rgb(168 255 54 / 16%),
+        transparent 62%
+      ),
+      rgb(2 7 5 / 96%);
+  }
+
+  .mobile-destination:hover .mobile-destination__viewport::before,
+  .mobile-destination:focus-visible .mobile-destination__viewport::before,
+  .mobile-destination:active .mobile-destination__viewport::before,
+  .mobile-destination.is-touch-active .mobile-destination__viewport::before {
+    border-color: var(--neon-green);
+    box-shadow:
+      0 0 7px rgb(168 255 54 / 52%),
+      inset 0 0 7px rgb(168 255 54 / 18%);
+  }
+
+  .mobile-destination:hover .mobile-destination__viewport::after,
+  .mobile-destination:focus-visible .mobile-destination__viewport::after,
+  .mobile-destination:active .mobile-destination__viewport::after,
+  .mobile-destination.is-touch-active .mobile-destination__viewport::after {
+    background: var(--neon-green);
+    box-shadow:
+      0 -18px 0 rgb(168 255 54 / 18%),
+      0 18px 0 rgb(168 255 54 / 18%);
+  }
+
+  .mobile-destination:hover .mobile-destination__planet,
+  .mobile-destination:focus-visible .mobile-destination__planet,
+  .mobile-destination:active .mobile-destination__planet,
+  .mobile-destination.is-touch-active .mobile-destination__planet {
+    filter:
+      brightness(1.14)
+      saturate(1.08)
+      drop-shadow(0 0 7px rgb(168 255 54 / 58%));
+  }
+
+  .mobile-destination:hover .mobile-destination__arrow,
+  .mobile-destination:focus-visible .mobile-destination__arrow,
+  .mobile-destination:active .mobile-destination__arrow,
+  .mobile-destination.is-touch-active .mobile-destination__arrow {
+    border-left-color: var(--terminal-bg);
+    text-shadow: none;
+  }
+
+  .mobile-destination:hover .mobile-destination__arrow::before,
+  .mobile-destination:focus-visible .mobile-destination__arrow::before,
+  .mobile-destination:active .mobile-destination__arrow::before,
+  .mobile-destination.is-touch-active .mobile-destination__arrow::before {
+    border-color: var(--terminal-bg);
+    background: rgb(2 7 5 / 9%);
+  }
+
+  .mobile-destination__viewport {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    overflow: hidden;
+    border-right: 1px solid rgb(140 255 88 / 32%);
+    background:
+      radial-gradient(circle at 50% 50%, rgb(140 255 88 / 0.07), transparent 58%),
+      rgb(1 5 3 / 72%);
+  }
+
+  .mobile-destination__viewport::before,
+  .mobile-destination__viewport::after {
+    position: absolute;
+    pointer-events: none;
     content: "";
   }
 
-  .mobile-destination:active {
-    background: rgb(7 19 11 / 98%);
-    transform: scale(0.986);
+  .mobile-destination__viewport::before {
+    width: 58px;
+    height: 58px;
+    border: 1px solid rgb(140 255 88 / 35%);
+    border-radius: 50%;
+  }
+
+  .mobile-destination__viewport::after {
+    width: 42px;
+    height: 1px;
+    background: rgb(140 255 88 / 23%);
+    box-shadow: 0 -18px 0 rgb(140 255 88 / 0.08), 0 18px 0 rgb(140 255 88 / 0.08);
   }
 
   .mobile-destination__planet {
-    position: absolute;
-    top: 50%;
-    left: -36px;
-    z-index: 4;
+    position: relative;
+    z-index: 2;
     display: grid;
     place-items: center;
-    width: 66px;
-    height: 66px;
-    overflow: hidden;
-    border: 1px solid var(--neon-green);
+    width: 54px;
+    height: 54px;
+    overflow: visible;
     border-radius: 50%;
-    background: #020705;
-    box-shadow:
-      0 0 0 4px rgb(2 7 5 / 94%),
-      0 0 0 5px rgb(140 255 88 / 38%),
-      0 0 14px rgb(140 255 88 / 11%);
-    transform: translateY(-50%);
+    animation: portal-planet-float-a 7.2s ease-in-out -0.8s infinite;
   }
 
   .mobile-destination__planet img {
     display: block;
-    width: 102px;
-    max-width: none;
-    height: 70px;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
+    object-position: center;
     user-select: none;
     pointer-events: none;
+    transform-origin: center;
+    transform:
+      translate3d(var(--mobile-planet-x, 0), var(--mobile-planet-y, 0), 0)
+      scale(var(--mobile-planet-scale, 0.9));
+  }
+
+  .mobile-destination--about .mobile-destination__planet img {
+    --mobile-planet-scale: 0.90;
+    --mobile-planet-x: 0px;
+    --mobile-planet-y: 0px;
+  }
+
+  .mobile-destination--weekly .mobile-destination__planet img {
+    --mobile-planet-scale: 0.86;
+    --mobile-planet-x: 0px;
+    --mobile-planet-y: 0px;
+  }
+
+  .mobile-destination--astrology .mobile-destination__planet img {
+    --mobile-planet-scale: 0.88;
+    --mobile-planet-x: 0px;
+    --mobile-planet-y: 0px;
+  }
+
+  .mobile-destination--libraries .mobile-destination__planet img {
+    --mobile-planet-scale: 0.88;
+    --mobile-planet-x: 0px;
+    --mobile-planet-y: 0px;
   }
 
   .mobile-destination__copy {
-    grid-column: 2;
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     min-width: 0;
-    gap: 6px;
+    padding: 11px 10px;
   }
 
   .mobile-destination__meta {
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+    gap: 8px;
+    margin-bottom: 7px;
     color: var(--terminal-mint);
     font-family: var(--font-display);
-    font-size: 7px;
+    font-size: 6px;
     line-height: 1;
-    letter-spacing: 0.08em;
-    text-overflow: ellipsis;
+    letter-spacing: 0.055em;
     text-transform: uppercase;
     white-space: nowrap;
+  }
+
+  .mobile-destination__meta > span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-destination__state {
+    flex: 0 0 auto;
+    color: var(--neon-green);
+    opacity: 0.8;
   }
 
   .mobile-destination strong {
     overflow: hidden;
     color: var(--neon-green);
     font-family: var(--font-display);
-    font-size: clamp(12px, 4.1vw, 16px);
+    font-size: clamp(12px, 3.7vw, 15px);
     font-weight: 700;
     line-height: 1;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.045em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .mobile-destination__description {
+    margin-top: 7px;
+    overflow: hidden;
+    color: rgb(224 255 214 / 70%);
+    font-family: var(--font-interface);
+    font-size: 7px;
+    line-height: 1;
+    letter-spacing: 0.06em;
     text-overflow: ellipsis;
     text-transform: uppercase;
     white-space: nowrap;
   }
 
   .mobile-destination__arrow {
-    grid-column: 3;
     display: grid;
     place-items: center;
-    width: 20px;
-    height: 20px;
-    border: 1px solid rgb(140 255 88 / 32%);
-    border-radius: 50%;
+    border-left: 1px solid rgb(140 255 88 / 32%);
     color: var(--neon-green);
     font-family: var(--font-interface);
-    font-size: 18px;
-    line-height: 1;
+    font-size: 15px;
+  }
+
+  .mobile-destination__arrow::before {
+    position: absolute;
+    right: 10px;
+    width: 14px;
+    height: 14px;
+    border: 1px solid rgb(140 255 88 / 34%);
+    content: "";
+  }
+
+  .mobile-destination__arrow {
+    position: relative;
+    z-index: 1;
+  }
+
+  .mobile-destination__arrow {
+    text-shadow: 0 0 7px rgb(140 255 88 / 30%);
+  }
+
+  /*
+   * Motion lives on the wrapper instead of the image itself.
+   * This keeps the image's centering/scale transform intact, so
+   * every planet stays inside its circular viewport.
+   */
+
+  .mobile-destination--about .mobile-destination__planet {
+    animation: portal-planet-float-a 7.2s ease-in-out -0.8s infinite;
   }
 
   .mobile-destination--weekly .mobile-destination__planet {
-    border-color: var(--terminal-lime);
+    animation: portal-planet-float-b 8.4s ease-in-out -2.2s infinite;
   }
 
   .mobile-destination--astrology .mobile-destination__planet {
-    border-color: var(--terminal-mint);
+    animation: portal-planet-float-c 6.8s ease-in-out -1.4s infinite;
   }
 
   .mobile-destination--libraries .mobile-destination__planet {
-    border-color: #a4ff64;
-  }
-
-  /* Tiny, cheap mobile personality animations. */
-
-  .mobile-destination--about .mobile-destination__planet img {
-    animation: mobile-planet-breathe 7s ease-in-out infinite;
-  }
-
-  .mobile-destination--weekly .mobile-destination__planet img {
-    animation: mobile-planet-drift 10s ease-in-out -2s infinite;
-  }
-
-  .mobile-destination--astrology .mobile-destination__planet img {
-    animation: mobile-planet-pulse 6s ease-in-out -1s infinite;
-  }
-
-  .mobile-destination--libraries .mobile-destination__planet img {
-    animation: mobile-planet-breathe 8s ease-in-out -3s infinite;
+    animation: portal-planet-float-d 9.1s ease-in-out -3s infinite;
   }
 
   /* =======================================================
-     MOBILE QUICK CONTROLS
+     DIRECTORY STATUS
+  ======================================================= */
+
+  .mobile-directory__status {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    min-height: 28px;
+    padding: 5px 8px;
+    border-top: 1px solid rgb(140 255 88 / 48%);
+    background: rgb(140 255 88 / 0.055);
+    color: var(--terminal-mint);
+    font-family: var(--font-display);
+    font-size: 5.5px;
+    line-height: 1;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+  }
+
+  .mobile-directory__status span:nth-child(2) {
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobile-directory__status span:last-child {
+    color: var(--neon-green);
+  }
+
+  /* =======================================================
+     QUICK CONTROLS
   ======================================================= */
 
   .bottom-dock {
@@ -433,11 +649,11 @@
     display: block;
     width: auto;
     height: auto;
-    margin: 8px 7px 0;
-    padding: 5px;
-    border-width: 1px;
-    border-radius: 4px;
-    background: rgb(2 7 5 / 95%);
+    margin: 7px 7px 0;
+    padding: 4px;
+    border: 1px solid var(--neon-green);
+    border-radius: 2px;
+    background: rgb(2 7 5 / 96%);
   }
 
   .bottom-dock .system-status {
@@ -447,18 +663,24 @@
   .dock-actions {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 4px;
+    gap: 3px;
     width: 100%;
   }
 
   .dock-card {
     width: 100%;
     min-width: 0;
-    height: 40px;
+    height: 38px;
     padding: 3px;
-    border: 1px solid var(--terminal-mint);
-    border-radius: 999px;
-    background: rgb(2 7 5 / 98%);
+    border: 1px solid rgb(140 255 88 / 48%);
+    border-radius: 1px;
+    background: rgb(3 10 6 / 96%);
+    transition:
+      background-color 120ms ease,
+      border-color 120ms ease,
+      color 120ms ease,
+      box-shadow 160ms ease,
+      transform 120ms ease;
   }
 
   .dock-card__inner {
@@ -471,8 +693,8 @@
   }
 
   .dock-card__icon {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
   }
 
   .dock-card__copy {
@@ -483,8 +705,9 @@
   .dock-card__title {
     display: block;
     overflow: hidden;
-    font-size: clamp(6px, 2vw, 8px);
-    letter-spacing: 0.03em;
+    color: var(--neon-green);
+    font-size: clamp(6px, 1.9vw, 8px);
+    letter-spacing: 0.025em;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -493,105 +716,144 @@
     display: none !important;
   }
 
+  .dock-card:hover,
+  .dock-card:focus-visible,
+  .dock-card:active,
+  .dock-card.is-touch-active {
+    outline: none;
+    border-color: var(--neon-green);
+    background: var(--neon-green);
+    color: var(--terminal-bg);
+    box-shadow:
+      inset 0 0 0 1px rgb(2 7 5 / 46%),
+      0 0 8px rgb(168 255 54 / 62%),
+      0 0 15px rgb(168 255 54 / 22%);
+    transform: translateY(-1px);
+  }
+
+  .dock-card:hover .dock-card__title,
+  .dock-card:focus-visible .dock-card__title,
+  .dock-card:active .dock-card__title,
+  .dock-card.is-touch-active .dock-card__title {
+    color: var(--terminal-bg);
+  }
+
+  .dock-card:hover .dock-card__icon,
+  .dock-card:focus-visible .dock-card__icon,
+  .dock-card:active .dock-card__icon,
+  .dock-card.is-touch-active .dock-card__icon {
+    filter: brightness(0) saturate(100%);
+  }
+
   /* =======================================================
      LATEST TRANSMISSION + SYSTEM LOG
   ======================================================= */
 
   .mobile-home-panels {
     display: grid;
-    gap: 8px;
+    gap: 7px;
     width: auto;
-    margin: 8px 7px 0;
+    margin: 7px 7px 0;
   }
 
   .mobile-feed-panel {
     overflow: hidden;
     border: 1px solid var(--neon-green);
-    border-radius: 3px;
-    background: rgb(2 7 5 / 95%);
+    border-radius: 2px;
+    background: rgb(2 7 5 / 96%);
   }
 
   .mobile-feed-panel__bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 30px;
+    min-height: 27px;
     padding: 6px 8px;
-    background: var(--neon-green);
-    color: var(--terminal-bg);
+    border-bottom: 1px solid rgb(140 255 88 / 45%);
+    background: rgb(140 255 88 / 0.075);
+    color: var(--neon-green);
     font-family: var(--font-display);
-    font-size: 9px;
+    font-size: 7px;
     font-weight: 700;
     line-height: 1;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.075em;
     text-transform: uppercase;
   }
 
   .mobile-feed-panel__body {
-    padding: 12px 11px 11px;
+    padding: 11px 10px 10px;
     background:
-      linear-gradient(rgb(2 7 5 / 88%), rgb(2 7 5 / 94%)),
-      radial-gradient(circle at 80% 15%, rgb(140 255 88 / 9%), transparent 38%);
+      linear-gradient(rgb(2 7 5 / 90%), rgb(2 7 5 / 96%)),
+      radial-gradient(circle at 85% 10%, rgb(140 255 88 / 7%), transparent 34%);
   }
 
   .mobile-feed-panel__stamp {
     margin: 0 0 7px;
     color: var(--terminal-mint) !important;
     font-family: var(--font-display);
-    font-size: 7px !important;
-    letter-spacing: 0.07em;
+    font-size: 6px !important;
+    letter-spacing: 0.055em;
     text-transform: uppercase;
   }
 
   .mobile-feed-panel__body h2 {
-    margin: 0 0 8px;
+    margin: 0 0 7px;
     color: var(--neon-green);
     font-family: var(--font-display);
-    font-size: 14px;
-    line-height: 1.25;
-    letter-spacing: 0.06em;
+    font-size: 12px;
+    line-height: 1.2;
+    letter-spacing: 0.035em;
     text-transform: uppercase;
   }
 
   .mobile-feed-panel__body p {
-    margin: 0 0 11px;
+    margin: 0 0 10px;
     color: var(--terminal-white);
     font-family: var(--font-interface);
-    font-size: 10px;
-    line-height: 1.55;
+    font-size: 9px;
+    line-height: 1.5;
   }
 
   .mobile-feed-panel__body a {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 8px;
-    min-height: 28px;
-    padding-top: 8px;
-    border-top: 1px solid rgb(140 255 88 / 23%);
+    gap: 7px;
+    min-height: 26px;
+    padding-top: 7px;
+    border-top: 1px solid rgb(140 255 88 / 22%);
     color: var(--neon-green);
     font-family: var(--font-display);
-    font-size: 8px;
-    letter-spacing: 0.08em;
+    font-size: 7px;
+    letter-spacing: 0.055em;
     text-decoration: none;
     text-transform: uppercase;
+  }
+
+  .mobile-feed-panel__body a:hover,
+  .mobile-feed-panel__body a:focus-visible,
+  .mobile-feed-panel__body a:active {
+    outline: none;
+    color: var(--terminal-bg);
+    background: var(--neon-green);
+    box-shadow: 0 0 10px rgb(168 255 54 / 28%);
   }
 
   .mobile-system-log {
     display: grid;
     gap: 0;
-    padding: 5px 9px 8px;
+    padding: 4px 8px 7px;
   }
 
   .mobile-system-log p {
     display: grid;
-    grid-template-columns: 58px minmax(0, 1fr);
+    grid-template-columns: 56px minmax(0, 1fr);
     gap: 7px;
     margin: 0;
     padding: 7px 2px;
-    border-bottom: 1px solid rgb(41 70 36 / 72%);
+    border-bottom: 1px solid rgb(41 70 36 / 70%);
     font-family: var(--font-interface);
-    font-size: 8px;
+    font-size: 7px;
     line-height: 1.35;
   }
 
@@ -612,7 +874,7 @@
   }
 
   /* =======================================================
-     MOBILE MODAL
+     INFORMATION DIALOG
   ======================================================= */
 
   .information-panel {
@@ -620,33 +882,34 @@
     max-width: 520px;
     max-height: min(78dvh, 680px);
     border-width: 1px;
+    border-radius: 2px;
   }
 
   .information-panel__header {
-    min-height: 54px;
-    padding: 10px 12px;
+    min-height: 52px;
+    padding: 9px 11px;
   }
 
   .information-panel__header h2 {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .information-panel__close {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
   }
 
   .information-panel__content {
-    max-height: calc(78dvh - 56px);
-    padding: 16px 14px;
-    font-size: 0.82rem;
-    line-height: 1.65;
+    max-height: calc(78dvh - 54px);
+    padding: 15px 13px;
+    font-size: 0.8rem;
+    line-height: 1.6;
     overflow-wrap: anywhere;
   }
 
   .information-panel__command {
-    font-size: 0.62rem;
-    line-height: 1.55;
+    font-size: 0.6rem;
+    line-height: 1.5;
   }
 
   .information-panel__content::-webkit-scrollbar {
@@ -660,8 +923,9 @@
     font-size: 8px;
   }
 
-  .sleep-mode .mobile-home-panels {
-    opacity: 0.1;
+  .sleep-mode .mobile-home-panels,
+  .sleep-mode .mobile-home-directory {
+    opacity: 0.12;
     pointer-events: none;
   }
 }
@@ -671,41 +935,58 @@
 ========================================================= */
 
 @media (max-width: 390px) {
-  .mobile-home-directory {
-    min-height: 530px;
-    padding-right: 9px;
+  .mobile-directory__header {
+    grid-template-columns: minmax(0, 1fr) 48px;
+  }
+
+  .mobile-directory__heading {
+    padding-right: 8px;
     padding-left: 9px;
   }
 
-  .mobile-directory__nav {
-    gap: 9px;
-    padding-left: 25px;
+  .mobile-directory__heading h2 {
+    font-size: 16px;
   }
 
   .mobile-destination {
-    height: 72px;
-    padding-right: 8px;
-    padding-left: 25px;
+    grid-template-columns: 72px minmax(0, 1fr) 30px;
+    min-height: 82px;
   }
 
   .mobile-destination__planet {
-    left: -33px;
-    width: 62px;
-    height: 62px;
+    width: 50px;
+    height: 50px;
   }
 
-  .mobile-destination__planet img {
-    width: 94px;
-    height: 66px;
+  .mobile-destination__viewport::before {
+    width: 52px;
+    height: 52px;
+  }
+
+  .mobile-destination__copy {
+    padding-right: 7px;
+    padding-left: 8px;
   }
 
   .mobile-destination__meta {
+    font-size: 5.5px;
+  }
+
+  .mobile-destination__description {
     font-size: 6px;
   }
 
+  .mobile-directory__status {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .mobile-directory__status span:last-child {
+    display: none;
+  }
+
   .dock-card__icon {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
   }
 
   .dock-card__title {
@@ -714,48 +995,317 @@
 }
 
 /* =========================================================
+   SHORT PHONE SCREENS
+========================================================= */
+
+@media (max-width: 700px) and (max-height: 720px) {
+  .system-bar {
+    top: 4px;
+    height: 40px;
+    margin-top: 4px;
+  }
+
+  .system-actions {
+    grid-template-columns: repeat(2, 30px);
+  }
+
+  .system-actions .icon-button {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+  }
+
+  .mobile-directory__header {
+    min-height: 68px;
+  }
+
+  .mobile-destination {
+    min-height: 78px;
+  }
+
+  .mobile-destination__planet {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* =========================================================
    MOBILE MOTION
 ========================================================= */
 
-@keyframes mobile-planet-breathe {
-  0%,
-  100% {
-    transform: scale(0.98);
-    filter: brightness(0.96);
-  }
-
-  50% {
-    transform: scale(1.025);
-    filter: brightness(1.08);
-  }
-}
-
-@keyframes mobile-planet-drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  50% {
-    transform: translate3d(1px, -2px, 0) scale(1.015);
-  }
-}
-
-@keyframes mobile-planet-pulse {
-  0%,
-  100% {
-    opacity: 0.94;
-    filter: brightness(0.95) saturate(0.98);
+@keyframes portal-signal {
+  0%, 100% {
+    opacity: 0.58;
+    box-shadow: 0 0 0 rgb(140 255 88 / 0%);
   }
 
   50% {
     opacity: 1;
-    filter: brightness(1.12) saturate(1.08);
+    box-shadow: 0 0 8px rgb(140 255 88 / 42%);
   }
 }
 
+/*
+ * PORTAL 214 MOBILE PLANET MOTION
+ * Deliberately simple: each planet only floats a few pixels.
+ * Different durations keep the directory from moving in sync.
+ */
+@keyframes portal-planet-float-a {
+  0%, 100% { transform: translate3d(0, 2px, 0); }
+  50% { transform: translate3d(0, -4px, 0); }
+}
+
+@keyframes portal-planet-float-b {
+  0%, 100% { transform: translate3d(-1px, 2px, 0); }
+  50% { transform: translate3d(1px, -4px, 0); }
+}
+
+@keyframes portal-planet-float-c {
+  0%, 100% { transform: translate3d(0, 3px, 0); }
+  50% { transform: translate3d(0, -4px, 0); }
+}
+
+@keyframes portal-planet-float-d {
+  0%, 100% { transform: translate3d(1px, 2px, 0); }
+  50% { transform: translate3d(-1px, -5px, 0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .mobile-destination__planet img {
+  .mobile-brand__signal,
+  .mobile-destination__planet {
     animation: none !important;
+  }
+
+  .mobile-destination,
+  .dock-card {
+    transition: none !important;
+  }
+
+  .mobile-destination:hover,
+  .mobile-destination:focus-visible,
+  .mobile-destination:active,
+  .mobile-destination.is-touch-active,
+  .dock-card:hover,
+  .dock-card:focus-visible,
+  .dock-card:active,
+  .dock-card.is-touch-active {
+    transform: none !important;
+  }
+}
+
+/* =========================================================
+   MOBILE READABLE TYPE SYSTEM // 12PX MINIMUM
+
+   Scale:
+   12 / 14 / 16 / 18 / 20 / 23 / 26 / 32px
+   Rounded major-second progression for real phone screens.
+========================================================= */
+
+@media (max-width: 700px) {
+  .site-shell {
+    --mobile-text-micro: 0.75rem;      /* 12px */
+    --mobile-text-meta: 0.875rem;      /* 14px */
+    --mobile-text-body: 1rem;          /* 16px */
+    --mobile-text-emphasis: 1.125rem;  /* 18px */
+    --mobile-text-heading: 1.25rem;    /* 20px */
+    --mobile-text-card: 1.4375rem;     /* 23px */
+    --mobile-text-section: 1.625rem;   /* 26px */
+    --mobile-text-page: 2rem;          /* 32px */
+  }
+
+  .mobile-brand {
+    font-size: var(--mobile-text-meta);
+    line-height: 1.25;
+    letter-spacing: 0.04em;
+  }
+
+  .mobile-brand__signal {
+    font-size: var(--mobile-text-micro);
+  }
+
+  .mobile-directory__header {
+    min-height: 96px;
+  }
+
+  .mobile-directory__heading {
+    padding: 14px 12px;
+  }
+
+  .mobile-directory__heading p {
+    margin-bottom: 8px;
+    font-size: var(--mobile-text-micro);
+    line-height: 1.35;
+    letter-spacing: 0.045em;
+  }
+
+  .mobile-directory__heading h2 {
+    font-size: var(--mobile-text-section);
+    line-height: 1.12;
+    letter-spacing: 0.025em;
+  }
+
+  .mobile-directory__count strong {
+    font-size: var(--mobile-text-card);
+  }
+
+  .mobile-directory__count span {
+    font-size: var(--mobile-text-micro);
+    line-height: 1.25;
+  }
+
+  .mobile-destination {
+    min-height: 106px;
+  }
+
+  .mobile-destination__copy {
+    padding: 12px 10px;
+  }
+
+  .mobile-destination__meta {
+    margin-bottom: 6px;
+    font-size: var(--mobile-text-micro);
+    line-height: 1.3;
+    letter-spacing: 0.035em;
+  }
+
+  .mobile-destination strong {
+    font-size: var(--mobile-text-heading);
+    line-height: 1.15;
+    letter-spacing: 0.03em;
+  }
+
+  .mobile-destination__description {
+    margin-top: 7px;
+    font-size: var(--mobile-text-meta);
+    line-height: 1.35;
+    letter-spacing: 0.025em;
+  }
+
+  .mobile-destination__arrow {
+    font-size: var(--mobile-text-emphasis);
+  }
+
+  .mobile-directory__status {
+    min-height: 40px;
+    padding: 7px 9px;
+    font-size: var(--mobile-text-micro);
+    line-height: 1.3;
+    letter-spacing: 0.025em;
+  }
+
+  .dock-card {
+    height: 48px;
+  }
+
+  .dock-card__title {
+    font-size: var(--mobile-text-meta);
+    line-height: 1.2;
+    letter-spacing: 0.015em;
+  }
+
+  .mobile-feed-panel__bar,
+  .mobile-feed-panel__stamp {
+    font-size: var(--mobile-text-micro) !important;
+    line-height: 1.3;
+    letter-spacing: 0.035em;
+  }
+
+  .mobile-feed-panel__bar {
+    min-height: 36px;
+    padding: 8px 9px;
+  }
+
+  .mobile-feed-panel__body {
+    padding: 14px 12px 12px;
+  }
+
+  .mobile-feed-panel__body h2 {
+    font-size: var(--mobile-text-heading);
+    line-height: 1.2;
+    letter-spacing: 0.025em;
+  }
+
+  .mobile-feed-panel__body p {
+    font-size: var(--mobile-text-body);
+    line-height: 1.65;
+  }
+
+  .mobile-feed-panel__body a {
+    min-height: 38px;
+    font-size: var(--mobile-text-meta);
+    line-height: 1.3;
+  }
+
+  .mobile-system-log p {
+    grid-template-columns: 72px minmax(0, 1fr);
+    padding: 9px 2px;
+    font-size: var(--mobile-text-meta);
+    line-height: 1.45;
+  }
+
+  .mobile-system-log span {
+    font-size: var(--mobile-text-micro);
+  }
+
+  .information-panel__header h2 {
+    font-size: var(--mobile-text-heading);
+  }
+
+  .information-panel__content {
+    font-size: var(--mobile-text-body);
+    line-height: 1.65;
+  }
+
+  .information-panel__command {
+    font-size: var(--mobile-text-micro);
+    line-height: 1.45;
+  }
+
+  .system-toast {
+    font-size: var(--mobile-text-micro);
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 390px) {
+  .mobile-directory__heading h2 {
+    font-size: var(--mobile-text-section);
+  }
+
+  .mobile-destination__meta,
+  .mobile-destination__description,
+  .dock-card__title {
+    font-size: var(--mobile-text-micro);
+  }
+}
+
+/* =========================================================
+   PORTAL 214 // MOBILE TYPE FLOOR SAFEGUARD
+========================================================= */
+
+@media (max-width: 700px) {
+  .mobile-brand,
+  .mobile-directory__eyebrow,
+  .mobile-directory__heading p,
+  .mobile-destination__meta,
+  .mobile-destination__description,
+  .mobile-directory__status,
+  .mobile-feed-panel__bar,
+  .mobile-feed-panel__stamp,
+  .information-panel__command,
+  .system-toast {
+    font-size: var(--mobile-text-micro, 0.75rem);
+  }
+
+  .dock-card__title,
+  .mobile-feed-panel__body a,
+  .mobile-system-log p {
+    font-size: var(--mobile-text-meta, 0.875rem);
+  }
+
+  .mobile-feed-panel__body p,
+  .information-panel__content {
+    font-size: var(--mobile-text-body, 1rem);
   }
 }

@@ -743,6 +743,10 @@ svg {
 
 /* =========================================================
    TOUCH DEVICES
+
+   Phones do not have a persistent hover pointer. On touch,
+   BaseLayout places the alien just above the finger and keeps
+   it visible briefly after release.
 ========================================================= */
 
 @media (hover: none), (pointer: coarse) {
@@ -751,8 +755,40 @@ svg {
     cursor: auto !important;
   }
 
-  .alien-cursor {
-    display: none !important;
+  .has-touch-alien-cursor .alien-cursor {
+    display: block !important;
+    width: 54px;
+    height: 66px;
+  }
+
+  .has-touch-alien-cursor .alien-cursor__hotspot {
+    display: none;
+  }
+
+  .has-touch-alien-cursor .alien-cursor__face-container {
+    top: 2px;
+    left: 5px;
+    width: 44px;
+    height: 57px;
+  }
+
+  .has-touch-alien-cursor .alien-cursor__orbit {
+    top: 13px;
+    left: 1px;
+    width: 52px;
+    height: 28px;
+  }
+
+  .has-touch-alien-cursor .alien-cursor__beam {
+    top: 48px;
+    left: 10px;
+    width: 35px;
+    height: 23px;
+  }
+
+  .has-touch-alien-cursor .alien-cursor__anger-mark {
+    top: 0;
+    right: -2px;
   }
 }
 
@@ -776,4 +812,26 @@ svg {
   #panel-content.is-panel-typing::after {
     display: none;
   }
+}
+
+/* =========================================================
+   PORTAL 214 // SHARED TYPE SYSTEM
+
+   One readable scale for the whole site.
+   Nothing intentionally visible should be smaller than 12px.
+========================================================= */
+
+:root {
+  --site-text-micro: 0.75rem;      /* 12px */
+  --site-text-meta: 0.875rem;      /* 14px */
+  --site-text-body: 1rem;          /* 16px */
+  --site-text-emphasis: 1.125rem;  /* 18px */
+  --site-text-heading: 1.25rem;    /* 20px */
+  --site-text-card: 1.4375rem;     /* 23px */
+  --site-text-section: 1.625rem;   /* 26px */
+  --site-text-page: 2rem;          /* 32px */
+}
+
+body {
+  font-size: var(--site-text-body);
 }

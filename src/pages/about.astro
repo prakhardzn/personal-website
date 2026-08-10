@@ -15,6 +15,11 @@ const projectFiles = workEntries
   .filter((project) => !project.data.draft)
   .sort((a, b) => a.data.order - b.data.order);
 
+const baseUrl = import.meta.env.BASE_URL;
+
+const buildSiteUrl = (path: string): string =>
+  `${baseUrl}${path.replace(/^\/+/, "")}`;
+
 const interestFiles = [
   {
     number: "INTEREST FILE 001",
@@ -444,9 +449,9 @@ const vaultFiles = [
               projectFiles.map((project, index) => (
                 <a
                   class="about-file-card about-file-card--project-link"
-                  href={`/work/${project.id}`}
-                  aria-label={`Open ${project.data.title} project`}
+                  href={buildSiteUrl(`work/${project.id}`)}
                   style={`--project-delay: ${index * 70}ms;`}
+                  aria-label={`Open ${project.data.title} project file`}
                 >
                   <div class="about-file-card__top">
                     <span>{project.data.number}</span>
@@ -595,294 +600,102 @@ const vaultFiles = [
   type AboutTab =
     (typeof validAboutTabs)[number];
 
-  const tabButtons =
-    document.querySelectorAll<HTMLButtonElement>(
-      "[data-about-tab]"
-    );
+  type AboutRuntimeWindow = Window & {
+    __aboutPageController?: AbortController;
+    __aboutPageResizeObserver?: ResizeObserver;
+  };
 
-  const contentPanels =
-    document.querySelectorAll<HTMLElement>(
-      "[data-about-panel]"
-    );
+  const aboutRuntimeWindow =
+    window as AboutRuntimeWindow;
 
-  const profilePanels =
-    document.querySelectorAll<HTMLElement>(
-      "[data-profile-panel]"
-    );
-
-  const contentWindow =
-    document.querySelector<HTMLElement>(
-      "#about-content-window"
-    );
-
-  const scrollbar =
-    document.querySelector<HTMLElement>(
-      "#about-scrollbar"
-    );
-
-  const scrollbarThumb =
-    document.querySelector<HTMLElement>(
-      "#about-scrollbar-thumb"
-    );
-
-  function isAboutTab(
+  const isAboutTab = (
     value: string
-  ): value is AboutTab {
-    return validAboutTabs.includes(
+  ): value is AboutTab =>
+    validAboutTabs.includes(
       value as AboutTab
     );
-  }
 
-  function restartEntryAnimation(
-    element: HTMLElement | undefined
-  ): void {
-    if (!element) {
-      return;
-    }
+  function initialiseAboutPage(): void {
+    /*
+     * Astro's ClientRouter keeps JavaScript modules alive between
+     * navigations. Any listeners attached to the old About DOM can
+     * therefore become stale. Clear the old runtime first, then query
+     * the current page again.
+     */
+    aboutRuntimeWindow.__aboutPageController?.abort();
+    aboutRuntimeWindow.__aboutPageResizeObserver?.disconnect();
 
-    element.classList.remove("is-entering");
-
-    void element.offsetWidth;
-
-    element.classList.add("is-entering");
-  }
-
-  function updateScrollbar(): void {
-    if (
-      !contentWindow ||
-      !scrollbar ||
-      !scrollbarThumb
-    ) {
-      return;
-    }
-
-    const usableTrackHeight =
-      Math.max(
-        0,
-        scrollbar.clientHeight - 10
-      );
-
-    const maximumScroll =
-      Math.max(
-        0,
-        contentWindow.scrollHeight -
-        contentWindow.clientHeight
-      );
-
-    const visibleRatio =
-      contentWindow.scrollHeight > 0
-        ? contentWindow.clientHeight /
-          contentWindow.scrollHeight
-        : 1;
-
-    const thumbHeight =
-      Math.min(
-        usableTrackHeight,
-        Math.max(
-          48,
-          usableTrackHeight * visibleRatio
+    const tabButtons =
+      Array.from(
+        document.querySelectorAll<HTMLButtonElement>(
+          ".about-page [data-about-tab]"
         )
       );
 
-    const movementRange =
-      Math.max(
-        0,
-        usableTrackHeight - thumbHeight
-      );
-
-    const scrollProgress =
-      maximumScroll > 0
-        ? contentWindow.scrollTop /
-          maximumScroll
-        : 0;
-
-    scrollbarThumb.style.height =
-      `${thumbHeight}px`;
-
-    scrollbarThumb.style.transform =
-      `translateY(${
-        scrollProgress * movementRange
-      }px)`;
-  }
-
-  function activateAboutTab(
-    tabName: AboutTab,
-    updateHash = true
-  ): void {
-    let activeContentPanel:
-      HTMLElement | undefined;
-
-    let activeProfilePanel:
-      HTMLElement | undefined;
-
-    tabButtons.forEach((button) => {
-      const isActive =
-        button.dataset.aboutTab === tabName;
-
-      button.classList.toggle(
-        "is-active",
-        isActive
-      );
-
-      button.setAttribute(
-        "aria-selected",
-        String(isActive)
-      );
-    });
-
-    contentPanels.forEach((panel) => {
-      const isActive =
-        panel.dataset.aboutPanel === tabName;
-
-      panel.hidden = !isActive;
-
-      if (isActive) {
-        activeContentPanel = panel;
-      }
-    });
-
-    profilePanels.forEach((panel) => {
-      const isActive =
-        panel.dataset.profilePanel === tabName;
-
-      panel.hidden = !isActive;
-
-      if (isActive) {
-        activeProfilePanel = panel;
-      }
-    });
-
-    if (contentWindow) {
-      contentWindow.scrollTop = 0;
+    if (tabButtons.length === 0) {
+      return;
     }
 
-    if (updateHash) {
-      window.history.replaceState(
-        null,
-        "",
-        `#${tabName}`
+    const controller =
+      new AbortController();
+
+    const { signal } = controller;
+
+    aboutRuntimeWindow.__aboutPageController =
+      controller;
+
+    const contentPanels =
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".about-page [data-about-panel]"
+        )
       );
-    }
 
-    restartEntryAnimation(
-      activeContentPanel
-    );
+    const profilePanels =
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".about-page [data-profile-panel]"
+        )
+      );
 
-    restartEntryAnimation(
-      activeProfilePanel
-    );
+    const contentWindow =
+      document.querySelector<HTMLElement>(
+        "#about-content-window"
+      );
 
-    window.requestAnimationFrame(
-      updateScrollbar
-    );
-  }
+    const scrollbar =
+      document.querySelector<HTMLElement>(
+        "#about-scrollbar"
+      );
 
-  tabButtons.forEach((button) => {
-    button.addEventListener(
-      "click",
-      () => {
-        const requestedTab =
-          button.dataset.aboutTab;
+    const scrollbarThumb =
+      document.querySelector<HTMLElement>(
+        "#about-scrollbar-thumb"
+      );
 
-        if (
-          requestedTab &&
-          isAboutTab(requestedTab)
-        ) {
-          activateAboutTab(
-            requestedTab
-          );
-        }
-      }
-    );
-  });
+    const aboutPhoto =
+      document.querySelector<HTMLImageElement>(
+        "#about-photo"
+      );
 
-  const initialHash =
-    window.location.hash.replace(
-      "#",
-      ""
-    );
+    const photoFallback =
+      document.querySelector<HTMLElement>(
+        "#about-photo-fallback"
+      );
 
-  if (
-    initialHash &&
-    isAboutTab(initialHash)
-  ) {
-    activateAboutTab(
-      initialHash,
-      false
-    );
-  } else {
-    activateAboutTab(
-      "about",
-      false
-    );
-  }
-
-  contentWindow?.addEventListener(
-    "scroll",
-    updateScrollbar,
-    {
-      passive: true,
-    }
-  );
-
-  scrollbar?.addEventListener(
-    "pointerdown",
-    (event) => {
-      if (
-        !contentWindow ||
-        !scrollbar ||
-        !scrollbarThumb ||
-        event.target === scrollbarThumb
-      ) {
+    const restartEntryAnimation = (
+      element: HTMLElement | undefined
+    ): void => {
+      if (!element) {
         return;
       }
 
-      const rectangle =
-        scrollbar.getBoundingClientRect();
+      element.classList.remove("is-entering");
+      void element.offsetWidth;
+      element.classList.add("is-entering");
+    };
 
-      const usableTrackHeight =
-        Math.max(
-          1,
-          scrollbar.clientHeight - 10
-        );
-
-      const movementRange =
-        Math.max(
-          1,
-          usableTrackHeight -
-          scrollbarThumb.offsetHeight
-        );
-
-      const requestedPosition =
-        Math.min(
-          movementRange,
-          Math.max(
-            0,
-            event.clientY -
-            rectangle.top -
-            scrollbarThumb.offsetHeight / 2
-          )
-        );
-
-      const maximumScroll =
-        Math.max(
-          0,
-          contentWindow.scrollHeight -
-          contentWindow.clientHeight
-        );
-
-      contentWindow.scrollTop =
-        (
-          requestedPosition /
-          movementRange
-        ) *
-        maximumScroll;
-    }
-  );
-
-  scrollbarThumb?.addEventListener(
-    "pointerdown",
-    (event) => {
+    const updateScrollbar = (): void => {
       if (
         !contentWindow ||
         !scrollbar ||
@@ -891,169 +704,412 @@ const vaultFiles = [
         return;
       }
 
-      event.preventDefault();
-
-      const startingPointerY =
-        event.clientY;
-
-      const startingScrollTop =
-        contentWindow.scrollTop;
-
       const usableTrackHeight =
         Math.max(
-          1,
+          0,
           scrollbar.clientHeight - 10
-        );
-
-      const movementRange =
-        Math.max(
-          1,
-          usableTrackHeight -
-          scrollbarThumb.offsetHeight
         );
 
       const maximumScroll =
         Math.max(
           0,
           contentWindow.scrollHeight -
-          contentWindow.clientHeight
+            contentWindow.clientHeight
         );
 
-      scrollbarThumb.setPointerCapture(
-        event.pointerId
+      const visibleRatio =
+        contentWindow.scrollHeight > 0
+          ? contentWindow.clientHeight /
+            contentWindow.scrollHeight
+          : 1;
+
+      const thumbHeight =
+        Math.min(
+          usableTrackHeight,
+          Math.max(
+            48,
+            usableTrackHeight * visibleRatio
+          )
+        );
+
+      const movementRange =
+        Math.max(
+          0,
+          usableTrackHeight - thumbHeight
+        );
+
+      const scrollProgress =
+        maximumScroll > 0
+          ? contentWindow.scrollTop /
+            maximumScroll
+          : 0;
+
+      scrollbarThumb.style.height =
+        `${thumbHeight}px`;
+
+      scrollbarThumb.style.transform =
+        `translateY(${scrollProgress * movementRange}px)`;
+    };
+
+    const activateAboutTab = (
+      tabName: AboutTab,
+      updateHash = true
+    ): void => {
+      let activeContentPanel:
+        HTMLElement | undefined;
+
+      let activeProfilePanel:
+        HTMLElement | undefined;
+
+      tabButtons.forEach((button) => {
+        const isActive =
+          button.dataset.aboutTab === tabName;
+
+        button.classList.toggle(
+          "is-active",
+          isActive
+        );
+
+        button.setAttribute(
+          "aria-selected",
+          String(isActive)
+        );
+      });
+
+      contentPanels.forEach((panel) => {
+        const isActive =
+          panel.dataset.aboutPanel === tabName;
+
+        panel.hidden = !isActive;
+
+        if (isActive) {
+          activeContentPanel = panel;
+        }
+      });
+
+      profilePanels.forEach((panel) => {
+        const isActive =
+          panel.dataset.profilePanel === tabName;
+
+        panel.hidden = !isActive;
+
+        if (isActive) {
+          activeProfilePanel = panel;
+        }
+      });
+
+      if (contentWindow) {
+        contentWindow.scrollTop = 0;
+      }
+
+      if (updateHash) {
+        window.history.replaceState(
+          null,
+          "",
+          `${window.location.pathname}${window.location.search}#${tabName}`
+        );
+      }
+
+      restartEntryAnimation(
+        activeContentPanel
       );
 
-      const moveThumb = (
-        moveEvent: PointerEvent
-      ): void => {
+      restartEntryAnimation(
+        activeProfilePanel
+      );
+
+      window.requestAnimationFrame(
+        updateScrollbar
+      );
+    };
+
+    tabButtons.forEach((button) => {
+      button.addEventListener(
+        "click",
+        () => {
+          const requestedTab =
+            button.dataset.aboutTab;
+
+          if (
+            requestedTab &&
+            isAboutTab(requestedTab)
+          ) {
+            activateAboutTab(
+              requestedTab
+            );
+          }
+        },
+        { signal }
+      );
+    });
+
+    const activateFromLocation = (): void => {
+      const requestedTab =
+        window.location.hash.replace(
+          "#",
+          ""
+        );
+
+      activateAboutTab(
+        requestedTab &&
+        isAboutTab(requestedTab)
+          ? requestedTab
+          : "about",
+        false
+      );
+    };
+
+    contentWindow?.addEventListener(
+      "scroll",
+      updateScrollbar,
+      {
+        passive: true,
+        signal,
+      }
+    );
+
+    scrollbar?.addEventListener(
+      "pointerdown",
+      (event) => {
+        if (
+          !contentWindow ||
+          !scrollbar ||
+          !scrollbarThumb ||
+          event.target === scrollbarThumb
+        ) {
+          return;
+        }
+
+        const rectangle =
+          scrollbar.getBoundingClientRect();
+
+        const usableTrackHeight =
+          Math.max(
+            1,
+            scrollbar.clientHeight - 10
+          );
+
+        const movementRange =
+          Math.max(
+            1,
+            usableTrackHeight -
+              scrollbarThumb.offsetHeight
+          );
+
+        const requestedPosition =
+          Math.min(
+            movementRange,
+            Math.max(
+              0,
+              event.clientY -
+                rectangle.top -
+                scrollbarThumb.offsetHeight / 2
+            )
+          );
+
+        const maximumScroll =
+          Math.max(
+            0,
+            contentWindow.scrollHeight -
+              contentWindow.clientHeight
+          );
+
         contentWindow.scrollTop =
-          startingScrollTop +
-          (
-            (
+          (requestedPosition / movementRange) *
+          maximumScroll;
+      },
+      { signal }
+    );
+
+    scrollbarThumb?.addEventListener(
+      "pointerdown",
+      (event) => {
+        if (
+          !contentWindow ||
+          !scrollbar ||
+          !scrollbarThumb
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const startingPointerY =
+          event.clientY;
+
+        const startingScrollTop =
+          contentWindow.scrollTop;
+
+        const usableTrackHeight =
+          Math.max(
+            1,
+            scrollbar.clientHeight - 10
+          );
+
+        const movementRange =
+          Math.max(
+            1,
+            usableTrackHeight -
+              scrollbarThumb.offsetHeight
+          );
+
+        const maximumScroll =
+          Math.max(
+            0,
+            contentWindow.scrollHeight -
+              contentWindow.clientHeight
+          );
+
+        scrollbarThumb.setPointerCapture(
+          event.pointerId
+        );
+
+        const moveThumb = (
+          moveEvent: PointerEvent
+        ): void => {
+          contentWindow.scrollTop =
+            startingScrollTop +
+            ((
               moveEvent.clientY -
               startingPointerY
             ) /
-            movementRange
-          ) *
-          maximumScroll;
-      };
+              movementRange) *
+              maximumScroll;
+        };
 
-      const releaseThumb = (
-        releaseEvent: PointerEvent
-      ): void => {
-        if (
-          scrollbarThumb.hasPointerCapture(
-            releaseEvent.pointerId
-          )
-        ) {
-          scrollbarThumb.releasePointerCapture(
-            releaseEvent.pointerId
+        const releaseThumb = (
+          releaseEvent: PointerEvent
+        ): void => {
+          if (
+            scrollbarThumb.hasPointerCapture(
+              releaseEvent.pointerId
+            )
+          ) {
+            scrollbarThumb.releasePointerCapture(
+              releaseEvent.pointerId
+            );
+          }
+
+          scrollbarThumb.removeEventListener(
+            "pointermove",
+            moveThumb
           );
-        }
 
-        scrollbarThumb.removeEventListener(
+          scrollbarThumb.removeEventListener(
+            "pointerup",
+            releaseThumb
+          );
+
+          scrollbarThumb.removeEventListener(
+            "pointercancel",
+            releaseThumb
+          );
+        };
+
+        scrollbarThumb.addEventListener(
           "pointermove",
           moveThumb
         );
 
-        scrollbarThumb.removeEventListener(
+        scrollbarThumb.addEventListener(
           "pointerup",
           releaseThumb
         );
 
-        scrollbarThumb.removeEventListener(
+        scrollbarThumb.addEventListener(
           "pointercancel",
           releaseThumb
         );
-      };
-
-      scrollbarThumb.addEventListener(
-        "pointermove",
-        moveThumb
-      );
-
-      scrollbarThumb.addEventListener(
-        "pointerup",
-        releaseThumb
-      );
-
-      scrollbarThumb.addEventListener(
-        "pointercancel",
-        releaseThumb
-      );
-    }
-  );
-
-  if ("ResizeObserver" in window) {
-    const observer =
-      new ResizeObserver(
-        updateScrollbar
-      );
-
-    if (contentWindow) {
-      observer.observe(
-        contentWindow
-      );
-    }
-  }
-
-  window.addEventListener(
-    "load",
-    updateScrollbar
-  );
-
-  window.addEventListener(
-    "resize",
-    updateScrollbar
-  );
-
-  /* Portrait fallback */
-
-  const aboutPhoto =
-    document.querySelector<HTMLImageElement>(
-      "#about-photo"
+      },
+      { signal }
     );
 
-  const photoFallback =
-    document.querySelector<HTMLElement>(
-      "#about-photo-fallback"
+    window.addEventListener(
+      "resize",
+      updateScrollbar,
+      { signal }
     );
 
-  function showPhoto(): void {
-    if (aboutPhoto) {
-      aboutPhoto.hidden = false;
+    window.addEventListener(
+      "hashchange",
+      activateFromLocation,
+      { signal }
+    );
+
+    if ("ResizeObserver" in window) {
+      const observer =
+        new ResizeObserver(
+          updateScrollbar
+        );
+
+      if (contentWindow) {
+        observer.observe(
+          contentWindow
+        );
+      }
+
+      aboutRuntimeWindow.__aboutPageResizeObserver =
+        observer;
     }
 
-    if (photoFallback) {
-      photoFallback.hidden = true;
+    const showPhoto = (): void => {
+      if (aboutPhoto) {
+        aboutPhoto.hidden = false;
+      }
+
+      if (photoFallback) {
+        photoFallback.hidden = true;
+      }
+    };
+
+    const showPhotoFallback = (): void => {
+      if (aboutPhoto) {
+        aboutPhoto.hidden = true;
+      }
+
+      if (photoFallback) {
+        photoFallback.hidden = false;
+      }
+    };
+
+    aboutPhoto?.addEventListener(
+      "load",
+      showPhoto,
+      { signal }
+    );
+
+    aboutPhoto?.addEventListener(
+      "error",
+      showPhotoFallback,
+      { signal }
+    );
+
+    if (aboutPhoto?.complete) {
+      if (aboutPhoto.naturalWidth > 0) {
+        showPhoto();
+      } else {
+        showPhotoFallback();
+      }
     }
+
+    activateFromLocation();
+    window.requestAnimationFrame(
+      updateScrollbar
+    );
   }
 
-  function showPhotoFallback(): void {
-    if (aboutPhoto) {
-      aboutPhoto.hidden = true;
-    }
-
-    if (photoFallback) {
-      photoFallback.hidden = false;
-    }
-  }
-
-  aboutPhoto?.addEventListener(
-    "load",
-    showPhoto
+  document.addEventListener(
+    "astro:page-load",
+    initialiseAboutPage
   );
 
-  aboutPhoto?.addEventListener(
-    "error",
-    showPhotoFallback
-  );
-
-  if (aboutPhoto?.complete) {
-    if (aboutPhoto.naturalWidth > 0) {
-      showPhoto();
-    } else {
-      showPhotoFallback();
-    }
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      initialiseAboutPage,
+      { once: true }
+    );
+  } else {
+    initialiseAboutPage();
   }
 </script>

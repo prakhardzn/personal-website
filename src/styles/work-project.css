@@ -49,6 +49,9 @@
 
   --work-radius-frame:
     var(--internal-radius);
+
+  --work-radius-control:
+    var(--internal-control-radius);
 }
 
 
@@ -67,15 +70,8 @@
 .work-project-page
 .internal-page-grid {
   grid-template-columns:
-    clamp(
-      350px,
-      31vw,
-      520px
-    )
-    minmax(
-      0,
-      1fr
-    );
+    clamp(350px, 31vw, 520px)
+    minmax(0, 1fr);
 
   gap:
     var(--internal-space-3);
@@ -121,10 +117,7 @@
 
   grid-template-rows:
     82px
-    minmax(
-      0,
-      1fr
-    );
+    minmax(0, 1fr);
 
   gap:
     var(--internal-space-3);
@@ -206,7 +199,9 @@
 
   transition:
     background-color 120ms ease,
-    color 120ms ease;
+    color 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease;
 
   animation:
     work-project-boot-in
@@ -413,7 +408,7 @@
 
 
 /* =========================================================
-   SIGNAL
+   SIGNAL DOT
 ========================================================= */
 
 .work-project-signal-dot {
@@ -441,7 +436,7 @@
 
 
 /* =========================================================
-   LEFT CONTENT
+   IDENTITY BODY
 ========================================================= */
 
 .work-project-identity__body {
@@ -652,15 +647,22 @@
 }
 
 
+.work-project-status--compact {
+  flex:
+    0 0 auto;
+
+  margin-top:
+    0;
+}
+
+
 /* =========================================================
    RECORD
 ========================================================= */
 
 .work-project-record {
   flex:
-    1
-    1
-    auto;
+    1 1 auto;
 
   min-height:
     0;
@@ -682,10 +684,7 @@
 
   grid-template-columns:
     92px
-    minmax(
-      0,
-      1fr
-    );
+    minmax(0, 1fr);
 
   gap:
     var(--internal-space-3);
@@ -749,11 +748,14 @@
 
   line-height:
     1.45;
+
+  overflow-wrap:
+    anywhere;
 }
 
 
 /* =========================================================
-   LEFT FOOTER
+   IDENTITY FOOTER
 ========================================================= */
 
 .work-project-identity__footer {
@@ -834,9 +836,16 @@
 }
 
 
+/* =========================================================
+   PROJECT FILE
+========================================================= */
+
 .work-project-file {
   position:
     relative;
+
+  display:
+    block;
 
   width:
     100%;
@@ -883,7 +892,7 @@
 
 
 /* =========================================================
-   FILE HEADER
+   STICKY FILE HEADER
 ========================================================= */
 
 .work-project-file__terminal {
@@ -894,7 +903,7 @@
     0;
 
   z-index:
-    30;
+    20;
 
   height:
     58px;
@@ -905,425 +914,28 @@
   padding:
     0
     26px;
+
+  background:
+    var(--work-bg);
 }
 
 
 /* =========================================================
-   BASE PROJECT GALLERY
+   INTRO
 ========================================================= */
 
-.work-project-gallery {
-  position:
-    relative;
-
-  width:
-    100%;
-
-  overflow:
-    hidden;
-
-  background:
-    var(--work-panel);
-}
-
-
-.work-project-gallery__viewport {
+.work-project-intro {
   width:
     100%;
 
   padding:
     34px
-    0
-    36px
     clamp(
-      24px,
-      3vw,
-      46px
-    );
-
-  overflow-x:
-    auto;
-
-  overflow-y:
-    hidden;
-
-  scroll-behavior:
-    smooth;
-
-  scroll-snap-type:
-    x proximity;
-
-  scrollbar-width:
-    thin;
-
-  scrollbar-color:
-    var(--work-green)
-    var(--work-bg);
-
-  overscroll-behavior-x:
-    contain;
-}
-
-
-.work-project-gallery__track {
-  display:
-    flex;
-
-  align-items:
-    center;
-
-  gap:
-    18px;
-
-  width:
-    max-content;
-
-  min-width:
-    100%;
-
-  padding-right:
-    80px;
-}
-
-
-/* =========================================================
-   BASE IMAGE ITEM
-========================================================= */
-
-.work-project-gallery__item {
-  position:
-    relative;
-
-  z-index:
-    1;
-
-  flex:
-    0
-    0
-    auto;
-
-  margin:
-    0;
-
-  transform:
-    scale(1);
-
-  transform-origin:
-    center;
-
-  transition:
-    transform
-    180ms
-    ease;
-}
-
-
-.work-project-gallery__item:hover,
-.work-project-gallery__item:focus-within {
-  z-index:
-    20;
-
-  transform:
-    scale(1.08);
-}
-
-
-/* =========================================================
-   LANDSCAPE FILM STILLS
-========================================================= */
-
-.work-project-gallery__item--landscape {
-  width:
-    clamp(
-      220px,
-      22vw,
-      310px
-    );
-}
-
-
-.work-project-gallery__image-shell--landscape {
-  aspect-ratio:
-    16 / 9;
-}
-
-
-/* =========================================================
-   PORTRAIT
-========================================================= */
-
-.work-project-gallery__item--portrait {
-  width:
-    clamp(
-      150px,
-      15vw,
-      210px
-    );
-}
-
-
-.work-project-gallery__image-shell--portrait {
-  aspect-ratio:
-    2 / 3;
-}
-
-
-/* =========================================================
-   SQUARE
-========================================================= */
-
-.work-project-gallery__item--square {
-  width:
-    clamp(
-      190px,
-      19vw,
-      260px
-    );
-}
-
-
-.work-project-gallery__image-shell--square {
-  aspect-ratio:
-    1 / 1;
-}
-
-
-/* =========================================================
-   IMAGE SHELL
-========================================================= */
-
-.work-project-gallery__image-shell {
-  position:
-    relative;
-
-  display:
-    grid;
-
-  place-items:
-    center;
-
-  width:
-    100%;
-
-  overflow:
-    hidden;
-
-  border:
-    1px solid
-    var(--work-border);
-
-  border-radius:
-    2px;
-
-  background:
-    #000;
-
-  transition:
-    border-color
-    160ms
-    ease,
-    box-shadow
-    160ms
-    ease;
-}
-
-
-.work-project-gallery__item:hover
-.work-project-gallery__image-shell,
-.work-project-gallery__item:focus-within
-.work-project-gallery__image-shell {
-  border-color:
-    var(--work-green);
-
-  box-shadow:
-    0
-    0
-    15px
-    rgb(
-      140
-      255
-      88
-      /
-      12%
-    );
-}
-
-
-.work-project-gallery__image-shell img {
-  display:
-    block;
-
-  width:
-    100%;
-
-  height:
-    100%;
-
-  object-fit:
-    contain;
-
-  object-position:
-    center;
-
-  background:
-    #000;
-
-  user-select:
-    none;
-}
-
-
-/* =========================================================
-   MISSING IMAGE
-========================================================= */
-
-.work-project-gallery__missing {
-  display:
-    none;
-
-  position:
-    absolute;
-
-  inset:
-    0;
-
-  place-items:
-    center;
-
-  padding:
-    20px;
-
-  color:
-    var(--work-amber);
-
-  font-family:
-    var(--work-display-font);
-
-  font-size:
-    0.6rem;
-
-  line-height:
-    1.5;
-
-  letter-spacing:
-    0.08em;
-
-  text-align:
-    center;
-
-  background:
-    var(--work-bg);
-}
-
-
-.work-project-gallery__image-shell.is-missing
-.work-project-gallery__missing {
-  display:
-    grid;
-}
-
-
-/* =========================================================
-   CAPTION
-========================================================= */
-
-.work-project-gallery__item figcaption {
-  display:
-    flex;
-
-  align-items:
-    center;
-
-  justify-content:
-    space-between;
-
-  gap:
-    8px;
-
-  width:
-    100%;
-
-  min-height:
-    28px;
-
-  padding:
-    8px
-    2px
-    0;
-
-  font-family:
-    var(--work-display-font);
-
-  text-transform:
-    uppercase;
-}
-
-
-.work-project-gallery__item figcaption span {
-  flex:
-    0
-    0
-    auto;
-
-  color:
-    var(--work-green);
-
-  font-size:
-    0.5rem;
-
-  line-height:
-    1;
-
-  letter-spacing:
-    0.08em;
-}
-
-
-.work-project-gallery__item figcaption strong {
-  min-width:
-    0;
-
-  overflow:
-    hidden;
-
-  color:
-    var(--work-muted);
-
-  font-size:
-    0.5rem;
-
-  font-weight:
-    400;
-
-  line-height:
-    1;
-
-  letter-spacing:
-    0.05em;
-
-  text-align:
-    right;
-
-  text-overflow:
-    ellipsis;
-
-  white-space:
-    nowrap;
-}
-
-
-/* =========================================================
-   POSTER WALL
-
-   Activated automatically when every gallery image
-   has orientation: portrait.
-
-   This is what Dune uses.
-========================================================= */
-
-.work-project-gallery--posters {
-  overflow:
-    visible;
+      28px,
+      3.5vw,
+      56px
+    )
+    38px;
 
   border-bottom:
     1px solid
@@ -1334,173 +946,151 @@
 }
 
 
-.work-project-gallery--posters
-.work-project-gallery__viewport {
-  padding:
-    32px
-    clamp(
-      24px,
-      3.5vw,
-      48px
-    )
-    38px;
-
-  overflow-x:
-    hidden;
-
-  overflow-y:
-    visible;
-
-  scroll-snap-type:
-    none;
-
-  scrollbar-width:
-    none;
-}
-
-
-.work-project-gallery--posters
-.work-project-gallery__viewport::-webkit-scrollbar {
+.work-project-intro__top {
   display:
-    none;
-}
-
-
-.work-project-gallery--posters
-.work-project-gallery__track {
-  display:
-    grid;
-
-  grid-template-columns:
-    repeat(
-      4,
-      minmax(
-        0,
-        1fr
-      )
-    );
+    flex;
 
   align-items:
-    end;
+    center;
+
+  justify-content:
+    space-between;
 
   gap:
+    var(--internal-space-4);
+
+  margin:
+    0
+    0
+    24px;
+}
+
+
+.work-project-intro__top > p {
+  margin:
+    0;
+
+  color:
+    var(--work-cyan);
+
+  font-family:
+    var(--work-display-font);
+
+  font-size:
+    0.72rem;
+
+  line-height:
+    1.2;
+
+  letter-spacing:
+    0.12em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.work-project-intro h1 {
+  width:
+    100%;
+
+  margin:
+    0;
+
+  color:
+    var(--work-green);
+
+  font-family:
+    var(--work-display-font);
+
+  font-size:
     clamp(
-      14px,
-      1.6vw,
-      24px
+      2.4rem,
+      4vw,
+      4.4rem
     );
 
-  width:
-    100%;
+  font-weight:
+    700;
 
-  min-width:
-    0;
+  line-height:
+    1;
 
-  padding:
-    0;
+  letter-spacing:
+    0.025em;
+
+  overflow-wrap:
+    anywhere;
+
+  text-transform:
+    uppercase;
 }
 
 
-.work-project-gallery--posters
-.work-project-gallery__item--portrait {
-  width:
-    100%;
+.work-project-intro__metadata {
+  margin:
+    22px
+    0
+    0;
 
+  color:
+    var(--work-cyan);
+
+  font-family:
+    var(--work-display-font);
+
+  font-size:
+    clamp(
+      0.72rem,
+      1vw,
+      0.84rem
+    );
+
+  line-height:
+    1.55;
+
+  letter-spacing:
+    0.07em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.work-project-intro__description {
   max-width:
-    210px;
+    76ch;
 
-  justify-self:
-    center;
+  margin:
+    26px
+    0
+    0;
 
-  transform-origin:
-    center bottom;
-}
+  color:
+    var(--work-white);
 
+  font-family:
+    var(--work-body-font);
 
-.work-project-gallery--posters
-.work-project-gallery__image-shell--portrait {
-  width:
-    100%;
+  font-size:
+    clamp(
+      0.9rem,
+      1.05vw,
+      1rem
+    );
 
-  aspect-ratio:
-    2 / 3;
-
-  background:
-    #050805;
-}
-
-
-.work-project-gallery--posters
-.work-project-gallery__image-shell--portrait
-img {
-  width:
-    100%;
-
-  height:
-    100%;
-
-  object-fit:
-    contain;
-
-  object-position:
-    center;
-
-  background:
-    #050805;
-}
-
-
-.work-project-gallery--posters
-.work-project-gallery__item:hover,
-.work-project-gallery--posters
-.work-project-gallery__item:focus-within {
-  transform:
-    translateY(-6px)
-    scale(1.06);
+  line-height:
+    1.8;
 }
 
 
 /* =========================================================
-   GALLERY SCROLLBAR
-========================================================= */
-
-.work-project-gallery__viewport::-webkit-scrollbar {
-  height:
-    8px;
-}
-
-
-.work-project-gallery__viewport::-webkit-scrollbar-track {
-  border-top:
-    1px solid
-    var(--work-border-soft);
-
-  background:
-    var(--work-bg);
-}
-
-
-.work-project-gallery__viewport::-webkit-scrollbar-thumb {
-  border:
-    2px solid
-    var(--work-bg);
-
-  background:
-    var(--work-green);
-}
-
-
-/* =========================================================
-   VIDEO
+   VIDEO / FEATURED MEDIA
 ========================================================= */
 
 .work-project-media {
   width:
     100%;
-
-  border-top:
-    1px solid
-    var(--work-border);
 
   border-bottom:
     1px solid
@@ -1538,6 +1128,9 @@ img {
   border-bottom:
     1px solid
     var(--work-border);
+
+  background:
+    var(--work-bg);
 }
 
 
@@ -1569,6 +1162,9 @@ img {
   font-weight:
     400;
 
+  line-height:
+    1;
+
   letter-spacing:
     0.1em;
 
@@ -1594,6 +1190,10 @@ img {
     uppercase;
 }
 
+
+/* =========================================================
+   VIDEO FRAME
+========================================================= */
 
 .work-project-video-shell {
   padding:
@@ -1630,8 +1230,33 @@ img {
     2px solid
     var(--work-green);
 
+  border-radius:
+    2px;
+
   background:
     #000;
+}
+
+
+.work-project-video::before {
+  position:
+    absolute;
+
+  inset:
+    5px;
+
+  z-index:
+    2;
+
+  border:
+    1px solid
+    rgb(140 255 88 / 20%);
+
+  pointer-events:
+    none;
+
+  content:
+    "";
 }
 
 
@@ -1650,8 +1275,15 @@ img {
 
   border:
     0;
+
+  background:
+    #000;
 }
 
+
+/* =========================================================
+   VIDEO FOOTER
+========================================================= */
 
 .work-project-media__footer {
   display:
@@ -1664,7 +1296,7 @@ img {
     space-between;
 
   gap:
-    18px;
+    var(--internal-space-4);
 
   min-height:
     48px;
@@ -1680,6 +1312,9 @@ img {
   border-top:
     1px solid
     var(--work-border);
+
+  background:
+    var(--work-bg);
 
   font-family:
     var(--work-display-font);
@@ -1718,7 +1353,381 @@ img {
 
 
 /* =========================================================
-   CONTENT MARKER
+   PROJECT IMAGE GALLERY
+
+   Restores the intended archive behaviour:
+   - Film / photography frames stay in a horizontal strip.
+   - Portrait-only poster sets form a compact poster wall.
+   - Missing-image text is hidden unless an image really fails.
+========================================================= */
+
+.work-project-gallery {
+  width: 100%;
+  min-width: 0;
+
+  border-bottom:
+    1px solid
+    var(--work-border);
+
+  background:
+    var(--work-bg);
+}
+
+
+.work-project-gallery__viewport {
+  width: 100%;
+  min-width: 0;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+
+  scrollbar-width: thin;
+  scrollbar-color:
+    var(--work-green)
+    var(--work-bg);
+}
+
+
+.work-project-gallery__viewport:focus-visible {
+  outline:
+    2px solid
+    var(--work-green);
+
+  outline-offset:
+    -2px;
+}
+
+
+.work-project-gallery__track {
+  display: flex;
+  align-items: stretch;
+
+  gap:
+    var(--internal-space-3);
+
+  width: max-content;
+  min-width: 100%;
+
+  padding:
+    32px
+    clamp(
+      24px,
+      3vw,
+      44px
+    )
+    30px;
+}
+
+
+.work-project-gallery__item {
+  display: flex;
+  position: relative;
+
+  z-index: 1;
+
+  flex:
+    0 0
+    clamp(
+      320px,
+      30vw,
+      440px
+    );
+
+  flex-direction: column;
+
+  min-width: 0;
+  margin: 0;
+
+  scroll-snap-align: start;
+}
+
+
+.work-project-gallery__item--portrait {
+  flex-basis:
+    clamp(
+      170px,
+      17vw,
+      225px
+    );
+}
+
+
+.work-project-gallery__image-shell {
+  position: relative;
+
+  display: grid;
+  place-items: center;
+
+  width: 100%;
+  aspect-ratio: 16 / 9;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    var(--work-border);
+
+  background:
+    #000;
+
+  transform-origin: center;
+
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.75, 0.25, 1),
+    border-color 140ms ease,
+    box-shadow 180ms ease;
+}
+
+
+.work-project-gallery__item:hover,
+.work-project-gallery__item:focus-within {
+  z-index: 6;
+}
+
+
+.work-project-gallery__item:hover
+.work-project-gallery__image-shell,
+.work-project-gallery__item:focus-within
+.work-project-gallery__image-shell {
+  transform:
+    scale(1.09);
+
+  border-color:
+    var(--work-green);
+
+  box-shadow:
+    0 0 0 1px
+    rgb(140 255 88 / 28%),
+    0 10px 30px
+    rgb(0 0 0 / 38%),
+    0 0 18px
+    rgb(140 255 88 / 14%);
+}
+
+
+.work-project-gallery--posters
+.work-project-gallery__item:hover
+.work-project-gallery__image-shell,
+.work-project-gallery--posters
+.work-project-gallery__item:focus-within
+.work-project-gallery__image-shell {
+  transform:
+    scale(1.06);
+}
+
+
+.work-project-gallery__image-shell--portrait {
+  aspect-ratio: 2 / 3;
+}
+
+
+.work-project-gallery__image-shell img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  user-select: none;
+}
+
+
+.work-project-gallery__image-shell--portrait img {
+  object-fit: contain;
+
+  background:
+    #000;
+}
+
+
+.work-project-gallery__missing {
+  display: none;
+
+  padding:
+    20px;
+
+  color:
+    var(--work-green-muted);
+
+  font-family:
+    var(--work-display-font);
+
+  font-size:
+    12px;
+
+  line-height:
+    1.4;
+
+  letter-spacing:
+    0.08em;
+
+  text-align: center;
+  text-transform: uppercase;
+}
+
+
+.work-project-gallery__image-shell.is-missing {
+  min-height:
+    220px;
+
+  border-style:
+    dashed;
+}
+
+
+.work-project-gallery__image-shell.is-missing img {
+  display: none !important;
+}
+
+
+.work-project-gallery__image-shell.is-missing
+.work-project-gallery__missing {
+  display: block;
+}
+
+
+.work-project-gallery__item figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap:
+    var(--internal-space-3);
+
+  min-height:
+    42px;
+
+  padding:
+    9px
+    2px
+    0;
+
+  color:
+    var(--work-green-muted);
+
+  font-family:
+    var(--work-display-font);
+
+  font-size:
+    12px;
+
+  line-height:
+    1.35;
+
+  letter-spacing:
+    0.07em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.work-project-gallery__item figcaption span {
+  flex:
+    0 0 auto;
+
+  color:
+    var(--work-green);
+}
+
+
+.work-project-gallery__item figcaption strong {
+  min-width: 0;
+
+  overflow: hidden;
+
+  color:
+    var(--work-white);
+
+  font-weight:
+    400;
+
+  text-align:
+    right;
+
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
+}
+
+
+/* Portrait-only projects such as Dune become a poster wall.
+   Four posters fit together on a normal desktop; on narrower
+   screens the same viewport simply becomes horizontally scrollable. */
+
+.work-project-gallery--posters
+.work-project-gallery__track {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(155px, 1fr)
+    );
+
+  gap:
+    clamp(
+      12px,
+      1.4vw,
+      20px
+    );
+
+  width: 100%;
+  min-width: 700px;
+}
+
+
+.work-project-gallery--posters
+.work-project-gallery__item {
+  width: auto;
+  min-width: 0;
+}
+
+
+.work-project-gallery--posters
+.work-project-gallery__image-shell {
+  aspect-ratio: 2 / 3;
+}
+
+
+/* Horizontal archive scrollbar */
+
+.work-project-gallery__viewport::-webkit-scrollbar {
+  height:
+    10px;
+}
+
+
+.work-project-gallery__viewport::-webkit-scrollbar-track {
+  border-top:
+    1px solid
+    var(--work-border);
+
+  background:
+    var(--work-bg);
+}
+
+
+.work-project-gallery__viewport::-webkit-scrollbar-thumb {
+  border:
+    2px solid
+    var(--work-bg);
+
+  background:
+    var(--work-green);
+}
+
+
+/* =========================================================
+   FILE CONTENT MARKER
 ========================================================= */
 
 .work-project-section-marker {
@@ -1732,7 +1741,10 @@ img {
     space-between;
 
   gap:
-    20px;
+    var(--internal-space-4);
+
+  width:
+    100%;
 
   min-height:
     52px;
@@ -1783,6 +1795,10 @@ img {
 
 /* =========================================================
    MARKDOWN
+
+   PORTAL 214 RULE:
+   No decorative one-sided left borders / accent bars.
+   Use complete frames and horizontal dividers instead.
 ========================================================= */
 
 .work-project-markdown {
@@ -1842,8 +1858,7 @@ img {
   padding:
     16px
     0
-    0
-    26px;
+    0;
 
   border-top:
     1px solid
@@ -1867,33 +1882,11 @@ img {
 }
 
 
+
+
 .work-project-markdown h2:first-child {
   margin-top:
     18px;
-}
-
-
-.work-project-markdown h2::before {
-  position:
-    absolute;
-
-  top:
-    16px;
-
-  bottom:
-    0;
-
-  left:
-    0;
-
-  width:
-    2px;
-
-  background:
-    var(--work-cyan);
-
-  content:
-    "";
 }
 
 
@@ -1986,6 +1979,9 @@ img {
 .work-project-markdown strong {
   color:
     var(--work-green);
+
+  font-weight:
+    700;
 }
 
 
@@ -2007,6 +2003,13 @@ img {
 }
 
 
+.work-project-markdown a:hover,
+.work-project-markdown a:focus-visible {
+  color:
+    var(--work-white);
+}
+
+
 .work-project-markdown blockquote {
   max-width:
     76ch;
@@ -2017,16 +2020,16 @@ img {
 
   padding:
     4px
-    0
-    4px
-    20px;
-
-  border-left:
-    2px solid
-    var(--work-green);
+    0;
 
   color:
     var(--work-muted);
+}
+
+
+.work-project-markdown blockquote p {
+  color:
+    inherit;
 }
 
 
@@ -2045,7 +2048,7 @@ img {
     space-between;
 
   gap:
-    18px;
+    var(--internal-space-4);
 
   min-height:
     64px;
@@ -2071,6 +2074,9 @@ img {
   font-size:
     0.64rem;
 
+  line-height:
+    1.3;
+
   letter-spacing:
     0.08em;
 
@@ -2094,8 +2100,15 @@ img {
 }
 
 
+.work-project-file__footer a:hover,
+.work-project-file__footer a:focus-visible {
+  color:
+    var(--work-white);
+}
+
+
 /* =========================================================
-   VERTICAL SCROLLBARS
+   SCROLLBAR
 ========================================================= */
 
 .work-project-file::-webkit-scrollbar,
@@ -2107,10 +2120,6 @@ img {
 
 .work-project-file::-webkit-scrollbar-track,
 .work-project-record::-webkit-scrollbar-track {
-  border-left:
-    1px solid
-    var(--work-border);
-
   background:
     var(--work-bg);
 }
@@ -2137,9 +2146,7 @@ img {
       0;
 
     transform:
-      translateY(
-        5px
-      );
+      translateY(5px);
   }
 
   to {
@@ -2147,9 +2154,7 @@ img {
       1;
 
     transform:
-      translateY(
-        0
-      );
+      translateY(0);
   }
 }
 
@@ -2172,21 +2177,12 @@ img {
    MEDIUM
 ========================================================= */
 
-@media (
-  max-width:
-    1150px
-) {
+@media (max-width: 1150px) {
   .work-project-page
   .internal-page-grid {
     grid-template-columns:
-      minmax(
-        300px,
-        35%
-      )
-      minmax(
-        0,
-        1fr
-      );
+      minmax(300px, 35%)
+      minmax(0, 1fr);
   }
 
 
@@ -2197,26 +2193,13 @@ img {
   }
 
 
-  .work-project-gallery--posters
-  .work-project-gallery__track {
-    grid-template-columns:
-      repeat(
-        4,
-        minmax(
-          0,
-          1fr
-        )
+  .work-project-intro h1 {
+    font-size:
+      clamp(
+        2.1rem,
+        4.8vw,
+        3.8rem
       );
-
-    gap:
-      12px;
-  }
-
-
-  .work-project-gallery--posters
-  .work-project-gallery__item--portrait {
-    max-width:
-      170px;
   }
 }
 
@@ -2225,10 +2208,7 @@ img {
    TABLET
 ========================================================= */
 
-@media (
-  max-width:
-    780px
-) {
+@media (max-width: 780px) {
   .work-project-page
   .internal-page-grid {
     grid-template-columns:
@@ -2245,11 +2225,7 @@ img {
   .work-project-page
   .internal-page-sidebar,
   .work-project-page
-  .internal-page-content,
-  .work-project-sidebar,
-  .work-project-identity,
-  .work-project-main,
-  .work-project-file {
+  .internal-page-content {
     height:
       auto;
 
@@ -2264,6 +2240,45 @@ img {
 
     flex-direction:
       column;
+
+    height:
+      auto;
+
+    overflow:
+      visible;
+  }
+
+
+  .work-project-identity {
+    height:
+      auto;
+
+    overflow:
+      visible;
+  }
+
+
+  .work-project-record {
+    overflow:
+      visible;
+  }
+
+
+  .work-project-main {
+    height:
+      auto;
+
+    overflow:
+      visible;
+  }
+
+
+  .work-project-file {
+    height:
+      auto;
+
+    overflow:
+      visible;
   }
 
 
@@ -2273,82 +2288,17 @@ img {
   }
 
 
-  /* -----------------------------------------
-     POSTERS ON TABLET
-  ----------------------------------------- */
-
-  .work-project-gallery--posters
-  .work-project-gallery__viewport {
-    overflow-x:
-      auto;
-
-    overflow-y:
-      hidden;
-
-    padding:
-      28px
-      0
-      32px
-      22px;
-
-    scrollbar-width:
-      thin;
-  }
-
-
-  .work-project-gallery--posters
-  .work-project-gallery__viewport::-webkit-scrollbar {
-    display:
-      block;
-  }
-
-
-  .work-project-gallery--posters
-  .work-project-gallery__track {
-    display:
-      flex;
-
+  .work-project-intro__top {
     align-items:
-      flex-end;
+      flex-start;
 
-    gap:
-      16px;
-
-    width:
-      max-content;
-
-    min-width:
-      100%;
-
-    padding-right:
-      40px;
-  }
-
-
-  .work-project-gallery--posters
-  .work-project-gallery__item--portrait {
-    width:
-      180px;
-
-    max-width:
-      none;
-  }
-
-
-  .work-project-gallery--posters
-  .work-project-gallery__item:hover,
-  .work-project-gallery--posters
-  .work-project-gallery__item:focus-within {
-    transform:
-      scale(
-        1.04
-      );
+    flex-direction:
+      column;
   }
 
 
   .work-project-media__header,
-  .work-project-media__footer,
-  .work-project-file__footer {
+  .work-project-media__footer {
     align-items:
       flex-start;
 
@@ -2361,6 +2311,40 @@ img {
     padding-bottom:
       14px;
   }
+
+
+  .work-project-file__footer {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+
+  .work-project-gallery__item {
+    flex-basis:
+      min(
+        62vw,
+        440px
+      );
+  }
+
+
+  .work-project-gallery__item--portrait {
+    flex-basis:
+      min(
+        34vw,
+        220px
+      );
+  }
+
+
+  .work-project-gallery--posters
+  .work-project-gallery__track {
+    min-width:
+      680px;
+  }
 }
 
 
@@ -2368,10 +2352,7 @@ img {
    MOBILE
 ========================================================= */
 
-@media (
-  max-width:
-    520px
-) {
+@media (max-width: 520px) {
   .work-project-back {
     height:
       64px;
@@ -2385,79 +2366,32 @@ img {
   .work-project-record > div {
     grid-template-columns:
       76px
-      minmax(
-        0,
-        1fr
-      );
+      minmax(0, 1fr);
   }
 
 
-  .work-project-gallery__viewport {
+  .work-project-intro {
     padding:
       26px
-      0
-      30px
-      18px;
-  }
-
-
-  .work-project-gallery__track {
-    gap:
-      12px;
-
-    padding-right:
-      40px;
-  }
-
-
-  .work-project-gallery__item--landscape {
-    width:
-      215px;
-  }
-
-
-  .work-project-gallery__item--portrait {
-    width:
-      150px;
-  }
-
-
-  .work-project-gallery__item--square {
-    width:
-      185px;
-  }
-
-
-  .work-project-gallery--posters
-  .work-project-gallery__item--portrait {
-    width:
-      155px;
-  }
-
-
-  .work-project-gallery__item:hover,
-  .work-project-gallery__item:focus-within {
-    transform:
-      scale(
-        1.04
-      );
-  }
-
-
-  .work-project-media__header,
-  .work-project-media__footer,
-  .work-project-section-marker {
-    padding-right:
-      18px;
-
-    padding-left:
-      18px;
+      18px
+      30px;
   }
 
 
   .work-project-video-shell {
     padding:
       14px;
+  }
+
+
+  .work-project-media__header,
+  .work-project-media__footer,
+  .work-project-section-marker {
+    padding-left:
+      18px;
+
+    padding-right:
+      18px;
   }
 
 
@@ -2474,6 +2408,54 @@ img {
       14px
       18px;
   }
+
+
+  .work-project-gallery__track {
+    gap:
+      10px;
+
+    padding:
+      14px
+      14px
+      12px;
+  }
+
+
+  .work-project-gallery__item {
+    flex-basis:
+      82vw;
+  }
+
+
+  .work-project-gallery__item--portrait {
+    flex-basis:
+      68vw;
+  }
+
+
+  .work-project-gallery--posters
+  .work-project-gallery__track {
+    display: flex;
+
+    width: max-content;
+    min-width: 100%;
+  }
+
+
+  .work-project-gallery__item figcaption {
+    min-height:
+      38px;
+  }
+
+
+  .work-project-intro h1 {
+    font-size:
+      clamp(
+        1.9rem,
+        13vw,
+        3rem
+      );
+  }
 }
 
 
@@ -2489,7 +2471,7 @@ img {
   .work-project-identity,
   .work-project-file,
   .work-project-signal-dot,
-  .work-project-gallery__item {
+  .work-project-gallery__image-shell {
     animation:
       none !important;
 
@@ -2497,9 +2479,41 @@ img {
       none !important;
   }
 
-
-  .work-project-gallery__viewport {
-    scroll-behavior:
-      auto !important;
+  .work-project-gallery__image-shell {
+    transform:
+      none !important;
   }
+}
+
+/* =========================================================
+   PORTAL 214 // WORK PROJECT TYPE REFINEMENT PASS 01
+
+   Keeps the restored compact media gallery, hover enlargement,
+   readable typography and the 12px desktop floor.
+========================================================= */
+
+@media (min-width: 781px) {
+  .work-project-back,
+  .work-project-identity__eyebrow,
+  .work-project-status strong,
+  .work-project-record dt,
+  .work-project-record dd,
+  .work-project-identity__footer,
+  .work-project-file__header,
+  .work-project-intro__top > p,
+  .work-project-intro__metadata,
+  .work-project-media__header h2,
+  .work-project-media__header > span,
+  .work-project-gallery__header,
+  .work-project-gallery__item figcaption,
+  .work-project-file__footer {
+    font-size: var(--site-text-micro);
+  }
+}
+
+.work-project-intro__description,
+.work-project-markdown p,
+.work-project-markdown ul,
+.work-project-markdown ol {
+  font-size: var(--site-text-body);
 }

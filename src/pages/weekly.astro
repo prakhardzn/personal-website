@@ -1,27 +1,56 @@
 ---
-import InternalPageLayout from "../layouts/InternalPageLayout.astro";
+import type {
+  MarkdownInstance,
+} from "astro";
+
+import InternalPageLayout from
+  "../layouts/InternalPageLayout.astro";
+
 import "../styles/weekly.css";
 
-import {
-  weeklyPosts,
-} from "../data/weeklyposts";
 
-
-type WeeklyPostRecord = {
+type WeeklyPostFrontmatter = {
+  number: string;
   slug: string;
   title: string;
-  number?: string;
-  status?: string;
-  category?: string;
-  description?: string;
-  summary?: string;
-  date?: string;
-  readTime?: string;
+  summary: string;
+  category: string;
+  date: string;
+  readTime: string;
+  status: string;
+  statusTone?: string;
+  variant?: string;
 };
 
 
+const weeklyMarkdownModules =
+  import.meta.glob<
+    MarkdownInstance<WeeklyPostFrontmatter>
+  >(
+    "../content/weekly/*.md",
+    {
+      eager: true,
+    }
+  );
+
+
 const posts =
-  weeklyPosts as unknown as WeeklyPostRecord[];
+  Object.values(
+    weeklyMarkdownModules
+  )
+    .map(
+      (entry) =>
+        entry.frontmatter
+    )
+    .sort(
+      (
+        first,
+        second
+      ) =>
+        first.number.localeCompare(
+          second.number
+        )
+    );
 
 
 const baseUrl =
@@ -42,9 +71,9 @@ const cardTones = [
   "primary",
   "mint",
   "lime",
-  "muted",
 ] as const;
 ---
+
 
 <InternalPageLayout
   title="News Weekly | Prakhar's Universe"
@@ -52,65 +81,228 @@ const cardTones = [
   message="No aliens were harmed while building this page."
   pageClass="weekly-page"
 >
-  <!-- ==================================================
+  <!-- =====================================================
        LEFT COLUMN
-  =================================================== -->
+  ====================================================== -->
 
   <div
     slot="sidebar"
     class="weekly-left-column"
   >
-    <!-- News Weekly identity -->
+    <!-- ===================================================
+         NEWS CHANNEL IDENT
+    ==================================================== -->
 
-    <header class="weekly-title-card">
-      <div>
+    <section
+      class="weekly-news-ident"
+      aria-label="News Weekly broadcast channel"
+    >
+      <header
+        class="weekly-news-ident__bar"
+      >
+        <div>
+          <span
+            class="weekly-live-dot"
+            aria-hidden="true"
+          ></span>
+
+          <strong>
+            LIVE
+          </strong>
+        </div>
+
         <span>
-          WEEKLY BROADCAST
+          CHANNEL // 214
         </span>
+      </header>
 
-        <h1>
-          News Weekly
-        </h1>
+
+      <div
+        class="weekly-news-ident__stage"
+        aria-hidden="true"
+      >
+        <!-- Space / broadcast texture -->
+
+        <span
+          class="weekly-ident-stars"
+        ></span>
+
+        <span
+          class="weekly-ident-scan"
+        ></span>
+
+
+        <!-- Wireframe broadcast globe -->
+
+        <div
+          class="weekly-ident-globe"
+        >
+          <span
+            class="weekly-ident-globe__latitude weekly-ident-globe__latitude--one"
+          ></span>
+
+          <span
+            class="weekly-ident-globe__latitude weekly-ident-globe__latitude--two"
+          ></span>
+
+          <span
+            class="weekly-ident-globe__longitude weekly-ident-globe__longitude--one"
+          ></span>
+
+          <span
+            class="weekly-ident-globe__longitude weekly-ident-globe__longitude--two"
+          ></span>
+
+          <span
+            class="weekly-ident-globe__core"
+          ></span>
+        </div>
+
+
+        <!-- Expanding transmission pulses -->
+
+        <span
+          class="weekly-ident-pulse weekly-ident-pulse--one"
+        ></span>
+
+        <span
+          class="weekly-ident-pulse weekly-ident-pulse--two"
+        ></span>
+
+
+        <!-- Channel ident text -->
+
+        <div
+          class="weekly-ident-title"
+        >
+          <span>
+            WEEKLY BROADCAST
+          </span>
+
+          <strong>
+            NEWS WEEKLY
+          </strong>
+
+          <p>
+            CURRENT TRANSMISSIONS
+          </p>
+        </div>
+
+
+        <!-- Decorative targeting corners -->
+
+        <span
+          class="weekly-ident-corner weekly-ident-corner--tl"
+        ></span>
+
+        <span
+          class="weekly-ident-corner weekly-ident-corner--tr"
+        ></span>
+
+        <span
+          class="weekly-ident-corner weekly-ident-corner--bl"
+        ></span>
+
+        <span
+          class="weekly-ident-corner weekly-ident-corner--br"
+        ></span>
+
+
+        <!-- Audio / signal indicator -->
+
+        <div
+          class="weekly-ident-signal"
+        >
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
       </div>
 
-      <p>
-        ISSUE STREAM // ACTIVE
-      </p>
-    </header>
 
+      <!-- =================================================
+           NEWS TICKER
+      ================================================== -->
 
-    <!-- Anchor artwork -->
+      <div
+        class="weekly-news-ticker"
+      >
+        <div
+          class="weekly-news-ticker__label"
+        >
+          LIVE FEED
+        </div>
 
-    <figure class="weekly-anchor-frame">
-      <div class="weekly-anchor-art">
-        <img
-          class="weekly-anchor-image"
-          src={buildSiteUrl(
-            "/assets/weekly/alien-weekly.jpeg"
-          )}
-          alt="An alien news anchor inside a surreal outer-space broadcast studio"
-        />
+        <div
+          class="weekly-news-ticker__window"
+        >
+          <div
+            class="weekly-news-ticker__track"
+          >
+            <span>
+              MOVIE BREAKDOWNS
+            </span>
+
+            <i>//</i>
+
+            <span>
+              CODING LOGS
+            </span>
+
+            <i>//</i>
+
+            <span>
+              PERSONAL FILES
+            </span>
+
+            <i>//</i>
+
+            <span>
+              NEW TRANSMISSIONS EVERY FRIDAY
+            </span>
+
+            <i>//</i>
+
+            <span>
+              MOVIE BREAKDOWNS
+            </span>
+
+            <i>//</i>
+
+            <span>
+              CODING LOGS
+            </span>
+
+            <i>//</i>
+
+            <span>
+              PERSONAL FILES
+            </span>
+
+            <i>//</i>
+
+            <span>
+              NEW TRANSMISSIONS EVERY FRIDAY
+            </span>
+          </div>
+        </div>
       </div>
-
-      <figcaption>
-        <span>
-          ANCHOR FEED
-        </span>
-
-        <strong>
-          LIVE
-        </strong>
-      </figcaption>
-    </figure>
+    </section>
 
 
-    <!-- Compact publication information -->
+    <!-- ===================================================
+         PUBLICATION CYCLE
+    ==================================================== -->
 
     <section
       class="weekly-schedule-card"
       aria-label="Weekly publication schedule"
     >
-      <div class="weekly-schedule-card__title">
+      <div
+        class="weekly-schedule-card__title"
+      >
         <span>
           PUBLICATION CYCLE
         </span>
@@ -120,12 +312,17 @@ const cardTones = [
         </strong>
       </div>
 
-      <div class="weekly-schedule-card__countdown">
+
+      <div
+        class="weekly-schedule-card__countdown"
+      >
         <span>
           NEXT TRANSMISSION
         </span>
 
-        <strong id="weekly-countdown">
+        <strong
+          id="weekly-countdown"
+        >
           CALCULATING
         </strong>
       </div>
@@ -133,43 +330,55 @@ const cardTones = [
   </div>
 
 
-  <!-- ==================================================
+  <!-- =====================================================
        RIGHT COLUMN
-  =================================================== -->
+  ====================================================== -->
 
   <div
     slot="content"
     class="weekly-right-column"
   >
-    <div class="weekly-content-stage">
+    <div
+      class="weekly-content-stage"
+    >
       <section
         class="weekly-feed-panel"
         id="weekly-feed-panel"
         aria-labelledby="weekly-feed-title"
       >
-        <header class="weekly-feed-header">
-          <div class="weekly-feed-header__title">
-            <p>
-              <span
-                class="weekly-status-dot"
-                aria-hidden="true"
-              ></span>
+        <header
+          class="weekly-feed-header"
+        >
+          <p
+            class="weekly-feed-header__eyebrow"
+          >
+            <span
+              class="weekly-status-dot"
+              aria-hidden="true"
+            ></span>
 
-              CURRENT TRANSMISSIONS
-            </p>
+            CURRENT TRANSMISSIONS
+          </p>
 
-            <h1 id="weekly-feed-title">
-              Weekly Files
-            </h1>
-          </div>
 
-          <p class="weekly-feed-header__description">
+          <h1
+            id="weekly-feed-title"
+          >
+            Weekly Files
+          </h1>
+
+
+          <p
+            class="weekly-feed-header__description"
+          >
             Select a file to read the complete transmission.
           </p>
         </header>
 
 
-        <div class="weekly-card-list">
+        <div
+          class="weekly-card-list"
+        >
           {
             posts.map(
               (
@@ -182,36 +391,6 @@ const cardTones = [
                     cardTones.length
                   ];
 
-                const postNumber =
-                  post.number ??
-                  `WEEKLY FILE ${String(
-                    index + 1
-                  ).padStart(
-                    3,
-                    "0"
-                  )}`;
-
-                const postStatus =
-                  post.status ??
-                  "ARCHIVED";
-
-                const postCategory =
-                  post.category ??
-                  "WEEKLY TRANSMISSION";
-
-                const postDescription =
-                  post.description ??
-                  post.summary ??
-                  "Transmission notes are currently being prepared.";
-
-                const postDate =
-                  post.date ??
-                  "DATE PENDING";
-
-                const postReadTime =
-                  post.readTime ??
-                  "READ TIME PENDING";
-
                 return (
                   <a
                     class:list={[
@@ -223,16 +402,27 @@ const cardTones = [
                     )}
                     style={`--card-delay: ${index * 70}ms;`}
                   >
-                    <div class="weekly-post-card__top">
+                    <div
+                      class="weekly-post-card__top"
+                    >
                       <span>
-                        {postNumber}
+                        {post.number}
                       </span>
 
-                      <span class="weekly-card-status">
-                        <i aria-hidden="true"></i>
+
+                      <span
+                        class:list={[
+                          "weekly-card-status",
+                          post.statusTone &&
+                            `weekly-card-status--${post.statusTone}`,
+                        ]}
+                      >
+                        <i
+                          aria-hidden="true"
+                        ></i>
 
                         <strong>
-                          {postStatus}
+                          {post.status}
                         </strong>
                       </span>
                     </div>
@@ -243,19 +433,25 @@ const cardTones = [
                     </h2>
 
 
-                    <p class="weekly-post-card__category">
-                      {postCategory}
+                    <p
+                      class="weekly-post-card__category"
+                    >
+                      {post.category}
                     </p>
 
 
-                    <p class="weekly-post-card__description">
-                      {postDescription}
+                    <p
+                      class="weekly-post-card__description"
+                    >
+                      {post.summary}
                     </p>
 
 
-                    <div class="weekly-post-card__footer">
+                    <div
+                      class="weekly-post-card__footer"
+                    >
                       <span>
-                        {postDate} // {postReadTime}
+                        PUBLISHED {post.date} // {post.readTime}
                       </span>
 
                       <strong>
@@ -270,8 +466,6 @@ const cardTones = [
         </div>
       </section>
 
-
-      <!-- External scrollbar -->
 
       <div
         class="weekly-scrollbar"
@@ -289,6 +483,20 @@ const cardTones = [
 
 
 <script>
+  type WeeklyRuntimeWindow =
+    Window & {
+      __weeklyPageController?:
+        AbortController;
+
+      __weeklyPageResizeObserver?:
+        ResizeObserver;
+    };
+
+
+  const weeklyRuntimeWindow =
+    window as WeeklyRuntimeWindow;
+
+
   function updateWeeklyCountdown(): void {
     const countdown =
       document.querySelector<HTMLElement>(
@@ -299,6 +507,7 @@ const cardTones = [
       return;
     }
 
+
     const now =
       new Date();
 
@@ -308,12 +517,15 @@ const cardTones = [
     const friday =
       5;
 
+
     const daysUntilFriday =
       (
         friday -
         currentDay +
         7
-      ) % 7;
+      ) %
+      7;
+
 
     if (
       daysUntilFriday ===
@@ -325,6 +537,7 @@ const cardTones = [
       return;
     }
 
+
     if (
       daysUntilFriday ===
       1
@@ -335,12 +548,37 @@ const cardTones = [
       return;
     }
 
+
     countdown.textContent =
       `${daysUntilFriday} DAYS`;
   }
 
 
-  function initialiseWeeklyScrollbar(): void {
+  function initialiseWeeklyPage(): void {
+    weeklyRuntimeWindow
+      .__weeklyPageController
+      ?.abort();
+
+    weeklyRuntimeWindow
+      .__weeklyPageResizeObserver
+      ?.disconnect();
+
+
+    const controller =
+      new AbortController();
+
+    weeklyRuntimeWindow
+      .__weeklyPageController =
+      controller;
+
+
+    const signal =
+      controller.signal;
+
+
+    updateWeeklyCountdown();
+
+
     const contentWindow =
       document.querySelector<HTMLElement>(
         "#weekly-feed-panel"
@@ -356,6 +594,7 @@ const cardTones = [
         "#weekly-scrollbar-thumb"
       );
 
+
     if (
       !contentWindow ||
       !scrollbar ||
@@ -364,71 +603,73 @@ const cardTones = [
       return;
     }
 
-    if (
-      scrollbar.dataset.initialised ===
-      "true"
-    ) {
-      return;
-    }
 
-    scrollbar.dataset.initialised =
-      "true";
+    const updateScrollbar =
+      (): void => {
+        const trackHeight =
+          scrollbar.clientHeight;
 
 
-    function updateScrollbar(): void {
-      const trackHeight =
-        scrollbar.clientHeight;
-
-      const maximumScroll =
-        Math.max(
-          0,
-          contentWindow.scrollHeight -
-            contentWindow.clientHeight
-        );
-
-      const visibleRatio =
-        contentWindow.scrollHeight > 0
-          ? contentWindow.clientHeight /
-            contentWindow.scrollHeight
-          : 1;
-
-      const thumbHeight =
-        Math.min(
-          trackHeight,
+        const maximumScroll =
           Math.max(
-            52,
-            trackHeight *
-              visibleRatio
-          )
+            0,
+            contentWindow.scrollHeight -
+              contentWindow.clientHeight
+          );
+
+
+        const visibleRatio =
+          contentWindow.scrollHeight >
+          0
+            ? contentWindow.clientHeight /
+              contentWindow.scrollHeight
+            : 1;
+
+
+        const thumbHeight =
+          Math.min(
+            trackHeight,
+            Math.max(
+              52,
+              trackHeight *
+                visibleRatio
+            )
+          );
+
+
+        const movementDistance =
+          Math.max(
+            0,
+            trackHeight -
+              thumbHeight
+          );
+
+
+        const scrollProgress =
+          maximumScroll >
+          0
+            ? contentWindow.scrollTop /
+              maximumScroll
+            : 0;
+
+
+        scrollbarThumb.style.height =
+          `${thumbHeight}px`;
+
+
+        scrollbarThumb.style.transform =
+          `translateY(${
+            scrollProgress *
+            movementDistance
+          }px)`;
+
+
+        scrollbar.classList.toggle(
+          "is-static",
+          maximumScroll ===
+            0
         );
-
-      const movementDistance =
-        Math.max(
-          0,
-          trackHeight -
-            thumbHeight
-        );
-
-      const scrollProgress =
-        maximumScroll > 0
-          ? contentWindow.scrollTop /
-            maximumScroll
-          : 0;
-
-      scrollbarThumb.style.height =
-        `${thumbHeight}px`;
-
-      scrollbarThumb.style.transform =
-        `translateY(${
-          scrollProgress *
-          movementDistance
-        }px)`;
-
-      scrollbar.classList.toggle(
-        "is-static",
-        maximumScroll === 0
-      );
-    }
+      };
 
 
     contentWindow.addEventListener(
@@ -436,154 +677,17 @@ const cardTones = [
       updateScrollbar,
       {
         passive: true,
+        signal,
       }
     );
 
 
-    scrollbar.addEventListener(
-      "click",
-      (
-        event:
-          MouseEvent
-      ) => {
-        if (
-          event.target ===
-          scrollbarThumb
-        ) {
-          return;
-        }
-
-        const bounds =
-          scrollbar.getBoundingClientRect();
-
-        const pointerPosition =
-          event.clientY -
-          bounds.top;
-
-        const percentage =
-          Math.max(
-            0,
-            Math.min(
-              1,
-              pointerPosition /
-                bounds.height
-            )
-          );
-
-        const maximumScroll =
-          Math.max(
-            0,
-            contentWindow.scrollHeight -
-              contentWindow.clientHeight
-          );
-
-        contentWindow.scrollTop =
-          percentage *
-          maximumScroll;
+    window.addEventListener(
+      "resize",
+      updateScrollbar,
+      {
+        signal,
       }
-    );
-
-
-    let isDragging =
-      false;
-
-    let dragStartY =
-      0;
-
-    let dragStartScroll =
-      0;
-
-
-    scrollbarThumb.addEventListener(
-      "pointerdown",
-      (
-        event:
-          PointerEvent
-      ) => {
-        isDragging =
-          true;
-
-        dragStartY =
-          event.clientY;
-
-        dragStartScroll =
-          contentWindow.scrollTop;
-
-        scrollbarThumb.setPointerCapture(
-          event.pointerId
-        );
-
-        scrollbarThumb.classList.add(
-          "is-dragging"
-        );
-
-        event.preventDefault();
-      }
-    );
-
-
-    scrollbarThumb.addEventListener(
-      "pointermove",
-      (
-        event:
-          PointerEvent
-      ) => {
-        if (
-          !isDragging
-        ) {
-          return;
-        }
-
-        const maximumScroll =
-          Math.max(
-            0,
-            contentWindow.scrollHeight -
-              contentWindow.clientHeight
-          );
-
-        const thumbHeight =
-          scrollbarThumb.offsetHeight;
-
-        const movementDistance =
-          Math.max(
-            1,
-            scrollbar.clientHeight -
-              thumbHeight
-          );
-
-        const pointerMovement =
-          event.clientY -
-          dragStartY;
-
-        contentWindow.scrollTop =
-          dragStartScroll +
-          (
-            pointerMovement /
-            movementDistance
-          ) *
-          maximumScroll;
-      }
-    );
-
-
-    function stopDragging(): void {
-      isDragging =
-        false;
-
-      scrollbarThumb.classList.remove(
-        "is-dragging"
-      );
-    }
-
-
-    scrollbarThumb.addEventListener(
-      "pointerup",
-      stopDragging
-    );
-
-    scrollbarThumb.addEventListener(
-      "pointercancel",
-      stopDragging
     );
 
 
@@ -591,6 +695,7 @@ const cardTones = [
       new ResizeObserver(
         updateScrollbar
       );
+
 
     resizeObserver.observe(
       contentWindow
@@ -601,10 +706,9 @@ const cardTones = [
     );
 
 
-    window.addEventListener(
-      "resize",
-      updateScrollbar
-    );
+    weeklyRuntimeWindow
+      .__weeklyPageResizeObserver =
+      resizeObserver;
 
 
     window.requestAnimationFrame(
@@ -613,26 +717,7 @@ const cardTones = [
   }
 
 
-  function initialiseWeeklyPage(): void {
-    updateWeeklyCountdown();
-    initialiseWeeklyScrollbar();
-  }
-
-
-  if (
-    document.readyState ===
-    "loading"
-  ) {
-    document.addEventListener(
-      "DOMContentLoaded",
-      initialiseWeeklyPage,
-      {
-        once: true,
-      }
-    );
-  } else {
-    initialiseWeeklyPage();
-  }
+  initialiseWeeklyPage();
 
 
   document.addEventListener(

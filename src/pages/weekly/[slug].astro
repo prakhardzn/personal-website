@@ -1,10 +1,10 @@
 ---
 import type {
   GetStaticPaths,
+  MarkdownInstance,
 } from "astro";
 
-import InternalPageLayout from
-  "../../layouts/InternalPageLayout.astro";
+import InternalPageLayout from "../../layouts/InternalPageLayout.astro";
 
 import {
   weeklyPosts,
@@ -13,15 +13,25 @@ import {
 
 import "../../styles/weekly.css";
 
+type WeeklyPostFrontmatter = {
+  number: string;
+  slug: string;
+  title: string;
+  summary: string;
+  category: string;
+  date: string;
+  readTime: string;
+  status: string;
+  statusTone?: string;
+};
 
-export const getStaticPaths:
-  GetStaticPaths = () => {
+export const getStaticPaths: GetStaticPaths =
+  () => {
     return weeklyPosts.map(
       (post) => ({
         params: {
           slug: post.slug,
         },
-
         props: {
           post,
         },
@@ -29,46 +39,116 @@ export const getStaticPaths:
     );
   };
 
-
 interface Props {
   post: WeeklyPost;
 }
-
 
 const {
   post,
 } = Astro.props as Props;
 
+const weeklyMarkdownModules =
+  import.meta.glob<
+    MarkdownInstance<WeeklyPostFrontmatter>
+  >(
+    "../../content/weekly/*.md",
+    {
+      eager: true,
+    }
+  );
 
-const weeklyIndexUrl =
-  `${import.meta.env.BASE_URL}weekly`;
+const weeklyMarkdownPosts =
+  Object.values(
+    weeklyMarkdownModules
+  );
+
+const markdownEntry =
+  weeklyMarkdownPosts.find(
+    (entry) =>
+      entry.frontmatter.slug ===
+      post.slug
+  );
+
+if (!markdownEntry) {
+  throw new Error(
+    `No Weekly Markdown file was found for slug "${post.slug}".`
+  );
+}
+
+const compiledArticle =
+  await markdownEntry.compiledContent();
+
+const articleBody =
+  compiledArticle.replace(
+    /^\s*<h1(?:\s[^>]*)?>[\s\S]*?<\/h1>\s*/i,
+    ""
+  );
+
+const markdownData =
+  markdownEntry.frontmatter;
+
+const number =
+  markdownData.number ??
+  post.number;
+
+const title =
+  markdownData.title ??
+  post.title;
+
+const summary =
+  markdownData.summary ??
+  post.summary;
+
+const category =
+  markdownData.category ??
+  post.category;
+
+const date =
+  markdownData.date ??
+  post.date;
+
+const readTime =
+  markdownData.readTime ??
+  post.readTime;
+
+const status =
+  markdownData.status ??
+  post.status;
+
+const statusTone =
+  markdownData.statusTone ??
+  post.statusTone ??
+  "new";
+
+const baseUrl =
+  import.meta.env.BASE_URL;
+
+const buildSiteUrl = (
+  path: string
+): string => {
+  return `${baseUrl}${path.replace(
+    /^\/+/,
+    ""
+  )}`;
+};
 ---
 
 <InternalPageLayout
-  title={`${post.title} | News Weekly`}
-  description={post.summary}
-  message="This transmission is still being decoded."
+  title={`${title} | News Weekly`}
+  description={summary}
+  message="Transmission received. Opening weekly file."
   pageClass="weekly-page weekly-post-page"
 >
-  <!-- ==================================================
-       ARTICLE SIDEBAR
-  =================================================== -->
-
   <div
     slot="sidebar"
-    class="weekly-post-sidebar"
+    class="weekly-left-column"
   >
     <a
       class="weekly-post-back"
-      href={weeklyIndexUrl}
+      href={buildSiteUrl("/weekly")}
     >
-      <span aria-hidden="true">
-        ←
-      </span>
-
       BACK TO WEEKLY
     </a>
-
 
     <section class="weekly-post-meta">
       <header class="weekly-post-meta__header">
@@ -82,7 +162,7 @@ const weeklyIndexUrl =
           </dt>
 
           <dd>
-            {post.number}
+            {number}
           </dd>
         </div>
 
@@ -92,7 +172,7 @@ const weeklyIndexUrl =
           </dt>
 
           <dd>
-            {post.category}
+            {category}
           </dd>
         </div>
 
@@ -102,7 +182,7 @@ const weeklyIndexUrl =
           </dt>
 
           <dd>
-            {post.date}
+            {date}
           </dd>
         </div>
 
@@ -112,7 +192,7 @@ const weeklyIndexUrl =
           </dt>
 
           <dd>
-            {post.readTime}
+            {readTime}
           </dd>
         </div>
 
@@ -125,7 +205,7 @@ const weeklyIndexUrl =
             <span
               class:list={[
                 "weekly-status",
-                `weekly-status--${post.statusTone}`,
+                `weekly-status--${statusTone}`,
               ]}
             >
               <span
@@ -134,14 +214,13 @@ const weeklyIndexUrl =
               ></span>
 
               <strong>
-                {post.status}
+                {status}
               </strong>
             </span>
           </dd>
         </div>
       </dl>
     </section>
-
 
     <section class="weekly-post-signal">
       <div>
@@ -154,70 +233,46 @@ const weeklyIndexUrl =
       </div>
 
       <p>
-        The route is connected and prepared for the final
-        article transmission.
+        Markdown transmission successfully connected.
       </p>
     </section>
   </div>
 
-
-  <!-- ==================================================
-       ARTICLE CONTENT
-  =================================================== -->
-
-  <article
+  <div
     slot="content"
-    class="weekly-article-panel"
+    class="weekly-right-column"
   >
-    <header class="weekly-article-header">
-      <div class="weekly-article-header__top">
-        <span>
-          {post.number}
-        </span>
+    <div class="weekly-content-stage">
+      <article class="weekly-feed-panel weekly-article">
+        <header class="weekly-article-header">
+          <div class="weekly-article-meta">
+            <span>
+              {number}
+            </span>
 
-        <span>
-          {post.date} // {post.readTime}
-        </span>
-      </div>
+            <span>
+              {date} // {readTime}
+            </span>
+          </div>
 
-      <p class="weekly-article-kicker">
-        {post.category}
-      </p>
+          <p class="weekly-article-kicker">
+            {category}
+          </p>
 
-      <h1>
-        {post.title}
-      </h1>
+          <h1>
+            {title}
+          </h1>
 
-      <p class="weekly-article-summary">
-        {post.summary}
-      </p>
-    </header>
+          <p class="weekly-article-summary">
+            {summary}
+          </p>
+        </header>
 
-
-    <div class="weekly-article-body">
-      <p class="weekly-article-command">
-        &gt; ARTICLE BODY // PENDING
-      </p>
-
-      <p>
-        The complete article will appear inside this terminal
-        once the transmission has been written and connected.
-      </p>
-
-      <p>
-        The page route, metadata and article layout are already
-        active, so the final writing can later replace this
-        temporary section without changing the design.
-      </p>
-
-      <div class="weekly-article-ready">
-        <span
-          class="weekly-signal-dot"
-          aria-hidden="true"
-        ></span>
-
-        CONTENT SLOT READY
-      </div>
+        <div
+          class="weekly-article-body"
+          set:html={articleBody}
+        ></div>
+      </article>
     </div>
-  </article>
+  </div>
 </InternalPageLayout>

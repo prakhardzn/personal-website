@@ -662,3 +662,35 @@ body {
     overflow: visible;
   }
 }
+
+/* =========================================================
+   PORTAL 214 // SHARED INTERNAL NAVBAR REFINEMENT
+========================================================= */
+
+/* Keep all top-system controls visually identical on desktop. */
+@media (min-width: 781px) {
+  .internal-system-bar {
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .internal-system-actions {
+    align-items: center;
+    height: 56px;
+  }
+
+  .internal-icon-button {
+    width: 56px;
+    min-width: 56px;
+    height: 56px;
+    min-height: 56px;
+  }
+
+  .internal-system-message {
+    font-size: clamp(12px, 1.05vw, 18px);
+  }
+
+  .settings-dialog__warning {
+    font-size: var(--site-text-micro);
+  }
+}
