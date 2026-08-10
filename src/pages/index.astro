@@ -1,9 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/homepage.css";
-import "../styles/homepage-mobile.css";
 
 const baseUrl = import.meta.env.BASE_URL;
+
 const buildSiteUrl = (path: string): string =>
   `${baseUrl}${path.replace(/^\/+/, "")}`;
 
@@ -24,7 +24,6 @@ const aboutLayers = [
   ["about-planet-blink-overlay.png", "about-planet-layer--blink"],
   ["about-planet-debris.png", "about-planet-layer--debris"],
 ] as const;
-
 
 const astrologyLayers = [
   ["astrology-planet-glow.png", "astrology-planet-layer--glow"],
@@ -48,7 +47,10 @@ const libraryLayers = [
   ["library-planet-shadow.png", "library-planet-layer--shadow"],
 ] as const;
 
-const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
+const particleNumbers = Array.from(
+  { length: 12 },
+  (_, index) => index + 1
+);
 ---
 
 <BaseLayout
@@ -57,11 +59,6 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
 >
   <div class="site-shell" id="site-shell">
     <header class="system-bar">
-      <div class="mobile-brand" aria-label="Prakhar's universe">
-        <span class="mobile-brand__signal" aria-hidden="true">◉</span>
-        <span class="mobile-brand__name">PRAKHAR'S UNIVERSE</span>
-      </div>
-
       <button
         class="icon-button icon-button--back"
         type="button"
@@ -85,7 +82,9 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
           aria-pressed="false"
         >
           <span aria-hidden="true">Ⅱ</span>
-          <span class="visually-hidden" id="pause-label">Pause animations</span>
+          <span class="visually-hidden" id="pause-label">
+            Pause animations
+          </span>
         </button>
 
         <button
@@ -96,19 +95,24 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
           aria-pressed="false"
         >
           <span aria-hidden="true">⏻</span>
-          <span class="visually-hidden" id="power-label">Enter sleep mode</span>
+          <span class="visually-hidden" id="power-label">
+            Enter sleep mode
+          </span>
         </button>
       </div>
     </header>
 
-    <main class="planet-map">
-      <h1 class="visually-hidden">Explore Prakhar's universe</h1>
+    <div class="navigation-background-fade" aria-hidden="true"></div>
 
+    <main class="planet-map">
+      <h1 class="visually-hidden">
+        Explore Prakhar's universe
+      </h1>
+
+      <!-- BACKGROUND SPACE TRAFFIC -->
       <div class="background-traffic" aria-hidden="true">
         <span class="background-vehicle background-vehicle--ufo">
           <img
-            loading="lazy"
-            decoding="async"
             class="background-vehicle__image background-vehicle__image--ufo"
             src="/assets/background-elements/ufo.png"
             alt=""
@@ -118,8 +122,6 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
 
         <span class="background-vehicle background-vehicle--spaceship">
           <img
-            loading="lazy"
-            decoding="async"
             class="background-vehicle__image background-vehicle__image--spaceship"
             src="/assets/background-elements/spaceship.png"
             alt=""
@@ -128,316 +130,313 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
         </span>
       </div>
 
-      <nav class="planet-navigation" aria-label="Main website sections">
+      <nav
+        class="planet-navigation"
+        aria-label="Main website sections"
+      >
         <ul class="destination-list">
+          <!-- ABOUT -->
           <li class="destination destination--about">
-            <a class="planet-link" href={aboutUrl} aria-label="Open the About Me page">
+            <a
+              class="planet-link"
+              href={aboutUrl}
+              aria-label="Open the About Me page"
+            >
               <span
                 class="planet-artwork planet-artwork--layered planet-artwork--about"
                 aria-hidden="true"
               >
                 <span class="about-planet-motion">
-                  {aboutLayers.map(([file, layerClass]) => (
-                    <img
-                      loading="lazy"
-                      decoding="async"
-                      class={`about-planet-layer ${layerClass}`}
-                      src={planetAsset("about-me", file)}
-                      alt=""
-                      draggable="false"
-                    />
-                  ))}
+                  {
+                    aboutLayers.map(([file, layerClass]) => (
+                      <img
+                        class={`about-planet-layer ${layerClass}`}
+                        src={planetAsset("about-me", file)}
+                        alt=""
+                        draggable="false"
+                      />
+                    ))
+                  }
                 </span>
               </span>
-              <span class="planet-label">About Me</span>
+
+              <span class="planet-label">
+                About Me
+              </span>
             </a>
           </li>
 
+          <!-- WEEKLY -->
           <li class="destination destination--weekly">
-            <a class="planet-link" href={weeklyUrl} aria-label="Open the News Weekly page">
+            <a
+              class="planet-link"
+              href={weeklyUrl}
+              aria-label="Open the News Weekly page"
+            >
               <span
                 class="planet-artwork planet-artwork--layered planet-artwork--weekly"
                 aria-hidden="true"
               >
                 <span class="weekly-planet-motion">
+                  <!-- soft halo -->
                   <img
-                    loading="lazy"
-                    decoding="async"
                     class="weekly-planet-layer weekly-planet-layer--halo"
-                    src={planetAsset("weekly-planet", "weekly-planet-halo.png")}
+                    src={planetAsset(
+                      "weekly-planet",
+                      "weekly-planet-halo.png"
+                    )}
                     alt=""
                     draggable="false"
                   />
 
-                  <!-- Stable planet body and architecture. -->
+                  <!-- fixed planet / ruins -->
                   <img
-                    loading="lazy"
-                    decoding="async"
                     class="weekly-planet-layer weekly-planet-layer--base"
-                    src={planetAsset("weekly-planet", "weekly-planet-base.png")}
+                    src={planetAsset(
+                      "weekly-planet",
+                      "weekly-planet-base.png"
+                    )}
                     alt=""
                     draggable="false"
                   />
 
                   <!--
-                    Derived transparent overlay containing only the outer purple current.
-                    It rotates around the planet centre while the structures stay fixed.
+                    PURPLE OUTER ATMOSPHERE
+
+                    The optional duplicate purple overlay was removed here.
+                    The visible purple atmosphere is already present in the
+                    stable Weekly base artwork. Keeping the missing overlay
+                    references caused Chrome to draw large broken-image boxes.
                   -->
-                  <span class="weekly-purple-system" aria-hidden="true">
-                    <img
-                      loading="lazy"
-                      decoding="async"
-                      class="weekly-planet-layer weekly-planet-layer--purple-orbit"
-                      src={planetAsset("weekly-planet", "weekly-purple-orbit.png")}
-                      alt=""
-                      draggable="false"
-                    />
-                  </span>
 
                   <!--
-                    Derived transparent green whirlpool overlay.
-                    The full current and inner current rotate around the REAL vortex centre.
+                    GREEN VORTEX
+
+                    IMPORTANT:
+                    These layers reuse the actual visible Weekly base artwork.
+                    CSS clips them tightly around the bright green centre.
+                    That means the GREEN TEXTURE ITSELF moves, while the
+                    purple planet body, ruins and outer atmosphere stay fixed.
                   -->
-                  <span class="weekly-vortex-system" aria-hidden="true">
+                  <span
+                    class="weekly-vortex-system"
+                    aria-hidden="true"
+                  >
                     <img
-                      loading="lazy"
-                      decoding="async"
-                      class="weekly-planet-layer weekly-planet-layer--green-whirlpool weekly-planet-layer--green-whirlpool-main"
-                      src={planetAsset("weekly-planet", "weekly-green-whirlpool.png")}
+                      class="weekly-planet-layer weekly-planet-layer--green-vortex weekly-planet-layer--green-vortex-outer"
+                      src={planetAsset(
+                        "weekly-planet",
+                        "weekly-planet-base.png"
+                      )}
                       alt=""
                       draggable="false"
                     />
 
                     <img
-                      loading="lazy"
-                      decoding="async"
-                      class="weekly-planet-layer weekly-planet-layer--green-whirlpool weekly-planet-layer--green-whirlpool-inner"
-                      src={planetAsset("weekly-planet", "weekly-green-whirlpool.png")}
+                      class="weekly-planet-layer weekly-planet-layer--green-vortex weekly-planet-layer--green-vortex-inner"
+                      src={planetAsset(
+                        "weekly-planet",
+                        "weekly-planet-base.png"
+                      )}
                       alt=""
                       draggable="false"
                     />
 
                     <img
-                      loading="lazy"
-                      decoding="async"
                       class="weekly-planet-layer weekly-planet-layer--vortex-core"
-                      src={planetAsset("weekly-planet", "weekly-planet-vortex-core.png")}
+                      src={planetAsset(
+                        "weekly-planet",
+                        "weekly-planet-vortex-core.png"
+                      )}
                       alt=""
                       draggable="false"
                     />
                   </span>
 
-                  <!--
-                    A derived foreground mask redraws the central stone structures above
-                    the moving liquid so the whirlpool can slide underneath them.
-                  -->
+                  <!-- stable stone highlights -->
                   <img
-                    loading="lazy"
-                    decoding="async"
-                    class="weekly-planet-layer weekly-planet-layer--structures-foreground"
-                    src={planetAsset("weekly-planet", "weekly-structures-foreground.png")}
-                    alt=""
-                    draggable="false"
-                  />
-
-                  <!-- Structures and debris remain visually anchored above the moving currents. -->
-                  <img
-                    loading="lazy"
-                    decoding="async"
                     class="weekly-planet-layer weekly-planet-layer--stone"
-                    src={planetAsset("weekly-planet", "weekly-planet-stone-glint.png")}
+                    src={planetAsset(
+                      "weekly-planet",
+                      "weekly-planet-stone-glint.png"
+                    )}
                     alt=""
                     draggable="false"
                   />
 
+                  <!-- loose debris only drifts slightly -->
                   <img
-                    loading="lazy"
-                    decoding="async"
                     class="weekly-planet-layer weekly-planet-layer--detached"
-                    src={planetAsset("weekly-planet", "weekly-planet-detached.png")}
+                    src={planetAsset(
+                      "weekly-planet",
+                      "weekly-planet-detached.png"
+                    )}
                     alt=""
                     draggable="false"
                   />
 
                   <img
-                    loading="lazy"
-                    decoding="async"
                     class="weekly-planet-layer weekly-planet-layer--shadow"
-                    src={planetAsset("weekly-planet", "weekly-planet-shadow.png")}
+                    src={planetAsset(
+                      "weekly-planet",
+                      "weekly-planet-shadow.png"
+                    )}
                     alt=""
                     draggable="false"
                   />
                 </span>
               </span>
-              <span class="planet-label">News Weekly</span>
+
+              <span class="planet-label">
+                News Weekly
+              </span>
             </a>
           </li>
 
+          <!-- ASTROLOGY -->
           <li class="destination destination--astrology">
-            <a class="planet-link" href={astrologyUrl} aria-label="Open the Astrology page">
+            <a
+              class="planet-link"
+              href={astrologyUrl}
+              aria-label="Open the Astrology page"
+            >
               <span
                 class="planet-artwork planet-artwork--layered planet-artwork--astrology"
                 aria-hidden="true"
               >
                 <span class="astrology-planet-motion">
-                  {astrologyLayers.map(([file, layerClass]) => (
-                    <img
-                      loading="lazy"
-                      decoding="async"
-                      class={`astrology-planet-layer ${layerClass}`}
-                      src={planetAsset("astrology-planet", file)}
-                      alt=""
-                      draggable="false"
-                    />
-                  ))}
+                  {
+                    astrologyLayers.map(
+                      ([file, layerClass]) => (
+                        <img
+                          class={`astrology-planet-layer ${layerClass}`}
+                          src={planetAsset(
+                            "astrology-planet",
+                            file
+                          )}
+                          alt=""
+                          draggable="false"
+                        />
+                      )
+                    )
+                  }
                 </span>
               </span>
-              <span class="planet-label">Astrology</span>
+
+              <span class="planet-label">
+                Astrology
+              </span>
             </a>
           </li>
 
+          <!-- LIBRARIES -->
           <li class="destination destination--libraries">
-            <a class="planet-link" href={librariesUrl} aria-label="Open the Libraries page">
+            <a
+              class="planet-link"
+              href={librariesUrl}
+              aria-label="Open the Libraries page"
+            >
               <span
                 class="planet-artwork planet-artwork--layered planet-artwork--libraries"
                 aria-hidden="true"
               >
                 <span class="library-planet-motion">
-                  {libraryLayers.slice(0, 2).map(([file, layerClass]) => (
-                    <img
-                      loading="lazy"
-                      decoding="async"
-                      class={`library-planet-layer ${layerClass}`}
-                      src={planetAsset("library-planet", file)}
-                      alt=""
-                      draggable="false"
-                    />
-                  ))}
+                  {
+                    libraryLayers
+                      .slice(0, 2)
+                      .map(([file, layerClass]) => (
+                        <img
+                          class={`library-planet-layer ${layerClass}`}
+                          src={planetAsset(
+                            "library-planet",
+                            file
+                          )}
+                          alt=""
+                          draggable="false"
+                        />
+                      ))
+                  }
 
-                  <span class="library-planet-layer library-planet-layer--scan"></span>
+                  <span
+                    class="library-planet-layer library-planet-layer--scan"
+                  ></span>
 
-                  {libraryLayers.slice(2, 6).map(([file, layerClass]) => (
-                    <img
-                      loading="lazy"
-                      decoding="async"
-                      class={`library-planet-layer ${layerClass}`}
-                      src={planetAsset("library-planet", file)}
-                      alt=""
-                      draggable="false"
-                    />
-                  ))}
+                  {
+                    libraryLayers
+                      .slice(2, 6)
+                      .map(([file, layerClass]) => (
+                        <img
+                          class={`library-planet-layer ${layerClass}`}
+                          src={planetAsset(
+                            "library-planet",
+                            file
+                          )}
+                          alt=""
+                          draggable="false"
+                        />
+                      ))
+                  }
 
-                  <span class="library-portal-ring library-portal-ring--one"></span>
-                  <span class="library-portal-ring library-portal-ring--two"></span>
-                  <span class="library-portal-ring library-portal-ring--three"></span>
-                  <span class="library-planet-layer library-reel-highlight"></span>
-                  <span class="library-planet-layer library-lens-highlight"></span>
-                  <span class="library-planet-layer library-lower-mechanism-highlight"></span>
+                  <span
+                    class="library-portal-ring library-portal-ring--one"
+                  ></span>
+
+                  <span
+                    class="library-portal-ring library-portal-ring--two"
+                  ></span>
+
+                  <span
+                    class="library-portal-ring library-portal-ring--three"
+                  ></span>
+
+                  <span
+                    class="library-planet-layer library-reel-highlight"
+                  ></span>
+
+                  <span
+                    class="library-planet-layer library-lens-highlight"
+                  ></span>
+
+                  <span
+                    class="library-planet-layer library-lower-mechanism-highlight"
+                  ></span>
 
                   <img
-                    loading="lazy"
-                    decoding="async"
                     class="library-planet-layer library-planet-layer--shadow"
-                    src={planetAsset("library-planet", "library-planet-shadow.png")}
+                    src={planetAsset(
+                      "library-planet",
+                      "library-planet-shadow.png"
+                    )}
                     alt=""
                     draggable="false"
                   />
 
                   <span class="library-portal-particles">
-                    {particleNumbers.map((number) => (
-                      <span class={`library-portal-particle library-portal-particle--${number}`}></span>
-                    ))}
+                    {
+                      particleNumbers.map((number) => (
+                        <span
+                          class={`library-portal-particle library-portal-particle--${number}`}
+                        ></span>
+                      ))
+                    }
                   </span>
                 </span>
               </span>
-              <span class="planet-label">Libraries</span>
+
+              <span class="planet-label">
+                Libraries
+              </span>
             </a>
           </li>
         </ul>
       </nav>
-
-      <section class="mobile-home-directory" aria-labelledby="mobile-directory-title">
-        <div class="mobile-directory__orbit" aria-hidden="true"></div>
-
-        <header class="mobile-directory__header">
-          <p>PORTABLE UNIVERSE // NAVIGATION NODE</p>
-          <h2 id="mobile-directory-title">ORBITAL DIRECTORY</h2>
-        </header>
-
-        <nav class="mobile-directory__nav" aria-label="Mobile website sections">
-          <a class="mobile-destination mobile-destination--about" href={aboutUrl}>
-            <span class="mobile-destination__planet" aria-hidden="true">
-              <img
-                src={planetAsset("about-me", "about-planet-base.png")}
-                alt=""
-                loading="eager"
-                decoding="async"
-                draggable="false"
-              />
-            </span>
-            <span class="mobile-destination__copy">
-              <span class="mobile-destination__meta">USER FILE // 001</span>
-              <strong>ABOUT ME</strong>
-            </span>
-            <span class="mobile-destination__arrow" aria-hidden="true">›</span>
-          </a>
-
-          <a class="mobile-destination mobile-destination--weekly" href={weeklyUrl}>
-            <span class="mobile-destination__planet" aria-hidden="true">
-              <img
-                src={planetAsset("weekly-planet", "weekly-planet-base.png")}
-                alt=""
-                loading="eager"
-                decoding="async"
-                draggable="false"
-              />
-            </span>
-            <span class="mobile-destination__copy">
-              <span class="mobile-destination__meta">TRANSMISSION // 002</span>
-              <strong>NEWS WEEKLY</strong>
-            </span>
-            <span class="mobile-destination__arrow" aria-hidden="true">›</span>
-          </a>
-
-          <a class="mobile-destination mobile-destination--astrology" href={astrologyUrl}>
-            <span class="mobile-destination__planet" aria-hidden="true">
-              <img
-                src={planetAsset("astrology-planet", "astrology-planet-base.png")}
-                alt=""
-                loading="eager"
-                decoding="async"
-                draggable="false"
-              />
-            </span>
-            <span class="mobile-destination__copy">
-              <span class="mobile-destination__meta">CELESTIAL FILE // 003</span>
-              <strong>ASTROLOGY</strong>
-            </span>
-            <span class="mobile-destination__arrow" aria-hidden="true">›</span>
-          </a>
-
-          <a class="mobile-destination mobile-destination--libraries" href={librariesUrl}>
-            <span class="mobile-destination__planet" aria-hidden="true">
-              <img
-                src={planetAsset("library-planet", "library-planet-base.png")}
-                alt=""
-                loading="eager"
-                decoding="async"
-                draggable="false"
-              />
-            </span>
-            <span class="mobile-destination__copy">
-              <span class="mobile-destination__meta">ARCHIVE NODE // 004</span>
-              <strong>LIBRARIES</strong>
-            </span>
-            <span class="mobile-destination__arrow" aria-hidden="true">›</span>
-          </a>
-        </nav>
-      </section>
     </main>
 
     <footer class="bottom-dock">
-      <section class="system-status" aria-label="Visitor system information">
+      <section
+        class="system-status"
+        aria-label="Visitor system information"
+      >
         <p class="status-row status-row--time">
           <span class="status-label">TIME:</span>
           <time id="current-time">--:--</time>
@@ -445,110 +444,175 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
 
         <p class="status-row">
           <span class="status-label">COORD:</span>
-          <span id="current-coordinates">LOCATING...</span>
+          <span id="current-coordinates">
+            LOCATING...
+          </span>
         </p>
 
-        <p class="visually-hidden" id="location-status" aria-live="polite">
+        <p
+          class="visually-hidden"
+          id="location-status"
+          aria-live="polite"
+        >
           Waiting for location access.
         </p>
       </section>
 
-      <section class="dock-actions" aria-label="Additional website controls">
-        <button class="dock-card" type="button" data-panel="info">
+      <section
+        class="dock-actions"
+        aria-label="Additional website controls"
+      >
+        <button
+          class="dock-card"
+          type="button"
+          data-panel="info"
+        >
           <span class="dock-card__inner">
-            <span class="dock-card__icon" aria-hidden="true">
+            <span
+              class="dock-card__icon"
+              aria-hidden="true"
+            >
               <svg viewBox="0 0 48 48">
-                <circle cx="24" cy="24" r="18" />
-                <circle class="dock-card__icon-fill" cx="24" cy="15" r="2" />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="18"
+                />
+
+                <circle
+                  class="dock-card__icon-fill"
+                  cx="24"
+                  cy="15"
+                  r="2"
+                />
+
                 <path d="M24 22V34" />
               </svg>
             </span>
+
             <span class="dock-card__copy">
-              <span class="dock-card__title">Info</span>
-              <span class="dock-card__description">About this realm</span>
+              <span class="dock-card__title">
+                Info
+              </span>
+
+              <span class="dock-card__description">
+                About this realm
+              </span>
             </span>
           </span>
         </button>
 
-        <button class="dock-card" type="button" data-panel="sitemap">
+        <button
+          class="dock-card"
+          type="button"
+          data-panel="sitemap"
+        >
           <span class="dock-card__inner">
-            <span class="dock-card__icon" aria-hidden="true">
+            <span
+              class="dock-card__icon"
+              aria-hidden="true"
+            >
               <svg viewBox="0 0 48 48">
-                <path d="M5 10 17 5 31 11 43 6V38L31 43 17 37 5 42Z" />
-                <path d="M17 5V37M31 11V43" />
+                <path
+                  d="M5 10 17 5 31 11 43 6V38L31 43 17 37 5 42Z"
+                />
+
+                <path
+                  d="M17 5V37M31 11V43"
+                />
               </svg>
             </span>
+
             <span class="dock-card__copy">
-              <span class="dock-card__title">Sitemap</span>
-              <span class="dock-card__description">Navigate all</span>
+              <span class="dock-card__title">
+                Sitemap
+              </span>
+
+              <span class="dock-card__description">
+                Navigate all
+              </span>
             </span>
           </span>
         </button>
 
-        <button class="dock-card" type="button" data-panel="credits">
+        <button
+          class="dock-card"
+          type="button"
+          data-panel="credits"
+        >
           <span class="dock-card__inner">
-            <span class="dock-card__icon" aria-hidden="true">
+            <span
+              class="dock-card__icon"
+              aria-hidden="true"
+            >
               <svg viewBox="0 0 48 48">
-                <path d="M24 4 30 17 44 19 34 29 36 43 24 36 12 43 14 29 4 19 18 17Z" />
+                <path
+                  d="M24 4 30 17 44 19 34 29 36 43 24 36 12 43 14 29 4 19 18 17Z"
+                />
               </svg>
             </span>
+
             <span class="dock-card__copy">
-              <span class="dock-card__title">Credits</span>
-              <span class="dock-card__description">Thanks and magic</span>
+              <span class="dock-card__title">
+                Credits
+              </span>
+
+              <span class="dock-card__description">
+                Thanks and magic
+              </span>
             </span>
           </span>
         </button>
 
-        <button class="dock-card" type="button" data-panel="links">
+        <button
+          class="dock-card"
+          type="button"
+          data-panel="links"
+        >
           <span class="dock-card__inner">
-            <span class="dock-card__icon" aria-hidden="true">
+            <span
+              class="dock-card__icon"
+              aria-hidden="true"
+            >
               <svg viewBox="0 0 48 48">
-                <path d="M20 30 15 35C11 39 5 39 2 35-1 32 0 26 4 22L11 15C15 11 21 11 24 15" />
-                <path d="M28 18 33 13C37 9 43 9 46 13 49 16 48 22 44 26L37 33C33 37 27 37 24 33" />
-                <path d="M16 32 32 16" />
+                <path
+                  d="M20 30 15 35C11 39 5 39 2 35-1 32 0 26 4 22L11 15C15 11 21 11 24 15"
+                />
+
+                <path
+                  d="M28 18 33 13C37 9 43 9 46 13 49 16 48 22 44 26L37 33C33 37 27 37 24 33"
+                />
+
+                <path
+                  d="M16 32 32 16"
+                />
               </svg>
             </span>
+
             <span class="dock-card__copy">
-              <span class="dock-card__title">Links</span>
-              <span class="dock-card__description">Connect outwards</span>
+              <span class="dock-card__title">
+                Links
+              </span>
+
+              <span class="dock-card__description">
+                Connect outwards
+              </span>
             </span>
           </span>
         </button>
       </section>
     </footer>
 
-    <section class="mobile-home-panels" aria-label="Mobile homepage updates">
-      <article class="mobile-feed-panel mobile-feed-panel--latest">
-        <header class="mobile-feed-panel__bar">
-          <span>LATEST TRANSMISSION</span>
-          <span aria-hidden="true">⌁</span>
-        </header>
-
-        <div class="mobile-feed-panel__body">
-          <p class="mobile-feed-panel__stamp">WEEKLY ARCHIVE // SIGNAL RECEIVED</p>
-          <h2>STORIES FROM MY WEEK</h2>
-          <p>Discoveries, breakdowns and things that survived long enough to become files.</p>
-          <a href={weeklyUrl}>OPEN ARCHIVE <span aria-hidden="true">→</span></a>
-        </div>
-      </article>
-
-      <article class="mobile-feed-panel mobile-feed-panel--log">
-        <header class="mobile-feed-panel__bar">
-          <span>SYSTEM LOG</span>
-          <span aria-hidden="true">≡</span>
-        </header>
-
-        <div class="mobile-system-log">
-          <p><span>MOBILE</span><strong>PORTABLE TERMINAL ONLINE</strong></p>
-          <p><span>ASTRO</span><strong>CELESTIAL INDEX CONNECTED</strong></p>
-          <p><span>WORK</span><strong>PROJECT ARCHIVE SYNCED</strong></p>
-        </div>
-      </article>
-    </section>
-
-    <dialog class="information-panel" id="information-panel" aria-labelledby="panel-title">
+    <dialog
+      class="information-panel"
+      id="information-panel"
+      aria-labelledby="panel-title"
+    >
       <header class="information-panel__header">
-        <h2 id="panel-title">Information</h2>
+        <h2 id="panel-title">
+          Information
+        </h2>
+
         <button
           class="information-panel__close"
           id="close-information-panel"
@@ -560,58 +624,239 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
       </header>
 
       <div class="information-panel__content">
-        <section class="information-panel__section" data-panel-content="info">
-          <p data-panel-line>This is Prakhar's personal corner of the universe.</p>
+        <section
+          class="information-panel__section"
+          data-panel-content="info"
+        >
           <p data-panel-line>
-            Each planet leads to a different collection of work, discoveries and questionable transmissions.
+            This is Prakhar's personal corner of the universe.
+          </p>
+
+          <p data-panel-line>
+            Each planet leads to a different collection of work,
+            discoveries and questionable transmissions.
           </p>
         </section>
 
-        <section class="information-panel__section" data-panel-content="sitemap" hidden>
-          <p class="information-panel__command" data-panel-line>
+        <section
+          class="information-panel__section"
+          data-panel-content="sitemap"
+          hidden
+        >
+          <p
+            class="information-panel__command"
+            data-panel-line
+          >
             DIRECTORY INDEX // SELECT DESTINATION
           </p>
+
           <nav aria-label="Website sitemap">
             <ul>
-              <li><a href={homeUrl} data-panel-line>Home</a></li>
-              <li><a href={aboutUrl} data-panel-line>About Me</a></li>
-              <li><a href={weeklyUrl} data-panel-line>News Weekly</a></li>
-              <li><a href={astrologyUrl} data-panel-line>Astrology</a></li>
-              <li><a href={librariesUrl} data-panel-line>Libraries</a></li>
+              <li>
+                <a
+                  href={homeUrl}
+                  data-panel-line
+                >
+                  Home
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href={aboutUrl}
+                  data-panel-line
+                >
+                  About Me
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href={weeklyUrl}
+                  data-panel-line
+                >
+                  News Weekly
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href={astrologyUrl}
+                  data-panel-line
+                >
+                  Astrology
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href={librariesUrl}
+                  data-panel-line
+                >
+                  Libraries
+                </a>
+              </li>
             </ul>
           </nav>
         </section>
 
-        <section class="information-panel__section" data-panel-content="credits" hidden>
-          <p class="information-panel__command" data-panel-line>
+        <section
+          class="information-panel__section"
+          data-panel-content="credits"
+          hidden
+        >
+          <p
+            class="information-panel__command"
+            data-panel-line
+          >
             TRANSMISSION CREDITS // VERIFIED
           </p>
-          <p data-panel-line>Designed and developed by Prakhar Pandey.</p>
-          <p data-panel-line>Built using Astro.</p>
-          <p data-panel-line>Visual assets and illustrations by Prakhar Pandey.</p>
+
+          <p data-panel-line>
+            Designed and developed by Prakhar Pandey.
+          </p>
+
+          <p data-panel-line>
+            Built using Astro.
+          </p>
+
+          <p data-panel-line>
+            Visual assets and illustrations by Prakhar Pandey.
+          </p>
         </section>
 
-        <section class="information-panel__section" data-panel-content="links" hidden>
-          <p class="information-panel__command" data-panel-line>
+        <section
+          class="information-panel__section"
+          data-panel-content="links"
+          hidden
+        >
+          <p
+            class="information-panel__command"
+            data-panel-line
+          >
             EXTERNAL SIGNALS // CONNECTIONS AVAILABLE
           </p>
+
           <ul>
-            <li><a href="mailto:prakharpandey2027@gmail.com" data-panel-line>Email</a></li>
-            <li><a href="#" target="_blank" rel="noreferrer" data-panel-line>Instagram</a></li>
-            <li><a href="#" target="_blank" rel="noreferrer" data-panel-line>LinkedIn</a></li>
-            <li><a href="#" target="_blank" rel="noreferrer" data-panel-line>GitHub</a></li>
-            <li><a href="#" target="_blank" rel="noreferrer" data-panel-line>YouTube</a></li>
+            <li>
+              <a
+                href="mailto:prakharpandey2027@gmail.com"
+                data-panel-line
+              >
+                Email
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#"
+                target="_blank"
+                rel="noreferrer"
+                data-panel-line
+              >
+                Instagram
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#"
+                target="_blank"
+                rel="noreferrer"
+                data-panel-line
+              >
+                LinkedIn
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#"
+                target="_blank"
+                rel="noreferrer"
+                data-panel-line
+              >
+                GitHub
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#"
+                target="_blank"
+                rel="noreferrer"
+                data-panel-line
+              >
+                YouTube
+              </a>
+            </li>
           </ul>
         </section>
       </div>
     </dialog>
 
-    <div class="system-toast" id="system-toast" role="status" aria-live="polite" hidden></div>
+    <div
+      class="system-toast"
+      id="system-toast"
+      role="status"
+      aria-live="polite"
+      hidden
+    ></div>
   </div>
 </BaseLayout>
 
 <script>
-  type PanelName = "info" | "sitemap" | "credits" | "links";
+  import { navigate } from "astro:transitions/client";
+
+  /*
+   * PLANET IMAGE SAFETY GUARD
+   *
+   * Layered planets use many transparent PNG files. If one optional PNG
+   * is missing, Chromium normally paints a large broken-image rectangle
+   * using the dimensions/transforms of that layer.
+   *
+   * Any failed planet image is hidden immediately. Valid images are left
+   * completely untouched.
+   */
+  const initialisePlanetImageSafety = (): void => {
+    const planetImages =
+      document.querySelectorAll<HTMLImageElement>(
+        ".planet-artwork img"
+      );
+
+    planetImages.forEach((image) => {
+      const hideIfBroken = (): void => {
+        if (image.complete && image.naturalWidth === 0) {
+          image.style.setProperty("display", "none", "important");
+          image.setAttribute("data-broken-planet-layer", "true");
+        }
+      };
+
+      hideIfBroken();
+
+      image.addEventListener(
+        "error",
+        () => {
+          image.style.setProperty("display", "none", "important");
+          image.setAttribute("data-broken-planet-layer", "true");
+        },
+        { once: true }
+      );
+    });
+  };
+
+  initialisePlanetImageSafety();
+
+  document.addEventListener(
+    "astro:page-load",
+    initialisePlanetImageSafety
+  );
+
+  type PanelName =
+    | "info"
+    | "sitemap"
+    | "credits"
+    | "links";
 
   const panelTitles: Record<PanelName, string> = {
     info: "Info",
@@ -620,46 +865,49 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
     links: "Links",
   };
 
-  const timeElement = document.querySelector<HTMLTimeElement>("#current-time");
-  const coordinatesElement = document.querySelector<HTMLSpanElement>("#current-coordinates");
-  const locationStatusElement = document.querySelector<HTMLParagraphElement>("#location-status");
-  const systemToast = document.querySelector<HTMLDivElement>("#system-toast");
-  const pauseButton = document.querySelector<HTMLButtonElement>("#pause-button");
-  const pauseLabel = document.querySelector<HTMLSpanElement>("#pause-label");
-  const powerButton = document.querySelector<HTMLButtonElement>("#power-button");
-  const powerLabel = document.querySelector<HTMLSpanElement>("#power-label");
-  const informationPanel = document.querySelector<HTMLDialogElement>("#information-panel");
-  const panelTitle = document.querySelector<HTMLHeadingElement>("#panel-title");
-  const panelButtons = document.querySelectorAll<HTMLButtonElement>("[data-panel]");
-  const panelSections = Array.from(document.querySelectorAll<HTMLElement>("[data-panel-content]"));
-  const animatedPanelLines = Array.from(document.querySelectorAll<HTMLElement>("[data-panel-line]"));
-  const closeInformationButton = document.querySelector<HTMLButtonElement>("#close-information-panel");
-
-  let toastTimer: number | undefined;
-  let panelAnimationSequence = 0;
-
   const wait = (duration: number): Promise<void> =>
     new Promise((resolve) => window.setTimeout(resolve, duration));
 
-  const updateVisitorTime = (): void => {
-    if (!timeElement) return;
-    const now = new Date();
-    timeElement.textContent = new Intl.DateTimeFormat(undefined, {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }).format(now);
-    timeElement.dateTime = now.toISOString();
-  };
+  const reducedMotionQuery = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  );
+
+  let timeInterval: number | undefined;
+  let toastTimer: number | undefined;
+  let panelAnimationSequence = 0;
 
   const formatCoordinate = (
     coordinate: number,
     positiveDirection: string,
     negativeDirection: string
   ): string =>
-    `${Math.abs(coordinate).toFixed(4)}° ${coordinate >= 0 ? positiveDirection : negativeDirection}`;
+    `${Math.abs(coordinate).toFixed(4)}° ${
+      coordinate >= 0 ? positiveDirection : negativeDirection
+    }`;
+
+  const updateVisitorTime = (): void => {
+    const timeElement =
+      document.querySelector<HTMLTimeElement>("#current-time");
+
+    if (!timeElement) return;
+
+    const now = new Date();
+
+    timeElement.textContent = new Intl.DateTimeFormat(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(now);
+
+    timeElement.dateTime = now.toISOString();
+  };
 
   const showVisitorLocation = (): void => {
+    const coordinatesElement =
+      document.querySelector<HTMLSpanElement>("#current-coordinates");
+    const locationStatusElement =
+      document.querySelector<HTMLParagraphElement>("#location-status");
+
     if (!coordinatesElement || !locationStatusElement) return;
 
     if (!("geolocation" in navigator)) {
@@ -670,24 +918,46 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
 
     navigator.geolocation.getCurrentPosition(
       (position: GeolocationPosition) => {
-        const latitude = formatCoordinate(position.coords.latitude, "N", "S");
-        const longitude = formatCoordinate(position.coords.longitude, "E", "W");
+        const latitude = formatCoordinate(
+          position.coords.latitude,
+          "N",
+          "S"
+        );
+        const longitude = formatCoordinate(
+          position.coords.longitude,
+          "E",
+          "W"
+        );
+
         coordinatesElement.textContent = `${latitude}, ${longitude}`;
         locationStatusElement.textContent = "Location signal acquired.";
       },
       () => {
         coordinatesElement.textContent = "ACCESS UNAVAILABLE";
-        locationStatusElement.textContent = "Location permission was unavailable.";
+        locationStatusElement.textContent =
+          "Location permission was unavailable.";
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000,
+      }
     );
   };
 
   const showSystemMessage = (message: string): void => {
+    const systemToast =
+      document.querySelector<HTMLDivElement>("#system-toast");
+
     if (!systemToast) return;
-    if (toastTimer !== undefined) window.clearTimeout(toastTimer);
+
+    if (toastTimer !== undefined) {
+      window.clearTimeout(toastTimer);
+    }
+
     systemToast.textContent = message;
     systemToast.hidden = false;
+
     toastTimer = window.setTimeout(() => {
       systemToast.hidden = true;
       systemToast.textContent = "";
@@ -695,13 +965,13 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
     }, 3000);
   };
 
-
-  const isPanelName = (value: string | undefined): value is PanelName =>
-    value === "info" || value === "sitemap" || value === "credits" || value === "links";
-
-  animatedPanelLines.forEach((line) => {
-    line.dataset.panelOriginal = line.textContent?.replace(/\s+/g, " ").trim() ?? "";
-  });
+  const isPanelName = (
+    value: string | undefined
+  ): value is PanelName =>
+    value === "info" ||
+    value === "sitemap" ||
+    value === "credits" ||
+    value === "links";
 
   const restoreAnimatedLine = (line: HTMLElement): void => {
     line.textContent = line.dataset.panelOriginal ?? "";
@@ -711,16 +981,30 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
 
   const cancelPanelAnimation = (): void => {
     panelAnimationSequence += 1;
-    animatedPanelLines.forEach(restoreAnimatedLine);
+
+    document
+      .querySelectorAll<HTMLElement>("[data-panel-line]")
+      .forEach(restoreAnimatedLine);
   };
 
-  const preparePanelLines = (section: HTMLElement): HTMLElement[] => {
-    const lines = Array.from(section.querySelectorAll<HTMLElement>("[data-panel-line]"));
+  const preparePanelLines = (
+    section: HTMLElement
+  ): HTMLElement[] => {
+    const lines = Array.from(
+      section.querySelectorAll<HTMLElement>("[data-panel-line]")
+    );
+
     lines.forEach((line) => {
+      if (!line.dataset.panelOriginal) {
+        line.dataset.panelOriginal =
+          line.textContent?.replace(/\s+/g, " ").trim() ?? "";
+      }
+
       line.textContent = "";
       line.style.visibility = "hidden";
       line.classList.remove("is-typing");
     });
+
     return lines;
   };
 
@@ -731,16 +1015,30 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
     return 28;
   };
 
-  const typePanelLine = async (line: HTMLElement, sequence: number): Promise<boolean> => {
+  const typePanelLine = async (
+    line: HTMLElement,
+    sequence: number,
+    informationPanel: HTMLDialogElement
+  ): Promise<boolean> => {
     const originalText = line.dataset.panelOriginal ?? "";
+
     line.style.visibility = "visible";
     line.classList.add("is-typing");
 
+    if (reducedMotionQuery.matches) {
+      restoreAnimatedLine(line);
+      return true;
+    }
+
     for (let index = 0; index < originalText.length; index += 1) {
-      if (sequence !== panelAnimationSequence || !informationPanel?.open) {
+      if (
+        sequence !== panelAnimationSequence ||
+        !informationPanel.open
+      ) {
         restoreAnimatedLine(line);
         return false;
       }
+
       line.textContent = originalText.slice(0, index + 1);
       await wait(getTypingDelay(originalText[index]));
     }
@@ -751,81 +1049,261 @@ const particleNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
 
   const animatePanelLines = async (
     sequence: number,
-    lines: HTMLElement[]
+    lines: HTMLElement[],
+    informationPanel: HTMLDialogElement
   ): Promise<void> => {
     await wait(120);
-    if (sequence !== panelAnimationSequence || !informationPanel?.open) return;
+
+    if (
+      sequence !== panelAnimationSequence ||
+      !informationPanel.open
+    ) {
+      return;
+    }
 
     for (const line of lines) {
-      if (!(await typePanelLine(line, sequence))) return;
+      const finished = await typePanelLine(
+        line,
+        sequence,
+        informationPanel
+      );
+
+      if (!finished) return;
       await wait(90);
     }
   };
 
-  const openInformationPanel = (panelName: PanelName): void => {
-    if (!informationPanel || !panelTitle) return;
+  const initialisePlanetNavigation = (): void => {
+    const shell = document.querySelector<HTMLElement>("#site-shell");
 
-    cancelPanelAnimation();
-    panelTitle.textContent = panelTitles[panelName];
+    if (!shell) return;
 
-    const activeSection = panelSections.find((section) => {
-      const isActive = section.dataset.panelContent === panelName;
-      section.hidden = !isActive;
-      return isActive;
+    const planetLinks =
+      document.querySelectorAll<HTMLAnchorElement>(".planet-link");
+
+    planetLinks.forEach((link) => {
+      if (link.dataset.transitionBound === "true") return;
+      link.dataset.transitionBound = "true";
+
+      link.addEventListener("click", async (event: MouseEvent) => {
+        if (
+          event.defaultPrevented ||
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+
+        if (shell.classList.contains("is-navigating")) return;
+
+        shell.classList.add("is-navigating");
+        link.classList.add("is-entering");
+
+        if (reducedMotionQuery.matches) {
+          navigate(link.href, {
+            sourceElement: link,
+            info: { curtainAlreadyClosed: true },
+          });
+          return;
+        }
+
+        await wait(300);
+        document.documentElement.classList.add(
+          "site-transition-closing"
+        );
+
+        await wait(220);
+        navigate(link.href, {
+          sourceElement: link,
+          info: { curtainAlreadyClosed: true },
+        });
+      });
     });
-
-    if (!activeSection) return;
-    const activeLines = preparePanelLines(activeSection);
-
-    if (!informationPanel.open) informationPanel.showModal();
-    activeSection.classList.remove("is-panel-entering");
-    void activeSection.offsetWidth;
-    activeSection.classList.add("is-panel-entering");
-
-    void animatePanelLines(panelAnimationSequence, activeLines);
   };
 
-  const closeInformationPanel = (): void => {
-    cancelPanelAnimation();
-    informationPanel?.close();
+  const initialiseHomepage = (): void => {
+    const shell = document.querySelector<HTMLElement>("#site-shell");
+
+    if (!shell) return;
+
+    updateVisitorTime();
+    showVisitorLocation();
+    initialisePlanetNavigation();
+
+    if (timeInterval !== undefined) {
+      window.clearInterval(timeInterval);
+    }
+
+    timeInterval = window.setInterval(updateVisitorTime, 30000);
+
+    const pauseButton =
+      document.querySelector<HTMLButtonElement>("#pause-button");
+    const pauseLabel =
+      document.querySelector<HTMLSpanElement>("#pause-label");
+    const powerButton =
+      document.querySelector<HTMLButtonElement>("#power-button");
+    const powerLabel =
+      document.querySelector<HTMLSpanElement>("#power-label");
+    const informationPanel =
+      document.querySelector<HTMLDialogElement>("#information-panel");
+    const panelTitle =
+      document.querySelector<HTMLHeadingElement>("#panel-title");
+    const closeInformationButton =
+      document.querySelector<HTMLButtonElement>(
+        "#close-information-panel"
+      );
+
+    document
+      .querySelectorAll<HTMLElement>("[data-panel-line]")
+      .forEach((line) => {
+        if (!line.dataset.panelOriginal) {
+          line.dataset.panelOriginal =
+            line.textContent?.replace(/\s+/g, " ").trim() ?? "";
+        }
+      });
+
+    if (pauseButton && pauseButton.dataset.bound !== "true") {
+      pauseButton.dataset.bound = "true";
+      pauseButton.addEventListener("click", () => {
+        const paused = document.body.classList.toggle(
+          "animations-paused"
+        );
+
+        pauseButton.setAttribute("aria-pressed", String(paused));
+        pauseButton.setAttribute(
+          "aria-label",
+          paused
+            ? "Resume homepage animations"
+            : "Pause homepage animations"
+        );
+
+        if (pauseLabel) {
+          pauseLabel.textContent = paused
+            ? "Resume animations"
+            : "Pause animations";
+        }
+
+        showSystemMessage(
+          paused
+            ? "PLANETARY MOTION PAUSED"
+            : "PLANETARY MOTION RESUMED"
+        );
+      });
+    }
+
+    if (powerButton && powerButton.dataset.bound !== "true") {
+      powerButton.dataset.bound = "true";
+      powerButton.addEventListener("click", () => {
+        const sleeping = document.body.classList.toggle("sleep-mode");
+
+        powerButton.setAttribute("aria-pressed", String(sleeping));
+        powerButton.setAttribute(
+          "aria-label",
+          sleeping ? "Exit sleep mode" : "Enter sleep mode"
+        );
+
+        if (powerLabel) {
+          powerLabel.textContent = sleeping
+            ? "Exit sleep mode"
+            : "Enter sleep mode";
+        }
+
+        showSystemMessage(
+          sleeping
+            ? "SYSTEM ENTERING SLEEP MODE"
+            : "SYSTEM RESTORED"
+        );
+      });
+    }
+
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-panel]")
+      .forEach((button) => {
+        if (button.dataset.bound === "true") return;
+        button.dataset.bound = "true";
+
+        button.addEventListener("click", () => {
+          const panelName = button.dataset.panel;
+
+          if (
+            !isPanelName(panelName) ||
+            !informationPanel ||
+            !panelTitle
+          ) {
+            return;
+          }
+
+          cancelPanelAnimation();
+          panelTitle.textContent = panelTitles[panelName];
+
+          const panelSections = Array.from(
+            document.querySelectorAll<HTMLElement>(
+              "[data-panel-content]"
+            )
+          );
+
+          const activeSection = panelSections.find((section) => {
+            const active = section.dataset.panelContent === panelName;
+            section.hidden = !active;
+            return active;
+          });
+
+          if (!activeSection) return;
+
+          const activeLines = preparePanelLines(activeSection);
+
+          if (!informationPanel.open) {
+            informationPanel.showModal();
+          }
+
+          activeSection.classList.remove("is-panel-entering");
+          void activeSection.offsetWidth;
+          activeSection.classList.add("is-panel-entering");
+
+          void animatePanelLines(
+            panelAnimationSequence,
+            activeLines,
+            informationPanel
+          );
+        });
+      });
+
+    if (
+      closeInformationButton &&
+      closeInformationButton.dataset.bound !== "true"
+    ) {
+      closeInformationButton.dataset.bound = "true";
+      closeInformationButton.addEventListener("click", () => {
+        cancelPanelAnimation();
+        informationPanel?.close();
+      });
+    }
+
+    if (informationPanel && informationPanel.dataset.bound !== "true") {
+      informationPanel.dataset.bound = "true";
+
+      informationPanel.addEventListener("click", (event: MouseEvent) => {
+        if (event.target === informationPanel) {
+          cancelPanelAnimation();
+          informationPanel.close();
+        }
+      });
+
+      informationPanel.addEventListener("cancel", (event: Event) => {
+        event.preventDefault();
+        cancelPanelAnimation();
+        informationPanel.close();
+      });
+
+      informationPanel.addEventListener("close", cancelPanelAnimation);
+    }
   };
-  updateVisitorTime();
-  window.setInterval(updateVisitorTime, 30000);
-  showVisitorLocation();
 
-  pauseButton?.addEventListener("click", () => {
-    const paused = document.body.classList.toggle("animations-paused");
-    pauseButton.setAttribute("aria-pressed", String(paused));
-    pauseButton.setAttribute(
-      "aria-label",
-      paused ? "Resume homepage animations" : "Pause homepage animations"
-    );
-    if (pauseLabel) pauseLabel.textContent = paused ? "Resume animations" : "Pause animations";
-    showSystemMessage(paused ? "PLANETARY MOTION PAUSED" : "PLANETARY MOTION RESUMED");
-  });
-
-  powerButton?.addEventListener("click", () => {
-    const sleeping = document.body.classList.toggle("sleep-mode");
-    powerButton.setAttribute("aria-pressed", String(sleeping));
-    powerButton.setAttribute("aria-label", sleeping ? "Exit sleep mode" : "Enter sleep mode");
-    if (powerLabel) powerLabel.textContent = sleeping ? "Exit sleep mode" : "Enter sleep mode";
-    showSystemMessage(sleeping ? "SYSTEM ENTERING SLEEP MODE" : "SYSTEM RESTORED");
-  });
-
-  panelButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const panelName = button.dataset.panel;
-      if (isPanelName(panelName)) openInformationPanel(panelName);
-    });
-  });
-
-  closeInformationButton?.addEventListener("click", closeInformationPanel);
-  informationPanel?.addEventListener("click", (event: MouseEvent) => {
-    if (event.target === informationPanel) closeInformationPanel();
-  });
-  informationPanel?.addEventListener("cancel", (event: Event) => {
-    event.preventDefault();
-    closeInformationPanel();
-  });
-  informationPanel?.addEventListener("close", cancelPanelAnimation);
+  initialiseHomepage();
+  document.addEventListener("astro:page-load", initialiseHomepage);
 </script>

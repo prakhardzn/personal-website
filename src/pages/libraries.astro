@@ -1,4902 +1,927 @@
 ---
+import { getCollection } from "astro:content";
 import InternalPageLayout from "../layouts/InternalPageLayout.astro";
 import "../styles/libraries.css";
 
-import { getCollection } from "astro:content";
-
-import {
-  libraryCategories,
-  defaultLibraryCategory,
-  getLibraryEntries,
-} from "../data/library";
-
-import type {
-  LibraryCategoryKey,
-  LibraryEntry,
-} from "../data/library";
-
-
 /* =========================================================
-   TYPES
+   PORTAL 214 // THE LIBRARIES
+
+   Design rule for this version:
+   - The collection gets most of the screen.
+   - The left side uses an Astro-Pedia-like reference-terminal composition.
+   - Movies / Games / Music stay on the same page.
+   - The right side behaves like browsable shelves, not a dashboard.
 ========================================================= */
 
-type DisplayLibraryEntry =
-  LibraryEntry & {
-    poster: string | null;
-    imdbId?: string | null;
-    imdbRating?: string | null;
+const movieEntries = (await getCollection("movies")).filter(
+  (entry) => !(entry.data as Record<string, unknown>).draft
+);
+
+const musicEntries = (await getCollection("music")).filter(
+  (entry) => !(entry.data as Record<string, unknown>).draft
+);
+
+const asRecord = (value: unknown): Record<string, unknown> =>
+  typeof value === "object" && value !== null
+    ? (value as Record<string, unknown>)
+    : {};
+
+const readValue = (
+  record: Record<string, unknown>,
+  keys: string[]
+): string => {
+  for (const key of keys) {
+    const value = record[key];
+
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return String(value);
+    }
+  }
+
+  return "";
+};
+
+const humaniseId = (id: string): string =>
+  id
+    .replace(/\.(md|mdx)$/i, "")
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+
+const movieRecords = movieEntries.map((entry, index) => {
+  const data = asRecord(entry.data);
+
+  return {
+    number: String(index + 1).padStart(3, "0"),
+    id: entry.id,
+    title: readValue(data, ["title", "name"]) || humaniseId(entry.id),
+    year: readValue(data, ["year", "releaseYear", "date"]),
+    director: readValue(data, ["director", "creator"]),
+    poster: readValue(data, ["poster", "posterUrl", "image", "cover"]),
+    rating: readValue(data, ["rating", "score"]),
   };
-
-
-interface MusicSignal {
-  id: string;
-  title: string;
-  artist: string;
-  album: string | null;
-  year: string | null;
-  recordingId: string;
-  releaseId: string | null;
-  releaseGroupId: string | null;
-  durationMs: number | null;
-  cover: string | null;
-  status: "saved" | "discover-later";
-  favourite: boolean;
-  myRating: number | null;
-  shelf: string;
-  tags: string[];
-  note: string;
-}
-
-
-/* =========================================================
-   MOVIES
-========================================================= */
-
-const markdownMovies =
-  (
-    await getCollection("movies")
-  ).sort(
-    (first, second) =>
-      second.data.addedAt.localeCompare(
-        first.data.addedAt
-      )
-  );
-
-
-const savedMovieEntries:
-  DisplayLibraryEntry[] =
-  markdownMovies.map(
-    (movie, index) => {
-      const data = movie.data;
-
-      const personalNote =
-        movie.body?.trim() ||
-        "No personal note yet.";
-
-      const statusLabel =
-        data.status === "watched"
-          ? "WATCHED"
-          : "WATCHLIST";
-
-      const state =
-        data.status === "watched"
-          ? "completed"
-          : "pending";
-
-      return {
-        id: `movie-${movie.id}`,
-
-        category: "movies",
-
-        title: data.title,
-
-        creator:
-          data.director ??
-          "Director unavailable",
-
-        year: data.year,
-
-        mediaType: "MOVIE",
-
-        state,
-
-        statusLabel,
-
-        favourite:
-          data.favourite,
-
-        rating:
-          data.myRating,
-
-        note:
-          personalNote,
-
-        synopsis:
-          data.plot ??
-          "No plot information available.",
-
-        shelf:
-          data.shelf,
-
-        coverCode:
-          `MOV-${String(
-            index + 1
-          ).padStart(3, "0")}`,
-
-        coverCaption:
-          data.title,
-
-        coverTone:
-          "green",
-
-        tags:
-          data.tags.length
-            ? data.tags
-            : data.genre,
-
-        facts: [
-          {
-            label: "DIRECTOR",
-            value:
-              data.director ??
-              "Unknown",
-          },
-
-          {
-            label: "RUNTIME",
-            value:
-              data.runtime ??
-              "Unknown",
-          },
-
-          {
-            label: "GENRE",
-            value:
-              data.genre.length
-                ? data.genre.join(", ")
-                : "Unknown",
-          },
-
-          {
-            label: "IMDb",
-            value:
-              data.imdbRating
-                ? `${data.imdbRating}/10`
-                : "Unrated",
-          },
-
-          {
-            label: "IMDb ID",
-            value:
-              data.imdbId,
-          },
-
-          {
-            label: "RELEASED",
-            value:
-              data.released ??
-              "Unknown",
-          },
-
-          {
-            label: "LANGUAGE",
-            value:
-              data.language.length
-                ? data.language.join(", ")
-                : "Unknown",
-          },
-
-          {
-            label: "COUNTRY",
-            value:
-              data.country.length
-                ? data.country.join(", ")
-                : "Unknown",
-          },
-        ],
-
-        poster:
-          data.poster,
-
-        imdbId:
-          data.imdbId,
-
-        imdbRating:
-          data.imdbRating,
-      };
-    }
-  );
-
-
-/* =========================================================
-   GAMES
-========================================================= */
-
-const gameEntries:
-  DisplayLibraryEntry[] =
-  getLibraryEntries("games").map(
-    (entry) => ({
-      ...entry,
-
-      poster: null,
-
-      imdbId: null,
-
-      imdbRating: null,
-    })
-  );
-
-
-const genericEntries:
-  DisplayLibraryEntry[] = [
-    ...savedMovieEntries,
-    ...gameEntries,
-  ];
-
-
-/* =========================================================
-   MUSIC
-========================================================= */
-
-const markdownMusic =
-  await getCollection("music");
-
-
-const musicSignals:
-  MusicSignal[] =
-  markdownMusic.map(
-    (song) => ({
-      id:
-        song.id,
-
-      title:
-        song.data.title,
-
-      artist:
-        song.data.artist,
-
-      album:
-        song.data.album,
-
-      year:
-        song.data.year,
-
-      recordingId:
-        song.data.recordingId,
-
-      releaseId:
-        song.data.releaseId,
-
-      releaseGroupId:
-        song.data.releaseGroupId,
-
-      durationMs:
-        song.data.durationMs,
-
-      cover:
-        song.data.cover,
-
-      status:
-        song.data.status,
-
-      favourite:
-        song.data.favourite,
-
-      myRating:
-        song.data.myRating,
-
-      shelf:
-        song.data.shelf,
-
-      tags:
-        song.data.tags,
-
-      note:
-        song.body?.trim() ||
-        "No personal note yet.",
-    })
-  );
-
-
-/* =========================================================
-   MUSIC ARTISTS
-========================================================= */
-
-const preferredArtistOrder = [
-  "Daft Punk",
-  "Toby Fox",
-  "Tame Impala",
-  "The Beatles",
-  "Maroon 5",
-  "Michael Jackson",
-  "Queen",
-  "Eminem",
-  "Dua Lipa",
-];
-
-
-const discoveredArtists =
-  Array.from(
-    new Set(
-      musicSignals.map(
-        (signal) =>
-          signal.artist
-      )
-    )
-  );
-
-
-const orderedArtists = [
-  ...preferredArtistOrder.filter(
-    (artist) =>
-      discoveredArtists.includes(
-        artist
-      )
-  ),
-
-  ...discoveredArtists
-    .filter(
-      (artist) =>
-        !preferredArtistOrder.includes(
-          artist
-        )
-    )
-    .sort(
-      (first, second) =>
-        first.localeCompare(second)
-    ),
-];
-
-
-const artistSummaries =
-  orderedArtists.map(
-    (artist) => {
-      const songs =
-        musicSignals.filter(
-          (song) =>
-            song.artist === artist
-        );
-
-      const albums =
-        new Set(
-          songs.map(
-            (song) =>
-              song.album ??
-              "Loose Signals"
-          )
-        );
-
-      const cover =
-        songs.find(
-          (song) =>
-            Boolean(song.cover)
-        )?.cover ??
-        null;
-
-      return {
-        artist,
-
-        count:
-          songs.length,
-
-        albums:
-          albums.size,
-
-        cover,
-      };
-    }
-  );
-
-
-/* =========================================================
-   CATEGORY HELPERS
-========================================================= */
-
-const getGenericEntries =
-  (
-    category:
-      LibraryCategoryKey
-  ) =>
-    genericEntries.filter(
-      (entry) =>
-        entry.category ===
-        category
-    );
-
-
-const getCategoryCount =
-  (
-    category:
-      LibraryCategoryKey
-  ) => {
-    if (
-      category === "music"
-    ) {
-      return musicSignals.length;
-    }
-
-    return getGenericEntries(
-      category
-    ).length;
+});
+
+const musicRecords = musicEntries.map((entry, index) => {
+  const data = asRecord(entry.data);
+
+  return {
+    number: String(index + 1).padStart(3, "0"),
+    id: entry.id,
+    title: readValue(data, ["title", "name", "track"]) || humaniseId(entry.id),
+    artist: readValue(data, ["artist", "creator", "author"]),
+    year: readValue(data, ["year", "releaseYear", "date"]),
+    cover: readValue(data, ["cover", "image", "artwork", "poster"]),
   };
+});
 
+const chunk = <T,>(items: T[], size: number): T[][] => {
+  const groups: T[][] = [];
 
-const movieCount =
-  getCategoryCount("movies");
+  for (let index = 0; index < items.length; index += size) {
+    groups.push(items.slice(index, index + size));
+  }
 
-const gameCount =
-  getCategoryCount("games");
+  return groups;
+};
 
-const musicCount =
-  getCategoryCount("music");
+const movieShelves = chunk(movieRecords, 5);
+const musicShelves = chunk(musicRecords, 6);
 
+const movieCount = movieRecords.length;
+const gameCount = 3;
+const musicCount = musicRecords.length;
+const omdbApiKey = import.meta.env.OMDB_API_KEY ?? "";
 
-const archiveNodes = [
-  {
-    key: "movies",
-    number: "01",
-    title: "MOVIE FILES",
-    short: "CINEMA STORAGE",
-    count: movieCount,
-    unit: "FILES",
-    description:
-      "Films, short films and moving images stored inside the visual archive.",
-  },
+const shelfLetter = (index: number): string =>
+  String.fromCharCode(65 + (index % 26));
 
-  {
-    key: "games",
-    number: "02",
-    title: "GAME VAULT",
-    short: "INTERACTIVE STORAGE",
-    count: gameCount,
-    unit: "FILES",
-    description:
-      "Games played, completed, abandoned or remembered for suspiciously long periods.",
-  },
-
-  {
-    key: "music",
-    number: "03",
-    title: "AUDIO SIGNALS",
-    short: "FREQUENCY ARCHIVE",
-    count: musicCount,
-    unit: "SIGNALS",
-    description:
-      "Songs and artists repeatedly transmitted into the headphones.",
-  },
-] as const;
-
-
-const musicDataJson =
-  JSON.stringify(
-    musicSignals
-  ).replace(
-    /</g,
-    "\\u003c"
-  );
+const librarySpines = [
+  62, 84, 48, 73, 91, 56, 78, 66, 88, 52,
+  71, 96, 59, 81, 68, 90, 54, 76, 64, 86,
+  50, 74, 93, 61, 80, 57, 89, 69, 83, 55,
+];
 ---
 
 <InternalPageLayout
-  title="Interdimensional Library | Prakhar's Universe"
-  description="Explore Prakhar's personal movie, game and music archives."
+  title="The Libraries | Portal 214"
+  description="Portal 214's personal media library for movies, games and music."
   message="This archive is poorly organised, emotionally biased and somehow still operational."
   pageClass="libraries-page"
 >
   <!-- =====================================================
-       LEFT SYSTEM MONITOR
+       LEFT // LIBRARY REFERENCE TERMINAL
   ====================================================== -->
 
-  <div
+  <aside
     slot="sidebar"
-    class="library-left-column"
+    class="libraries-reference-column"
+    aria-label="Portal 214 library reference terminal"
   >
-    <section
-      class="library-monitor"
-    >
-      <header
-        class="library-monitor__header"
-      >
-        <span>
-          ■ MEDIA INDEX // LIB-04
-        </span>
+    <figure class="libraries-terminal-card">
+      <header class="libraries-terminal-card__header">
+        <div>
+          <span class="libraries-status-square" aria-hidden="true"></span>
+          <strong>MEDIA REFERENCE // LIB-214</strong>
+        </div>
 
-        <span
-          class="library-online-status"
-        >
-          <i></i>
-          SYS: ONLINE
-        </span>
+        <span>SYS: ONLINE</span>
       </header>
 
+      <div class="libraries-terminal-viewport">
+        <div class="libraries-stack-visual">
+          <span class="libraries-stack-coordinate libraries-stack-coordinate--top">STACK INDEX</span>
+          <span class="libraries-stack-coordinate libraries-stack-coordinate--bottom">PORTAL 214</span>
 
-      <div
-        class="library-monitor-radar"
-        aria-hidden="true"
-      >
-        <span
-          class="library-monitor-radar__ring library-monitor-radar__ring--1"
-        ></span>
+          <div class="libraries-stack-grid" aria-hidden="true">
+            {
+              librarySpines.map((height, index) => (
+                <i style={`--spine-height: ${height}%; --spine-index: ${index};`}></i>
+              ))
+            }
+          </div>
 
-        <span
-          class="library-monitor-radar__ring library-monitor-radar__ring--2"
-        ></span>
+          <div class="libraries-stack-scan" aria-hidden="true"></div>
 
-        <span
-          class="library-monitor-radar__ring library-monitor-radar__ring--3"
-        ></span>
+          <button
+            class="libraries-stack-node libraries-stack-node--movies is-active"
+            type="button"
+            data-library-map-node="movies"
+            aria-label="Browse movie archive"
+          >
+            <span>01</span>
+            <strong>MOVIES</strong>
+          </button>
 
-        <span
-          class="library-monitor-radar__axis library-monitor-radar__axis--x"
-        ></span>
+          <button
+            class="libraries-stack-node libraries-stack-node--games"
+            type="button"
+            data-library-map-node="games"
+            aria-label="Browse game archive"
+          >
+            <span>02</span>
+            <strong>GAMES</strong>
+          </button>
 
-        <span
-          class="library-monitor-radar__axis library-monitor-radar__axis--y"
-        ></span>
+          <button
+            class="libraries-stack-node libraries-stack-node--music"
+            type="button"
+            data-library-map-node="music"
+            aria-label="Browse music archive"
+          >
+            <span>03</span>
+            <strong>MUSIC</strong>
+          </button>
 
-        <span
-          class="library-monitor-radar__scanner"
-        ></span>
+          <div class="libraries-stack-core">
+            <p>THE LIBRARIES<span class="libraries-terminal-caret" aria-hidden="true">_</span></p>
 
-        <span
-          class="library-monitor-radar__blip library-monitor-radar__blip--1"
-        >
-          01
-        </span>
-
-        <span
-          class="library-monitor-radar__blip library-monitor-radar__blip--2"
-        >
-          02
-        </span>
-
-        <span
-          class="library-monitor-radar__blip library-monitor-radar__blip--3"
-        >
-          03
-        </span>
-
-
-        <div
-          class="library-monitor-radar__core"
-        >
-          <span>
-            MEDIA
-          </span>
-
-          <strong>
-            VAULT_
-          </strong>
+            <dl>
+              <div><dt>MODE</dt><dd id="libraries-terminal-mode">BROWSE</dd></div>
+              <div><dt>STACK</dt><dd id="libraries-terminal-stack">01</dd></div>
+              <div><dt>SIGNAL</dt><dd>STABLE</dd></div>
+            </dl>
+          </div>
         </div>
       </div>
 
+      <figcaption class="libraries-terminal-readout">
+        <span>STACKS <strong>03</strong></span>
+        <span>RECORDS <strong id="libraries-map-count">{String(movieCount).padStart(3, "0")}</strong></span>
+        <span>MODE <strong id="libraries-terminal-readout-mode">MOVIES</strong></span>
+        <span class="libraries-terminal-readout__status"><i aria-hidden="true"></i> ONLINE</span>
+      </figcaption>
+    </figure>
 
-      <div
-        class="library-monitor-copy"
-      >
-        <p>
-          REFERENCE TERMINAL
-        </p>
+    <section class="libraries-reference-card">
+      <p>REFERENCE TERMINAL</p>
+      <h2 id="libraries-reference-title">Movie Archive</h2>
+      <span id="libraries-reference-description">
+        Browse moving images as poster-led catalogue records arranged across Portal 214's digital shelves.
+      </span>
 
-        <h1>
-          THE LIBRARIES
-        </h1>
-
-        <span>
-          A personal storage system for movies, games and frequencies that survived my attention span.
-        </span>
-      </div>
-
-
-      <div
-        class="library-system-readout"
-      >
+      <dl>
+        <div><dt>ACTIVE STACK</dt><dd id="libraries-map-active">01 // MOVING IMAGES</dd></div>
+        <div><dt>CATALOGUE</dt><dd>PORTAL 214</dd></div>
         <div>
-          <span>
-            MOVIES
-          </span>
-
-          <strong>
-            {
-              String(
-                movieCount
-              ).padStart(
-                3,
-                "0"
-              )
-            }
-          </strong>
+          <dt>STATUS</dt>
+          <dd class="libraries-reference-status"><i aria-hidden="true"></i> Indexed</dd>
         </div>
-
-        <div>
-          <span>
-            GAMES
-          </span>
-
-          <strong>
-            {
-              String(
-                gameCount
-              ).padStart(
-                3,
-                "0"
-              )
-            }
-          </strong>
-        </div>
-
-        <div>
-          <span>
-            SIGNALS
-          </span>
-
-          <strong>
-            {
-              String(
-                musicCount
-              ).padStart(
-                4,
-                "0"
-              )
-            }
-          </strong>
-        </div>
-
-        <div>
-          <span>
-            SYNC
-          </span>
-
-          <strong>
-            STABLE
-          </strong>
-        </div>
-      </div>
-
-
-      <footer
-        class="library-monitor-footer"
-      >
-        <span>
-          STORAGE
-        </span>
-
-        <span>
-          READ/WRITE
-        </span>
-
-        <span>
-          ■ ACTIVE
-        </span>
-      </footer>
+      </dl>
     </section>
-  </div>
-
+  </aside>
 
   <!-- =====================================================
-       RIGHT CONTENT
+       RIGHT // BROWSABLE LIBRARY
   ====================================================== -->
 
-  <div
+  <main
     slot="content"
-    class="library-right-column"
+    class="libraries-catalogue"
+    data-library-root
+    data-omdb-key={omdbApiKey}
   >
-    <div
-      class="library-interface"
-    >
+    <header class="libraries-catalogue-bar">
+      <div class="libraries-catalogue-bar__identity">
+        <span>ACTIVE STACK // PORTAL 214</span>
+        <h1 id="libraries-active-title">MOVIE STACKS</h1>
+      </div>
+
+      <div class="libraries-header-search" data-library-movie-tools>
+        <form class="libraries-search-form" id="libraries-movie-search-form">
+          <div class="libraries-search-input-shell">
+            <span aria-hidden="true">&gt;</span>
+            <input
+              id="libraries-movie-query"
+              name="query"
+              type="search"
+              placeholder="SEARCH THE CATALOGUE"
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Search movie catalogue"
+            />
+          </div>
+          <button type="submit">EXECUTE</button>
+        </form>
+
+        <p
+          class="libraries-search-status"
+          id="libraries-search-status"
+          role="status"
+          aria-live="polite"
+        >
+          <span aria-hidden="true"></span>
+          {omdbApiKey ? "OMDb READY" : "KEY REQUIRED"}
+        </p>
+      </div>
+
+      <div class="libraries-catalogue-bar__status">
+        <span id="libraries-active-count">{String(movieCount).padStart(2, "0")} RECORDS</span>
+        <span class="libraries-projector-light" aria-hidden="true"></span>
+        <strong>ONLINE</strong>
+      </div>
+    </header>
+
+    <nav class="libraries-tabs" aria-label="Library sections">
+      <button class="libraries-tab is-active" type="button" data-library-tab="movies" aria-selected="true">
+        <span>01</span><strong>MOVIES</strong>
+      </button>
+      <button class="libraries-tab" type="button" data-library-tab="games" aria-selected="false">
+        <span>02</span><strong>GAMES</strong>
+      </button>
+      <button class="libraries-tab" type="button" data-library-tab="music" aria-selected="false">
+        <span>03</span><strong>MUSIC</strong>
+      </button>
+    </nav>
+
+    <div class="libraries-catalogue__scroll" id="libraries-archive-scroll">
       <!-- =================================================
-           MEDIA ARCHIVE ROUTER
+           MOVIES
       ================================================== -->
 
       <section
-        class="library-entrance"
-        id="library-entrance"
+        class="libraries-panel"
+        data-library-panel="movies"
+        aria-labelledby="libraries-active-title"
       >
-        <header
-          class="library-index-header"
-        >
-          <p>
-            ■ MEDIA STORAGE
-          </p>
-
-          <h2>
-            THE ARCHIVE
-          </h2>
-
-          <span>
-            Select a storage node to enter its records.
-          </span>
-        </header>
-
-
-        <div
-          class="archive-router-shell"
-        >
-          <div
-            class="archive-router-terminal-bar"
-          >
-            <span>
-              INTERDIMENSIONAL STORAGE ROUTER
-            </span>
-
-            <span>
-              NODE LINK // STABLE
-            </span>
-          </div>
-
-
-          <div
-            class="archive-router-layout"
-          >
-            <!-- ROUTER -->
-
-            <div
-              class="archive-router-stage"
-            >
-              <span
-                class="archive-router-grid"
-                aria-hidden="true"
-              ></span>
-
-
-              <span
-                class="archive-router-orbit archive-router-orbit--1"
-                aria-hidden="true"
-              ></span>
-
-              <span
-                class="archive-router-orbit archive-router-orbit--2"
-                aria-hidden="true"
-              ></span>
-
-              <span
-                class="archive-router-orbit archive-router-orbit--3"
-                aria-hidden="true"
-              ></span>
-
-
-              <!-- ROUTES -->
-
-              <span
-                class="archive-route archive-route--movies"
-                aria-hidden="true"
-              >
-                <i></i>
-              </span>
-
-              <span
-                class="archive-route archive-route--games"
-                aria-hidden="true"
-              >
-                <i></i>
-              </span>
-
-              <span
-                class="archive-route archive-route--music"
-                aria-hidden="true"
-              >
-                <i></i>
-              </span>
-
-
-              <!-- CENTRAL CORE -->
-
-              <div
-                class="archive-core"
-                aria-hidden="true"
-              >
-                <span
-                  class="archive-core__ring archive-core__ring--outer"
-                ></span>
-
-                <span
-                  class="archive-core__ring archive-core__ring--middle"
-                ></span>
-
-                <span
-                  class="archive-core__scanner"
-                ></span>
-
-                <span
-                  class="archive-core__crosshair archive-core__crosshair--x"
-                ></span>
-
-                <span
-                  class="archive-core__crosshair archive-core__crosshair--y"
-                ></span>
-
-                <div
-                  class="archive-core__label"
-                >
-                  <small>
-                    MEDIA
-                  </small>
-
-                  <strong>
-                    CORE_
-                  </strong>
-
-                  <em>
-                    03 NODES
-                  </em>
-                </div>
-              </div>
-
-
-              <!-- MOVIES -->
-
-              <button
-                class="archive-node archive-node--movies"
-                type="button"
-                data-open-library="movies"
-                data-router-node="movies"
-                data-router-number="01"
-                data-router-title="MOVIE FILES"
-                data-router-subtitle="CINEMA STORAGE"
-                data-router-count={String(movieCount)}
-                data-router-unit="FILES"
-                data-router-description="Films, short films and moving images stored inside the visual archive."
-              >
-                <span
-                  class="archive-node__number"
-                >
-                  01
-                </span>
-
-                <span
-                  class="archive-node__machine archive-node__machine--movie"
-                  aria-hidden="true"
-                >
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-
-                  <b></b>
-                </span>
-
-                <span
-                  class="archive-node__copy"
-                >
-                  <strong>
-                    MOVIE FILES
-                  </strong>
-
-                  <small>
-                    {
-                      movieCount
-                    } FILES
-                  </small>
-                </span>
-              </button>
-
-
-              <!-- GAMES -->
-
-              <button
-                class="archive-node archive-node--games"
-                type="button"
-                data-open-library="games"
-                data-router-node="games"
-                data-router-number="02"
-                data-router-title="GAME VAULT"
-                data-router-subtitle="INTERACTIVE STORAGE"
-                data-router-count={String(gameCount)}
-                data-router-unit="FILES"
-                data-router-description="Games played, completed, abandoned or remembered for suspiciously long periods."
-              >
-                <span
-                  class="archive-node__number"
-                >
-                  02
-                </span>
-
-                <span
-                  class="archive-node__machine archive-node__machine--game"
-                  aria-hidden="true"
-                >
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                </span>
-
-                <span
-                  class="archive-node__copy"
-                >
-                  <strong>
-                    GAME VAULT
-                  </strong>
-
-                  <small>
-                    {
-                      gameCount
-                    } FILES
-                  </small>
-                </span>
-              </button>
-
-
-              <!-- MUSIC -->
-
-              <button
-                class="archive-node archive-node--music"
-                type="button"
-                data-open-library="music"
-                data-router-node="music"
-                data-router-number="03"
-                data-router-title="AUDIO SIGNALS"
-                data-router-subtitle="FREQUENCY ARCHIVE"
-                data-router-count={String(musicCount)}
-                data-router-unit="SIGNALS"
-                data-router-description="Songs and artists repeatedly transmitted into the headphones."
-              >
-                <span
-                  class="archive-node__number"
-                >
-                  03
-                </span>
-
-                <span
-                  class="archive-node__machine archive-node__machine--music"
-                  aria-hidden="true"
-                >
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                </span>
-
-                <span
-                  class="archive-node__copy"
-                >
-                  <strong>
-                    AUDIO SIGNALS
-                  </strong>
-
-                  <small>
-                    {
-                      musicCount
-                    } SIGNALS
-                  </small>
-                </span>
-              </button>
-
-
-              <span
-                class="archive-coordinate archive-coordinate--top"
-              >
-                Y:+090
-              </span>
-
-              <span
-                class="archive-coordinate archive-coordinate--right"
-              >
-                X:+180
-              </span>
-
-              <span
-                class="archive-coordinate archive-coordinate--bottom"
-              >
-                Y:-090
-              </span>
-
-              <span
-                class="archive-coordinate archive-coordinate--left"
-              >
-                X:000
-              </span>
-            </div>
-
-
-            <!-- LIVE PREVIEW -->
-
-            <aside
-              class="archive-node-preview"
-            >
-              <div
-                class="archive-node-preview__header"
-              >
-                <span>
-                  ACTIVE NODE
-                </span>
-
-                <span
-                  class="archive-node-preview__pulse"
-                >
-                  ■
-                </span>
-              </div>
-
-
-              <div
-                class="archive-node-preview__number"
-                id="router-preview-number"
-              >
-                01
-              </div>
-
-
-              <p
-                id="router-preview-subtitle"
-              >
-                CINEMA STORAGE
-              </p>
-
-
-              <h3
-                id="router-preview-title"
-              >
-                MOVIE FILES
-              </h3>
-
-
-              <div
-                class="archive-node-preview__divider"
-              ></div>
-
-
-              <p
-                class="archive-node-preview__description"
-                id="router-preview-description"
-              >
-                Films, short films and moving images stored inside the visual archive.
-              </p>
-
-
-              <dl
-                class="archive-node-preview__data"
-              >
-                <div>
-                  <dt>
-                    RECORDS
-                  </dt>
-
-                  <dd
-                    id="router-preview-count"
-                  >
-                    {
-                      movieCount
-                    }
-                  </dd>
-                </div>
-
-                <div>
-                  <dt>
-                    TYPE
-                  </dt>
-
-                  <dd
-                    id="router-preview-unit"
-                  >
-                    FILES
-                  </dd>
-                </div>
-
-                <div>
-                  <dt>
-                    LINK
-                  </dt>
-
-                  <dd>
-                    STABLE
-                  </dd>
-                </div>
-              </dl>
-
-
-              <p
-                class="archive-node-preview__command"
-              >
-                &gt; SELECT NODE TO ENTER_
-              </p>
-            </aside>
-          </div>
-
-
-          <footer
-            class="archive-router-readout"
-          >
-            <span>
-              CORE: ONLINE
-            </span>
-
-            <span>
-              NODES: 03
-            </span>
-
-            <span>
-              ARCHIVE SIZE: {
-                movieCount +
-                gameCount +
-                musicCount
-              }
-            </span>
-
-            <span>
-              SIGNAL: STABLE
-            </span>
-          </footer>
-        </div>
-      </section>
-
-
-      <!-- =================================================
-           COLLECTION VIEW
-      ================================================== -->
-
-      <section
-        class="library-collection"
-        id="library-collection"
-        hidden
-      >
-        <header
-          class="library-collection-header"
-        >
-          <button
-            class="library-return-button"
-            id="library-return-button"
-            type="button"
-          >
-            ← MEDIA INDEX
-          </button>
-
-
-          <div
-            class="library-collection-heading"
-          >
-            <p>
-              ■ ACTIVE STORAGE NODE
-            </p>
-
-            <h2
-              id="library-collection-title"
-            >
-              {
-                defaultLibraryCategory.title
-              }
-            </h2>
-
-            <span
-              id="library-collection-counter"
-            >
-              {
-                String(
-                  movieCount
-                ).padStart(
-                  2,
-                  "0"
-                )
-              } FILES DETECTED
-            </span>
-          </div>
-
-
-          <div
-            class="library-collection-signal"
-          >
-            <i></i>
-
-            <span
-              id="library-collection-status"
-            >
-              {
-                defaultLibraryCategory.systemStatus
-              }
-            </span>
-          </div>
-        </header>
-
-
-        <!-- CATEGORY TABS -->
-
-        <nav
-          class="library-category-tabs"
-          aria-label="Library categories"
-        >
-          {
-            libraryCategories.map(
-              (category) => (
-                <button
-                  class:list={[
-                    "library-category-tab",
-
-                    category.key ===
-                      defaultLibraryCategory.key &&
-                      "library-category-tab--active",
-                  ]}
-                  type="button"
-                  data-library-tab={
-                    category.key
-                  }
-                  data-library-title={
-                    category.title
-                  }
-                  data-library-status={
-                    category.systemStatus
-                  }
-                  data-library-completed-label={
-                    category.completedFilterLabel
-                  }
-                  data-library-pending-label={
-                    category.pendingFilterLabel
-                  }
-                >
-                  <span>
-                    {
-                      category.number
-                    }
-                  </span>
-
-                  <strong>
-                    {
-                      category.shortTitle
-                    }
-                  </strong>
-                </button>
-              )
-            )
-          }
-        </nav>
-
-
-        <!-- =================================================
-             MOVIE SEARCH
-        ================================================== -->
-
         <section
-          class="movie-search-terminal"
-          id="movie-search-terminal"
-        >
-          <header
-            class="terminal-strip"
-          >
-            <span>
-              ■ EXTERNAL DATABASE // OMDb
-            </span>
-
-            <span
-              id="movie-search-api-state"
-            >
-              LINK READY
-            </span>
-          </header>
-
-
-          <div
-            class="movie-search-body"
-          >
-            <div
-              class="movie-search-intro"
-            >
-              <p>
-                DATABASE QUERY
-              </p>
-
-              <h3>
-                Search movie records_
-              </h3>
-
-              <span>
-                Retrieve external metadata without leaving the archive.
-              </span>
-            </div>
-
-
-            <form
-              class="movie-search-form"
-              id="movie-search-form"
-            >
-              <label
-                for="movie-search-input"
-              >
-                QUERY
-              </label>
-
-              <div
-                class="movie-search-controls"
-              >
-                <div
-                  class="terminal-input"
-                >
-                  <span>
-                    &gt;
-                  </span>
-
-                  <input
-                    id="movie-search-input"
-                    name="movie"
-                    type="search"
-                    placeholder="INTERSTELLAR"
-                    autocomplete="off"
-                    minlength="2"
-                    required
-                  />
-                </div>
-
-                <button
-                  class="terminal-button"
-                  id="movie-search-submit"
-                  type="submit"
-                >
-                  EXECUTE
-                </button>
-              </div>
-            </form>
-
-
-            <div
-              class="terminal-message"
-              id="movie-search-message"
-              aria-live="polite"
-            >
-              <i></i>
-
-              <span>
-                OMDb connection ready.
-              </span>
-            </div>
-
-
-            <div
-              class="movie-search-results"
-              id="movie-search-results"
-            ></div>
-
-
-            <article
-              class="movie-search-selection"
-              id="movie-search-selection"
-              hidden
-            >
-              <div
-                class="movie-search-selection__poster"
-                id="movie-search-selection-poster"
-              >
-                <span>
-                  NO POSTER
-                </span>
-              </div>
-
-
-              <div
-                class="movie-search-selection__copy"
-              >
-                <p>
-                  OMDb // FULL RECORD
-                </p>
-
-                <h3
-                  id="movie-detail-title"
-                >
-                  MOVIE FILE
-                </h3>
-
-
-                <dl
-                  class="terminal-data-grid"
-                >
-                  <div>
-                    <dt>
-                      YEAR
-                    </dt>
-
-                    <dd
-                      id="movie-detail-year"
-                    >
-                      —
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt>
-                      DIRECTOR
-                    </dt>
-
-                    <dd
-                      id="movie-detail-director"
-                    >
-                      —
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt>
-                      RUNTIME
-                    </dt>
-
-                    <dd
-                      id="movie-detail-runtime"
-                    >
-                      —
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt>
-                      GENRE
-                    </dt>
-
-                    <dd
-                      id="movie-detail-genre"
-                    >
-                      —
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt>
-                      IMDb
-                    </dt>
-
-                    <dd
-                      id="movie-detail-rating"
-                    >
-                      —
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt>
-                      RELEASED
-                    </dt>
-
-                    <dd
-                      id="movie-detail-released"
-                    >
-                      —
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt>
-                      LANGUAGE
-                    </dt>
-
-                    <dd
-                      id="movie-detail-language"
-                    >
-                      —
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt>
-                      COUNTRY
-                    </dt>
-
-                    <dd
-                      id="movie-detail-country"
-                    >
-                      —
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt>
-                      IMDb ID
-                    </dt>
-
-                    <dd
-                      id="movie-detail-imdb-id"
-                    >
-                      —
-                    </dd>
-                  </div>
-                </dl>
-
-
-                <section
-                  class="terminal-record-section"
-                >
-                  <span>
-                    CAST
-                  </span>
-
-                  <p
-                    id="movie-detail-actors"
-                  >
-                    —
-                  </p>
-                </section>
-
-
-                <section
-                  class="terminal-record-section"
-                >
-                  <span>
-                    PLOT
-                  </span>
-
-                  <p
-                    id="movie-detail-plot"
-                  >
-                    —
-                  </p>
-                </section>
-
-
-                <section
-                  class="terminal-record-section"
-                >
-                  <span>
-                    AWARDS
-                  </span>
-
-                  <p
-                    id="movie-detail-awards"
-                  >
-                    —
-                  </p>
-                </section>
-              </div>
-
-
-              <button
-                class="terminal-close"
-                id="movie-search-selection-close"
-                type="button"
-                aria-label="Close movie details"
-              >
-                ×
-              </button>
-            </article>
-          </div>
-        </section>
-
-
-        <!-- =================================================
-             MOVIES / GAMES
-        ================================================== -->
-
-        <div
-          id="generic-library-area"
-        >
-          <div
-            class="library-filter-bar"
-          >
-            <div
-              class="library-filter-bar__label"
-            >
-              <span>
-                ARCHIVE RECORDS
-              </span>
-
-              <small>
-                FILTER ACTIVE NODE
-              </small>
-            </div>
-
-
-            <div
-              class="library-filter-controls"
-            >
-              <button
-                class="library-filter-button library-filter-button--active"
-                type="button"
-                data-library-filter="all"
-              >
-                ALL
-              </button>
-
-              <button
-                class="library-filter-button"
-                type="button"
-                data-library-filter="favourites"
-              >
-                FAVOURITES
-              </button>
-
-              <button
-                class="library-filter-button"
-                type="button"
-                data-library-filter="completed"
-              >
-                <span
-                  id="library-completed-filter-label"
-                >
-                  {
-                    defaultLibraryCategory.completedFilterLabel
-                  }
-                </span>
-              </button>
-
-              <button
-                class="library-filter-button"
-                type="button"
-                data-library-filter="pending"
-              >
-                <span
-                  id="library-pending-filter-label"
-                >
-                  {
-                    defaultLibraryCategory.pendingFilterLabel
-                  }
-                </span>
-              </button>
-            </div>
-          </div>
-
-
-          <div
-            class="library-media-grid"
-            id="library-media-grid"
-          >
-            {
-              genericEntries.map(
-                (entry, index) => (
-                  <button
-                    class="library-media-card"
-                    type="button"
-                    data-library-entry={
-                      entry.id
-                    }
-                    data-library-entry-category={
-                      entry.category
-                    }
-                    data-library-entry-state={
-                      entry.state
-                    }
-                    data-library-entry-favourite={
-                      entry.favourite
-                        ? "true"
-                        : "false"
-                    }
-                    style={`--record-delay: ${
-                      index * 35
-                    }ms;`}
-                    hidden={
-                      entry.category !==
-                      defaultLibraryCategory.key
-                    }
-                  >
-                    <div
-                      class="library-media-card__cover"
-                    >
-                      {
-                        entry.poster ? (
-                          <img
-                            src={
-                              entry.poster
-                            }
-                            alt={`${entry.title} poster`}
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div
-                            class="library-media-card__fallback"
-                          >
-                            <span>
-                              {
-                                entry.coverCode
-                              }
-                            </span>
-
-                            <strong>
-                              {
-                                entry.coverCaption
-                              }
-                            </strong>
-                          </div>
-                        )
-                      }
-
-                      <span
-                        class="library-media-card__scan"
-                      ></span>
-                    </div>
-
-
-                    <div
-                      class="library-media-card__copy"
-                    >
-                      <div
-                        class="library-media-card__status"
-                      >
-                        <span>
-                          {
-                            entry.statusLabel
-                          }
-                        </span>
-
-                        {
-                          entry.favourite && (
-                            <strong>
-                              ★ FAV
-                            </strong>
-                          )
-                        }
-                      </div>
-
-
-                      <h3>
-                        {
-                          entry.title
-                        }
-                      </h3>
-
-                      <p>
-                        {
-                          entry.creator
-                        }
-                      </p>
-
-
-                      <div
-                        class="library-media-card__metadata"
-                      >
-                        <span>
-                          {
-                            entry.year
-                          }
-                        </span>
-
-                        <span>
-                          {
-                            entry.mediaType
-                          }
-                        </span>
-
-                        {
-                          entry.rating !==
-                            null && (
-                            <span>
-                              {
-                                entry.rating
-                              }
-                              /10
-                            </span>
-                          )
-                        }
-                      </div>
-
-
-                      <footer>
-                        <span>
-                          {
-                            entry.shelf
-                          }
-                        </span>
-
-                        <strong>
-                          OPEN RECORD →
-                        </strong>
-                      </footer>
-                    </div>
-                  </button>
-                )
-              )
-            }
-          </div>
-
-
-          <div
-            class="library-no-results"
-            id="library-no-results"
-            hidden
-          >
-            <strong>
-              404 // STORAGE EMPTY
-            </strong>
-
-            <span>
-              No records match the current filter.
-            </span>
-          </div>
-        </div>
-
-
-        <!-- =================================================
-             MUSIC
-        ================================================== -->
-
-        <section
-          class="music-browser"
-          id="music-browser"
+          class="libraries-search-shelf"
+          id="libraries-search-results"
+          aria-label="Movie search results"
           hidden
-        >
-          <div
-            class="music-artist-index"
-            id="music-artist-index"
-          >
-            <header
-              class="music-index-header"
-            >
-              <div>
-                <p>
-                  ■ FREQUENCY DIRECTORY
-                </p>
+        ></section>
 
-                <h3>
-                  AUDIO SOURCES_
-                </h3>
+        <section class="libraries-stacks" aria-label="Saved movie stacks">
+          {
+            movieShelves.length > 0 ? (
+              movieShelves.map((shelf, shelfIndex) => (
+                <section class="libraries-shelf">
+                  <header class="libraries-shelf__header">
+                    <div>
+                      <span>STACK {shelfLetter(shelfIndex)}</span>
+                      <strong>MOVING IMAGES</strong>
+                    </div>
 
-                <span>
-                  Choose a transmission source to inspect its stored releases.
-                </span>
-              </div>
+                    <span>
+                      {String(shelfIndex * 5 + 1).padStart(3, "0")}—
+                      {String(shelfIndex * 5 + shelf.length).padStart(3, "0")}
+                    </span>
+                  </header>
 
-              <strong>
-                {
-                  artistSummaries.length
-                } SOURCES // {
-                  musicSignals.length
-                } SIGNALS
-              </strong>
-            </header>
-
-
-            <div
-              class="music-artist-grid"
-            >
-              {
-                artistSummaries.map(
-                  (
-                    artist,
-                    index
-                  ) => (
-                    <button
-                      class="music-artist-card"
-                      type="button"
-                      data-music-artist={
-                        artist.artist
-                      }
-                    >
-                      <div
-                        class="music-artist-card__visual"
-                      >
-                        {
-                          artist.cover ? (
+                  <div class="libraries-shelf__grid">
+                    {shelf.map((movie) => (
+                      <article class="libraries-media-item libraries-media-item--movie">
+                        <div class="libraries-media-item__cover">
+                          {movie.poster ? (
                             <img
-                              src={
-                                artist.cover
-                              }
+                              src={movie.poster}
                               alt=""
                               loading="lazy"
+                              decoding="async"
                             />
                           ) : (
-                            <span>
-                              SIGNAL
+                            <div class="libraries-cover-fallback" aria-hidden="true">
+                              <span>M-{movie.number}</span>
+                              <strong>NO COVER</strong>
+                            </div>
+                          )}
+
+                          <span class="libraries-media-item__catalogue-id">
+                            M-{movie.number}
+                          </span>
+
+                          {movie.rating && (
+                            <span class="libraries-media-item__score">
+                              {movie.rating}
                             </span>
-                          )
-                        }
-
-                        <div
-                          class="music-mini-wave"
-                        >
-                          <i></i>
-                          <i></i>
-                          <i></i>
-                          <i></i>
-                          <i></i>
-                          <i></i>
-                          <i></i>
+                          )}
                         </div>
-                      </div>
 
+                        <div class="libraries-media-item__label">
+                          <h2>{movie.title}</h2>
 
-                      <div
-                        class="music-artist-card__copy"
-                      >
-                        <small>
-                          SOURCE // {
-                            String(
-                              index + 1
-                            ).padStart(
-                              2,
-                              "0"
-                            )
-                          }
-                        </small>
+                          <p>
+                            {[movie.year, movie.director]
+                              .filter(Boolean)
+                              .join(" // ") || "CATALOGUE RECORD"}
+                          </p>
 
-                        <h4>
-                          {
-                            artist.artist
-                          }
-                        </h4>
+                          <span>&gt; OPEN RECORD</span>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
 
-                        <p>
-                          {
-                            artist.count
-                          } SIGNALS // {
-                            artist.albums
-                          } RELEASES
-                        </p>
+                  <div class="libraries-shelf__rail" aria-hidden="true">
+                    <span>STACK {shelfLetter(shelfIndex)} // PORTAL 214</span>
+                  </div>
+                </section>
+              ))
+            ) : (
+              <div class="libraries-empty-state">
+                <strong>NO MOVIE RECORDS DETECTED</strong>
+                <span>Add Markdown files inside src/content/movies.</span>
+              </div>
+            )
+          }
+        </section>
+      </section>
 
-                        <span>
-                          OPEN FREQUENCY →
-                        </span>
-                      </div>
-                    </button>
-                  )
-                )
-              }
-            </div>
-          </div>
+      <!-- =================================================
+           GAMES
+      ================================================== -->
 
-
-          <div
-            class="music-artist-view"
-            id="music-artist-view"
-            hidden
-          >
-            <button
-              class="music-back-button"
-              id="music-artist-back"
-              type="button"
-            >
-              ← FREQUENCY DIRECTORY
-            </button>
-
-
-            <header
-              class="music-artist-hero"
-            >
-              <div
-                class="music-artist-hero__visual"
-                id="music-artist-cover"
-              >
-                <span>
-                  AUDIO
-                </span>
-
-                <div
-                  class="music-hero-wave"
-                >
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                </div>
+      <section class="libraries-panel" data-library-panel="games" hidden>
+        <section class="libraries-stacks" aria-label="Game stacks">
+          <section class="libraries-shelf">
+            <header class="libraries-shelf__header">
+              <div>
+                <span>STACK A</span>
+                <strong>PLAYABLE OBJECTS</strong>
               </div>
 
-
-              <div
-                class="music-artist-hero__copy"
-              >
-                <p>
-                  ACTIVE TRANSMISSION SOURCE
-                </p>
-
-                <h3
-                  id="music-artist-title"
-                >
-                  ARTIST
-                </h3>
-
-                <div
-                  class="music-artist-hero__stats"
-                >
-                  <span
-                    id="music-artist-song-count"
-                  >
-                    0 SIGNALS
-                  </span>
-
-                  <span
-                    id="music-artist-album-count"
-                  >
-                    0 RELEASES
-                  </span>
-
-                  <span>
-                    LINK STABLE
-                  </span>
-                </div>
-              </div>
+              <span>001—003</span>
             </header>
 
+            <div class="libraries-shelf__grid libraries-shelf__grid--games">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <article class="libraries-media-item libraries-media-item--game">
+                  <div class="libraries-media-item__cover">
+                    <div class="libraries-cover-fallback libraries-cover-fallback--game">
+                      <span>G-{String(index + 1).padStart(3, "0")}</span>
+                      <strong>GAME SLOT</strong>
+                    </div>
+                  </div>
 
-            <div
-              class="music-search-bar"
-            >
-              <span>
-                &gt;
-              </span>
-
-              <input
-                id="music-signal-search"
-                type="search"
-                placeholder="FILTER ACTIVE SIGNALS..."
-                autocomplete="off"
-              />
+                  <div class="libraries-media-item__label">
+                    <h2>RECORD SLOT {String(index + 1).padStart(2, "0")}</h2>
+                    <p>GAME ARCHIVE // INDEXED</p>
+                    <span>&gt; AWAITING ENTRY</span>
+                  </div>
+                </article>
+              ))}
             </div>
 
+            <div class="libraries-shelf__rail" aria-hidden="true">
+              <span>STACK A // PLAYABLE OBJECTS</span>
+            </div>
+          </section>
+        </section>
+      </section>
 
-            <div
-              class="music-album-list"
-              id="music-album-list"
-            ></div>
-          </div>
+      <!-- =================================================
+           MUSIC
+      ================================================== -->
+
+      <section class="libraries-panel" data-library-panel="music" hidden>
+        <section class="libraries-stacks" aria-label="Music stacks">
+          {
+            musicShelves.length > 0 ? (
+              musicShelves.map((shelf, shelfIndex) => (
+                <section class="libraries-shelf libraries-shelf--music">
+                  <header class="libraries-shelf__header">
+                    <div>
+                      <span>STACK {shelfLetter(shelfIndex)}</span>
+                      <strong>AUDIO SIGNALS</strong>
+                    </div>
+
+                    <span>
+                      {String(shelfIndex * 6 + 1).padStart(3, "0")}—
+                      {String(shelfIndex * 6 + shelf.length).padStart(3, "0")}
+                    </span>
+                  </header>
+
+                  <div class="libraries-shelf__grid libraries-shelf__grid--music">
+                    {shelf.map((track) => (
+                      <article class="libraries-media-item libraries-media-item--music">
+                        <div class="libraries-media-item__cover">
+                          {track.cover ? (
+                            <img
+                              src={track.cover}
+                              alt=""
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          ) : (
+                            <div class="libraries-cover-fallback libraries-cover-fallback--music">
+                              <span>A-{track.number}</span>
+                              <strong>♪</strong>
+                            </div>
+                          )}
+
+                          <span class="libraries-media-item__catalogue-id">
+                            A-{track.number}
+                          </span>
+                        </div>
+
+                        <div class="libraries-media-item__label">
+                          <h2>{track.title}</h2>
+                          <p>
+                            {[track.artist, track.year]
+                              .filter(Boolean)
+                              .join(" // ") || "AUDIO RECORD"}
+                          </p>
+                          <span>&gt; OPEN RECORD</span>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+
+                  <div class="libraries-shelf__rail" aria-hidden="true">
+                    <span>STACK {shelfLetter(shelfIndex)} // AUDIO SIGNALS</span>
+                  </div>
+                </section>
+              ))
+            ) : (
+              <div class="libraries-empty-state">
+                <strong>NO AUDIO RECORDS DETECTED</strong>
+                <span>Add Markdown files inside src/content/music.</span>
+              </div>
+            )
+          }
         </section>
       </section>
     </div>
-
-
-    <!-- =====================================================
-         MOVIE / GAME DRAWER
-    ====================================================== -->
-
-    <div
-      class="library-drawer-layer"
-      id="library-drawer-layer"
-      hidden
-    >
-      <button
-        class="library-drawer-backdrop"
-        id="library-drawer-backdrop"
-        type="button"
-        aria-label="Close archive record"
-      ></button>
-
-
-      <aside
-        class="library-detail-drawer"
-        id="library-detail-drawer"
-      >
-        <header
-          class="library-detail-drawer__header"
-        >
-          <span>
-            ■ ARCHIVE RECORD
-          </span>
-
-          <button
-            class="terminal-close"
-            id="library-detail-close"
-            type="button"
-          >
-            ×
-          </button>
-        </header>
-
-
-        <div
-          class="library-detail-records"
-        >
-          {
-            genericEntries.map(
-              (entry) => (
-                <article
-                  class="library-detail-record"
-                  data-library-detail-record={
-                    entry.id
-                  }
-                  hidden
-                >
-                  <div
-                    class="library-detail-cover"
-                  >
-                    {
-                      entry.poster ? (
-                        <img
-                          src={
-                            entry.poster
-                          }
-                          alt={`${entry.title} poster`}
-                        />
-                      ) : (
-                        <div
-                          class="library-detail-cover__fallback"
-                        >
-                          <span>
-                            {
-                              entry.coverCode
-                            }
-                          </span>
-
-                          <strong>
-                            {
-                              entry.coverCaption
-                            }
-                          </strong>
-                        </div>
-                      )
-                    }
-                  </div>
-
-
-                  <div
-                    class="library-detail-copy"
-                  >
-                    <p>
-                      {
-                        entry.mediaType
-                      } // {
-                        entry.year
-                      }
-                    </p>
-
-                    <h2>
-                      {
-                        entry.title
-                      }
-                    </h2>
-
-                    <h3>
-                      {
-                        entry.creator
-                      }
-                    </h3>
-
-
-                    <div
-                      class="library-detail-status"
-                    >
-                      <span>
-                        {
-                          entry.statusLabel
-                        }
-                      </span>
-
-                      {
-                        entry.favourite && (
-                          <span>
-                            ★ FAVOURITE
-                          </span>
-                        )
-                      }
-
-                      <span>
-                        {
-                          entry.rating !==
-                            null
-                            ? `${entry.rating}/10`
-                            : "UNRATED"
-                        }
-                      </span>
-                    </div>
-
-
-                    <section
-                      class="library-detail-section"
-                    >
-                      <span>
-                        PERSONAL NOTE
-                      </span>
-
-                      <p>
-                        {
-                          entry.note
-                        }
-                      </p>
-                    </section>
-
-
-                    <section
-                      class="library-detail-section"
-                    >
-                      <span>
-                        ARCHIVE SUMMARY
-                      </span>
-
-                      <p>
-                        {
-                          entry.synopsis
-                        }
-                      </p>
-                    </section>
-
-
-                    <dl
-                      class="library-detail-facts"
-                    >
-                      {
-                        entry.facts.map(
-                          (fact) => (
-                            <div>
-                              <dt>
-                                {
-                                  fact.label
-                                }
-                              </dt>
-
-                              <dd>
-                                {
-                                  fact.value
-                                }
-                              </dd>
-                            </div>
-                          )
-                        )
-                      }
-                    </dl>
-
-
-                    <div
-                      class="library-detail-tags"
-                    >
-                      {
-                        entry.tags.map(
-                          (tag) => (
-                            <span>
-                              {
-                                tag
-                              }
-                            </span>
-                          )
-                        )
-                      }
-                    </div>
-                  </div>
-                </article>
-              )
-            )
-          }
-        </div>
-      </aside>
-    </div>
-
-
-    <!-- =====================================================
-         MUSIC DRAWER
-    ====================================================== -->
-
-    <div
-      class="music-detail-layer"
-      id="music-detail-layer"
-      hidden
-    >
-      <button
-        class="music-detail-backdrop"
-        id="music-detail-backdrop"
-        type="button"
-        aria-label="Close audio record"
-      ></button>
-
-
-      <aside
-        class="music-detail-drawer"
-      >
-        <header
-          class="library-detail-drawer__header"
-        >
-          <span>
-            ■ AUDIO SIGNAL
-          </span>
-
-          <button
-            class="terminal-close"
-            id="music-detail-close"
-            type="button"
-          >
-            ×
-          </button>
-        </header>
-
-
-        <div
-          class="music-detail-body"
-        >
-          <div
-            class="music-detail-cover"
-            id="music-detail-cover"
-          >
-            <span>
-              AUDIO
-            </span>
-          </div>
-
-
-          <div
-            class="music-detail-copy"
-          >
-            <p>
-              FREQUENCY RECORD
-            </p>
-
-            <h2
-              id="music-detail-title"
-            >
-              SONG
-            </h2>
-
-            <h3
-              id="music-detail-artist"
-            >
-              ARTIST
-            </h3>
-
-
-            <dl
-              class="library-detail-facts"
-            >
-              <div>
-                <dt>
-                  RELEASE
-                </dt>
-
-                <dd
-                  id="music-detail-album"
-                >
-                  —
-                </dd>
-              </div>
-
-              <div>
-                <dt>
-                  YEAR
-                </dt>
-
-                <dd
-                  id="music-detail-year"
-                >
-                  —
-                </dd>
-              </div>
-
-              <div>
-                <dt>
-                  DURATION
-                </dt>
-
-                <dd
-                  id="music-detail-duration"
-                >
-                  —
-                </dd>
-              </div>
-
-              <div>
-                <dt>
-                  STATUS
-                </dt>
-
-                <dd
-                  id="music-detail-status"
-                >
-                  —
-                </dd>
-              </div>
-
-              <div>
-                <dt>
-                  RATING
-                </dt>
-
-                <dd
-                  id="music-detail-rating"
-                >
-                  —
-                </dd>
-              </div>
-
-              <div>
-                <dt>
-                  SHELF
-                </dt>
-
-                <dd
-                  id="music-detail-shelf"
-                >
-                  —
-                </dd>
-              </div>
-            </dl>
-
-
-            <section
-              class="library-detail-section"
-            >
-              <span>
-                PERSONAL NOTE
-              </span>
-
-              <p
-                id="music-detail-note"
-              >
-                —
-              </p>
-            </section>
-          </div>
-        </div>
-      </aside>
-    </div>
-
-
-    <script
-      id="music-data"
-      type="application/json"
-      is:inline
-      set:html={musicDataJson}
-    ></script>
-  </div>
+  </main>
 </InternalPageLayout>
 
-
 <script>
-  type LibraryFilter =
-    | "all"
-    | "favourites"
-    | "completed"
-    | "pending";
+  type LibraryTab = "movies" | "games" | "music";
 
+  type LibraryRuntimeWindow = Window & {
+    __portal214LibraryController?: AbortController;
+  };
 
-  interface MovieSearchResult {
-    title: string;
-    year: string;
-    imdbId: string;
-    type: string;
-    poster: string | null;
-  }
+  type OmdbSearchItem = {
+    Title?: string;
+    Year?: string;
+    imdbID?: string;
+    Type?: string;
+    Poster?: string;
+  };
 
+  type OmdbSearchResponse = {
+    Search?: OmdbSearchItem[];
+    Response?: string;
+    Error?: string;
+  };
 
-  interface MovieSearchResponse {
-    success: boolean;
-    message?: string;
-    results?: MovieSearchResult[];
-  }
+  const libraryRuntimeWindow = window as LibraryRuntimeWindow;
 
-
-  interface MovieDetails {
-    title: string | null;
-    year: string | null;
-    released: string | null;
-    runtime: string | null;
-    genre: string | null;
-    director: string | null;
-    actors: string | null;
-    plot: string | null;
-    language: string | null;
-    country: string | null;
-    awards: string | null;
-    poster: string | null;
-    imdbRating: string | null;
-    imdbId: string | null;
-  }
-
-
-  interface MovieDetailsResponse {
-    success: boolean;
-    message?: string;
-    movie?: MovieDetails;
-  }
-
-
-  interface MusicSignal {
-    id: string;
-    title: string;
-    artist: string;
-    album: string | null;
-    year: string | null;
-    recordingId: string;
-    releaseId: string | null;
-    releaseGroupId: string | null;
-    durationMs: number | null;
-    cover: string | null;
-    status: "saved" | "discover-later";
-    favourite: boolean;
-    myRating: number | null;
-    shelf: string;
-    tags: string[];
-    note: string;
-  }
-
-
-  /* ======================================================
-     ENTRANCE ROUTER
-  ====================================================== */
-
-  const routerNodes =
-    Array.from(
-      document.querySelectorAll<HTMLButtonElement>(
-        "[data-router-node]"
-      )
-    );
-
-
-  const routerPreviewNumber =
-    document.querySelector<HTMLElement>(
-      "#router-preview-number"
-    );
-
-  const routerPreviewSubtitle =
-    document.querySelector<HTMLElement>(
-      "#router-preview-subtitle"
-    );
-
-  const routerPreviewTitle =
-    document.querySelector<HTMLElement>(
-      "#router-preview-title"
-    );
-
-  const routerPreviewDescription =
-    document.querySelector<HTMLElement>(
-      "#router-preview-description"
-    );
-
-  const routerPreviewCount =
-    document.querySelector<HTMLElement>(
-      "#router-preview-count"
-    );
-
-  const routerPreviewUnit =
-    document.querySelector<HTMLElement>(
-      "#router-preview-unit"
-    );
-
-
-  function previewRouterNode(
-    node:
-      HTMLButtonElement
-  ): void {
-    routerNodes.forEach(
-      (item) => {
-        item.classList.toggle(
-          "is-targeted",
-          item === node
-        );
-      }
-    );
-
-
-    if (
-      routerPreviewNumber
-    ) {
-      routerPreviewNumber.textContent =
-        node.dataset
-          .routerNumber ??
-        "00";
+  const libraryMeta: Record<
+    LibraryTab,
+    {
+      title: string;
+      activeStack: string;
+      countSelector: string;
+      fallbackCount: number;
+      referenceTitle: string;
+      referenceDescription: string;
+      terminalMode: string;
+      terminalStack: string;
+      readoutMode: string;
     }
+  > = {
+    movies: {
+      title: "MOVIE STACKS",
+      activeStack: "01 // MOVING IMAGES",
+      countSelector: '[data-library-panel="movies"] .libraries-media-item--movie',
+      fallbackCount: 0,
+      referenceTitle: "Movie Archive",
+      referenceDescription: "Browse moving images as poster-led catalogue records arranged across Portal 214's digital shelves.",
+      terminalMode: "BROWSE",
+      terminalStack: "01",
+      readoutMode: "MOVIES",
+    },
+    games: {
+      title: "GAME STACKS",
+      activeStack: "02 // PLAYABLE OBJECTS",
+      countSelector: '[data-library-panel="games"] .libraries-media-item--game',
+      fallbackCount: 3,
+      referenceTitle: "Game Archive",
+      referenceDescription: "Playable objects, box art and future game records live inside this stack of the catalogue.",
+      terminalMode: "PLAY",
+      terminalStack: "02",
+      readoutMode: "GAMES",
+    },
+    music: {
+      title: "AUDIO STACKS",
+      activeStack: "03 // AUDIO SIGNALS",
+      countSelector: '[data-library-panel="music"] .libraries-media-item--music',
+      fallbackCount: 0,
+      referenceTitle: "Audio Archive",
+      referenceDescription: "Browse albums and audio signals through square-cover shelves connected to the same media catalogue.",
+      terminalMode: "LISTEN",
+      terminalStack: "03",
+      readoutMode: "MUSIC",
+    },
+  };
 
+  function initialiseLibrariesPage(): void {
+    libraryRuntimeWindow.__portal214LibraryController?.abort();
 
-    if (
-      routerPreviewSubtitle
-    ) {
-      routerPreviewSubtitle.textContent =
-        node.dataset
-          .routerSubtitle ??
-        "STORAGE NODE";
-    }
-
-
-    if (
-      routerPreviewTitle
-    ) {
-      routerPreviewTitle.textContent =
-        node.dataset
-          .routerTitle ??
-        "ARCHIVE";
-    }
-
-
-    if (
-      routerPreviewDescription
-    ) {
-      routerPreviewDescription.textContent =
-        node.dataset
-          .routerDescription ??
-        "";
-    }
-
-
-    if (
-      routerPreviewCount
-    ) {
-      routerPreviewCount.textContent =
-        node.dataset
-          .routerCount ??
-        "0";
-    }
-
-
-    if (
-      routerPreviewUnit
-    ) {
-      routerPreviewUnit.textContent =
-        node.dataset
-          .routerUnit ??
-        "FILES";
-    }
-  }
-
-
-  routerNodes.forEach(
-    (node) => {
-      node.addEventListener(
-        "mouseenter",
-        () => {
-          previewRouterNode(
-            node
-          );
-        }
-      );
-
-
-      node.addEventListener(
-        "focus",
-        () => {
-          previewRouterNode(
-            node
-          );
-        }
-      );
-    }
-  );
-
-
-  if (
-    routerNodes[0]
-  ) {
-    previewRouterNode(
-      routerNodes[0]
-    );
-  }
-
-
-  /* ======================================================
-     LIBRARY NAVIGATION
-  ====================================================== */
-
-  const entrance =
-    document.querySelector<HTMLElement>(
-      "#library-entrance"
+    const root = document.querySelector<HTMLElement>(
+      ".libraries-page [data-library-root]"
     );
 
-
-  const collection =
-    document.querySelector<HTMLElement>(
-      "#library-collection"
-    );
-
-
-  const returnButton =
-    document.querySelector<HTMLButtonElement>(
-      "#library-return-button"
-    );
-
-
-  const collectionTitle =
-    document.querySelector<HTMLElement>(
-      "#library-collection-title"
-    );
-
-
-  const collectionCounter =
-    document.querySelector<HTMLElement>(
-      "#library-collection-counter"
-    );
-
-
-  const collectionStatus =
-    document.querySelector<HTMLElement>(
-      "#library-collection-status"
-    );
-
-
-  const movieSearchTerminal =
-    document.querySelector<HTMLElement>(
-      "#movie-search-terminal"
-    );
-
-
-  const genericLibraryArea =
-    document.querySelector<HTMLElement>(
-      "#generic-library-area"
-    );
-
-
-  const musicBrowser =
-    document.querySelector<HTMLElement>(
-      "#music-browser"
-    );
-
-
-  const completedFilterLabel =
-    document.querySelector<HTMLElement>(
-      "#library-completed-filter-label"
-    );
-
-
-  const pendingFilterLabel =
-    document.querySelector<HTMLElement>(
-      "#library-pending-filter-label"
-    );
-
-
-  const openLibraryButtons =
-    Array.from(
-      document.querySelectorAll<HTMLButtonElement>(
-        "[data-open-library]"
-      )
-    );
-
-
-  const categoryTabs =
-    Array.from(
-      document.querySelectorAll<HTMLButtonElement>(
-        "[data-library-tab]"
-      )
-    );
-
-
-  const filterButtons =
-    Array.from(
-      document.querySelectorAll<HTMLButtonElement>(
-        "[data-library-filter]"
-      )
-    );
-
-
-  const mediaCards =
-    Array.from(
-      document.querySelectorAll<HTMLButtonElement>(
-        "[data-library-entry]"
-      )
-    );
-
-
-  const noResults =
-    document.querySelector<HTMLElement>(
-      "#library-no-results"
-    );
-
-
-  let activeCategory =
-    "movies";
-
-
-  let activeFilter:
-    LibraryFilter =
-    "all";
-
-
-  function getCategoryTab(
-    category:
-      string
-  ) {
-    return categoryTabs.find(
-      (tab) =>
-        tab.dataset
-          .libraryTab ===
-        category
-    );
-  }
-
-
-  function resetFilters():
-    void {
-    activeFilter =
-      "all";
-
-
-    filterButtons.forEach(
-      (button) => {
-        const active =
-          button.dataset
-            .libraryFilter ===
-          "all";
-
-        button.classList.toggle(
-          "library-filter-button--active",
-          active
-        );
-      }
-    );
-  }
-
-
-  function updateCategory(
-    category:
-      string
-  ): void {
-    const tab =
-      getCategoryTab(
-        category
-      );
-
-
-    if (!tab) {
+    if (!root) {
       return;
     }
 
+    const controller = new AbortController();
+    const { signal } = controller;
+    libraryRuntimeWindow.__portal214LibraryController = controller;
 
-    activeCategory =
-      category;
+    const tabButtons = Array.from(
+      root.querySelectorAll<HTMLButtonElement>("[data-library-tab]")
+    );
 
+    const mapButtons = Array.from(
+      document.querySelectorAll<HTMLButtonElement>(
+        ".libraries-page [data-library-map-node]"
+      )
+    );
 
-    resetFilters();
+    const panels = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-library-panel]")
+    );
 
+    const activeTitle = root.querySelector<HTMLElement>(
+      "#libraries-active-title"
+    );
 
-    categoryTabs.forEach(
-      (button) => {
-        const active =
-          button.dataset
-            .libraryTab ===
-          category;
+    const activeCount = root.querySelector<HTMLElement>(
+      "#libraries-active-count"
+    );
 
-        button.classList.toggle(
-          "library-category-tab--active",
-          active
-        );
-      }
+    const mapActive = document.querySelector<HTMLElement>(
+      ".libraries-page #libraries-map-active"
+    );
+
+    const mapCount = document.querySelector<HTMLElement>(
+      ".libraries-page #libraries-map-count"
+    );
+
+    const referenceTitle = document.querySelector<HTMLElement>(
+      ".libraries-page #libraries-reference-title"
+    );
+
+    const referenceDescription = document.querySelector<HTMLElement>(
+      ".libraries-page #libraries-reference-description"
+    );
+
+    const terminalMode = document.querySelector<HTMLElement>(
+      ".libraries-page #libraries-terminal-mode"
+    );
+
+    const terminalStack = document.querySelector<HTMLElement>(
+      ".libraries-page #libraries-terminal-stack"
+    );
+
+    const terminalReadoutMode = document.querySelector<HTMLElement>(
+      ".libraries-page #libraries-terminal-readout-mode"
     );
 
 
-    if (
-      collectionTitle
-    ) {
-      collectionTitle.textContent =
-        tab.dataset
-          .libraryTitle ??
-        "ARCHIVE";
-    }
-
-
-    if (
-      collectionStatus
-    ) {
-      collectionStatus.textContent =
-        tab.dataset
-          .libraryStatus ??
-        "STABLE";
-    }
-
-
-    if (
-      completedFilterLabel
-    ) {
-      completedFilterLabel.textContent =
-        tab.dataset
-          .libraryCompletedLabel ??
-        "COMPLETED";
-    }
-
-
-    if (
-      pendingFilterLabel
-    ) {
-      pendingFilterLabel.textContent =
-        tab.dataset
-          .libraryPendingLabel ??
-        "PENDING";
-    }
-
-
-    const isMovies =
-      category ===
-      "movies";
-
-
-    const isMusic =
-      category ===
-      "music";
-
-
-    if (
-      movieSearchTerminal
-    ) {
-      movieSearchTerminal.hidden =
-        !isMovies;
-    }
-
-
-    if (
-      genericLibraryArea
-    ) {
-      genericLibraryArea.hidden =
-        isMusic;
-    }
-
-
-    if (
-      musicBrowser
-    ) {
-      musicBrowser.hidden =
-        !isMusic;
-    }
-
-
-    if (
-      isMusic
-    ) {
-      showMusicArtistDirectory();
-
-      if (
-        collectionCounter
-      ) {
-        collectionCounter.textContent =
-          `${String(
-            musicSignals.length
-          ).padStart(
-            2,
-            "0"
-          )} SIGNALS DETECTED`;
-      }
-
-      return;
-    }
-
-
-    applyGenericFilter();
-  }
-
-
-  function openCollection(
-    category:
-      string
-  ): void {
-    if (
-      !entrance ||
-      !collection
-    ) {
-      return;
-    }
-
-
-    updateCategory(
-      category
+    const movieTools = root.querySelector<HTMLElement>(
+      "[data-library-movie-tools]"
     );
 
+    const scrollArea = root.querySelector<HTMLElement>(
+      "#libraries-archive-scroll"
+    );
 
-    entrance.hidden =
-      true;
+    const countFor = (tab: LibraryTab): number => {
+      const count = root.querySelectorAll(libraryMeta[tab].countSelector).length;
+      return count || libraryMeta[tab].fallbackCount;
+    };
 
-    collection.hidden =
-      false;
+    const activateTab = (tab: LibraryTab): void => {
+      tabButtons.forEach((button) => {
+        const active = button.dataset.libraryTab === tab;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-selected", String(active));
+      });
 
-    collection.scrollIntoView({
-      block: "start",
-    });
-  }
+      mapButtons.forEach((button) => {
+        const active = button.dataset.libraryMapNode === tab;
+        button.classList.toggle("is-active", active);
+      });
+
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.libraryPanel !== tab;
+      });
+
+      const count = countFor(tab);
+
+      if (activeTitle) {
+        activeTitle.textContent = libraryMeta[tab].title;
+      }
+
+      if (activeCount) {
+        activeCount.textContent = `${String(count).padStart(2, "0")} RECORDS`;
+      }
+
+      if (mapActive) {
+        mapActive.textContent = libraryMeta[tab].activeStack;
+      }
+
+      if (mapCount) {
+        mapCount.textContent = String(count).padStart(3, "0");
+      }
+
+      if (referenceTitle) {
+        referenceTitle.textContent = libraryMeta[tab].referenceTitle;
+      }
+
+      if (referenceDescription) {
+        referenceDescription.textContent = libraryMeta[tab].referenceDescription;
+      }
+
+      if (terminalMode) {
+        terminalMode.textContent = libraryMeta[tab].terminalMode;
+      }
+
+      if (terminalStack) {
+        terminalStack.textContent = libraryMeta[tab].terminalStack;
+      }
+
+      if (terminalReadoutMode) {
+        terminalReadoutMode.textContent = libraryMeta[tab].readoutMode;
+      }
 
 
-  function showEntrance():
-    void {
-    if (
-      !entrance ||
-      !collection
-    ) {
-      return;
-    }
+      if (movieTools) {
+        movieTools.hidden = tab !== "movies";
+      }
 
+      if (scrollArea) {
+        scrollArea.scrollTop = 0;
+      }
+    };
 
-    collection.hidden =
-      true;
-
-    entrance.hidden =
-      false;
-
-    showMusicArtistDirectory();
-  }
-
-
-  openLibraryButtons.forEach(
-    (button) => {
+    const bindTabButton = (
+      button: HTMLButtonElement,
+      datasetKey: "libraryTab" | "libraryMapNode"
+    ): void => {
       button.addEventListener(
         "click",
         () => {
-          const category =
-            button.dataset
-              .openLibrary;
+          const tab = button.dataset[datasetKey] as LibraryTab | undefined;
 
-          if (category) {
-            openCollection(
-              category
-            );
+          if (tab && tab in libraryMeta) {
+            activateTab(tab);
           }
-        }
+        },
+        { signal }
       );
-    }
-  );
+    };
 
+    tabButtons.forEach((button) => bindTabButton(button, "libraryTab"));
+    mapButtons.forEach((button) => bindTabButton(button, "libraryMapNode"));
 
-  categoryTabs.forEach(
-    (button) => {
-      button.addEventListener(
-        "click",
-        () => {
-          const category =
-            button.dataset
-              .libraryTab;
+    /* =====================================================
+       OMDb SEARCH
+    ====================================================== */
 
-          if (category) {
-            updateCategory(
-              category
-            );
-          }
-        }
-      );
-    }
-  );
-
-
-  returnButton?.addEventListener(
-    "click",
-    showEntrance
-  );
-
-
-  /* ======================================================
-     GENERIC FILTER
-  ====================================================== */
-
-  function applyGenericFilter():
-    void {
-    let visible =
-      0;
-
-
-    mediaCards.forEach(
-      (card) => {
-        const categoryMatch =
-          card.dataset
-            .libraryEntryCategory ===
-          activeCategory;
-
-
-        const state =
-          card.dataset
-            .libraryEntryState;
-
-
-        const favourite =
-          card.dataset
-            .libraryEntryFavourite ===
-          "true";
-
-
-        let filterMatch =
-          true;
-
-
-        if (
-          activeFilter ===
-          "favourites"
-        ) {
-          filterMatch =
-            favourite;
-        }
-
-
-        if (
-          activeFilter ===
-          "completed"
-        ) {
-          filterMatch =
-            state ===
-            "completed";
-        }
-
-
-        if (
-          activeFilter ===
-          "pending"
-        ) {
-          filterMatch =
-            state ===
-            "pending";
-        }
-
-
-        const show =
-          categoryMatch &&
-          filterMatch;
-
-
-        card.hidden =
-          !show;
-
-
-        if (show) {
-          visible += 1;
-        }
-      }
+    const searchForm = root.querySelector<HTMLFormElement>(
+      "#libraries-movie-search-form"
     );
 
+    const searchInput = root.querySelector<HTMLInputElement>(
+      "#libraries-movie-query"
+    );
 
-    if (
-      collectionCounter
-    ) {
-      collectionCounter.textContent =
-        `${String(
-          visible
-        ).padStart(
-          2,
-          "0"
-        )} FILES DETECTED`;
-    }
+    const searchStatus = root.querySelector<HTMLElement>(
+      "#libraries-search-status"
+    );
 
+    const searchResults = root.querySelector<HTMLElement>(
+      "#libraries-search-results"
+    );
 
-    if (
-      noResults
-    ) {
-      noResults.hidden =
-        visible !== 0;
-    }
-  }
+    const omdbKey = root.dataset.omdbKey?.trim() ?? "";
 
+    const setSearchStatus = (
+      message: string,
+      state: "idle" | "loading" | "success" | "error" = "idle"
+    ): void => {
+      if (!searchStatus) {
+        return;
+      }
 
-  filterButtons.forEach(
-    (button) => {
-      button.addEventListener(
-        "click",
-        () => {
-          const filter =
-            button.dataset
-              .libraryFilter as
-              | LibraryFilter
-              | undefined;
+      searchStatus.classList.remove(
+        "is-loading",
+        "is-success",
+        "is-error"
+      );
 
+      if (state !== "idle") {
+        searchStatus.classList.add(`is-${state}`);
+      }
 
-          if (!filter) {
+      const textNode = Array.from(searchStatus.childNodes).find(
+        (node) => node.nodeType === Node.TEXT_NODE
+      );
+
+      if (textNode) {
+        textNode.textContent = ` ${message}`;
+      } else {
+        searchStatus.append(document.createTextNode(` ${message}`));
+      }
+    };
+
+    const makeSearchItem = (
+      movie: OmdbSearchItem,
+      index: number
+    ): HTMLElement => {
+      const article = document.createElement("article");
+      article.className =
+        "libraries-media-item libraries-media-item--movie libraries-media-item--search";
+
+      const cover = document.createElement("div");
+      cover.className = "libraries-media-item__cover";
+
+      if (movie.Poster && movie.Poster !== "N/A") {
+        const image = document.createElement("img");
+        image.src = movie.Poster;
+        image.alt = "";
+        image.loading = "lazy";
+        image.decoding = "async";
+        cover.append(image);
+      } else {
+        const fallback = document.createElement("div");
+        fallback.className = "libraries-cover-fallback";
+        fallback.innerHTML = `<span>EXT-${String(index + 1).padStart(3, "0")}</span><strong>NO COVER</strong>`;
+        cover.append(fallback);
+      }
+
+      const code = document.createElement("span");
+      code.className = "libraries-media-item__catalogue-id";
+      code.textContent = movie.imdbID || `OMDB-${String(index + 1).padStart(3, "0")}`;
+      cover.append(code);
+
+      const label = document.createElement("div");
+      label.className = "libraries-media-item__label";
+
+      const title = document.createElement("h2");
+      title.textContent = movie.Title || "UNTITLED RECORD";
+
+      const meta = document.createElement("p");
+      meta.textContent = [movie.Year, movie.Type]
+        .filter(Boolean)
+        .join(" // ") || "EXTERNAL RECORD";
+
+      const action = document.createElement("span");
+      action.textContent = "> EXTERNAL RECORD";
+
+      label.append(title, meta, action);
+      article.append(cover, label);
+
+      return article;
+    };
+
+    searchForm?.addEventListener(
+      "submit",
+      async (event) => {
+        event.preventDefault();
+
+        const query = searchInput?.value.trim() ?? "";
+
+        if (!query) {
+          setSearchStatus("ENTER A MOVIE TITLE", "error");
+          searchInput?.focus();
+          return;
+        }
+
+        if (!omdbKey) {
+          setSearchStatus("OMDB_API_KEY IS MISSING FROM .ENV", "error");
+          return;
+        }
+
+        if (!searchResults) {
+          return;
+        }
+
+        setSearchStatus("QUERYING EXTERNAL CATALOGUE...", "loading");
+        searchResults.hidden = true;
+        searchResults.replaceChildren();
+
+        try {
+          const requestUrl = new URL("https://www.omdbapi.com/");
+          requestUrl.searchParams.set("apikey", omdbKey);
+          requestUrl.searchParams.set("s", query);
+          requestUrl.searchParams.set("type", "movie");
+          requestUrl.searchParams.set("r", "json");
+
+          const response = await fetch(requestUrl, { signal });
+
+          if (!response.ok) {
+            throw new Error(`OMDb returned HTTP ${response.status}.`);
+          }
+
+          const data = (await response.json()) as OmdbSearchResponse;
+
+          if (data.Response === "False" || !data.Search?.length) {
+            setSearchStatus(
+              data.Error || "NO MATCHING RECORDS FOUND",
+              "error"
+            );
             return;
           }
 
+          const heading = document.createElement("header");
+          heading.className = "libraries-shelf__header";
+          heading.innerHTML = `
+            <div><span>EXTERNAL STACK</span><strong>SEARCH RESULTS</strong></div>
+            <span>${String(Math.min(data.Search.length, 5)).padStart(2, "0")} RECORDS</span>
+          `;
 
-          activeFilter =
-            filter;
+          const grid = document.createElement("div");
+          grid.className = "libraries-shelf__grid";
 
+          data.Search.slice(0, 5).forEach((movie, index) => {
+            grid.append(makeSearchItem(movie, index));
+          });
 
-          filterButtons.forEach(
-            (item) => {
-              item.classList.toggle(
-                "library-filter-button--active",
-                item === button
-              );
-            }
+          const rail = document.createElement("div");
+          rail.className = "libraries-shelf__rail";
+          rail.innerHTML = "<span>EXTERNAL STACK // OMDb</span>";
+
+          searchResults.append(heading, grid, rail);
+          searchResults.hidden = false;
+
+          setSearchStatus(
+            `${Math.min(data.Search.length, 5)} RECORDS RECEIVED`,
+            "success"
           );
-
-
-          applyGenericFilter();
-        }
-      );
-    }
-  );
-
-
-  /* ======================================================
-     GENERIC DRAWER
-  ====================================================== */
-
-  const drawerLayer =
-    document.querySelector<HTMLElement>(
-      "#library-drawer-layer"
-    );
-
-
-  const drawer =
-    document.querySelector<HTMLElement>(
-      "#library-detail-drawer"
-    );
-
-
-  const drawerBackdrop =
-    document.querySelector<HTMLButtonElement>(
-      "#library-drawer-backdrop"
-    );
-
-
-  const drawerClose =
-    document.querySelector<HTMLButtonElement>(
-      "#library-detail-close"
-    );
-
-
-  const detailRecords =
-    Array.from(
-      document.querySelectorAll<HTMLElement>(
-        "[data-library-detail-record]"
-      )
-    );
-
-
-  function openDrawer(
-    entryId:
-      string
-  ): void {
-    if (
-      !drawerLayer ||
-      !drawer
-    ) {
-      return;
-    }
-
-
-    const target =
-      detailRecords.find(
-        (record) =>
-          record.dataset
-            .libraryDetailRecord ===
-          entryId
-      );
-
-
-    if (!target) {
-      return;
-    }
-
-
-    detailRecords.forEach(
-      (record) => {
-        record.hidden =
-          record !== target;
-      }
-    );
-
-
-    drawerLayer.hidden =
-      false;
-
-
-    requestAnimationFrame(
-      () => {
-        drawerLayer.classList.add(
-          "is-open"
-        );
-
-        drawer.classList.add(
-          "is-open"
-        );
-
-        drawerClose?.focus();
-      }
-    );
-  }
-
-
-  function closeDrawer():
-    void {
-    if (
-      !drawerLayer ||
-      !drawer
-    ) {
-      return;
-    }
-
-
-    drawerLayer.classList.remove(
-      "is-open"
-    );
-
-    drawer.classList.remove(
-      "is-open"
-    );
-
-
-    window.setTimeout(
-      () => {
-        drawerLayer.hidden =
-          true;
-
-        detailRecords.forEach(
-          (record) => {
-            record.hidden =
-              true;
-          }
-        );
-      },
-      190
-    );
-  }
-
-
-  mediaCards.forEach(
-    (card) => {
-      card.addEventListener(
-        "click",
-        () => {
-          const id =
-            card.dataset
-              .libraryEntry;
-
-          if (id) {
-            openDrawer(id);
-          }
-        }
-      );
-    }
-  );
-
-
-  drawerBackdrop?.addEventListener(
-    "click",
-    closeDrawer
-  );
-
-
-  drawerClose?.addEventListener(
-    "click",
-    closeDrawer
-  );
-
-
-  /* ======================================================
-     MUSIC DATA
-  ====================================================== */
-
-  const musicDataElement =
-    document.querySelector<HTMLScriptElement>(
-      "#music-data"
-    );
-
-
-  let musicSignals:
-    MusicSignal[] = [];
-
-
-  try {
-    musicSignals =
-      JSON.parse(
-        musicDataElement
-          ?.textContent ??
-        "[]"
-      );
-  } catch {
-    musicSignals = [];
-  }
-
-
-  const musicArtistIndex =
-    document.querySelector<HTMLElement>(
-      "#music-artist-index"
-    );
-
-
-  const musicArtistView =
-    document.querySelector<HTMLElement>(
-      "#music-artist-view"
-    );
-
-
-  const musicArtistButtons =
-    Array.from(
-      document.querySelectorAll<HTMLButtonElement>(
-        "[data-music-artist]"
-      )
-    );
-
-
-  const musicArtistBack =
-    document.querySelector<HTMLButtonElement>(
-      "#music-artist-back"
-    );
-
-
-  const musicArtistCover =
-    document.querySelector<HTMLElement>(
-      "#music-artist-cover"
-    );
-
-
-  const musicArtistTitle =
-    document.querySelector<HTMLElement>(
-      "#music-artist-title"
-    );
-
-
-  const musicArtistSongCount =
-    document.querySelector<HTMLElement>(
-      "#music-artist-song-count"
-    );
-
-
-  const musicArtistAlbumCount =
-    document.querySelector<HTMLElement>(
-      "#music-artist-album-count"
-    );
-
-
-  const musicAlbumList =
-    document.querySelector<HTMLElement>(
-      "#music-album-list"
-    );
-
-
-  const musicSignalSearch =
-    document.querySelector<HTMLInputElement>(
-      "#music-signal-search"
-    );
-
-
-  let activeMusicArtist =
-    "";
-
-
-  function formatDuration(
-    milliseconds:
-      number | null
-  ): string {
-    if (
-      !milliseconds ||
-      milliseconds <= 0
-    ) {
-      return "—";
-    }
-
-
-    const totalSeconds =
-      Math.floor(
-        milliseconds / 1000
-      );
-
-
-    const minutes =
-      Math.floor(
-        totalSeconds / 60
-      );
-
-
-    const seconds =
-      totalSeconds % 60;
-
-
-    return `${minutes}:${String(
-      seconds
-    ).padStart(2, "0")}`;
-  }
-
-
-  function showMusicArtistDirectory():
-    void {
-    activeMusicArtist =
-      "";
-
-
-    if (
-      musicArtistIndex
-    ) {
-      musicArtistIndex.hidden =
-        false;
-    }
-
-
-    if (
-      musicArtistView
-    ) {
-      musicArtistView.hidden =
-        true;
-    }
-
-
-    if (
-      musicSignalSearch
-    ) {
-      musicSignalSearch.value =
-        "";
-    }
-
-
-    musicAlbumList
-      ?.replaceChildren();
-  }
-
-
-  function createAlbumSection(
-    albumName:
-      string,
-
-    songs:
-      MusicSignal[]
-  ): HTMLElement {
-    const section =
-      document.createElement(
-        "section"
-      );
-
-
-    section.className =
-      "music-album";
-
-
-    const header =
-      document.createElement(
-        "header"
-      );
-
-
-    header.className =
-      "music-album__header";
-
-
-    const cover =
-      document.createElement(
-        "div"
-      );
-
-
-    cover.className =
-      "music-album__cover";
-
-
-    const coverUrl =
-      songs.find(
-        (song) =>
-          Boolean(
-            song.cover
-          )
-      )?.cover ??
-      null;
-
-
-    if (coverUrl) {
-      const image =
-        document.createElement(
-          "img"
-        );
-
-
-      image.src =
-        coverUrl;
-
-      image.alt =
-        `${albumName} cover`;
-
-      image.loading =
-        "lazy";
-
-      cover.append(image);
-    } else {
-      const fallback =
-        document.createElement(
-          "span"
-        );
-
-      fallback.textContent =
-        "NO COVER";
-
-      cover.append(
-        fallback
-      );
-    }
-
-
-    const copy =
-      document.createElement(
-        "div"
-      );
-
-
-    copy.className =
-      "music-album__copy";
-
-
-    const label =
-      document.createElement(
-        "span"
-      );
-
-    label.textContent =
-      "RELEASE NODE";
-
-
-    const title =
-      document.createElement(
-        "h4"
-      );
-
-    title.textContent =
-      albumName;
-
-
-    const year =
-      document.createElement(
-        "p"
-      );
-
-
-    year.textContent =
-      songs.find(
-        (song) =>
-          Boolean(song.year)
-      )?.year ??
-      "YEAR UNKNOWN";
-
-
-    copy.append(
-      label,
-      title,
-      year
-    );
-
-
-    const count =
-      document.createElement(
-        "strong"
-      );
-
-
-    count.className =
-      "music-album__count";
-
-
-    count.textContent =
-      `${songs.length} SIGNAL${
-        songs.length === 1
-          ? ""
-          : "S"
-      }`;
-
-
-    header.append(
-      cover,
-      copy,
-      count
-    );
-
-
-    const list =
-      document.createElement(
-        "div"
-      );
-
-
-    list.className =
-      "music-song-list";
-
-
-    songs
-      .slice()
-      .sort(
-        (first, second) =>
-          first.title.localeCompare(
-            second.title
-          )
-      )
-      .forEach(
-        (song, index) => {
-          const button =
-            document.createElement(
-              "button"
-            );
-
-
-          button.type =
-            "button";
-
-          button.className =
-            "music-song-row";
-
-          button.dataset.musicSongId =
-            song.id;
-
-
-          const number =
-            document.createElement(
-              "span"
-            );
-
-          number.className =
-            "music-song-row__number";
-
-          number.textContent =
-            String(
-              index + 1
-            ).padStart(
-              2,
-              "0"
-            );
-
-
-          const songCopy =
-            document.createElement(
-              "span"
-            );
-
-          songCopy.className =
-            "music-song-row__copy";
-
-
-          const songTitle =
-            document.createElement(
-              "strong"
-            );
-
-          songTitle.textContent =
-            song.title;
-
-
-          const songMeta =
-            document.createElement(
-              "small"
-            );
-
-          songMeta.textContent =
-            song.year ??
-            "YEAR UNKNOWN";
-
-
-          songCopy.append(
-            songTitle,
-            songMeta
-          );
-
-
-          const duration =
-            document.createElement(
-              "span"
-            );
-
-          duration.className =
-            "music-song-row__duration";
-
-          duration.textContent =
-            formatDuration(
-              song.durationMs
-            );
-
-
-          const state =
-            document.createElement(
-              "span"
-            );
-
-          state.className =
-            "music-song-row__state";
-
-          state.textContent =
-            song.favourite
-              ? "★ FAV"
-              : (
-                  song.status ===
-                    "saved"
-                    ? "SAVED"
-                    : "LATER"
-                );
-
-
-          button.append(
-            number,
-            songCopy,
-            duration,
-            state
-          );
-
-
-          button.addEventListener(
-            "click",
-            () => {
-              openMusicDetail(
-                song
-              );
-            }
-          );
-
-
-          list.append(button);
-        }
-      );
-
-
-    section.append(
-      header,
-      list
-    );
-
-
-    return section;
-  }
-
-
-  function renderMusicArtist(
-    artist:
-      string
-  ): void {
-    const songs =
-      musicSignals.filter(
-        (song) =>
-          song.artist ===
-          artist
-      );
-
-
-    if (!songs.length) {
-      return;
-    }
-
-
-    activeMusicArtist =
-      artist;
-
-
-    if (
-      musicArtistIndex
-    ) {
-      musicArtistIndex.hidden =
-        true;
-    }
-
-
-    if (
-      musicArtistView
-    ) {
-      musicArtistView.hidden =
-        false;
-    }
-
-
-    if (
-      musicArtistTitle
-    ) {
-      musicArtistTitle.textContent =
-        artist;
-    }
-
-
-    const groups =
-      new Map<
-        string,
-        MusicSignal[]
-      >();
-
-
-    songs.forEach(
-      (song) => {
-        const album =
-          song.album ??
-          "Loose Signals";
-
-
-        const current =
-          groups.get(album) ??
-          [];
-
-
-        current.push(song);
-
-        groups.set(
-          album,
-          current
-        );
-      }
-    );
-
-
-    if (
-      musicArtistSongCount
-    ) {
-      musicArtistSongCount.textContent =
-        `${songs.length} SIGNALS`;
-    }
-
-
-    if (
-      musicArtistAlbumCount
-    ) {
-      musicArtistAlbumCount.textContent =
-        `${groups.size} RELEASES`;
-    }
-
-
-    if (
-      musicArtistCover
-    ) {
-      musicArtistCover
-        .querySelectorAll("img")
-        .forEach(
-          (image) =>
-            image.remove()
-        );
-
-
-      const cover =
-        songs.find(
-          (song) =>
-            Boolean(song.cover)
-        )?.cover ??
-        null;
-
-
-      if (cover) {
-        const image =
-          document.createElement(
-            "img"
-          );
-
-        image.src =
-          cover;
-
-        image.alt =
-          `${artist} artwork`;
-
-        musicArtistCover.prepend(
-          image
-        );
-      }
-    }
-
-
-    musicAlbumList
-      ?.replaceChildren();
-
-
-    Array.from(
-      groups.entries()
-    )
-      .sort(
-        (first, second) => {
-          const firstYear =
-            first[1].find(
-              (song) =>
-                song.year
-            )?.year ??
-            "9999";
-
-
-          const secondYear =
-            second[1].find(
-              (song) =>
-                song.year
-            )?.year ??
-            "9999";
-
-
-          if (
-            firstYear !==
-            secondYear
-          ) {
-            return firstYear.localeCompare(
-              secondYear
-            );
-          }
-
-
-          return first[0].localeCompare(
-            second[0]
-          );
-        }
-      )
-      .forEach(
-        ([album, albumSongs]) => {
-          musicAlbumList?.append(
-            createAlbumSection(
-              album,
-              albumSongs
-            )
-          );
-        }
-      );
-
-
-    if (
-      musicSignalSearch
-    ) {
-      musicSignalSearch.value =
-        "";
-    }
-  }
-
-
-  musicArtistButtons.forEach(
-    (button) => {
-      button.addEventListener(
-        "click",
-        () => {
-          const artist =
-            button.dataset
-              .musicArtist;
-
-          if (artist) {
-            renderMusicArtist(
-              artist
-            );
-          }
-        }
-      );
-    }
-  );
-
-
-  musicArtistBack?.addEventListener(
-    "click",
-    showMusicArtistDirectory
-  );
-
-
-  musicSignalSearch?.addEventListener(
-    "input",
-    () => {
-      const query =
-        musicSignalSearch.value
-          .trim()
-          .toLowerCase();
-
-
-      const rows =
-        Array.from(
-          document.querySelectorAll<HTMLButtonElement>(
-            "[data-music-song-id]"
-          )
-        );
-
-
-      rows.forEach(
-        (row) => {
-          const song =
-            musicSignals.find(
-              (signal) =>
-                signal.id ===
-                row.dataset
-                  .musicSongId
-            );
-
-
-          if (!song) {
-            row.hidden = true;
-
+        } catch (error) {
+          if (error instanceof DOMException && error.name === "AbortError") {
             return;
           }
 
-
-          const searchable =
-            [
-              song.title,
-              song.album,
-              song.year,
-            ]
-              .filter(Boolean)
-              .join(" ")
-              .toLowerCase();
-
-
-          row.hidden =
-            Boolean(
-              query &&
-              !searchable.includes(
-                query
-              )
-            );
+          console.error("OMDb search failed:", error);
+          setSearchStatus("EXTERNAL CATALOGUE QUERY FAILED", "error");
         }
-      );
-
-
-      document
-        .querySelectorAll<HTMLElement>(
-          ".music-album"
-        )
-        .forEach(
-          (album) => {
-            const visible =
-              Array.from(
-                album.querySelectorAll<HTMLElement>(
-                  "[data-music-song-id]"
-                )
-              ).some(
-                (row) =>
-                  !row.hidden
-              );
-
-
-            album.hidden =
-              !visible;
-          }
-        );
-    }
-  );
-
-
-  /* ======================================================
-     MUSIC DETAIL
-  ====================================================== */
-
-  const musicDetailLayer =
-    document.querySelector<HTMLElement>(
-      "#music-detail-layer"
-    );
-
-
-  const musicDetailBackdrop =
-    document.querySelector<HTMLButtonElement>(
-      "#music-detail-backdrop"
-    );
-
-
-  const musicDetailClose =
-    document.querySelector<HTMLButtonElement>(
-      "#music-detail-close"
-    );
-
-
-  const musicDetailCover =
-    document.querySelector<HTMLElement>(
-      "#music-detail-cover"
-    );
-
-
-  function setMusicText(
-    selector:
-      string,
-
-    value:
-      string
-  ): void {
-    const element =
-      document.querySelector<HTMLElement>(
-        selector
-      );
-
-
-    if (element) {
-      element.textContent =
-        value;
-    }
-  }
-
-
-  function openMusicDetail(
-    song:
-      MusicSignal
-  ): void {
-    if (
-      !musicDetailLayer
-    ) {
-      return;
-    }
-
-
-    setMusicText(
-      "#music-detail-title",
-      song.title
-    );
-
-
-    setMusicText(
-      "#music-detail-artist",
-      song.artist
-    );
-
-
-    setMusicText(
-      "#music-detail-album",
-      song.album ??
-        "Loose Signals"
-    );
-
-
-    setMusicText(
-      "#music-detail-year",
-      song.year ?? "—"
-    );
-
-
-    setMusicText(
-      "#music-detail-duration",
-      formatDuration(
-        song.durationMs
-      )
-    );
-
-
-    setMusicText(
-      "#music-detail-status",
-      song.favourite
-        ? "★ FAVOURITE"
-        : (
-            song.status ===
-              "saved"
-              ? "SAVED"
-              : "DISCOVER LATER"
-          )
-    );
-
-
-    setMusicText(
-      "#music-detail-rating",
-      song.myRating !== null
-        ? `${song.myRating}/10`
-        : "UNRATED"
-    );
-
-
-    setMusicText(
-      "#music-detail-shelf",
-      song.shelf
-    );
-
-
-    setMusicText(
-      "#music-detail-note",
-      song.note
-    );
-
-
-    if (
-      musicDetailCover
-    ) {
-      musicDetailCover
-        .querySelectorAll("img")
-        .forEach(
-          (image) =>
-            image.remove()
-        );
-
-
-      if (song.cover) {
-        const image =
-          document.createElement(
-            "img"
-          );
-
-        image.src =
-          song.cover;
-
-        image.alt =
-          `${song.title} artwork`;
-
-        musicDetailCover.prepend(
-          image
-        );
-      }
-    }
-
-
-    musicDetailLayer.hidden =
-      false;
-
-
-    requestAnimationFrame(
-      () => {
-        musicDetailLayer.classList.add(
-          "is-open"
-        );
-
-        musicDetailClose?.focus();
-      }
-    );
-  }
-
-
-  function closeMusicDetail():
-    void {
-    if (
-      !musicDetailLayer
-    ) {
-      return;
-    }
-
-
-    musicDetailLayer.classList.remove(
-      "is-open"
-    );
-
-
-    window.setTimeout(
-      () => {
-        musicDetailLayer.hidden =
-          true;
       },
-      190
+      { signal }
     );
+
+    activateTab("movies");
   }
 
-
-  musicDetailBackdrop?.addEventListener(
-    "click",
-    closeMusicDetail
-  );
-
-
-  musicDetailClose?.addEventListener(
-    "click",
-    closeMusicDetail
-  );
-
-
-  /* ======================================================
-     OMDb
-  ====================================================== */
-
-  const movieSearchForm =
-    document.querySelector<HTMLFormElement>(
-      "#movie-search-form"
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      initialiseLibrariesPage,
+      { once: true }
     );
-
-
-  const movieSearchInput =
-    document.querySelector<HTMLInputElement>(
-      "#movie-search-input"
-    );
-
-
-  const movieSearchSubmit =
-    document.querySelector<HTMLButtonElement>(
-      "#movie-search-submit"
-    );
-
-
-  const movieSearchMessage =
-    document.querySelector<HTMLElement>(
-      "#movie-search-message"
-    );
-
-
-  const movieSearchState =
-    document.querySelector<HTMLElement>(
-      "#movie-search-api-state"
-    );
-
-
-  const movieSearchResults =
-    document.querySelector<HTMLElement>(
-      "#movie-search-results"
-    );
-
-
-  const movieSelection =
-    document.querySelector<HTMLElement>(
-      "#movie-search-selection"
-    );
-
-
-  const movieSelectionClose =
-    document.querySelector<HTMLButtonElement>(
-      "#movie-search-selection-close"
-    );
-
-
-  const moviePoster =
-    document.querySelector<HTMLElement>(
-      "#movie-search-selection-poster"
-    );
-
-
-  function setMovieText(
-    selector:
-      string,
-
-    value:
-      string | null | undefined
-  ): void {
-    const element =
-      document.querySelector<HTMLElement>(
-        selector
-      );
-
-
-    if (element) {
-      element.textContent =
-        value ?? "—";
-    }
+  } else {
+    initialiseLibrariesPage();
   }
 
-
-  function setMovieMessage(
-    message:
-      string,
-
-    state:
-      "ready" |
-      "loading" |
-      "success" |
-      "error" =
-      "ready"
-  ): void {
-    if (
-      movieSearchMessage
-    ) {
-      movieSearchMessage.dataset.state =
-        state;
-
-
-      const text =
-        movieSearchMessage.querySelector(
-          "span"
-        );
-
-
-      if (text) {
-        text.textContent =
-          message;
-      }
-    }
-
-
-    if (
-      movieSearchState
-    ) {
-      movieSearchState.textContent =
-        state === "loading"
-          ? "SEARCHING"
-          : state === "error"
-            ? "LINK ERROR"
-            : state === "success"
-              ? "RECORD FOUND"
-              : "LINK READY";
-    }
-  }
-
-
-  async function loadMovieDetails(
-    imdbId:
-      string
-  ): Promise<void> {
-    if (
-      movieSelection
-    ) {
-      movieSelection.hidden =
-        false;
-    }
-
-
-    setMovieMessage(
-      "Retrieving full record...",
-      "loading"
-    );
-
-
-    try {
-      const response =
-        await fetch(
-          `/api/omdb/details?id=${encodeURIComponent(
-            imdbId
-          )}`
-        );
-
-
-      const data =
-        (
-          await response.json()
-        ) as
-          MovieDetailsResponse;
-
-
-      if (
-        !response.ok ||
-        !data.success ||
-        !data.movie
-      ) {
-        throw new Error(
-          data.message ??
-          "Movie unavailable."
-        );
-      }
-
-
-      const movie =
-        data.movie;
-
-
-      setMovieText(
-        "#movie-detail-title",
-        movie.title
-      );
-
-      setMovieText(
-        "#movie-detail-year",
-        movie.year
-      );
-
-      setMovieText(
-        "#movie-detail-director",
-        movie.director
-      );
-
-      setMovieText(
-        "#movie-detail-runtime",
-        movie.runtime
-      );
-
-      setMovieText(
-        "#movie-detail-genre",
-        movie.genre
-      );
-
-      setMovieText(
-        "#movie-detail-rating",
-        movie.imdbRating
-          ? `${movie.imdbRating}/10`
-          : null
-      );
-
-      setMovieText(
-        "#movie-detail-released",
-        movie.released
-      );
-
-      setMovieText(
-        "#movie-detail-language",
-        movie.language
-      );
-
-      setMovieText(
-        "#movie-detail-country",
-        movie.country
-      );
-
-      setMovieText(
-        "#movie-detail-imdb-id",
-        movie.imdbId
-      );
-
-      setMovieText(
-        "#movie-detail-actors",
-        movie.actors
-      );
-
-      setMovieText(
-        "#movie-detail-plot",
-        movie.plot
-      );
-
-      setMovieText(
-        "#movie-detail-awards",
-        movie.awards
-      );
-
-
-      if (
-        moviePoster
-      ) {
-        moviePoster
-          .replaceChildren();
-
-
-        if (movie.poster) {
-          const image =
-            document.createElement(
-              "img"
-            );
-
-          image.src =
-            movie.poster;
-
-          image.alt =
-            `${movie.title ?? "Movie"} poster`;
-
-          moviePoster.append(
-            image
-          );
-        } else {
-          const fallback =
-            document.createElement(
-              "span"
-            );
-
-          fallback.textContent =
-            "NO POSTER";
-
-          moviePoster.append(
-            fallback
-          );
-        }
-      }
-
-
-      setMovieMessage(
-        "External record loaded.",
-        "success"
-      );
-    } catch (
-      error
-    ) {
-      setMovieMessage(
-        error instanceof Error
-          ? error.message
-          : "Search failed.",
-        "error"
-      );
-    }
-  }
-
-
-  function createMovieResult(
-    movie:
-      MovieSearchResult
-  ): HTMLElement {
-    const result =
-      document.createElement(
-        "article"
-      );
-
-
-    result.className =
-      "movie-result-card";
-
-
-    const visual =
-      document.createElement(
-        "div"
-      );
-
-
-    visual.className =
-      "movie-result-card__poster";
-
-
-    if (movie.poster) {
-      const image =
-        document.createElement(
-          "img"
-        );
-
-      image.src =
-        movie.poster;
-
-      image.alt =
-        `${movie.title} poster`;
-
-      visual.append(
-        image
-      );
-    } else {
-      const fallback =
-        document.createElement(
-          "span"
-        );
-
-      fallback.textContent =
-        "NO POSTER";
-
-      visual.append(
-        fallback
-      );
-    }
-
-
-    const copy =
-      document.createElement(
-        "div"
-      );
-
-
-    copy.className =
-      "movie-result-card__copy";
-
-
-    const eyebrow =
-      document.createElement(
-        "p"
-      );
-
-    eyebrow.textContent =
-      `OMDb // ${movie.imdbId}`;
-
-
-    const title =
-      document.createElement(
-        "h4"
-      );
-
-    title.textContent =
-      movie.title;
-
-
-    const meta =
-      document.createElement(
-        "span"
-      );
-
-    meta.textContent =
-      `${movie.year} // ${movie.type.toUpperCase()}`;
-
-
-    const button =
-      document.createElement(
-        "button"
-      );
-
-    button.type =
-      "button";
-
-    button.textContent =
-      "OPEN RECORD →";
-
-
-    button.addEventListener(
-      "click",
-      () => {
-        void loadMovieDetails(
-          movie.imdbId
-        );
-      }
-    );
-
-
-    copy.append(
-      eyebrow,
-      title,
-      meta,
-      button
-    );
-
-
-    result.append(
-      visual,
-      copy
-    );
-
-
-    return result;
-  }
-
-
-  movieSearchForm?.addEventListener(
-    "submit",
-    async (
-      event
-    ) => {
-      event.preventDefault();
-
-
-      const query =
-        movieSearchInput
-          ?.value
-          .trim() ??
-        "";
-
-
-      if (
-        query.length < 2
-      ) {
-        setMovieMessage(
-          "Enter at least two characters.",
-          "error"
-        );
-
-        return;
-      }
-
-
-      movieSearchResults
-        ?.replaceChildren();
-
-
-      if (
-        movieSelection
-      ) {
-        movieSelection.hidden =
-          true;
-      }
-
-
-      setMovieMessage(
-        `Searching "${query}"...`,
-        "loading"
-      );
-
-
-      if (
-        movieSearchSubmit
-      ) {
-        movieSearchSubmit.disabled =
-          true;
-
-        movieSearchSubmit.textContent =
-          "WORKING...";
-      }
-
-
-      try {
-        const response =
-          await fetch(
-            `/api/omdb/search?q=${encodeURIComponent(
-              query
-            )}`
-          );
-
-
-        const data =
-          (
-            await response.json()
-          ) as
-            MovieSearchResponse;
-
-
-        if (
-          !response.ok ||
-          !data.success
-        ) {
-          throw new Error(
-            data.message ??
-            "Search failed."
-          );
-        }
-
-
-        const results =
-          data.results ??
-          [];
-
-
-        results.forEach(
-          (movie) => {
-            movieSearchResults?.append(
-              createMovieResult(
-                movie
-              )
-            );
-          }
-        );
-
-
-        setMovieMessage(
-          `${results.length} records detected.`,
-          "success"
-        );
-      } catch (
-        error
-      ) {
-        setMovieMessage(
-          error instanceof Error
-            ? error.message
-            : "Search failed.",
-          "error"
-        );
-      } finally {
-        if (
-          movieSearchSubmit
-        ) {
-          movieSearchSubmit.disabled =
-            false;
-
-          movieSearchSubmit.textContent =
-            "EXECUTE";
-        }
-      }
-    }
-  );
-
-
-  movieSelectionClose?.addEventListener(
-    "click",
-    () => {
-      if (
-        movieSelection
-      ) {
-        movieSelection.hidden =
-          true;
-      }
-    }
-  );
-
-
-  /* ======================================================
-     ESC
-  ====================================================== */
-
-  document.addEventListener(
-    "keydown",
-    (event) => {
-      if (
-        event.key !==
-        "Escape"
-      ) {
-        return;
-      }
-
-
-      if (
-        musicDetailLayer &&
-        !musicDetailLayer.hidden
-      ) {
-        closeMusicDetail();
-
-        return;
-      }
-
-
-      if (
-        drawerLayer &&
-        !drawerLayer.hidden
-      ) {
-        closeDrawer();
-
-        return;
-      }
-
-
-      if (
-        activeCategory ===
-          "music" &&
-        activeMusicArtist
-      ) {
-        showMusicArtistDirectory();
-      }
-    }
-  );
-
-
-  updateCategory(
-    activeCategory
-  );
+  document.addEventListener("astro:page-load", initialiseLibrariesPage);
 </script>

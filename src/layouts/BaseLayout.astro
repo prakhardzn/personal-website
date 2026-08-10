@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
 interface Props {
@@ -7,13 +8,12 @@ interface Props {
 }
 
 const {
-  title = "Prakhar's Universe",
-  description = "A strange little cosmic website by Prakhar.",
+  title = "Reality P-01",
+  description = "A strange little local reality, assembled by Prakhar.",
 } = Astro.props;
 ---
 
 <!doctype html>
-
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -39,8 +39,6 @@ const {
       href="/favicon.svg"
     />
 
-    <!-- Preload cursor expressions -->
-
     <link
       rel="preload"
       as="image"
@@ -60,55 +58,120 @@ const {
     />
 
     <title>{title}</title>
+
+    <ClientRouter fallback="animate" />
   </head>
 
   <body>
     <slot />
 
+    <!-- ==================================================
+         PORTAL 214 // PERSISTENT AIRLOCK TRANSITION
+    =================================================== -->
+
+    <div
+      class="site-airlock"
+      id="site-airlock"
+      aria-hidden="true"
+      transition:persist="site-airlock"
+    >
+      <div class="site-airlock__backdrop"></div>
+
+      <div class="site-airlock__warning site-airlock__warning--top">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <div class="site-airlock__door site-airlock__door--left">
+        <div class="site-airlock__door-frame">
+          <span class="site-airlock__panel site-airlock__panel--a"></span>
+          <span class="site-airlock__panel site-airlock__panel--b"></span>
+          <span class="site-airlock__panel site-airlock__panel--c"></span>
+
+          <span class="site-airlock__vent site-airlock__vent--one"></span>
+          <span class="site-airlock__vent site-airlock__vent--two"></span>
+
+          <span class="site-airlock__door-id">AIRLOCK // L-214</span>
+          <span class="site-airlock__door-mark">P214</span>
+        </div>
+      </div>
+
+      <div class="site-airlock__door site-airlock__door--right">
+        <div class="site-airlock__door-frame">
+          <span class="site-airlock__panel site-airlock__panel--a"></span>
+          <span class="site-airlock__panel site-airlock__panel--b"></span>
+          <span class="site-airlock__panel site-airlock__panel--c"></span>
+
+          <span class="site-airlock__vent site-airlock__vent--one"></span>
+          <span class="site-airlock__vent site-airlock__vent--two"></span>
+
+          <span class="site-airlock__door-id">AIRLOCK // R-214</span>
+          <span class="site-airlock__door-mark">P214</span>
+        </div>
+      </div>
+
+      <div class="site-airlock__seam" aria-hidden="true">
+        <span></span>
+      </div>
+
+      <div class="site-airlock__lock">
+        <div class="site-airlock__lock-lights" aria-hidden="true">
+          <i></i><i></i><i></i>
+        </div>
+
+        <span class="site-airlock__eyebrow">PORTAL 214 // TRANSIT BAY</span>
+
+        <strong
+          class="site-airlock__destination"
+          id="site-airlock-destination"
+        >
+          NAVIGATION BAY
+        </strong>
+
+        <span class="site-airlock__status">
+          <i aria-hidden="true"></i>
+          ACCESS GRANTED
+        </span>
+      </div>
+
+      <div class="site-airlock__warning site-airlock__warning--bottom">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
 
     <!-- ==================================================
-         ALIEN EXPRESSION CURSOR
+         PERSISTENT ALIEN EXPRESSION CURSOR
     =================================================== -->
 
     <div
       class="alien-cursor"
       id="alien-cursor"
       aria-hidden="true"
+      transition:persist="alien-cursor"
     >
       <span class="alien-cursor__hotspot"></span>
-
       <span class="alien-cursor__orbit"></span>
-
       <span class="alien-cursor__beam"></span>
-
       <span class="alien-cursor__anger-mark"></span>
 
       <span class="alien-cursor__face-container">
         <img
-          class="
-            alien-cursor__face
-            alien-cursor__face--bored
-          "
+          class="alien-cursor__face alien-cursor__face--bored"
           src="/assets/cursor/alien-bored.png"
           alt=""
           draggable="false"
         />
 
         <img
-          class="
-            alien-cursor__face
-            alien-cursor__face--happy
-          "
+          class="alien-cursor__face alien-cursor__face--happy"
           src="/assets/cursor/alien-happy.png"
           alt=""
           draggable="false"
         />
 
         <img
-          class="
-            alien-cursor__face
-            alien-cursor__face--annoyed
-          "
+          class="alien-cursor__face alien-cursor__face--annoyed"
           src="/assets/cursor/alien-annoyed.png"
           alt=""
           draggable="false"
@@ -116,913 +179,1447 @@ const {
       </span>
     </div>
 
+    <script>
+      import type { TransitionBeforePreparationEvent } from "astro:transitions/client";
 
-    <!-- ==================================================
-         GLOBAL WEBSITE SCRIPT
-    =================================================== -->
+      type GlobalWindow = Window & {
+        __prakharGlobalUIBound?: boolean;
+      };
 
-    <script is:inline>
-      (function () {
-        const reducedMotionQuery =
-          window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
+      const globalWindow = window as GlobalWindow;
+
+      if (!globalWindow.__prakharGlobalUIBound) {
+        globalWindow.__prakharGlobalUIBound = true;
+
+        const reducedMotionQuery = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        );
+
+        const wait = (milliseconds: number): Promise<void> =>
+          new Promise((resolve) => {
+            window.setTimeout(resolve, milliseconds);
+          });
+
+        /* ==================================================
+           PORTAL 214 // AIRLOCK PAGE TRANSITION
+        ================================================== */
+
+        let transitionInProgress = false;
+        let airlockCleanupTimer: number | undefined;
+
+        const destinationNameForPath = (pathname: string): string => {
+          const cleanPath = pathname
+            .replace(/\/+$/, "")
+            .toLowerCase();
+
+          if (cleanPath === "" || cleanPath === "/") {
+            return "COMMAND DECK";
+          }
+
+          if (cleanPath.startsWith("/about")) {
+            return "PERSONAL ARCHIVE";
+          }
+
+          if (cleanPath.startsWith("/weekly")) {
+            return "TRANSMISSION ROOM";
+          }
+
+          if (cleanPath.startsWith("/astrology")) {
+            return "CELESTIAL ARCHIVE";
+          }
+
+          if (cleanPath.startsWith("/libraries")) {
+            return "MEDIA STORAGE";
+          }
+
+          if (cleanPath.startsWith("/work")) {
+            return "PROJECT FILES";
+          }
+
+          return "NAVIGATION BAY";
+        };
+
+        const setAirlockDestination = (url: URL): void => {
+          const destination = document.getElementById(
+            "site-airlock-destination"
           );
 
+          if (!destination) return;
 
-        function wait(milliseconds) {
-          return new Promise(function (resolve) {
-            window.setTimeout(
-              resolve,
-              milliseconds
+          destination.textContent = destinationNameForPath(url.pathname);
+        };
+
+        const clearAirlockClasses = (): void => {
+          document.documentElement.classList.remove(
+            "site-airlock-closing",
+            "site-airlock-opening",
+            "site-airlock-sealed"
+          );
+        };
+
+        const beginAirlockClose = (destinationUrl: URL): void => {
+          if (reducedMotionQuery.matches) return;
+
+          transitionInProgress = true;
+          setAirlockDestination(destinationUrl);
+
+          if (airlockCleanupTimer !== undefined) {
+            window.clearTimeout(airlockCleanupTimer);
+            airlockCleanupTimer = undefined;
+          }
+
+          document.documentElement.classList.remove(
+            "site-airlock-opening",
+            "site-airlock-sealed"
+          );
+
+          /*
+           * Force a style flush so repeated navigations always restart
+           * the door-closing transition cleanly.
+           */
+          void document.documentElement.offsetWidth;
+
+          document.documentElement.classList.add(
+            "site-airlock-closing"
+          );
+
+          window.setTimeout(() => {
+            if (!transitionInProgress) return;
+
+            document.documentElement.classList.add(
+              "site-airlock-sealed"
             );
-          });
-        }
+          }, 300);
+        };
 
+        const revealNewPage = (): void => {
+          if (!transitionInProgress || reducedMotionQuery.matches) {
+            clearAirlockClasses();
+            transitionInProgress = false;
+            return;
+          }
+
+          document.documentElement.classList.remove(
+            "site-airlock-closing",
+            "site-airlock-sealed"
+          );
+
+          document.documentElement.classList.add(
+            "site-airlock-opening"
+          );
+
+          airlockCleanupTimer = window.setTimeout(() => {
+            clearAirlockClasses();
+
+            airlockCleanupTimer = undefined;
+            transitionInProgress = false;
+          }, 520);
+        };
+
+        document.addEventListener(
+          "astro:before-preparation",
+          (event: TransitionBeforePreparationEvent) => {
+            const originalLoader = event.loader;
+
+            beginAirlockClose(event.to);
+
+            event.loader = async (): Promise<void> => {
+              if (!reducedMotionQuery.matches) {
+                /*
+                 * Hold the outgoing page just long enough for the two
+                 * airlock doors to meet before Astro swaps the document.
+                 */
+                await wait(340);
+              }
+
+              await originalLoader();
+            };
+          }
+        );
+
+        document.addEventListener(
+          "astro:page-load",
+          revealNewPage
+        );
 
         /* ==================================================
            ALIEN CURSOR
         ================================================== */
 
-        const alienCursor =
-          document.getElementById(
-            "alien-cursor"
-          );
-
-
-        const finePointerQuery =
-          window.matchMedia(
-            "(hover: hover) and (pointer: fine)"
-          );
-
-
-        if (
-          alienCursor &&
-          finePointerQuery.matches
-        ) {
-          document.documentElement.classList.add(
-            "has-alien-cursor"
-          );
-
-
-          let targetX = -100;
-          let targetY = -100;
-
-          let currentX = -100;
-          let currentY = -100;
-
-          let cursorHasMoved = false;
-
-
-          const cursorStateClasses = [
-            "is-happy",
-            "is-annoyed",
-            "is-over-planet",
-            "is-over-dock",
-            "is-over-control",
-            "is-over-interactive",
-          ];
-
-
-          function clearCursorState() {
-            cursorStateClasses.forEach(
-              function (className) {
-                alienCursor.classList.remove(
-                  className
-                );
-              }
-            );
-          }
-
-
-          function updateCursorPosition() {
-            currentX +=
-              (
-                targetX -
-                currentX
-              ) * 0.34;
-
-
-            currentY +=
-              (
-                targetY -
-                currentY
-              ) * 0.34;
-
-
-            alienCursor.style.setProperty(
-              "--cursor-x",
-              currentX + "px"
-            );
-
-
-            alienCursor.style.setProperty(
-              "--cursor-y",
-              currentY + "px"
-            );
-
-
-            window.requestAnimationFrame(
-              updateCursorPosition
-            );
-          }
-
-
-          function updateCursorExpression(
-            target
-          ) {
-            clearCursorState();
-
-
-            if (!(target instanceof Element)) {
-              return;
-            }
-
-
-            /* Planets */
-
-            if (
-              target.closest(
-                [
-                  ".planet-link",
-                  ".planet-artwork",
-                  ".planet-label",
-                ].join(",")
-              )
-            ) {
-              alienCursor.classList.add(
-                "is-happy",
-                "is-over-planet"
-              );
-
-              return;
-            }
-
-
-            /* Back, Pause, Power, Settings and Close */
-
-            if (
-              target.closest(
-                [
-                  "#pause-button",
-                  "#power-button",
-                  "#internal-back-button",
-                  "#internal-settings-button",
-                  ".icon-button",
-                  ".internal-icon-button",
-                  ".information-panel__close",
-                  ".settings-dialog__close",
-                ].join(",")
-              )
-            ) {
-              alienCursor.classList.add(
-                "is-annoyed",
-                "is-over-control"
-              );
-
-              return;
-            }
-
-
-            /* Bottom navigation cards */
-
-            if (
-              target.closest(
-                [
-                  ".dock-card",
-                  ".dock-actions [data-panel]",
-                ].join(",")
-              )
-            ) {
-              alienCursor.classList.add(
-                "is-happy",
-                "is-over-dock"
-              );
-
-              return;
-            }
-
-
-            /* Other links and controls */
-
-            if (
-              target.closest(
-                [
-                  "a",
-                  "button",
-                  "input",
-                  "textarea",
-                  "select",
-                  "summary",
-                  "[role='button']",
-                  ".about-tab",
-                  ".weekly-card",
-                ].join(",")
-              )
-            ) {
-              alienCursor.classList.add(
-                "is-happy",
-                "is-over-interactive"
-              );
-            }
-          }
-
-
-          document.addEventListener(
-            "pointermove",
-            function (event) {
-              targetX = event.clientX;
-              targetY = event.clientY;
-
-
-              if (!cursorHasMoved) {
-                currentX = targetX;
-                currentY = targetY;
-
-                cursorHasMoved = true;
-              }
-
-
-              alienCursor.classList.add(
-                "is-visible"
-              );
-
-
-              updateCursorExpression(
-                event.target
-              );
-            }
-          );
-
-
-          document.addEventListener(
-            "pointerdown",
-            function () {
-              alienCursor.classList.add(
-                "is-clicking"
-              );
-            }
-          );
-
-
-          document.addEventListener(
-            "pointerup",
-            function () {
-              alienCursor.classList.remove(
-                "is-clicking"
-              );
-            }
-          );
-
-
-          document.addEventListener(
-            "pointercancel",
-            function () {
-              alienCursor.classList.remove(
-                "is-clicking"
-              );
-            }
-          );
-
-
-          document.addEventListener(
-            "mouseout",
-            function (event) {
-              if (
-                event.relatedTarget === null
-              ) {
-                alienCursor.classList.remove(
-                  "is-visible"
-                );
-
-                clearCursorState();
-              }
-            }
-          );
-
-
-          window.addEventListener(
-            "blur",
-            function () {
-              alienCursor.classList.remove(
-                "is-visible"
-              );
-
-              clearCursorState();
-            }
-          );
-
-
-          window.requestAnimationFrame(
-            updateCursorPosition
-          );
-        }
-
-
-        /* ==================================================
-           NAVBAR TYPEWRITER
-        ================================================== */
-
-        const typewriterRuns =
-          new WeakMap();
-
-
-        async function typeText(
-          element,
-          fullText,
-          speed
-        ) {
-          const currentRun =
-            (
-              typewriterRuns.get(
-                element
-              ) || 0
-            ) + 1;
-
-
-          typewriterRuns.set(
-            element,
-            currentRun
-          );
-
-
-          element.classList.add(
-            "js-typewriter"
-          );
-
-
-          element.textContent = "";
-
-
-          element.setAttribute(
-            "aria-label",
-            fullText
-          );
-
+        const finePointerQuery = window.matchMedia(
+          "(hover: hover) and (pointer: fine)"
+        );
+
+        const touchPointerQuery = window.matchMedia(
+          "(hover: none), (pointer: coarse)"
+        );
+
+        let targetX = -100;
+        let targetY = -100;
+        let currentX = -100;
+        let currentY = -100;
+        let cursorHasMoved = false;
+        let cursorAnimationStarted = false;
+        let touchCursorHideTimer: number | undefined;
+
+        const cursorStateClasses = [
+          "is-happy",
+          "is-annoyed",
+          "is-over-planet",
+          "is-over-dock",
+          "is-over-control",
+          "is-over-interactive",
+        ];
+
+        const getAlienCursor = (): HTMLElement | null =>
+          document.getElementById("alien-cursor");
+
+        const clearCursorState = (
+          alienCursor: HTMLElement
+        ): void => {
+          cursorStateClasses.forEach((className) => {
+            alienCursor.classList.remove(className);
+          });
+        };
+
+        const updateCursorExpression = (
+          alienCursor: HTMLElement,
+          target: EventTarget | null
+        ): void => {
+          clearCursorState(alienCursor);
+
+          if (!(target instanceof Element)) return;
 
           if (
-            reducedMotionQuery.matches
+            target.closest(
+              [
+                ".planet-link",
+                ".planet-artwork",
+                ".planet-label",
+                ".mobile-destination",
+                ".mobile-destination__viewport",
+                ".mobile-destination__planet",
+              ].join(",")
+            )
           ) {
-            element.textContent =
-              fullText;
-
+            alienCursor.classList.add(
+              "is-happy",
+              "is-over-planet"
+            );
             return;
           }
 
+          if (
+            target.closest(
+              [
+                "#pause-button",
+                "#power-button",
+                "#internal-back-button",
+                "#internal-settings-button",
+                ".icon-button",
+                ".internal-icon-button",
+                ".information-panel__close",
+                ".settings-dialog__close",
+              ].join(",")
+            )
+          ) {
+            alienCursor.classList.add(
+              "is-annoyed",
+              "is-over-control"
+            );
+            return;
+          }
+
+          if (
+            target.closest(
+              [
+                ".dock-card",
+                ".dock-actions [data-panel]",
+              ].join(",")
+            )
+          ) {
+            alienCursor.classList.add(
+              "is-happy",
+              "is-over-dock"
+            );
+            return;
+          }
+
+          if (
+            target.closest(
+              [
+                "a",
+                "button",
+                "input",
+                "textarea",
+                "select",
+                "summary",
+                "[role='button']",
+                ".about-tab",
+                ".weekly-card",
+              ].join(",")
+            )
+          ) {
+            alienCursor.classList.add(
+              "is-happy",
+              "is-over-interactive"
+            );
+          }
+        };
+
+        const updateCursorPosition = (): void => {
+          const alienCursor = getAlienCursor();
+
+          const cursorEnabled =
+            finePointerQuery.matches ||
+            touchPointerQuery.matches;
+
+          if (alienCursor && cursorEnabled) {
+            const easing = touchPointerQuery.matches ? 0.52 : 0.34;
+
+            currentX += (targetX - currentX) * easing;
+            currentY += (targetY - currentY) * easing;
+
+            alienCursor.style.setProperty(
+              "--cursor-x",
+              `${currentX}px`
+            );
+
+            alienCursor.style.setProperty(
+              "--cursor-y",
+              `${currentY}px`
+            );
+          }
+
+          window.requestAnimationFrame(updateCursorPosition);
+        };
+
+        const initialiseCursor = (): void => {
+          const alienCursor = getAlienCursor();
+
+          if (!alienCursor) return;
+
+          if (finePointerQuery.matches) {
+            document.documentElement.classList.add(
+              "has-alien-cursor"
+            );
+
+            document.documentElement.classList.remove(
+              "has-touch-alien-cursor"
+            );
+          } else if (touchPointerQuery.matches) {
+            document.documentElement.classList.remove(
+              "has-alien-cursor"
+            );
+
+            document.documentElement.classList.add(
+              "has-touch-alien-cursor"
+            );
+
+            alienCursor.classList.remove("is-visible");
+          } else {
+            document.documentElement.classList.remove(
+              "has-alien-cursor",
+              "has-touch-alien-cursor"
+            );
+
+            alienCursor.classList.remove("is-visible");
+            return;
+          }
+
+          if (!cursorAnimationStarted) {
+            cursorAnimationStarted = true;
+            window.requestAnimationFrame(updateCursorPosition);
+          }
+        };
+
+        const positionTouchCursor = (
+          event: PointerEvent,
+          alienCursor: HTMLElement
+        ): void => {
+          if (touchCursorHideTimer !== undefined) {
+            window.clearTimeout(touchCursorHideTimer);
+            touchCursorHideTimer = undefined;
+          }
+
+          /*
+           * Touchscreens do not have a true independent hover cursor.
+           * The alien therefore appears just above the finger,
+           * reacts to the touched control, and lingers briefly after
+           * the finger is released.
+           */
+          targetX = Math.max(8, event.clientX - 24);
+          targetY = Math.max(8, event.clientY - 82);
+
+          if (!cursorHasMoved) {
+            currentX = targetX;
+            currentY = targetY;
+            cursorHasMoved = true;
+          }
+
+          alienCursor.classList.add("is-visible");
+          updateCursorExpression(alienCursor, event.target);
+        };
+
+        const scheduleTouchCursorHide = (): void => {
+          if (!touchPointerQuery.matches) return;
+
+          if (touchCursorHideTimer !== undefined) {
+            window.clearTimeout(touchCursorHideTimer);
+          }
+
+          touchCursorHideTimer = window.setTimeout(() => {
+            const alienCursor = getAlienCursor();
+
+            if (!alienCursor) return;
+
+            alienCursor.classList.remove(
+              "is-visible",
+              "is-clicking"
+            );
+
+            clearCursorState(alienCursor);
+            touchCursorHideTimer = undefined;
+          }, 620);
+        };
+
+        document.addEventListener(
+          "pointermove",
+          (event: PointerEvent) => {
+            const alienCursor = getAlienCursor();
+
+            if (!alienCursor) return;
+
+            if (
+              event.pointerType === "touch" &&
+              touchPointerQuery.matches
+            ) {
+              positionTouchCursor(event, alienCursor);
+              return;
+            }
+
+            if (!finePointerQuery.matches) return;
+
+            targetX = event.clientX;
+            targetY = event.clientY;
+
+            if (!cursorHasMoved) {
+              currentX = targetX;
+              currentY = targetY;
+              cursorHasMoved = true;
+            }
+
+            alienCursor.classList.add("is-visible");
+            updateCursorExpression(alienCursor, event.target);
+          }
+        );
+
+        document.addEventListener(
+          "pointerdown",
+          (event: PointerEvent) => {
+            const alienCursor = getAlienCursor();
+
+            if (!alienCursor) return;
+
+            if (
+              event.pointerType === "touch" &&
+              touchPointerQuery.matches
+            ) {
+              positionTouchCursor(event, alienCursor);
+            }
+
+            alienCursor.classList.add("is-clicking");
+          }
+        );
+
+        document.addEventListener(
+          "pointerup",
+          (event: PointerEvent) => {
+            const alienCursor = getAlienCursor();
+
+            if (!alienCursor) return;
+
+            alienCursor.classList.remove("is-clicking");
+
+            if (event.pointerType === "touch") {
+              scheduleTouchCursorHide();
+            }
+          }
+        );
+
+        document.addEventListener(
+          "pointercancel",
+          (event: PointerEvent) => {
+            const alienCursor = getAlienCursor();
+
+            if (!alienCursor) return;
+
+            alienCursor.classList.remove("is-clicking");
+
+            if (event.pointerType === "touch") {
+              scheduleTouchCursorHide();
+            }
+          }
+        );
+
+        document.addEventListener("mouseout", (event: MouseEvent) => {
+          if (event.relatedTarget !== null) return;
+
+          const alienCursor = getAlienCursor();
+          if (!alienCursor) return;
+
+          alienCursor.classList.remove("is-visible");
+          clearCursorState(alienCursor);
+        });
+
+        window.addEventListener("blur", () => {
+          const alienCursor = getAlienCursor();
+          if (!alienCursor) return;
+
+          alienCursor.classList.remove("is-visible");
+          clearCursorState(alienCursor);
+        });
+
+        finePointerQuery.addEventListener(
+          "change",
+          initialiseCursor
+        );
+
+        touchPointerQuery.addEventListener(
+          "change",
+          initialiseCursor
+        );
+
+        /* ==================================================
+           SINGLE GLOBAL NAVBAR TYPEWRITER
+        ================================================== */
+
+        const typewriterRuns = new WeakMap<Element, number>();
+
+        const typeText = async (
+          element: HTMLElement,
+          fullText: string,
+          speed: number
+        ): Promise<void> => {
+          const currentRun =
+            (typewriterRuns.get(element) ?? 0) + 1;
+
+          typewriterRuns.set(element, currentRun);
+
+          element.classList.add("js-typewriter");
+          element.textContent = "";
+          element.setAttribute("aria-label", fullText);
+
+          if (reducedMotionQuery.matches) {
+            element.textContent = fullText;
+            element.classList.remove("js-typewriter");
+            return;
+          }
 
           for (
             let index = 0;
             index < fullText.length;
             index += 1
           ) {
-            if (
-              typewriterRuns.get(
-                element
-              ) !== currentRun
-            ) {
-              return;
-            }
+            if (typewriterRuns.get(element) !== currentRun) return;
 
-
-            const character =
-              fullText[index];
-
-
-            element.textContent +=
-              character;
-
+            const character = fullText[index];
+            element.textContent += character;
 
             let delay = speed;
 
-
-            if (
-              character === "." ||
-              character === "!" ||
-              character === "?"
-            ) {
-              delay =
-                speed * 4.5;
-            } else if (
-              character === "," ||
-              character === ":" ||
-              character === ";"
-            ) {
-              delay =
-                speed * 2.2;
+            if (".!?".includes(character)) {
+              delay = speed * 4.5;
+            } else if (",:;".includes(character)) {
+              delay = speed * 2.2;
             }
-
 
             await wait(delay);
           }
-        }
 
+          if (typewriterRuns.get(element) === currentRun) {
+            element.classList.remove("js-typewriter");
+          }
+        };
 
-        function initialiseNavbarTypewriters() {
+        const initialiseNavbarTypewriters = (): void => {
           const typewriterElements =
-            document.querySelectorAll(
-              [
-                ".system-message",
-                ".internal-system-message",
-                "[data-typewriter]",
-              ].join(",")
+            document.querySelectorAll<HTMLElement>(
+              "[data-typewriter]"
             );
 
+          typewriterElements.forEach((element, index) => {
+            if (element.dataset.typewriterStarted === "true") return;
 
-          typewriterElements.forEach(
-            function (
-              element,
-              index
-            ) {
-              if (
-                element.dataset
-                  .typewriterStarted ===
-                "true"
-              ) {
-                return;
-              }
+            const fullText =
+              element.dataset.typewriterText ||
+              element.textContent?.replace(/\s+/g, " ").trim() ||
+              "";
 
+            if (!fullText) return;
 
-              const fullText =
-                element.dataset
-                  .typewriterText ||
-                (
-                  element.textContent
-                    ? element.textContent.trim()
-                    : ""
-                );
+            element.dataset.typewriterStarted = "true";
+            element.dataset.typewriterText = fullText;
 
+            window.setTimeout(() => {
+              void typeText(element, fullText, 32);
+            }, 160 + index * 50);
+          });
+        };
 
-              if (!fullText) {
-                return;
-              }
+        const initialiseGlobalUI = (): void => {
+          initialiseCursor();
+          initialiseNavbarTypewriters();
+        };
 
-
-              element.dataset
-                .typewriterStarted =
-                "true";
-
-
-              element.dataset
-                .typewriterText =
-                fullText;
-
-
-              window.setTimeout(
-                function () {
-                  typeText(
-                    element,
-                    fullText,
-                    32
-                  );
-                },
-                160 + index * 50
-              );
-            }
-          );
-        }
-
-
-        initialiseNavbarTypewriters();
-
+        initialiseGlobalUI();
 
         document.addEventListener(
           "astro:page-load",
-          initialiseNavbarTypewriters
+          initialiseGlobalUI
         );
-
-
-        /* ==================================================
-           SLOW INFORMATION-PANEL TYPEWRITER
-        ================================================== */
-
-        let panelTypingRun = 0;
-
-
-        function cancelPanelTyping() {
-          panelTypingRun += 1;
-        }
-
-
-        async function typePanelTitle(
-          titleElement,
-          titleText,
-          runNumber
-        ) {
-          titleElement.textContent = "";
-
-          titleElement.classList.add(
-            "is-panel-typing"
-          );
-
-
-          if (
-            reducedMotionQuery.matches
-          ) {
-            titleElement.textContent =
-              titleText;
-
-            titleElement.classList.remove(
-              "is-panel-typing"
-            );
-
-            return true;
-          }
-
-
-          for (
-            let index = 0;
-            index < titleText.length;
-            index += 1
-          ) {
-            if (
-              runNumber !==
-              panelTypingRun
-            ) {
-              return false;
-            }
-
-
-            titleElement.textContent +=
-              titleText[index];
-
-
-            /*
-              Slower title typing:
-              65 milliseconds per character.
-            */
-
-            await wait(65);
-          }
-
-
-          if (
-            runNumber ===
-            panelTypingRun
-          ) {
-            titleElement.classList.remove(
-              "is-panel-typing"
-            );
-
-            return true;
-          }
-
-
-          return false;
-        }
-
-
-        async function typePanelNode(
-          sourceNode,
-          destinationNode,
-          runNumber,
-          speed
-        ) {
-          if (
-            runNumber !==
-            panelTypingRun
-          ) {
-            return;
-          }
-
-
-          if (
-            sourceNode.nodeType ===
-            Node.TEXT_NODE
-          ) {
-            const originalText =
-              sourceNode.textContent || "";
-
-
-            const normalisedText =
-              originalText.replace(
-                /\s+/g,
-                " "
-              );
-
-
-            if (!normalisedText.trim()) {
-              return;
-            }
-
-
-            const typedTextNode =
-              document.createTextNode("");
-
-
-            destinationNode.appendChild(
-              typedTextNode
-            );
-
-
-            if (
-              reducedMotionQuery.matches
-            ) {
-              typedTextNode.textContent =
-                normalisedText;
-
-              return;
-            }
-
-
-            for (
-              let index = 0;
-              index <
-              normalisedText.length;
-              index += 1
-            ) {
-              if (
-                runNumber !==
-                panelTypingRun
-              ) {
-                return;
-              }
-
-
-              const character =
-                normalisedText[index];
-
-
-              typedTextNode.textContent +=
-                character;
-
-
-              let delay = speed;
-
-
-              /*
-                Add natural pauses at punctuation.
-              */
-
-              if (
-                character === "." ||
-                character === "!" ||
-                character === "?"
-              ) {
-                delay =
-                  speed * 5;
-              } else if (
-                character === "," ||
-                character === ":" ||
-                character === ";"
-              ) {
-                delay =
-                  speed * 2.5;
-              }
-
-
-              await wait(delay);
-            }
-
-
-            return;
-          }
-
-
-          if (
-            sourceNode.nodeType ===
-            Node.ELEMENT_NODE
-          ) {
-            const copiedElement =
-              sourceNode.cloneNode(
-                false
-              );
-
-
-            destinationNode.appendChild(
-              copiedElement
-            );
-
-
-            const childNodes =
-              Array.from(
-                sourceNode.childNodes
-              );
-
-
-            for (
-              const childNode of childNodes
-            ) {
-              await typePanelNode(
-                childNode,
-                copiedElement,
-                runNumber,
-                speed
-              );
-            }
-          }
-        }
-
-
-        async function typePanelContent(
-          contentElement,
-          originalHTML,
-          runNumber
-        ) {
-          const template =
-            document.createElement(
-              "template"
-            );
-
-
-          template.innerHTML =
-            originalHTML;
-
-
-          contentElement.innerHTML = "";
-
-
-          contentElement.classList.add(
-            "is-panel-typing"
-          );
-
-
-          const contentLength =
-            (
-              template.content.textContent ||
-              ""
-            ).trim().length;
-
-
-          /*
-            Longer text is slightly faster so it does not
-            take too long, but every option is slower than
-            the previous version.
-          */
-
-          const speed =
-            contentLength > 240
-              ? 22
-              : contentLength > 140
-                ? 26
-                : 32;
-
-
-          const sourceNodes =
-            Array.from(
-              template.content.childNodes
-            );
-
-
-          for (
-            const sourceNode of sourceNodes
-          ) {
-            await typePanelNode(
-              sourceNode,
-              contentElement,
-              runNumber,
-              speed
-            );
-          }
-
-
-          if (
-            runNumber ===
-            panelTypingRun
-          ) {
-            contentElement.classList.remove(
-              "is-panel-typing"
-            );
-          }
-        }
-
-
-        async function animateOpenedPanel() {
-          const panel =
-            document.getElementById(
-              "information-panel"
-            );
-
-
-          const panelTitle =
-            document.getElementById(
-              "panel-title"
-            );
-
-
-          const panelContent =
-            document.getElementById(
-              "panel-content"
-            );
-
-
-          if (
-            !panel ||
-            !panelTitle ||
-            !panelContent
-          ) {
-            return;
-          }
-
-
-          const completeTitle =
-            panelTitle.textContent
-              ? panelTitle.textContent.trim()
-              : "";
-
-
-          const completeContent =
-            panelContent.innerHTML;
-
-
-          if (
-            !completeTitle ||
-            !completeContent.trim()
-          ) {
-            return;
-          }
-
-
-          panelTypingRun += 1;
-
-
-          const currentRun =
-            panelTypingRun;
-
-
-          /*
-            Type the title first instead of typing the title
-            and body at the same time.
-          */
-
-          const titleFinished =
-            await typePanelTitle(
-              panelTitle,
-              completeTitle,
-              currentRun
-            );
-
-
-          if (
-            !titleFinished ||
-            currentRun !== panelTypingRun
-          ) {
-            return;
-          }
-
-
-          /*
-            Short pause between the title and body.
-          */
-
-          await wait(180);
-
-
-          if (
-            currentRun !== panelTypingRun
-          ) {
-            return;
-          }
-
-
-          await typePanelContent(
-            panelContent,
-            completeContent,
-            currentRun
-          );
-
-
-          panel.addEventListener(
-            "close",
-            cancelPanelTyping,
-            {
-              once: true,
-            }
-          );
-        }
-
-
-        document.addEventListener(
-          "click",
-          function (event) {
-            if (
-              !(
-                event.target instanceof
-                Element
-              )
-            ) {
-              return;
-            }
-
-
-            const panelButton =
-              event.target.closest(
-                ".dock-actions [data-panel]"
-              );
-
-
-            if (!panelButton) {
-              return;
-            }
-
-
-            window.setTimeout(
-              function () {
-                void animateOpenedPanel();
-              },
-              0
-            );
-          }
-        );
-      })();
+      }
     </script>
   </body>
 </html>
+
+<style is:global>
+  /* =========================================================
+     PORTAL 214 // SPACECRAFT AIRLOCK TRANSITION
+
+     The page itself swaps only while the doors are sealed.
+     The overlay is persistent, so it survives Astro's DOM swap.
+  ========================================================= */
+
+  .site-airlock {
+    --airlock-green: #a8ff36;
+    --airlock-cyan: #58dfff;
+    --airlock-black: #010504;
+    --airlock-metal: #07110d;
+    --airlock-metal-2: #0a1711;
+    --airlock-line: rgb(168 255 54 / 24%);
+
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+
+    overflow: hidden;
+    pointer-events: none;
+    visibility: hidden;
+
+    font-family: "Space Mono", monospace;
+
+    contain: layout paint;
+  }
+
+  html.site-airlock-closing .site-airlock,
+  html.site-airlock-sealed .site-airlock,
+  html.site-airlock-opening .site-airlock {
+    visibility: visible;
+  }
+
+  .site-airlock__backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    opacity: 0;
+
+    background:
+      radial-gradient(
+        circle at 50% 50%,
+        rgb(88 223 255 / 7%),
+        transparent 34%
+      ),
+      rgb(0 4 3 / 88%);
+
+    backdrop-filter: blur(0);
+
+    transition:
+      opacity 180ms ease,
+      backdrop-filter 220ms ease;
+  }
+
+  html.site-airlock-closing .site-airlock__backdrop,
+  html.site-airlock-sealed .site-airlock__backdrop {
+    opacity: 1;
+    backdrop-filter: blur(2px);
+  }
+
+  html.site-airlock-opening .site-airlock__backdrop {
+    animation:
+      airlock-backdrop-release
+      500ms
+      ease
+      both;
+  }
+
+  /* =========================================================
+     HEAVY DOORS
+  ========================================================= */
+
+  .site-airlock__door {
+    position: absolute;
+    top: -2vh;
+    bottom: -2vh;
+    z-index: 3;
+
+    width: 57vw;
+    min-width: 520px;
+
+    overflow: hidden;
+
+    background:
+      linear-gradient(
+        90deg,
+        rgb(168 255 54 / 4%),
+        transparent 14%,
+        transparent 86%,
+        rgb(88 223 255 / 5%)
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 54px,
+        rgb(168 255 54 / 5%) 55px 56px
+      ),
+      linear-gradient(
+        180deg,
+        #0b1712 0%,
+        #06100c 48%,
+        #08140f 100%
+      );
+
+    box-shadow:
+      inset 0 0 0 2px rgb(168 255 54 / 15%),
+      inset 0 0 60px rgb(0 0 0 / 60%),
+      0 0 42px rgb(0 0 0 / 85%);
+
+    will-change: transform;
+  }
+
+  .site-airlock__door--left {
+    left: -3vw;
+
+    clip-path:
+      polygon(
+        0 0,
+        91% 0,
+        100% 9%,
+        94% 22%,
+        100% 36%,
+        96% 50%,
+        100% 64%,
+        94% 78%,
+        100% 91%,
+        91% 100%,
+        0 100%
+      );
+
+    transform: translate3d(-105%, 0, 0);
+  }
+
+  .site-airlock__door--right {
+    right: -3vw;
+
+    clip-path:
+      polygon(
+        9% 0,
+        100% 0,
+        100% 100%,
+        9% 100%,
+        0 91%,
+        6% 78%,
+        0 64%,
+        4% 50%,
+        0 36%,
+        6% 22%,
+        0 9%
+      );
+
+    transform: translate3d(105%, 0, 0);
+  }
+
+  html.site-airlock-closing .site-airlock__door,
+  html.site-airlock-sealed .site-airlock__door {
+    transform: translate3d(0, 0, 0);
+
+    transition:
+      transform
+      320ms
+      cubic-bezier(0.72, 0, 0.2, 1);
+  }
+
+  html.site-airlock-opening .site-airlock__door--left {
+    animation:
+      airlock-left-open
+      480ms
+      cubic-bezier(0.2, 0.72, 0.18, 1)
+      both;
+  }
+
+  html.site-airlock-opening .site-airlock__door--right {
+    animation:
+      airlock-right-open
+      480ms
+      cubic-bezier(0.2, 0.72, 0.18, 1)
+      both;
+  }
+
+  .site-airlock__door-frame {
+    position: absolute;
+    inset: 3.5vh 3.5vw;
+
+    border: 1px solid rgb(168 255 54 / 20%);
+
+    background:
+      linear-gradient(
+        135deg,
+        transparent 0 14%,
+        rgb(168 255 54 / 4%) 14.5% 15.5%,
+        transparent 16% 72%,
+        rgb(88 223 255 / 4%) 72.5% 73.5%,
+        transparent 74%
+      );
+  }
+
+  .site-airlock__door-frame::before,
+  .site-airlock__door-frame::after {
+    position: absolute;
+    content: "";
+  }
+
+  .site-airlock__door-frame::before {
+    inset: 9% 7%;
+
+    border:
+      1px solid
+      rgb(168 255 54 / 11%);
+
+    clip-path:
+      polygon(
+        0 0,
+        88% 0,
+        100% 18%,
+        100% 82%,
+        88% 100%,
+        0 100%,
+        8% 82%,
+        8% 18%
+      );
+  }
+
+  .site-airlock__door-frame::after {
+    top: 50%;
+    right: 8%;
+    left: 8%;
+
+    height: 1px;
+
+    background:
+      linear-gradient(
+        90deg,
+        transparent,
+        var(--airlock-line),
+        transparent
+      );
+  }
+
+  /* =========================================================
+     DOOR PANEL DETAIL
+  ========================================================= */
+
+  .site-airlock__panel {
+    position: absolute;
+
+    border: 1px solid rgb(168 255 54 / 13%);
+
+    background:
+      linear-gradient(
+        135deg,
+        rgb(168 255 54 / 3%),
+        transparent 42%
+      );
+  }
+
+  .site-airlock__panel--a {
+    top: 8%;
+    left: 8%;
+
+    width: 44%;
+    height: 26%;
+
+    clip-path:
+      polygon(
+        0 0,
+        84% 0,
+        100% 24%,
+        90% 100%,
+        0 100%
+      );
+  }
+
+  .site-airlock__panel--b {
+    top: 39%;
+    left: 11%;
+
+    width: 57%;
+    height: 22%;
+
+    clip-path:
+      polygon(
+        8% 0,
+        100% 0,
+        90% 100%,
+        0 100%
+      );
+  }
+
+  .site-airlock__panel--c {
+    right: 14%;
+    bottom: 8%;
+
+    width: 48%;
+    height: 25%;
+
+    clip-path:
+      polygon(
+        12% 0,
+        100% 0,
+        100% 100%,
+        0 100%
+      );
+  }
+
+  .site-airlock__vent {
+    position: absolute;
+
+    width: 76px;
+    height: 44px;
+
+    border: 1px solid rgb(88 223 255 / 19%);
+
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 7px,
+        rgb(88 223 255 / 20%) 8px 9px
+      ),
+      #030a07;
+  }
+
+  .site-airlock__vent--one {
+    top: 16%;
+    right: 14%;
+  }
+
+  .site-airlock__vent--two {
+    bottom: 16%;
+    left: 15%;
+  }
+
+  .site-airlock__door-id,
+  .site-airlock__door-mark {
+    position: absolute;
+
+    color: rgb(168 255 54 / 55%);
+
+    font-family: "Silkscreen", monospace;
+    line-height: 1;
+    letter-spacing: 0.08em;
+  }
+
+  .site-airlock__door-id {
+    top: 5%;
+    left: 6%;
+
+    font-size: 12px;
+  }
+
+  .site-airlock__door-mark {
+    right: 9%;
+    bottom: 8%;
+
+    font-size: clamp(18px, 2.2vw, 34px);
+
+    opacity: 0.2;
+  }
+
+  /* =========================================================
+     WARNING STRIPS
+  ========================================================= */
+
+  .site-airlock__warning {
+    position: absolute;
+    right: 0;
+    left: 0;
+    z-index: 7;
+
+    display: flex;
+
+    height: 12px;
+
+    opacity: 0;
+
+    overflow: hidden;
+  }
+
+  .site-airlock__warning--top {
+    top: 0;
+  }
+
+  .site-airlock__warning--bottom {
+    bottom: 0;
+  }
+
+  .site-airlock__warning span {
+    flex: 1 1 auto;
+
+    min-width: 70px;
+
+    background:
+      linear-gradient(
+        135deg,
+        var(--airlock-green) 0 38%,
+        #071006 38% 62%,
+        var(--airlock-green) 62% 100%
+      );
+  }
+
+  .site-airlock__warning span:nth-child(even) {
+    filter: brightness(0.58);
+  }
+
+  html.site-airlock-sealed .site-airlock__warning,
+  html.site-airlock-opening .site-airlock__warning {
+    opacity: 0.75;
+  }
+
+  /* =========================================================
+     CENTRE SEAM
+  ========================================================= */
+
+  .site-airlock__seam {
+    position: absolute;
+    top: 6vh;
+    bottom: 6vh;
+    left: 50%;
+    z-index: 8;
+
+    width: 4px;
+
+    opacity: 0;
+
+    background:
+      linear-gradient(
+        180deg,
+        transparent,
+        var(--airlock-cyan) 20%,
+        var(--airlock-green) 50%,
+        var(--airlock-cyan) 80%,
+        transparent
+      );
+
+    box-shadow:
+      0 0 10px rgb(168 255 54 / 50%),
+      0 0 20px rgb(88 223 255 / 24%);
+
+    transform: translateX(-50%) scaleY(0.2);
+    transform-origin: center;
+  }
+
+  html.site-airlock-sealed .site-airlock__seam {
+    opacity: 1;
+
+    animation:
+      airlock-seam-lock
+      180ms
+      ease-out
+      both;
+  }
+
+  html.site-airlock-opening .site-airlock__seam {
+    animation:
+      airlock-seam-release
+      160ms
+      ease-in
+      both;
+  }
+
+  .site-airlock__seam span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    width: 20px;
+    height: 20px;
+
+    border: 2px solid var(--airlock-green);
+    border-radius: 50%;
+
+    background: var(--airlock-black);
+
+    box-shadow:
+      0 0 12px rgb(168 255 54 / 55%);
+
+    transform: translate(-50%, -50%);
+  }
+
+  /* =========================================================
+     CENTRAL LOCK / DESTINATION READOUT
+  ========================================================= */
+
+  .site-airlock__lock {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 12;
+
+    display: grid;
+    justify-items: center;
+
+    width: min(360px, calc(100vw - 48px));
+
+    padding: 18px 22px;
+
+    opacity: 0;
+
+    border: 2px solid var(--airlock-green);
+
+    background:
+      linear-gradient(
+        180deg,
+        rgb(168 255 54 / 5%),
+        transparent
+      ),
+      rgb(1 7 4 / 97%);
+
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 80%),
+      0 0 26px rgb(168 255 54 / 19%),
+      0 18px 48px rgb(0 0 0 / 60%);
+
+    transform:
+      translate(-50%, -50%)
+      scale(0.82);
+
+    will-change:
+      opacity,
+      transform;
+  }
+
+  html.site-airlock-sealed .site-airlock__lock {
+    animation:
+      airlock-lock-engage
+      170ms
+      cubic-bezier(0.2, 0.75, 0.2, 1)
+      both;
+  }
+
+  html.site-airlock-opening .site-airlock__lock {
+    animation:
+      airlock-lock-release
+      130ms
+      ease-in
+      both;
+  }
+
+  .site-airlock__lock::before,
+  .site-airlock__lock::after {
+    position: absolute;
+    top: 50%;
+
+    width: 46px;
+    height: 2px;
+
+    background: var(--airlock-green);
+
+    box-shadow:
+      0 0 8px rgb(168 255 54 / 30%);
+
+    content: "";
+  }
+
+  .site-airlock__lock::before {
+    right: 100%;
+  }
+
+  .site-airlock__lock::after {
+    left: 100%;
+  }
+
+  .site-airlock__lock-lights {
+    display: flex;
+    gap: 8px;
+
+    margin-bottom: 12px;
+  }
+
+  .site-airlock__lock-lights i {
+    display: block;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--airlock-green);
+
+    box-shadow:
+      0 0 8px rgb(168 255 54 / 72%);
+  }
+
+  .site-airlock__lock-lights i:nth-child(2) {
+    background: var(--airlock-cyan);
+
+    animation:
+      airlock-led-pulse
+      420ms
+      ease-in-out
+      infinite
+      alternate;
+  }
+
+  .site-airlock__eyebrow,
+  .site-airlock__destination,
+  .site-airlock__status {
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .site-airlock__eyebrow {
+    color: rgb(168 255 54 / 56%);
+
+    font-family: "Silkscreen", monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+
+  .site-airlock__destination {
+    margin-top: 9px;
+
+    color: var(--airlock-green);
+
+    font-family: "Silkscreen", monospace;
+    font-size: clamp(18px, 2.6vw, 30px);
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: 0.04em;
+
+    text-shadow:
+      0 0 10px rgb(168 255 54 / 28%);
+  }
+
+  .site-airlock__status {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 13px;
+
+    color: var(--airlock-cyan);
+
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+
+  .site-airlock__status i {
+    display: block;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--airlock-cyan);
+
+    box-shadow:
+      0 0 8px rgb(88 223 255 / 65%);
+  }
+
+  /* =========================================================
+     KEEP ASTRO'S ROOT SWAP HIDDEN BEHIND THE DOOR
+  ========================================================= */
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 1ms;
+    animation-timing-function: linear;
+  }
+
+  /* =========================================================
+     ANIMATIONS
+  ========================================================= */
+
+  @keyframes airlock-left-open {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+
+    to {
+      transform: translate3d(-105%, 0, 0);
+    }
+  }
+
+  @keyframes airlock-right-open {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+
+    to {
+      transform: translate3d(105%, 0, 0);
+    }
+  }
+
+  @keyframes airlock-backdrop-release {
+    from {
+      opacity: 1;
+      backdrop-filter: blur(2px);
+    }
+
+    72% {
+      opacity: 0.8;
+    }
+
+    to {
+      opacity: 0;
+      backdrop-filter: blur(0);
+    }
+  }
+
+  @keyframes airlock-seam-lock {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) scaleY(0.15);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(-50%) scaleY(1);
+    }
+  }
+
+  @keyframes airlock-seam-release {
+    from {
+      opacity: 1;
+      transform: translateX(-50%) scaleY(1);
+    }
+
+    to {
+      opacity: 0;
+      transform: translateX(-50%) scaleY(0.15);
+    }
+  }
+
+  @keyframes airlock-lock-engage {
+    from {
+      opacity: 0;
+      transform:
+        translate(-50%, -50%)
+        scale(0.78);
+    }
+
+    65% {
+      opacity: 1;
+      transform:
+        translate(-50%, -50%)
+        scale(1.035);
+    }
+
+    to {
+      opacity: 1;
+      transform:
+        translate(-50%, -50%)
+        scale(1);
+    }
+  }
+
+  @keyframes airlock-lock-release {
+    from {
+      opacity: 1;
+      transform:
+        translate(-50%, -50%)
+        scale(1);
+    }
+
+    to {
+      opacity: 0;
+      transform:
+        translate(-50%, -50%)
+        scale(0.88);
+    }
+  }
+
+  @keyframes airlock-led-pulse {
+    from {
+      opacity: 0.35;
+      transform: scale(0.82);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+  }
+
+  /* =========================================================
+     MOBILE
+  ========================================================= */
+
+  @media (max-width: 720px) {
+    .site-airlock__door {
+      width: 64vw;
+      min-width: 0;
+    }
+
+    .site-airlock__door--left {
+      left: -7vw;
+    }
+
+    .site-airlock__door--right {
+      right: -7vw;
+    }
+
+    .site-airlock__door-frame {
+      inset: 3vh 5vw;
+    }
+
+    .site-airlock__vent {
+      width: 56px;
+      height: 34px;
+    }
+
+    .site-airlock__door-id {
+      display: none;
+    }
+
+    .site-airlock__door-mark {
+      font-size: 18px;
+    }
+
+    .site-airlock__lock {
+      width: min(310px, calc(100vw - 40px));
+      padding: 16px 18px;
+    }
+
+    .site-airlock__lock::before,
+    .site-airlock__lock::after {
+      width: 26px;
+    }
+  }
+
+  /* =========================================================
+     REDUCED MOTION
+  ========================================================= */
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-airlock {
+      display: none !important;
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none !important;
+    }
+  }
+</style>
