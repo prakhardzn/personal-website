@@ -1,0 +1,1449 @@
+---
+import "../../styles/interspace-transit.css";
+
+const baseUrl = import.meta.env.BASE_URL;
+
+const assetUrl = (path: string): string =>
+  `${baseUrl}${path.replace(/^\/+/, "")}`;
+
+const channels = [
+  {
+    number: "01",
+    title: "IDENTITY SIGNAL",
+    label: "ABOUT ME",
+    sublabel: "SUBJECT // PRAKHAR",
+    note: "* this channel contains personal information.\n* how embarrassing.",
+    image: assetUrl("assets/planets/about-me/about-planet-base.webp"),
+  },
+  {
+    number: "02",
+    title: "TEMPORAL BROADCAST",
+    label: "NEWS WEEKLY",
+    sublabel: "LATEST EVENTS // PROBABLY IMPORTANT",
+    note: "* somebody has been keeping notes.",
+    image: assetUrl("assets/planets/weekly-planet/weekly-planet-base.webp"),
+  },
+  {
+    number: "03",
+    title: "CELESTIAL DATABASE",
+    label: "ASTROLOGY",
+    sublabel: "MERCURY // DOING SOMETHING AGAIN",
+    note: "* the stars refuse to take responsibility.",
+    image: assetUrl("assets/planets/astrology-planet/astrology-planet-base.webp"),
+  },
+  {
+    number: "04",
+    title: "MEDIA STORAGE",
+    label: "LIBRARIES",
+    sublabel: "MOVIES // MUSIC // GAMES",
+    note: "* storage capacity exceeded a long time ago.",
+    image: assetUrl("assets/planets/library-planet/library-planet-base.webp"),
+  },
+] as const;
+---
+
+<script is:inline>
+  (() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const forceIntro = params.get("intro") === "1";
+      const alreadySeen =
+        window.sessionStorage.getItem("portal214:p214-receiver-seen") === "true";
+
+      document.documentElement.dataset.portalReceiver =
+        forceIntro || !alreadySeen ? "show" : "skip";
+    } catch {
+      document.documentElement.dataset.portalReceiver = "show";
+    }
+  })();
+</script>
+
+<section
+  class="p214-receiver"
+  id="p214-receiver"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="p214-receiver-title"
+  data-phase="sleep"
+>
+  <div class="p214-receiver__backdrop" aria-hidden="true">
+    <span class="p214-star p214-star--01"></span>
+    <span class="p214-star p214-star--02"></span>
+    <span class="p214-star p214-star--03"></span>
+    <span class="p214-star p214-star--04"></span>
+    <span class="p214-star p214-star--05"></span>
+    <span class="p214-star p214-star--06"></span>
+    <span class="p214-star p214-star--07"></span>
+    <span class="p214-star p214-star--08"></span>
+    <span class="p214-star p214-star--09"></span>
+    <span class="p214-star p214-star--10"></span>
+    <span class="p214-star p214-star--11"></span>
+    <span class="p214-star p214-star--12"></span>
+    <span class="p214-star p214-star--13"></span>
+    <span class="p214-star p214-star--14"></span>
+  </div>
+
+  <button
+    class="p214-receiver__skip"
+    id="p214-receiver-skip"
+    type="button"
+  >
+    SKIP [ESC]
+  </button>
+
+  <div class="p214-receiver__cold-open" id="p214-cold-open">
+    <p>* something fell out of the internet.</p>
+
+    <button
+      class="p214-press-any"
+      id="p214-press-any"
+      type="button"
+    >
+      <span class="p214-press-any__desktop">[ PRESS ANY KEY ]</span>
+      <span class="p214-press-any__mobile">[ TAP TO BEGIN ]</span>
+    </button>
+  </div>
+
+  <main class="p214-receiver__stage">
+    <div
+      class="p214-device"
+      id="p214-device"
+      style="--dial-angle: -32deg;"
+    >
+      <span class="p214-device__shadow" aria-hidden="true"></span>
+
+      <span class="p214-device__antenna p214-device__antenna--long" aria-hidden="true">
+        <i></i>
+      </span>
+
+      <span class="p214-device__antenna p214-device__antenna--short" aria-hidden="true">
+        <i></i>
+      </span>
+
+      <span class="p214-device__wire p214-device__wire--one" aria-hidden="true"></span>
+      <span class="p214-device__wire p214-device__wire--two" aria-hidden="true"></span>
+
+      <div class="p214-device__body">
+        <span class="p214-device__bite" aria-hidden="true"></span>
+        <span class="p214-device__crack" aria-hidden="true"></span>
+
+        <span class="p214-device__screw p214-device__screw--one" aria-hidden="true"></span>
+        <span class="p214-device__screw p214-device__screw--two" aria-hidden="true"></span>
+        <span class="p214-device__screw p214-device__screw--three" aria-hidden="true"></span>
+
+        <span class="p214-device__patch" aria-hidden="true">
+          <i></i><i></i><i></i>
+        </span>
+
+        <span class="p214-device__tape">
+          P-214
+        </span>
+
+        <span class="p214-device__warning">
+          DO NOT TUNE<br />PAST CH.04
+        </span>
+
+        <span class="p214-device__scribble" aria-hidden="true">
+          lol
+        </span>
+
+        <div class="p214-screen" id="p214-screen">
+          <span class="p214-screen__scan" aria-hidden="true"></span>
+          <span class="p214-screen__glitch" aria-hidden="true"></span>
+
+          <div class="p214-screen__boot" data-screen-mode="boot">
+            <strong>P-214</strong>
+            <span>REALITY RECEIVER</span>
+            <small>NO SIGNAL</small>
+          </div>
+
+          <div class="p214-screen__channel" data-screen-mode="channel" hidden>
+            <div class="p214-screen__topline">
+              <span>CH // <b id="p214-channel-number">01</b></span>
+              <span id="p214-channel-status">SIGNAL LOCKED</span>
+            </div>
+
+            <div class="p214-screen__feed">
+              <div class="p214-screen__image">
+                {
+                  channels.map((channel, index) => (
+                    <img
+                      class:list={[
+                        "p214-screen__planet",
+                        index === 0 && "is-active",
+                      ]}
+                      data-channel-image={index}
+                      src={channel.image}
+                      alt=""
+                      loading="eager"
+                      decoding="async"
+                      draggable="false"
+                    />
+                  ))
+                }
+              </div>
+
+              <div class="p214-screen__copy">
+                <strong id="p214-channel-title">IDENTITY SIGNAL</strong>
+                <span id="p214-channel-label">ABOUT ME</span>
+                <small id="p214-channel-sublabel">SUBJECT // PRAKHAR</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="p214-screen__forbidden" data-screen-mode="forbidden" hidden>
+            <span>CH // <b id="p214-forbidden-number">05</b></span>
+            <strong id="p214-forbidden-message">NO.</strong>
+            <small id="p214-forbidden-sub">RETURN TO A SENSIBLE CHANNEL.</small>
+          </div>
+
+          <div class="p214-screen__source" data-screen-mode="source" hidden>
+            <span>CH // 214</span>
+            <strong>SOURCE FOUND</strong>
+            <small>P-214</small>
+            <em>WAIT.</em>
+          </div>
+
+          <div class="p214-screen__integrity" data-screen-mode="integrity" hidden>
+            <span>REALITY INTEGRITY</span>
+            <strong id="p214-integrity-value">100%</strong>
+            <div class="p214-integrity-bar" aria-hidden="true">
+              <i id="p214-integrity-fill"></i>
+            </div>
+            <small id="p214-integrity-caption">THIS IS PROBABLY FINE.</small>
+          </div>
+
+          <button
+            class="p214-screen__breach-button"
+            id="p214-breach-button"
+            type="button"
+            aria-label="Touch the glowing centre"
+            hidden
+          >
+            <span aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <button
+          class="p214-dial"
+          id="p214-dial"
+          type="button"
+          aria-label="Turn the reality receiver dial"
+          aria-describedby="p214-dial-help"
+        >
+          <span class="p214-dial__outer" aria-hidden="true"></span>
+          <span class="p214-dial__ticks" aria-hidden="true"></span>
+          <span class="p214-dial__grip" aria-hidden="true">
+            <i></i><i></i><i></i><i></i>
+          </span>
+          <span class="p214-dial__pointer" aria-hidden="true"></span>
+          <span class="p214-dial__cap" aria-hidden="true">214</span>
+        </button>
+
+        <p class="p214-device__dial-help" id="p214-dial-help">
+          TURN THE DIAL
+        </p>
+
+        <div class="p214-device__controls">
+          <button
+            class="p214-device__tune"
+            id="p214-tune-prev"
+            type="button"
+            aria-label="Tune to previous channel"
+          >
+            ◀
+          </button>
+
+          <span>CHANNEL</span>
+
+          <button
+            class="p214-device__tune"
+            id="p214-tune-next"
+            type="button"
+            aria-label="Tune to next channel"
+          >
+            ▶
+          </button>
+        </div>
+
+        <span class="p214-device__loose-screw" aria-hidden="true"></span>
+        <span class="p214-device__tiny-flame" aria-hidden="true">
+          <i></i>
+        </span>
+        <span class="p214-device__failed-arm" aria-hidden="true">
+          <i></i>
+        </span>
+      </div>
+    </div>
+
+    <section
+      class="p214-dialogue"
+      id="p214-dialogue"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      <p id="p214-dialogue-copy">
+        * it probably wasn't here a second ago.
+      </p>
+
+      <div class="p214-dialogue__choices" id="p214-dialogue-choices">
+        <button
+          class="p214-choice is-selected"
+          id="p214-touch-device"
+          type="button"
+        >
+          <span aria-hidden="true">♥</span>
+          TOUCH IT
+        </button>
+
+        <button
+          class="p214-choice"
+          id="p214-leave-device"
+          type="button"
+        >
+          LEAVE IT ALONE
+        </button>
+      </div>
+    </section>
+
+    <div class="p214-receiver__hint" id="p214-receiver-hint" hidden>
+      <div class="p214-receiver__hint-desktop">
+        <span>← / →</span>
+        <span>SCROLL</span>
+        <span>DRAG DIAL</span>
+      </div>
+
+      <div class="p214-receiver__hint-mobile">
+        <span>TAP DIAL</span>
+        <span>SWIPE</span>
+        <span>◀ / ▶</span>
+      </div>
+    </div>
+  </main>
+
+  <div class="p214-receiver__reveal-label" id="p214-reveal-label" aria-hidden="true">
+    <span>P-214 DEVICE LOST</span>
+    <small>LAST SEEN // YOUR BROWSER</small>
+  </div>
+</section>
+
+<script>
+  type ReceiverRuntimeWindow = Window & {
+    __p214ReceiverController?: AbortController;
+    __p214ReceiverTimers?: number[];
+  };
+
+  type ReceiverPhase =
+    | "sleep"
+    | "found"
+    | "awake"
+    | "tuning"
+    | "forbidden"
+    | "source"
+    | "breaking"
+    | "breach"
+    | "entering";
+
+  type ChannelRecord = {
+    number: string;
+    title: string;
+    label: string;
+    sublabel: string;
+    note: string;
+  };
+
+  const channelRecords: ChannelRecord[] = [
+    {
+      number: "01",
+      title: "IDENTITY SIGNAL",
+      label: "ABOUT ME",
+      sublabel: "SUBJECT // PRAKHAR",
+      note:
+        "* this channel contains personal information.\n* how embarrassing.",
+    },
+    {
+      number: "02",
+      title: "TEMPORAL BROADCAST",
+      label: "NEWS WEEKLY",
+      sublabel: "LATEST EVENTS // PROBABLY IMPORTANT",
+      note:
+        "* somebody has been keeping notes.",
+    },
+    {
+      number: "03",
+      title: "CELESTIAL DATABASE",
+      label: "ASTROLOGY",
+      sublabel: "MERCURY // DOING SOMETHING AGAIN",
+      note:
+        "* the stars refuse to take responsibility.",
+    },
+    {
+      number: "04",
+      title: "MEDIA STORAGE",
+      label: "LIBRARIES",
+      sublabel: "MOVIES // MUSIC // GAMES",
+      note:
+        "* storage capacity exceeded a long time ago.",
+    },
+  ];
+
+  const receiverRuntimeWindow =
+    window as ReceiverRuntimeWindow;
+
+  const initialisePocketRealityReceiver = (): void => {
+    const receiver =
+      document.querySelector<HTMLElement>(
+        "#p214-receiver"
+      );
+
+    if (!receiver) {
+      return;
+    }
+
+    receiverRuntimeWindow.__p214ReceiverController?.abort();
+
+    receiverRuntimeWindow.__p214ReceiverTimers?.forEach(
+      (timer) => window.clearTimeout(timer)
+    );
+
+    const shouldShow =
+      document.documentElement.dataset.portalReceiver === "show";
+
+    if (!shouldShow) {
+      receiver.hidden = true;
+      document.body.classList.remove(
+        "p214-receiver-active"
+      );
+      return;
+    }
+
+    const controller =
+      new AbortController();
+
+    const { signal } =
+      controller;
+
+    const timers: number[] =
+      [];
+
+    receiverRuntimeWindow.__p214ReceiverController =
+      controller;
+
+    receiverRuntimeWindow.__p214ReceiverTimers =
+      timers;
+
+    const coldOpen =
+      document.querySelector<HTMLElement>(
+        "#p214-cold-open"
+      );
+
+    const pressAny =
+      document.querySelector<HTMLButtonElement>(
+        "#p214-press-any"
+      );
+
+    const device =
+      document.querySelector<HTMLElement>(
+        "#p214-device"
+      );
+
+    const dialogue =
+      document.querySelector<HTMLElement>(
+        "#p214-dialogue"
+      );
+
+    const dialogueCopy =
+      document.querySelector<HTMLElement>(
+        "#p214-dialogue-copy"
+      );
+
+    const dialogueChoices =
+      document.querySelector<HTMLElement>(
+        "#p214-dialogue-choices"
+      );
+
+    const touchButton =
+      document.querySelector<HTMLButtonElement>(
+        "#p214-touch-device"
+      );
+
+    const leaveButton =
+      document.querySelector<HTMLButtonElement>(
+        "#p214-leave-device"
+      );
+
+    const dial =
+      document.querySelector<HTMLButtonElement>(
+        "#p214-dial"
+      );
+
+    const previousButton =
+      document.querySelector<HTMLButtonElement>(
+        "#p214-tune-prev"
+      );
+
+    const nextButton =
+      document.querySelector<HTMLButtonElement>(
+        "#p214-tune-next"
+      );
+
+    const skipButton =
+      document.querySelector<HTMLButtonElement>(
+        "#p214-receiver-skip"
+      );
+
+    const hint =
+      document.querySelector<HTMLElement>(
+        "#p214-receiver-hint"
+      );
+
+    const channelNumber =
+      document.querySelector<HTMLElement>(
+        "#p214-channel-number"
+      );
+
+    const channelTitle =
+      document.querySelector<HTMLElement>(
+        "#p214-channel-title"
+      );
+
+    const channelLabel =
+      document.querySelector<HTMLElement>(
+        "#p214-channel-label"
+      );
+
+    const channelSublabel =
+      document.querySelector<HTMLElement>(
+        "#p214-channel-sublabel"
+      );
+
+    const forbiddenNumber =
+      document.querySelector<HTMLElement>(
+        "#p214-forbidden-number"
+      );
+
+    const forbiddenMessage =
+      document.querySelector<HTMLElement>(
+        "#p214-forbidden-message"
+      );
+
+    const forbiddenSub =
+      document.querySelector<HTMLElement>(
+        "#p214-forbidden-sub"
+      );
+
+    const integrityValue =
+      document.querySelector<HTMLElement>(
+        "#p214-integrity-value"
+      );
+
+    const integrityFill =
+      document.querySelector<HTMLElement>(
+        "#p214-integrity-fill"
+      );
+
+    const integrityCaption =
+      document.querySelector<HTMLElement>(
+        "#p214-integrity-caption"
+      );
+
+    const breachButton =
+      document.querySelector<HTMLButtonElement>(
+        "#p214-breach-button"
+      );
+
+    const revealLabel =
+      document.querySelector<HTMLElement>(
+        "#p214-reveal-label"
+      );
+
+    const screenModes =
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "[data-screen-mode]"
+        )
+      );
+
+    const channelImages =
+      Array.from(
+        document.querySelectorAll<HTMLImageElement>(
+          "[data-channel-image]"
+        )
+      );
+
+    if (
+      !coldOpen ||
+      !pressAny ||
+      !device ||
+      !dialogue ||
+      !dialogueCopy ||
+      !dialogueChoices ||
+      !touchButton ||
+      !leaveButton ||
+      !dial ||
+      !previousButton ||
+      !nextButton ||
+      !skipButton ||
+      !breachButton
+    ) {
+      return;
+    }
+
+    const reducedMotion =
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+    let phase: ReceiverPhase =
+      "sleep";
+
+    let currentChannel =
+      0;
+
+    let forbiddenAttempts =
+      0;
+
+    let leaveCount =
+      0;
+
+    let draggingDial =
+      false;
+
+    let dragStartX =
+      0;
+
+    let dragStartChannel =
+      0;
+
+    receiver.hidden = false;
+
+    document.body.classList.add(
+      "p214-receiver-active"
+    );
+
+    const queue = (
+      callback: () => void,
+      delay: number
+    ): void => {
+      const timer =
+        window.setTimeout(
+          callback,
+          delay
+        );
+
+      timers.push(timer);
+    };
+
+    const rememberReceiver = (): void => {
+      try {
+        window.sessionStorage.setItem(
+          "portal214:p214-receiver-seen",
+          "true"
+        );
+      } catch {
+        // Storage can be unavailable.
+      }
+    };
+
+    const setPhase = (
+      nextPhase: ReceiverPhase
+    ): void => {
+      phase =
+        nextPhase;
+
+      receiver.dataset.phase =
+        nextPhase;
+    };
+
+    const setDialogue = (
+      copy: string
+    ): void => {
+      dialogueCopy.textContent =
+        copy;
+    };
+
+    const showScreen = (
+      mode: string
+    ): void => {
+      screenModes.forEach(
+        (screen) => {
+          screen.hidden =
+            screen.dataset.screenMode !== mode;
+        }
+      );
+    };
+
+    const setDialAngle = (
+      channelIndex: number
+    ): void => {
+      const angle =
+        -32 +
+        channelIndex * 38;
+
+      device.style.setProperty(
+        "--dial-angle",
+        `${angle}deg`
+      );
+    };
+
+    const updateChannel = (
+      index: number
+    ): void => {
+      currentChannel =
+        Math.min(
+          channelRecords.length - 1,
+          Math.max(0, index)
+        );
+
+      const record =
+        channelRecords[currentChannel];
+
+      showScreen("channel");
+
+      if (channelNumber) {
+        channelNumber.textContent =
+          record.number;
+      }
+
+      if (channelTitle) {
+        channelTitle.textContent =
+          record.title;
+      }
+
+      if (channelLabel) {
+        channelLabel.textContent =
+          record.label;
+      }
+
+      if (channelSublabel) {
+        channelSublabel.textContent =
+          record.sublabel;
+      }
+
+      channelImages.forEach(
+        (image, imageIndex) => {
+          image.classList.toggle(
+            "is-active",
+            imageIndex === currentChannel
+          );
+        }
+      );
+
+      setDialAngle(
+        currentChannel
+      );
+
+      setDialogue(
+        record.note
+      );
+
+      setPhase("tuning");
+
+      receiver.classList.remove(
+        "is-channel-pop"
+      );
+
+      void receiver.offsetWidth;
+
+      receiver.classList.add(
+        "is-channel-pop"
+      );
+    };
+
+    const wakeDevice = (): void => {
+      if (phase !== "sleep") {
+        return;
+      }
+
+      setPhase("found");
+
+      coldOpen.hidden =
+        true;
+
+      setDialogue(
+        "* it probably wasn't here a second ago."
+      );
+
+      queue(() => {
+        setDialogue(
+          "* the device is staring at you."
+        );
+
+        setPhase("awake");
+
+        touchButton.focus({
+          preventScroll: true,
+        });
+      }, reducedMotion ? 80 : 850);
+    };
+
+    const activateDevice = (): void => {
+      if (
+        phase !== "awake" &&
+        phase !== "found"
+      ) {
+        return;
+      }
+
+      dialogueChoices.hidden =
+        true;
+
+      showScreen("boot");
+
+      setDialogue(
+        "* it makes a noise that feels expensive."
+      );
+
+      setPhase("tuning");
+
+      queue(() => {
+        showScreen("channel");
+
+        if (hint) {
+          hint.hidden =
+            false;
+        }
+
+        updateChannel(0);
+
+        dial.focus({
+          preventScroll: true,
+        });
+      }, reducedMotion ? 120 : 760);
+    };
+
+    const refuseDevice = (): void => {
+      leaveCount +=
+        1;
+
+      if (leaveCount === 1) {
+        setDialogue(
+          "* a surprisingly sensible decision.\n* the device disagrees."
+        );
+
+        touchButton.textContent =
+          "TOUCH IT";
+
+        leaveButton.textContent =
+          "TOUCH IT BUT ANGRILY";
+
+        return;
+      }
+
+      activateDevice();
+    };
+
+    const showForbidden = (): void => {
+      forbiddenAttempts +=
+        1;
+
+      setPhase("forbidden");
+
+      showScreen("forbidden");
+
+      const messages = [
+        {
+          channel: "05",
+          message: "NO.",
+          sub: "RETURN TO A SENSIBLE CHANNEL.",
+          dialogue:
+            "* the dial physically refuses to cooperate.",
+        },
+        {
+          channel: "05",
+          message: "I SAID NO.",
+          sub: "THIS IS NOT A CHALLENGE.",
+          dialogue:
+            "* now it is making this weirdly personal.",
+        },
+        {
+          channel: "05",
+          message: "SERIOUSLY?",
+          sub: "THE STICKER WAS VERY CLEAR.",
+          dialogue:
+            "* you can hear something inside the machine sigh.",
+        },
+      ];
+
+      if (
+        forbiddenAttempts <=
+        messages.length
+      ) {
+        const message =
+          messages[forbiddenAttempts - 1];
+
+        if (forbiddenNumber) {
+          forbiddenNumber.textContent =
+            message.channel;
+        }
+
+        if (forbiddenMessage) {
+          forbiddenMessage.textContent =
+            message.message;
+        }
+
+        if (forbiddenSub) {
+          forbiddenSub.textContent =
+            message.sub;
+        }
+
+        setDialogue(
+          message.dialogue
+        );
+
+        device.style.setProperty(
+          "--dial-angle",
+          `${122 + forbiddenAttempts * 7}deg`
+        );
+
+        receiver.classList.remove(
+          "is-forbidden-kick"
+        );
+
+        void receiver.offsetWidth;
+
+        receiver.classList.add(
+          "is-forbidden-kick"
+        );
+
+        return;
+      }
+
+      revealSource();
+    };
+
+    const revealSource = (): void => {
+      setPhase("source");
+      showScreen("source");
+
+      device.style.setProperty(
+        "--dial-angle",
+        "214deg"
+      );
+
+      if (hint) {
+        hint.hidden =
+          true;
+      }
+
+      previousButton.disabled =
+        true;
+
+      nextButton.disabled =
+        true;
+
+      dial.disabled =
+        true;
+
+      setDialogue(
+        "* that seems important."
+      );
+
+      queue(() => {
+        receiver.classList.add(
+          "is-source-realisation"
+        );
+
+        setDialogue(
+          "* the machine just realised something about itself."
+        );
+      }, reducedMotion ? 120 : 950);
+
+      queue(() => {
+        beginBreakdown();
+      }, reducedMotion ? 280 : 2250);
+    };
+
+    const setIntegrity = (
+      value: number,
+      caption: string
+    ): void => {
+      if (integrityValue) {
+        integrityValue.textContent =
+          `${value}%`;
+      }
+
+      if (integrityFill) {
+        integrityFill.style.width =
+          `${value}%`;
+      }
+
+      if (integrityCaption) {
+        integrityCaption.textContent =
+          caption;
+      }
+    };
+
+    const beginBreakdown = (): void => {
+      setPhase("breaking");
+      showScreen("integrity");
+
+      setIntegrity(
+        100,
+        "THIS IS PROBABLY FINE."
+      );
+
+      setDialogue(
+        "* something inside the device has become extremely confident."
+      );
+
+      queue(() => {
+        setIntegrity(
+          82,
+          "MINOR REALITY LEAK."
+        );
+      }, reducedMotion ? 60 : 650);
+
+      queue(() => {
+        setIntegrity(
+          53,
+          "REALITY IS NOW OPTIONAL."
+        );
+      }, reducedMotion ? 120 : 1250);
+
+      queue(() => {
+        setIntegrity(
+          21,
+          "EH."
+        );
+
+        receiver.classList.add(
+          "is-properly-broken"
+        );
+      }, reducedMotion ? 180 : 1850);
+
+      queue(() => {
+        setPhase("breach");
+        showScreen("integrity");
+
+        breachButton.hidden =
+          false;
+
+        setDialogue(
+          "* you broke it.\n* impressive.\n* maybe touch the glowing part."
+        );
+
+        breachButton.focus({
+          preventScroll: true,
+        });
+      }, reducedMotion ? 260 : 2850);
+    };
+
+    const enterPortal = (): void => {
+      if (phase !== "breach") {
+        return;
+      }
+
+      setPhase("entering");
+
+      rememberReceiver();
+
+      breachButton.disabled =
+        true;
+
+      setDialogue(
+        "* oh.\n* there's an entire website in there."
+      );
+
+      queue(() => {
+        setDialogue(
+          "* well, good luck."
+        );
+      }, reducedMotion ? 40 : 760);
+
+      queue(() => {
+        receiver.classList.add(
+          "is-revealing-home"
+        );
+      }, reducedMotion ? 80 : 1250);
+
+      queue(() => {
+        document.body.classList.remove(
+          "p214-receiver-active"
+        );
+
+        document.documentElement.dataset.portalReceiver =
+          "skip";
+
+        receiver.hidden =
+          true;
+
+        if (revealLabel) {
+          revealLabel.classList.add(
+            "is-visible"
+          );
+
+          window.setTimeout(
+            () => {
+              revealLabel.classList.remove(
+                "is-visible"
+              );
+            },
+            2200
+          );
+        }
+      }, reducedMotion ? 250 : 2900);
+    };
+
+    const tuneNext = (): void => {
+      if (
+        phase !== "tuning" &&
+        phase !== "forbidden"
+      ) {
+        return;
+      }
+
+      if (
+        currentChannel <
+        channelRecords.length - 1 &&
+        phase !== "forbidden"
+      ) {
+        updateChannel(
+          currentChannel + 1
+        );
+
+        return;
+      }
+
+      showForbidden();
+    };
+
+    const tunePrevious = (): void => {
+      if (
+        phase !== "tuning" &&
+        phase !== "forbidden"
+      ) {
+        return;
+      }
+
+      forbiddenAttempts =
+        0;
+
+      if (
+        currentChannel >
+        0
+      ) {
+        updateChannel(
+          currentChannel - 1
+        );
+      } else {
+        updateChannel(0);
+      }
+    };
+
+    const skipReceiver = (): void => {
+      rememberReceiver();
+
+      document.body.classList.remove(
+        "p214-receiver-active"
+      );
+
+      document.documentElement.dataset.portalReceiver =
+        "skip";
+
+      receiver.hidden =
+        true;
+    };
+
+    pressAny.addEventListener(
+      "click",
+      wakeDevice,
+      { signal }
+    );
+
+    touchButton.addEventListener(
+      "click",
+      activateDevice,
+      { signal }
+    );
+
+    leaveButton.addEventListener(
+      "click",
+      refuseDevice,
+      { signal }
+    );
+
+    previousButton.addEventListener(
+      "click",
+      tunePrevious,
+      { signal }
+    );
+
+    nextButton.addEventListener(
+      "click",
+      tuneNext,
+      { signal }
+    );
+
+    dial.addEventListener(
+      "click",
+      tuneNext,
+      { signal }
+    );
+
+    breachButton.addEventListener(
+      "click",
+      enterPortal,
+      { signal }
+    );
+
+    skipButton.addEventListener(
+      "click",
+      skipReceiver,
+      { signal }
+    );
+
+    receiver.addEventListener(
+      "wheel",
+      (event) => {
+        if (
+          phase !== "tuning" &&
+          phase !== "forbidden"
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+
+        if (event.deltaY > 0) {
+          tuneNext();
+        } else if (event.deltaY < 0) {
+          tunePrevious();
+        }
+      },
+      {
+        passive: false,
+        signal,
+      }
+    );
+
+    dial.addEventListener(
+      "pointerdown",
+      (event) => {
+        if (
+          phase !== "tuning" &&
+          phase !== "forbidden"
+        ) {
+          return;
+        }
+
+        draggingDial =
+          true;
+
+        dragStartX =
+          event.clientX;
+
+        dragStartChannel =
+          currentChannel;
+
+        dial.setPointerCapture(
+          event.pointerId
+        );
+      },
+      { signal }
+    );
+
+    dial.addEventListener(
+      "pointermove",
+      (event) => {
+        if (!draggingDial) {
+          return;
+        }
+
+        const delta =
+          event.clientX - dragStartX;
+
+        if (
+          Math.abs(delta) <
+          26
+        ) {
+          return;
+        }
+
+        draggingDial =
+          false;
+
+        if (delta > 0) {
+          tuneNext();
+        } else {
+          if (
+            phase === "forbidden"
+          ) {
+            forbiddenAttempts =
+              0;
+          }
+
+          currentChannel =
+            dragStartChannel;
+
+          tunePrevious();
+        }
+      },
+      { signal }
+    );
+
+    dial.addEventListener(
+      "pointerup",
+      (event) => {
+        draggingDial =
+          false;
+
+        if (
+          dial.hasPointerCapture(
+            event.pointerId
+          )
+        ) {
+          dial.releasePointerCapture(
+            event.pointerId
+          );
+        }
+      },
+      { signal }
+    );
+
+    /*
+     * MOBILE DEVICE SWIPE
+     * On coarse pointers the whole receiver body can be swiped,
+     * so the interaction is not dependent on hitting the small dial.
+     */
+    const coarsePointer =
+      window.matchMedia(
+        "(pointer: coarse)"
+      ).matches;
+
+    let deviceSwipeStartX =
+      0;
+
+    let deviceSwipeStartY =
+      0;
+
+    if (coarsePointer) {
+      device.addEventListener(
+        "pointerdown",
+        (event) => {
+          if (
+            phase !== "tuning" &&
+            phase !== "forbidden"
+          ) {
+            return;
+          }
+
+          deviceSwipeStartX =
+            event.clientX;
+
+          deviceSwipeStartY =
+            event.clientY;
+        },
+        { signal }
+      );
+
+      device.addEventListener(
+        "pointerup",
+        (event) => {
+          if (
+            phase !== "tuning" &&
+            phase !== "forbidden"
+          ) {
+            return;
+          }
+
+          const deltaX =
+            event.clientX -
+            deviceSwipeStartX;
+
+          const deltaY =
+            event.clientY -
+            deviceSwipeStartY;
+
+          if (
+            Math.abs(deltaX) < 42 ||
+            Math.abs(deltaX) <
+              Math.abs(deltaY) * 1.15
+          ) {
+            return;
+          }
+
+          if (deltaX < 0) {
+            tuneNext();
+          } else {
+            tunePrevious();
+          }
+        },
+        { signal }
+      );
+    }
+
+    window.addEventListener(
+      "keydown",
+      (event) => {
+        if (receiver.hidden) {
+          return;
+        }
+
+        if (
+          phase === "sleep" &&
+          event.key !== "Escape"
+        ) {
+          event.preventDefault();
+          wakeDevice();
+          return;
+        }
+
+        if (
+          event.key === "Escape"
+        ) {
+          event.preventDefault();
+          skipReceiver();
+          return;
+        }
+
+        if (
+          event.key === "ArrowRight"
+        ) {
+          event.preventDefault();
+          tuneNext();
+          return;
+        }
+
+        if (
+          event.key === "ArrowLeft"
+        ) {
+          event.preventDefault();
+          tunePrevious();
+          return;
+        }
+
+        if (
+          event.key === "Enter" &&
+          phase === "awake"
+        ) {
+          event.preventDefault();
+          activateDevice();
+        }
+      },
+      { signal }
+    );
+
+    pressAny.focus({
+      preventScroll: true,
+    });
+  };
+
+  document.addEventListener(
+    "astro:page-load",
+    initialisePocketRealityReceiver
+  );
+
+  if (
+    document.readyState ===
+    "loading"
+  ) {
+    document.addEventListener(
+      "DOMContentLoaded",
+      initialisePocketRealityReceiver,
+      { once: true }
+    );
+  } else {
+    initialisePocketRealityReceiver();
+  }
+</script>

@@ -835,3 +835,289 @@
   }
   .interest-core { transform: translate(-50%, -50%); }
 }
+
+/* =========================================================
+   PORTAL 214 // INTERESTS // MOBILE SYNC PASS
+
+   Desktop remains untouched.
+   On tablet/mobile the desktop cross-map becomes a deliberate
+   signal console so the current Interest Network is actually
+   usable instead of being squeezed into a narrow viewport.
+========================================================= */
+
+@media (max-width: 780px) {
+  .about-content-panel--interests {
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .interest-network {
+    grid-template-rows: auto auto;
+    min-height: 0;
+  }
+
+  .interest-network__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .interest-network__header > span {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .interest-network__stage {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    min-height: 0;
+    padding: 22px 16px 18px;
+    overflow: visible;
+    perspective: none;
+  }
+
+  .interest-network__stage::before {
+    inset: 10px;
+  }
+
+  .interest-network__stage::after {
+    display: none;
+  }
+
+  .interest-network__connectors {
+    display: none;
+  }
+
+  .interest-core {
+    position: relative;
+    left: auto;
+    top: auto;
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 146px;
+    height: 146px;
+    margin: 12px 0 44px;
+    padding: 24px;
+    transform: none !important;
+  }
+
+  .interest-core small {
+    top: calc(100% + 18px);
+    width: min(74vw, 290px);
+    max-width: none;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .interest-signal,
+  .interest-signal--filmmaking,
+  .interest-signal--photography,
+  .interest-signal--theatre,
+  .interest-signal--music,
+  .interest-signal:hover,
+  .interest-signal:focus-visible,
+  .interest-signal.is-hovered,
+  .interest-signal--filmmaking:hover,
+  .interest-signal--filmmaking:focus-visible,
+  .interest-signal--filmmaking.is-hovered,
+  .interest-signal--photography:hover,
+  .interest-signal--photography:focus-visible,
+  .interest-signal--photography.is-hovered,
+  .interest-signal--theatre:hover,
+  .interest-signal--theatre:focus-visible,
+  .interest-signal--theatre.is-hovered,
+  .interest-signal--music:hover,
+  .interest-signal--music:focus-visible,
+  .interest-signal--music.is-hovered {
+    position: relative;
+    inset: auto;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    width: 100%;
+    min-height: 112px;
+    transform: none !important;
+  }
+
+  .interest-signal {
+    grid-template-columns: 64px minmax(0, 1fr);
+    padding: 11px 12px;
+  }
+
+  .interest-signal--filmmaking {
+    grid-column: 1;
+  }
+
+  .interest-signal--photography {
+    grid-column: 2;
+  }
+
+  .interest-signal--theatre {
+    grid-column: 1;
+  }
+
+  .interest-signal--music {
+    grid-column: 2;
+  }
+
+  .interest-signal__icon {
+    width: 58px;
+    height: 58px;
+  }
+
+  .interest-icon svg {
+    width: 46px;
+    height: 46px;
+  }
+
+  .interest-signal.is-muted {
+    opacity: 0.6;
+  }
+
+  .interest-network__coordinates {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 4px;
+    padding: 10px 0 0;
+    font-size: 0.58rem;
+  }
+
+  .interest-network__coordinates span:nth-child(2) {
+    text-align: center;
+  }
+
+  .interest-network__coordinates span:last-child {
+    text-align: right;
+  }
+
+  .interest-network__detail {
+    min-height: 0;
+    padding: 18px 16px 20px;
+    overflow: visible;
+  }
+
+  .interest-detail__header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .interest-detail__back {
+    width: 100%;
+  }
+
+  .interest-detail-panel {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .interest-detail-visual {
+    grid-row: auto;
+    min-height: 230px;
+  }
+
+  .interest-detail-tags {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 540px) {
+  .interest-network__header {
+    padding: 14px 12px;
+  }
+
+  .interest-network__header h1 {
+    font-size: 1.35rem;
+    line-height: 1.08;
+  }
+
+  .interest-network__stage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+    padding: 18px 12px 14px;
+  }
+
+  .interest-core {
+    grid-column: 1;
+    width: 126px;
+    height: 126px;
+    margin: 10px 0 48px;
+    padding: 20px;
+  }
+
+  .interest-core strong {
+    font-size: 0.7rem;
+  }
+
+  .interest-core small {
+    top: calc(100% + 17px);
+    width: min(78vw, 250px);
+    font-size: 0.7rem;
+  }
+
+  .interest-signal,
+  .interest-signal--filmmaking,
+  .interest-signal--photography,
+  .interest-signal--theatre,
+  .interest-signal--music {
+    grid-column: 1;
+    width: 100%;
+    min-height: 96px;
+  }
+
+  .interest-signal {
+    grid-template-columns: 58px minmax(0, 1fr);
+    column-gap: 10px;
+    padding: 10px;
+  }
+
+  .interest-signal__icon {
+    width: 54px;
+    height: 54px;
+  }
+
+  .interest-icon svg {
+    width: 43px;
+    height: 43px;
+  }
+
+  .interest-signal__copy strong {
+    font-size: 0.78rem;
+  }
+
+  .interest-signal__copy small {
+    font-size: 0.66rem;
+  }
+
+  .interest-network__coordinates {
+    grid-template-columns: 1fr;
+    gap: 3px;
+    font-size: 0.62rem;
+  }
+
+  .interest-network__coordinates span,
+  .interest-network__coordinates span:nth-child(2),
+  .interest-network__coordinates span:last-child {
+    text-align: left;
+  }
+
+  .interest-network__detail {
+    min-height: 0;
+    padding: 15px 12px 18px;
+  }
+
+  .interest-detail-visual {
+    min-height: 190px;
+  }
+}
+

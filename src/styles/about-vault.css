@@ -608,3 +608,163 @@
     transition: none !important;
   }
 }
+
+/* =========================================================
+   PORTAL 214 // ABOUT VAULT ENTRANCE // MOBILE SYNC PASS
+
+   Desktop stays exactly as designed.
+   Mobile gets a compact containment chamber rather than a
+   scaled-down desktop vault.
+========================================================= */
+
+@media (max-width: 780px) {
+  .about-page .about-content-panel--vault {
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .about-page .vault-entry {
+    grid-template-rows: auto auto;
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .about-page .vault-entry__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 0 14px;
+  }
+
+  .about-page .vault-entry__header > span {
+    width: 100%;
+    text-align: left;
+  }
+
+  .about-page .vault-entry__chamber {
+    grid-template-rows: auto auto;
+    min-height: 0;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+
+  .about-page .vault-entry__door-zone {
+    min-height: 430px;
+    padding: 26px 16px 18px;
+  }
+
+  .about-page .vault-entry__ambient {
+    top: 46%;
+    width: min(72%, 360px);
+  }
+
+  .about-page .vault-door-trigger,
+  .about-page .vault-door-trigger:link,
+  .about-page .vault-door-trigger:visited {
+    width: min(68vw, 320px);
+    min-width: 0;
+    max-width: 320px;
+  }
+
+  .about-page .vault-entry__telemetry {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    min-height: 0;
+    padding: 11px 12px;
+  }
+
+  .about-page .vault-entry__telemetry > span,
+  .about-page .vault-entry__telemetry > span:nth-child(2),
+  .about-page .vault-entry__telemetry > span:last-child {
+    text-align: left;
+  }
+
+  .about-page .vault-entry__chamber.is-opening .vault-door {
+    animation:
+      vault-entrance-door-open-mobile
+      1.55s
+      cubic-bezier(.18,.82,.18,1)
+      both;
+  }
+}
+
+@media (max-width: 540px) {
+  .about-page .vault-entry {
+    padding: 12px;
+  }
+
+  .about-page .vault-entry__header p {
+    font-size: 11px;
+  }
+
+  .about-page .vault-entry__header h1 {
+    font-size: 26px;
+    line-height: 1.05;
+  }
+
+  .about-page .vault-entry__header > span {
+    font-size: 10px;
+    line-height: 1.45;
+  }
+
+  .about-page .vault-entry__chamber::before,
+  .about-page .vault-entry__chamber::after {
+    width: 38px;
+    height: 38px;
+  }
+
+  .about-page .vault-entry__door-zone {
+    min-height: 360px;
+    padding: 22px 10px 14px;
+  }
+
+  .about-page .vault-door-trigger,
+  .about-page .vault-door-trigger:link,
+  .about-page .vault-door-trigger:visited {
+    width: min(72vw, 260px);
+    min-width: 0;
+    max-width: 260px;
+  }
+
+  .about-page .vault-door-trigger__copy {
+    gap: 6px;
+    margin-top: 17px;
+  }
+
+  .about-page .vault-door-trigger__copy strong {
+    font-size: 13px;
+  }
+
+  .about-page .vault-door-trigger__copy small {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .about-page .vault-entry__telemetry {
+    padding: 10px;
+  }
+
+  .about-page .vault-entry__telemetry > span {
+    font-size: 10px;
+    line-height: 1.45;
+  }
+}
+
+@keyframes vault-entrance-door-open-mobile {
+  0%,
+  44% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+
+  68% {
+    transform: translate3d(0, -3%, 0) rotate(5deg) scale(0.95);
+    opacity: 0.82;
+  }
+
+  100% {
+    transform: translate3d(0, -8%, 0) rotate(10deg) scale(0.78);
+    opacity: 0.16;
+  }
+}
+
