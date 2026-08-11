@@ -1,0 +1,327 @@
+---
+import InternalPageLayout from "../layouts/InternalPageLayout.astro";
+import "../styles/vault.css";
+
+const baseUrl = import.meta.env.BASE_URL;
+
+const buildSiteUrl = (path: string): string =>
+  `${baseUrl}${path.replace(/^\/+/, "")}`;
+
+/*
+  VAULT IMAGE FEED
+  ------------------------------------------------------------
+  Put your images in:
+    public/assets/vault/
+
+  Then either keep these filenames or change the src values below.
+  The layout automatically keeps each image's natural aspect ratio,
+  so portrait, square, landscape and tall images create the Pinterest-
+  style masonry wall without you assigning sizes manually.
+*/
+const vaultImages = [
+  { src: "/assets/vault/vault-01.webp", alt: "Vault image 01" },
+  { src: "/assets/vault/vault-02.webp", alt: "Vault image 02" },
+  { src: "/assets/vault/vault-03.webp", alt: "Vault image 03" },
+  { src: "/assets/vault/vault-04.webp", alt: "Vault image 04" },
+  { src: "/assets/vault/vault-05.webp", alt: "Vault image 05" },
+  { src: "/assets/vault/vault-06.webp", alt: "Vault image 06" },
+  { src: "/assets/vault/vault-07.webp", alt: "Vault image 07" },
+  { src: "/assets/vault/vault-08.webp", alt: "Vault image 08" },
+  { src: "/assets/vault/vault-09.webp", alt: "Vault image 09" },
+  { src: "/assets/vault/vault-10.webp", alt: "Vault image 10" },
+  { src: "/assets/vault/vault-11.webp", alt: "Vault image 11" },
+  { src: "/assets/vault/vault-12.webp", alt: "Vault image 12" },
+  { src: "/assets/vault/vault-13.webp", alt: "Vault image 13" },
+  { src: "/assets/vault/vault-14.webp", alt: "Vault image 14" },
+  { src: "/assets/vault/vault-15.webp", alt: "Vault image 15" },
+  { src: "/assets/vault/vault-16.webp", alt: "Vault image 16" },
+  { src: "/assets/vault/vault-17.webp", alt: "Vault image 17" },
+  { src: "/assets/vault/vault-18.webp", alt: "Vault image 18" },
+];
+---
+
+<InternalPageLayout
+  title="The Vault | Portal 214"
+  description="A visual archive of images and references stored inside Portal 214."
+  message="Archive opened. Visual fragments recovered."
+  pageClass="vault-page"
+>
+  <div slot="content" class="vault-feed-shell">
+    <canvas
+      class="vault-matrix"
+      data-vault-matrix
+      aria-hidden="true"
+    ></canvas>
+
+    <div class="vault-matrix-vignette" aria-hidden="true"></div>
+
+    <section class="vault-feed" aria-label="The Vault image archive">
+      {
+        vaultImages.map((image, index) => (
+          <figure
+            class="vault-pin"
+            data-vault-pin
+            style={`--vault-index: ${index};`}
+          >
+            <div class="vault-pin__surface">
+              <img
+                src={buildSiteUrl(image.src)}
+                alt={image.alt}
+                loading={index < 8 ? "eager" : "lazy"}
+                decoding="async"
+                draggable="false"
+                data-vault-image
+              />
+
+              <span class="vault-pin__glow" aria-hidden="true"></span>
+              <span class="vault-pin__scan" aria-hidden="true"></span>
+            </div>
+          </figure>
+        ))
+      }
+    </section>
+  </div>
+</InternalPageLayout>
+
+<script>
+  type VaultRuntimeWindow = Window & {
+    __vaultController?: AbortController;
+    __vaultAnimationFrame?: number;
+    __vaultResizeObserver?: ResizeObserver;
+  };
+
+  const vaultRuntimeWindow = window as VaultRuntimeWindow;
+
+  function initialiseVaultPage(): void {
+    vaultRuntimeWindow.__vaultController?.abort();
+
+    if (vaultRuntimeWindow.__vaultAnimationFrame) {
+      window.cancelAnimationFrame(
+        vaultRuntimeWindow.__vaultAnimationFrame
+      );
+    }
+
+    vaultRuntimeWindow.__vaultResizeObserver?.disconnect();
+
+    const shell = document.querySelector<HTMLElement>(
+      ".vault-feed-shell"
+    );
+
+    if (!shell) {
+      return;
+    }
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    vaultRuntimeWindow.__vaultController = controller;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    /* ======================================================
+       IMAGE HOVER MOTION
+       ====================================================== */
+
+    const pins = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-vault-pin]")
+    );
+
+    pins.forEach((pin) => {
+      const image = pin.querySelector<HTMLImageElement>(
+        "[data-vault-image]"
+      );
+
+      image?.addEventListener(
+        "error",
+        () => {
+          pin.hidden = true;
+        },
+        { signal }
+      );
+
+      if (prefersReducedMotion) {
+        return;
+      }
+
+      pin.addEventListener(
+        "pointermove",
+        (event) => {
+          const rect = pin.getBoundingClientRect();
+
+          const x = Math.min(
+            1,
+            Math.max(0, (event.clientX - rect.left) / rect.width)
+          );
+
+          const y = Math.min(
+            1,
+            Math.max(0, (event.clientY - rect.top) / rect.height)
+          );
+
+          const rotateY = (x - 0.5) * 5.5;
+          const rotateX = (0.5 - y) * 5.5;
+
+          pin.style.setProperty("--vault-rx", `${rotateX}deg`);
+          pin.style.setProperty("--vault-ry", `${rotateY}deg`);
+          pin.style.setProperty("--vault-pointer-x", `${x * 100}%`);
+          pin.style.setProperty("--vault-pointer-y", `${y * 100}%`);
+        },
+        { signal }
+      );
+
+      pin.addEventListener(
+        "pointerleave",
+        () => {
+          pin.style.setProperty("--vault-rx", "0deg");
+          pin.style.setProperty("--vault-ry", "0deg");
+          pin.style.setProperty("--vault-pointer-x", "50%");
+          pin.style.setProperty("--vault-pointer-y", "50%");
+        },
+        { signal }
+      );
+    });
+
+    /* ======================================================
+       MATRIX BACKGROUND
+       ====================================================== */
+
+    const canvas = document.querySelector<HTMLCanvasElement>(
+      "[data-vault-matrix]"
+    );
+
+    const context = canvas?.getContext("2d");
+
+    if (!canvas || !context) {
+      return;
+    }
+
+    const characters =
+      "01<>[]{}:/\\|+-=*PORTAL214VAULTSIGNALARCHIVE";
+
+    let width = 0;
+    let height = 0;
+    let columns = 0;
+    let drops: number[] = [];
+    let lastFrame = 0;
+
+    const fontSize = 14;
+    const frameInterval = 58;
+
+    const resizeMatrix = (): void => {
+      const rect = shell.getBoundingClientRect();
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+
+      width = Math.max(1, Math.floor(rect.width));
+      height = Math.max(1, Math.floor(rect.height));
+
+      canvas.width = Math.floor(width * pixelRatio);
+      canvas.height = Math.floor(height * pixelRatio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      context.font = `${fontSize}px "Space Mono", monospace`;
+      context.textBaseline = "top";
+
+      columns = Math.ceil(width / fontSize);
+
+      drops = Array.from(
+        { length: columns },
+        (_, index) => {
+          const stagger = (index % 11) * 1.7;
+          return -Math.random() * 42 - stagger;
+        }
+      );
+    };
+
+    const drawMatrix = (timestamp: number): void => {
+      if (document.hidden) {
+        vaultRuntimeWindow.__vaultAnimationFrame =
+          window.requestAnimationFrame(drawMatrix);
+        return;
+      }
+
+      if (
+        !prefersReducedMotion &&
+        timestamp - lastFrame < frameInterval
+      ) {
+        vaultRuntimeWindow.__vaultAnimationFrame =
+          window.requestAnimationFrame(drawMatrix);
+        return;
+      }
+
+      lastFrame = timestamp;
+
+      context.fillStyle = prefersReducedMotion
+        ? "rgba(1, 7, 4, 1)"
+        : "rgba(1, 7, 4, 0.13)";
+
+      context.fillRect(0, 0, width, height);
+
+      for (let column = 0; column < columns; column += 1) {
+        const char =
+          characters[
+            Math.floor(Math.random() * characters.length)
+          ];
+
+        const x = column * fontSize;
+        const y = drops[column] * fontSize;
+
+        const bright = Math.random() > 0.965;
+
+        context.fillStyle = bright
+          ? "rgba(208, 255, 184, 0.88)"
+          : "rgba(140, 255, 88, 0.34)";
+
+        context.fillText(char, x, y);
+
+        if (!prefersReducedMotion) {
+          drops[column] += 0.72 + Math.random() * 0.18;
+
+          if (y > height + 80 && Math.random() > 0.965) {
+            drops[column] = -Math.random() * 34;
+          }
+        }
+      }
+
+      if (!prefersReducedMotion) {
+        vaultRuntimeWindow.__vaultAnimationFrame =
+          window.requestAnimationFrame(drawMatrix);
+      }
+    };
+
+    resizeMatrix();
+
+    if (prefersReducedMotion) {
+      drawMatrix(performance.now());
+    } else {
+      vaultRuntimeWindow.__vaultAnimationFrame =
+        window.requestAnimationFrame(drawMatrix);
+    }
+
+    if ("ResizeObserver" in window) {
+      const observer = new ResizeObserver(resizeMatrix);
+      observer.observe(shell);
+      vaultRuntimeWindow.__vaultResizeObserver = observer;
+    } else {
+      window.addEventListener("resize", resizeMatrix, { signal });
+    }
+  }
+
+  document.addEventListener(
+    "astro:page-load",
+    initialiseVaultPage
+  );
+
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      initialiseVaultPage,
+      { once: true }
+    );
+  } else {
+    initialiseVaultPage();
+  }
+</script>

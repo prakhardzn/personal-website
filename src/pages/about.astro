@@ -2,6 +2,8 @@
 import InternalPageLayout from "../layouts/InternalPageLayout.astro";
 import { getCollection } from "astro:content";
 import "../styles/about.css";
+import "../styles/about-vault.css";
+import "../styles/about-interests.css";
 
 /* ==================================================
    WORK PROJECTS
@@ -20,53 +22,8 @@ const baseUrl = import.meta.env.BASE_URL;
 const buildSiteUrl = (path: string): string =>
   `${baseUrl}${path.replace(/^\/+/, "")}`;
 
-const interestFiles = [
-  {
-    number: "INTEREST FILE 001",
-    title: "FILMMAKING",
-    description:
-      "Stories, performances, camera movement, visual tension and the satisfying chaos of trying to make a film.",
-  },
-  {
-    number: "INTEREST FILE 002",
-    title: "PHOTOGRAPHY",
-    description:
-      "Observing people, public spaces, light, colour and moments that appear when nobody is performing for the camera.",
-  },
-  {
-    number: "INTEREST FILE 003",
-    title: "THEATRE",
-    description:
-      "Characters, stage movement, performance and stories that become real inside a shared physical space.",
-  },
-  {
-    number: "INTEREST FILE 004",
-    title: "INTERACTIVE WEB",
-    description:
-      "Designing digital spaces that feel less like ordinary websites and more like explorable worlds.",
-  },
-];
+const vaultUrl = buildSiteUrl("vault");
 
-const vaultFiles = [
-  {
-    number: "VAULT FILE 001",
-    title: "UNFINISHED STORIES",
-    description:
-      "Characters, scenes and film ideas currently waiting for enough courage, time or production budget.",
-  },
-  {
-    number: "VAULT FILE 002",
-    title: "STRANGE OBSERVATIONS",
-    description:
-      "Small details, overheard sentences and everyday events that might become stories later.",
-  },
-  {
-    number: "VAULT FILE 003",
-    title: "EXPERIMENTS",
-    description:
-      "Design tests, abandoned interfaces, visual accidents and ideas that refused to fit anywhere else.",
-  },
-];
 ---
 
 <InternalPageLayout
@@ -307,24 +264,24 @@ const vaultFiles = [
         <h2>The Vault</h2>
 
         <p class="about-profile-description">
-          Unfinished ideas, strange observations and creative
-          experiments that have not found another home.
+          A visual hoard of images, references, interfaces, film frames
+          and other things I found too interesting to lose.
         </p>
 
         <dl class="about-section-details">
           <div>
             <dt>SECURITY</dt>
-            <dd>Mostly decorative</dd>
+            <dd>Needlessly excessive</dd>
           </div>
 
           <div>
             <dt>CONTENT</dt>
-            <dd>Unstable ideas</dd>
+            <dd>Recovered objects</dd>
           </div>
 
           <div>
             <dt>ACCESS</dt>
-            <dd>Proceed carefully</dd>
+            <dd>Turn the lock</dd>
           </div>
         </dl>
       </div>
@@ -494,83 +451,344 @@ const vaultFiles = [
         <!-- Interests -->
 
         <section
-          class="about-content-panel"
+          class="about-content-panel about-content-panel--interests"
           data-about-panel="interests"
           hidden
         >
-          <header class="about-content-header">
-            <p>ACTIVE SIGNALS</p>
+          <div class="interest-network" data-interest-network>
+            <header class="interest-network__header">
+              <div>
+                <p>ACTIVE SIGNALS // P-01</p>
+                <h1>Interest Network</h1>
+              </div>
 
-            <h1>Interest Files</h1>
+              <span>
+                <i aria-hidden="true"></i>
+                04 CHANNELS ONLINE
+              </span>
+            </header>
 
-            <span>
-              Subjects occupying suspicious amounts of mental
-              storage.
-            </span>
-          </header>
+            <div
+              class="interest-network__stage"
+              data-interest-stage
+              aria-label="Interactive map of Prakhar's interests"
+            >
+              <svg
+                class="interest-network__connectors"
+                viewBox="0 0 1000 620"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <line class="interest-connector interest-connector--film" x1="500" y1="310" x2="205" y2="310" />
+                <line class="interest-connector interest-connector--photo" x1="500" y1="310" x2="500" y2="95" />
+                <line class="interest-connector interest-connector--theatre" x1="500" y1="310" x2="500" y2="525" />
+                <line class="interest-connector interest-connector--music" x1="500" y1="310" x2="795" y2="310" />
 
-          <div class="about-file-list">
-            {
-              interestFiles.map((interest) => (
-                <article class="about-file-card about-file-card--interest">
-                  <div class="about-file-card__top">
-                    <span>{interest.number}</span>
+                <circle class="interest-packet interest-packet--film" cx="500" cy="310" r="4" />
+                <circle class="interest-packet interest-packet--photo" cx="500" cy="310" r="4" />
+                <circle class="interest-packet interest-packet--theatre" cx="500" cy="310" r="4" />
+                <circle class="interest-packet interest-packet--music" cx="500" cy="310" r="4" />
+              </svg>
 
-                    <div class="about-project-status about-project-status--active">
-                      <span
-                        class="about-project-status__dot"
-                        aria-hidden="true"
-                      ></span>
+              <div class="interest-core" data-interest-core>
+                <span class="interest-core__orbit interest-core__orbit--outer" aria-hidden="true"></span>
+                <span class="interest-core__orbit interest-core__orbit--inner" aria-hidden="true"></span>
+                <span class="interest-core__pulse" aria-hidden="true"></span>
 
-                      <strong>ACTIVE</strong>
-                    </div>
-                  </div>
+                <span class="interest-core__eyebrow">P-01</span>
+                <strong>INTEREST<br />NETWORK</strong>
+                <small data-interest-readout>
+                  MOVE CURSOR TO ACQUIRE SIGNAL
+                </small>
+              </div>
 
-                  <h2>{interest.title}</h2>
+              <button
+                class="interest-signal interest-signal--filmmaking"
+                type="button"
+                data-interest-signal="filmmaking"
+                aria-controls="interest-detail-filmmaking"
+              >
+                <span class="interest-signal__index">SIG.01</span>
 
-                  <p class="about-file-card__description">
-                    {interest.description}
-                  </p>
+                <span class="interest-signal__icon interest-icon interest-icon--film" aria-hidden="true">
+                  <svg viewBox="0 0 96 96" focusable="false">
+                    <rect x="14" y="20" width="68" height="54" rx="2"></rect>
+                    <path d="M24 30h12M24 30v12M72 30H60M72 30v12M24 64h12M24 64V52M72 64H60M72 64V52"></path>
+                    <path class="interest-icon__film-play" d="M43 40l16 9-16 9z"></path>
+                    <circle class="interest-icon__film-rec" cx="72" cy="20" r="4"></circle>
+                    <path class="interest-icon__film-scan" d="M20 48h56"></path>
+                  </svg>
+                </span>
 
-                  <span class="about-file-card__link">
-                    INSPECT SIGNAL
-                  </span>
-                </article>
-              ))
-            }
+                <span class="interest-signal__copy">
+                  <strong>FILMMAKING</strong>
+                  <small>VISUAL NARRATIVE</small>
+                </span>
+              </button>
+
+              <button
+                class="interest-signal interest-signal--photography"
+                type="button"
+                data-interest-signal="photography"
+                aria-controls="interest-detail-photography"
+              >
+                <span class="interest-signal__index">SIG.02</span>
+
+                <span class="interest-signal__icon interest-icon interest-icon--photo" aria-hidden="true">
+                  <svg viewBox="0 0 96 96" focusable="false">
+                    <circle cx="48" cy="48" r="31"></circle>
+                    <circle class="interest-icon__photo-ring" cx="48" cy="48" r="21"></circle>
+                    <path class="interest-icon__aperture interest-icon__aperture--1" d="M48 27l11 10-4 14-15-2z"></path>
+                    <path class="interest-icon__aperture interest-icon__aperture--2" d="M69 44l-4 14-15 2-3-15 11-9z"></path>
+                    <path class="interest-icon__aperture interest-icon__aperture--3" d="M57 67l-15 2-8-12 10-11 14 6z"></path>
+                    <path class="interest-icon__aperture interest-icon__aperture--4" d="M31 60l-4-14 11-10 11 10-7 14z"></path>
+                    <path class="interest-icon__photo-flash" d="M21 48h54"></path>
+                  </svg>
+                </span>
+
+                <span class="interest-signal__copy">
+                  <strong>PHOTOGRAPHY</strong>
+                  <small>FIELD OBSERVATION</small>
+                </span>
+              </button>
+
+              <button
+                class="interest-signal interest-signal--theatre"
+                type="button"
+                data-interest-signal="theatre"
+                aria-controls="interest-detail-theatre"
+              >
+                <span class="interest-signal__index">SIG.03</span>
+
+                <span class="interest-signal__icon interest-icon interest-icon--theatre" aria-hidden="true">
+                  <svg viewBox="0 0 96 96" focusable="false">
+                    <path class="interest-icon__spot-fixture" d="M26 21h29l7 13H34z"></path>
+                    <path class="interest-icon__spot-arm" d="M26 27l-10-8M55 27l10-8"></path>
+                    <path class="interest-icon__spot-beam" d="M35 35l-17 42h60L55 35z"></path>
+                    <circle class="interest-icon__stage-head" cx="48" cy="57" r="5"></circle>
+                    <path class="interest-icon__stage-body" d="M48 62v11M40 69l8-4 8 4"></path>
+                    <path d="M18 77h60"></path>
+                  </svg>
+                </span>
+
+                <span class="interest-signal__copy">
+                  <strong>THEATRE</strong>
+                  <small>LIVE PERFORMANCE</small>
+                </span>
+              </button>
+
+              <button
+                class="interest-signal interest-signal--music"
+                type="button"
+                data-interest-signal="music"
+                aria-controls="interest-detail-music"
+              >
+                <span class="interest-signal__index">SIG.04</span>
+
+                <span class="interest-signal__icon interest-icon interest-icon--music" aria-hidden="true">
+                  <svg viewBox="0 0 96 96" focusable="false">
+                    <path class="interest-icon__wave" d="M12 50c7 0 7-18 14-18s7 32 14 32 7-45 14-45 7 58 14 58 7-27 16-27"></path>
+                    <path class="interest-icon__music-grid" d="M14 23v54M30 23v54M46 23v54M62 23v54M78 23v54"></path>
+                    <rect class="interest-icon__bar interest-icon__bar--1" x="18" y="48" width="6" height="22"></rect>
+                    <rect class="interest-icon__bar interest-icon__bar--2" x="34" y="36" width="6" height="34"></rect>
+                    <rect class="interest-icon__bar interest-icon__bar--3" x="50" y="43" width="6" height="27"></rect>
+                    <rect class="interest-icon__bar interest-icon__bar--4" x="66" y="30" width="6" height="40"></rect>
+                  </svg>
+                </span>
+
+                <span class="interest-signal__copy">
+                  <strong>MUSIC</strong>
+                  <small>AUDIO FREQUENCY</small>
+                </span>
+              </button>
+
+              <div class="interest-network__coordinates" aria-hidden="true">
+                <span>X: 214.04</span>
+                <span>Y: P-01</span>
+                <span>STATUS: LISTENING</span>
+              </div>
+            </div>
+
+            <div class="interest-network__detail" data-interest-detail-shell hidden>
+              <header class="interest-detail__header">
+                <div>
+                  <span data-interest-detail-signal>SIG.01 // ACQUIRED</span>
+                  <h2 data-interest-detail-title>FILMMAKING</h2>
+                </div>
+
+                <button
+                  class="interest-detail__back"
+                  type="button"
+                  data-interest-back
+                >
+                  ← RETURN TO NETWORK
+                </button>
+              </header>
+
+              <section
+                class="interest-detail-panel"
+                id="interest-detail-filmmaking"
+                data-interest-detail="filmmaking"
+                hidden
+              >
+                <div class="interest-detail-visual interest-detail-visual--film" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span><span></span>
+                  <strong>REC</strong>
+                </div>
+
+                <p>
+                  Filmmaking is the interest that somehow manages to absorb most of the others. Writing, directing, cinematography, editing, sound — I like the whole messy process of turning an idea into something people can actually watch.
+                </p>
+
+                <div class="interest-detail-tags">
+                  <span>DIRECTING</span>
+                  <span>CINEMATOGRAPHY</span>
+                  <span>EDITING</span>
+                  <span>SOUND</span>
+                </div>
+              </section>
+
+              <section
+                class="interest-detail-panel"
+                id="interest-detail-photography"
+                data-interest-detail="photography"
+                hidden
+              >
+                <div class="interest-detail-visual interest-detail-visual--photo" aria-hidden="true">
+                  <span class="interest-detail-aperture"></span>
+                  <i></i><i></i><i></i><i></i>
+                </div>
+
+                <p>
+                  I like photographs where it feels like something happened half a second before I arrived. Streets, people, odd details, strange light and those moments nobody seems to notice until a camera freezes them.
+                </p>
+
+                <div class="interest-detail-tags">
+                  <span>STREET</span>
+                  <span>PEOPLE</span>
+                  <span>LIGHT</span>
+                  <span>OBSERVATION</span>
+                </div>
+              </section>
+
+              <section
+                class="interest-detail-panel"
+                id="interest-detail-theatre"
+                data-interest-detail="theatre"
+                hidden
+              >
+                <div class="interest-detail-visual interest-detail-visual--theatre" aria-hidden="true">
+                  <span class="interest-detail-spotlight"></span>
+                  <i></i>
+                </div>
+
+                <p>
+                  Theatre is probably where a lot of my obsession with performance came from. Characters, movement, timing, people pretending to be someone else in a room full of people who have agreed to believe them.
+                </p>
+
+                <div class="interest-detail-tags">
+                  <span>PERFORMANCE</span>
+                  <span>CHARACTERS</span>
+                  <span>STAGING</span>
+                  <span>TIMING</span>
+                </div>
+              </section>
+
+              <section
+                class="interest-detail-panel"
+                id="interest-detail-music"
+                data-interest-detail="music"
+                hidden
+              >
+                <div class="interest-detail-visual interest-detail-visual--music" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+
+                <p>
+                  Music is almost always playing somewhere around me — while working, walking, editing or because apparently silence lasted too long. I am especially drawn to film scores, game soundtracks and songs that completely change the mood of a space.
+                </p>
+
+                <div class="interest-detail-tags">
+                  <span>FILM SCORES</span>
+                  <span>GAME OSTs</span>
+                  <span>INDIE / ALT</span>
+                  <span>RANDOM FINDS</span>
+                </div>
+              </section>
+            </div>
           </div>
         </section>
 
         <!-- Vault -->
 
         <section
-          class="about-content-panel"
+          class="about-content-panel about-content-panel--vault"
           data-about-panel="vault"
           hidden
         >
-          <header class="about-content-header">
-            <p>RESTRICTED ARCHIVE</p>
+          <div class="vault-entry">
+            <header class="vault-entry__header">
+              <div>
+                <p>RESTRICTED ARCHIVE // P-214</p>
+                <h1>THE VAULT</h1>
+              </div>
 
-            <h1>The Vault</h1>
+              <span data-vault-status>SECURITY STATE // LOCKED</span>
+            </header>
 
-            <span>
-              The organisation system inside this section remains
-              theoretical.
-            </span>
-          </header>
+            <div class="vault-entry__chamber" data-vault-machine>
+              <div class="vault-entry__ambient" aria-hidden="true"></div>
 
-          <div class="about-vault-list">
-            {
-              vaultFiles.map((file) => (
-                <article class="about-vault-card">
-                  <span>{file.number}</span>
+              <div class="vault-entry__door-zone">
+                <a
+                  class="vault-door-trigger"
+                  href={vaultUrl}
+                  data-vault-open
+                  aria-label="Unlock and enter the Vault"
+                >
+                  <span class="vault-door" aria-hidden="true">
+                    <span class="vault-door__outer-teeth"></span>
+                    <span class="vault-door__rim vault-door__rim--outer"></span>
+                    <span class="vault-door__rim vault-door__rim--middle"></span>
+                    <span class="vault-door__rim vault-door__rim--inner"></span>
+                    <span class="vault-door__scanner"></span>
 
-                  <h2>{file.title}</h2>
+                    <span class="vault-door__bolt vault-door__bolt--top"></span>
+                    <span class="vault-door__bolt vault-door__bolt--right"></span>
+                    <span class="vault-door__bolt vault-door__bolt--bottom"></span>
+                    <span class="vault-door__bolt vault-door__bolt--left"></span>
 
-                  <p>{file.description}</p>
-                </article>
-              ))
-            }
+                    <span class="vault-door__wheel">
+                      <i></i>
+                      <i></i>
+                      <i></i>
+                      <i></i>
+                      <i></i>
+                      <i></i>
+                      <b>214</b>
+                    </span>
+
+                    <span class="vault-door__hinge vault-door__hinge--top"></span>
+                    <span class="vault-door__hinge vault-door__hinge--bottom"></span>
+
+                    <span class="vault-door__label">CONTAINMENT UNIT // 214</span>
+                  </span>
+
+                  <span class="vault-door-trigger__copy">
+                    <strong>&gt; OPEN VAULT</strong>
+                    <small data-vault-command>
+                      CLICK TO REQUEST ACCESS
+                    </small>
+                  </span>
+                </a>
+              </div>
+
+              <div class="vault-entry__telemetry">
+                <span>LOCKS // <strong data-vault-locks>04 ENGAGED</strong></span>
+                <span>CONTENTS // UNCLASSIFIED</span>
+                <span data-vault-readout>DOOR // SEALED</span>
+              </div>
+            </div>
           </div>
         </section>
       </div>
@@ -802,6 +1020,33 @@ const vaultFiles = [
         contentWindow.scrollTop = 0;
       }
 
+      if (tabName !== "interests") {
+        const interestDetailShell =
+          document.querySelector<HTMLElement>(
+            ".about-page [data-interest-detail-shell]"
+          );
+
+        const interestStage =
+          document.querySelector<HTMLElement>(
+            ".about-page [data-interest-stage]"
+          );
+
+        const interestNetwork =
+          document.querySelector<HTMLElement>(
+            ".about-page [data-interest-network]"
+          );
+
+        if (interestDetailShell) {
+          interestDetailShell.hidden = true;
+        }
+
+        interestStage?.removeAttribute("hidden");
+        interestNetwork?.classList.remove(
+          "is-inspecting",
+          "is-tuning"
+        );
+      }
+
       if (updateHash) {
         window.history.replaceState(
           null,
@@ -842,6 +1087,396 @@ const vaultFiles = [
         { signal }
       );
     });
+
+    const interestNetwork =
+      document.querySelector<HTMLElement>(
+        ".about-page [data-interest-network]"
+      );
+
+    const interestStage =
+      document.querySelector<HTMLElement>(
+        ".about-page [data-interest-stage]"
+      );
+
+    const interestCore =
+      document.querySelector<HTMLElement>(
+        ".about-page [data-interest-core]"
+      );
+
+    const interestReadout =
+      document.querySelector<HTMLElement>(
+        ".about-page [data-interest-readout]"
+      );
+
+    const interestButtons =
+      Array.from(
+        document.querySelectorAll<HTMLButtonElement>(
+          ".about-page [data-interest-signal]"
+        )
+      );
+
+    const interestDetailShell =
+      document.querySelector<HTMLElement>(
+        ".about-page [data-interest-detail-shell]"
+      );
+
+    const interestDetailPanels =
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".about-page [data-interest-detail]"
+        )
+      );
+
+    const interestDetailTitle =
+      document.querySelector<HTMLElement>(
+        ".about-page [data-interest-detail-title]"
+      );
+
+    const interestDetailSignal =
+      document.querySelector<HTMLElement>(
+        ".about-page [data-interest-detail-signal]"
+      );
+
+    const interestBackButton =
+      document.querySelector<HTMLButtonElement>(
+        ".about-page [data-interest-back]"
+      );
+
+    const interestMeta: Record<
+      string,
+      { title: string; signal: string; hover: string }
+    > = {
+      filmmaking: {
+        title: "FILMMAKING",
+        signal: "SIG.01 // ACQUIRED",
+        hover: "> VISUAL FEED ACQUIRED // REC ACTIVE",
+      },
+      photography: {
+        title: "PHOTOGRAPHY",
+        signal: "SIG.02 // ACQUIRED",
+        hover: "> OPTICAL SIGNAL ACQUIRED // APERTURE OPEN",
+      },
+      theatre: {
+        title: "THEATRE",
+        signal: "SIG.03 // ACQUIRED",
+        hover: "> LIVE SIGNAL DETECTED // STAGE ACTIVE",
+      },
+      music: {
+        title: "MUSIC",
+        signal: "SIG.04 // ACQUIRED",
+        hover: "> AUDIO SIGNAL LOCKED // PLAYBACK ACTIVE",
+      },
+    };
+
+    const clearInterestHover = (): void => {
+      interestButtons.forEach((button) => {
+        button.classList.remove("is-muted");
+        button.classList.remove("is-hovered");
+      });
+
+      if (interestReadout) {
+        interestReadout.textContent =
+          "MOVE CURSOR TO ACQUIRE SIGNAL";
+      }
+    };
+
+    const previewInterest = (
+      selectedButton: HTMLButtonElement
+    ): void => {
+      const key =
+        selectedButton.dataset.interestSignal;
+
+      if (!key || !interestMeta[key]) {
+        return;
+      }
+
+      interestButtons.forEach((button) => {
+        const selected = button === selectedButton;
+        button.classList.toggle(
+          "is-hovered",
+          selected
+        );
+        button.classList.toggle(
+          "is-muted",
+          !selected
+        );
+      });
+
+      if (interestReadout) {
+        interestReadout.textContent =
+          interestMeta[key].hover;
+      }
+    };
+
+    const openInterestDetail = (
+      key: string
+    ): void => {
+      const meta = interestMeta[key];
+
+      if (
+        !meta ||
+        !interestNetwork ||
+        !interestDetailShell
+      ) {
+        return;
+      }
+
+      interestNetwork.classList.add(
+        "is-tuning"
+      );
+
+      window.setTimeout(() => {
+        interestDetailPanels.forEach(
+          (panel) => {
+            panel.hidden =
+              panel.dataset.interestDetail !== key;
+          }
+        );
+
+        if (interestDetailTitle) {
+          interestDetailTitle.textContent =
+            meta.title;
+        }
+
+        if (interestDetailSignal) {
+          interestDetailSignal.textContent =
+            meta.signal;
+        }
+
+        interestStage?.setAttribute(
+          "hidden",
+          ""
+        );
+
+        interestDetailShell.hidden = false;
+
+        interestNetwork.classList.remove(
+          "is-tuning"
+        );
+        interestNetwork.classList.add(
+          "is-inspecting"
+        );
+
+        interestBackButton?.focus({
+          preventScroll: true,
+        });
+
+        window.requestAnimationFrame(
+          updateScrollbar
+        );
+      }, 260);
+    };
+
+    const closeInterestDetail = (): void => {
+      if (
+        !interestNetwork ||
+        !interestDetailShell ||
+        !interestStage
+      ) {
+        return;
+      }
+
+      interestNetwork.classList.remove(
+        "is-inspecting"
+      );
+      interestDetailShell.hidden = true;
+      interestStage.removeAttribute("hidden");
+      clearInterestHover();
+
+      window.requestAnimationFrame(
+        updateScrollbar
+      );
+    };
+
+    interestButtons.forEach((button) => {
+      button.addEventListener(
+        "pointerenter",
+        () => previewInterest(button),
+        { signal }
+      );
+
+      button.addEventListener(
+        "focus",
+        () => previewInterest(button),
+        { signal }
+      );
+
+      button.addEventListener(
+        "click",
+        () => {
+          const key =
+            button.dataset.interestSignal;
+
+          if (key) {
+            openInterestDetail(key);
+          }
+        },
+        { signal }
+      );
+    });
+
+    interestStage?.addEventListener(
+      "pointerleave",
+      clearInterestHover,
+      { signal }
+    );
+
+    interestStage?.addEventListener(
+      "pointermove",
+      (event) => {
+        if (!interestCore) {
+          return;
+        }
+
+        const bounds =
+          interestStage.getBoundingClientRect();
+
+        const x =
+          (event.clientX - bounds.left) /
+            Math.max(bounds.width, 1) -
+          0.5;
+
+        const y =
+          (event.clientY - bounds.top) /
+            Math.max(bounds.height, 1) -
+          0.5;
+
+        interestCore.style.setProperty(
+          "--core-shift-x",
+          `${x * 12}px`
+        );
+
+        interestCore.style.setProperty(
+          "--core-shift-y",
+          `${y * 12}px`
+        );
+      },
+      { signal }
+    );
+
+    interestBackButton?.addEventListener(
+      "click",
+      closeInterestDetail,
+      { signal }
+    );
+
+    const vaultMachine =
+      document.querySelector<HTMLElement>(
+        ".about-page [data-vault-machine]"
+      );
+
+    const vaultOpenLink =
+      document.querySelector<HTMLAnchorElement>(
+        ".about-page [data-vault-open]"
+      );
+
+    const vaultStatus =
+      document.querySelector<HTMLElement>(
+        ".about-page [data-vault-status]"
+      );
+
+    const vaultCommand =
+      document.querySelector<HTMLElement>(
+        ".about-page [data-vault-command]"
+      );
+
+    const vaultLocks =
+      document.querySelector<HTMLElement>(
+        ".about-page [data-vault-locks]"
+      );
+
+    const vaultReadout =
+      document.querySelector<HTMLElement>(
+        ".about-page [data-vault-readout]"
+      );
+
+    vaultOpenLink?.addEventListener(
+      "click",
+      (event) => {
+        if (
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey ||
+          !vaultMachine ||
+          vaultMachine.classList.contains("is-opening")
+        ) {
+          return;
+        }
+
+        if (
+          window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+          ).matches
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const destination =
+          vaultOpenLink.href;
+
+        vaultMachine.classList.add(
+          "is-opening"
+        );
+
+        vaultOpenLink.setAttribute(
+          "aria-disabled",
+          "true"
+        );
+
+        if (vaultStatus) {
+          vaultStatus.textContent =
+            "SECURITY STATE // UNLOCKING";
+        }
+
+        if (vaultCommand) {
+          vaultCommand.textContent =
+            "VERIFYING ENTITY...";
+        }
+
+        if (vaultLocks) {
+          vaultLocks.textContent =
+            "04 RETRACTING";
+        }
+
+        if (vaultReadout) {
+          vaultReadout.textContent =
+            "DOOR // PRESSURE RELEASE";
+        }
+
+        window.setTimeout(() => {
+          if (vaultStatus) {
+            vaultStatus.textContent =
+              "SECURITY STATE // ACCESS GRANTED";
+          }
+
+          if (vaultCommand) {
+            vaultCommand.textContent =
+              "ENTERING ARCHIVE";
+          }
+
+          if (vaultLocks) {
+            vaultLocks.textContent =
+              "00 ENGAGED";
+          }
+
+          if (vaultReadout) {
+            vaultReadout.textContent =
+              "DOOR // OPEN";
+          }
+        }, 1050);
+
+        window.setTimeout(() => {
+          window.location.assign(
+            destination
+          );
+        }, 2050);
+      },
+      { signal }
+    );
 
     const activateFromLocation = (): void => {
       const requestedTab =
