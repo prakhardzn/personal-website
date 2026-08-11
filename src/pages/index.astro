@@ -132,6 +132,15 @@ const particleNumbers = Array.from(
             draggable="false"
           />
         </span>
+
+        <span class="background-vehicle background-vehicle--villigax">
+          <img
+            class="background-vehicle__image background-vehicle__image--villigax"
+            src="/assets/background-elements/villigax-spaceship.webp"
+            alt=""
+            draggable="false"
+          />
+        </span>
       </div>
 
       <nav
@@ -214,33 +223,22 @@ const particleNumbers = Array.from(
                   -->
 
                   <!--
-                    GREEN VORTEX
+                    ACTUAL GREEN VORTEX
 
-                    IMPORTANT:
-                    These layers reuse the actual visible Weekly base artwork.
-                    CSS clips them tightly around the bright green centre.
-                    That means the GREEN TEXTURE ITSELF moves, while the
-                    purple planet body, ruins and outer atmosphere stay fixed.
+                    weekly-planet-vortex-motion.webp is a full-canvas cutout
+                    of the painted green whirlpool itself. Everything outside
+                    the vortex is transparent, including the spaces occupied by
+                    the static ruins and pillars in the base artwork.
                   -->
                   <span
                     class="weekly-vortex-system"
                     aria-hidden="true"
                   >
                     <img
-                      class="weekly-planet-layer weekly-planet-layer--green-vortex weekly-planet-layer--green-vortex-outer"
+                      class="weekly-planet-layer weekly-planet-layer--vortex-motion"
                       src={planetAsset(
                         "weekly-planet",
-                        "weekly-planet-base.webp"
-                      )}
-                      alt=""
-                      draggable="false"
-                    />
-
-                    <img
-                      class="weekly-planet-layer weekly-planet-layer--green-vortex weekly-planet-layer--green-vortex-inner"
-                      src={planetAsset(
-                        "weekly-planet",
-                        "weekly-planet-base.webp"
+                        "weekly-planet-vortex-motion.webp"
                       )}
                       alt=""
                       draggable="false"

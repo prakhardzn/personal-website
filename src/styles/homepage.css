@@ -396,6 +396,32 @@ img {
   animation: background-spaceship-bank 14s ease-in-out -5s infinite;
 }
 
+/*
+  Villigax cruiser: deliberately much larger and heavier than the
+  ordinary background spaceship. It moves right -> left very slowly,
+  pauses behind / beside the Astrology planet as if inspecting it,
+  then continues across the system. The inner image keeps a tiny bob
+  and engine pulse during the pause so the ship never feels frozen.
+*/
+.background-vehicle--villigax {
+  top: 41%;
+  right: 3%;
+  width: clamp(132px, 11.6vw, 220px);
+
+  animation: background-villigax-crossing 190s linear -28s infinite;
+}
+
+.background-vehicle__image--villigax {
+  opacity: 0.97;
+  filter:
+    brightness(1.035)
+    saturate(1.06)
+    drop-shadow(0 12px 20px rgb(0 0 0 / 48%))
+    drop-shadow(0 0 7px rgb(255 70 35 / 18%));
+
+  animation: background-villigax-bank 30s ease-in-out -9s infinite;
+}
+
 .destination-list {
   position: absolute;
   inset: 0;
@@ -540,7 +566,7 @@ img {
 .weekly-planet-motion {
   /*
     The Weekly world itself stays completely fixed.
-    Only the green vortex layers below are allowed to animate.
+    Only the dedicated green vortex artwork below is allowed to animate.
   */
   transform-origin: 47.66% 49.63%;
   transform: none;
@@ -549,14 +575,14 @@ img {
 }
 
 /* =========================================================
-   NEWS WEEKLY — VISIBLE GREEN VORTEX V5
+   NEWS WEEKLY — STRUCTURES LOCKED / VORTEX ONLY
 
-   The entire planet stays completely fixed.
+   The base planet contains the ruins, pillars and stonework and
+   remains completely static.
 
-   The two moving layers below are DUPLICATES OF THE ACTUAL
-   weekly-planet-base.webp, clipped tightly around the bright
-   green centre. Because of that, the visible green painted
-   texture rotates instead of a faint transparent effect.
+   The moving layers are dedicated transparent WebP vortex assets,
+   so architectural pixels are never duplicated into a rotating
+   layer.
 
    Real vortex centre:
    46.24% 50.15%
@@ -587,10 +613,14 @@ img {
 }
 
 /*
-  Both vortex layers use the real planet artwork.
-  Only a circular window around the GREEN region is visible.
+  The actual painted green whirlpool.
+
+  This WebP uses the same canvas and alignment as the Weekly base,
+  but contains only the opaque green vortex artwork. There is no
+  architecture in this layer, so the visible liquid can rotate while
+  every pillar, ruin and stone in the base remains perfectly still.
 */
-.weekly-planet-layer--green-vortex {
+.weekly-planet-layer--vortex-motion {
   opacity: 1;
 
   transform-origin:
@@ -602,53 +632,18 @@ img {
   will-change: transform;
 
   backface-visibility: hidden;
-}
 
-/*
-  Main visible green whirlpool.
-
-  15.8% keeps the moving area inside the luminous green field
-  and away from most of the purple outer planet.
-*/
-.weekly-planet-layer--green-vortex-outer {
-  clip-path:
-    circle(
-      15.8%
-      at
-      46.24%
-      50.15%
-    );
+  filter:
+    brightness(1.14)
+    saturate(1.18)
+    contrast(1.04)
+    drop-shadow(0 0 7px rgb(175 255 90 / 34%));
 
   animation:
     weekly-visible-green-outer
-    30s
+    13.5s
     linear
-    -8s
-    infinite;
-}
-
-/*
-  Inner current moves faster in the same direction.
-  The overlap creates fluid differential motion around the eye.
-*/
-.weekly-planet-layer--green-vortex-inner {
-  clip-path:
-    circle(
-      9.2%
-      at
-      46.24%
-      50.15%
-    );
-
-  filter:
-    brightness(1.035)
-    saturate(1.025);
-
-  animation:
-    weekly-visible-green-inner
-    17s
-    linear
-    -5s
+    -4.5s
     infinite;
 }
 
@@ -677,7 +672,7 @@ img {
     infinite;
 }
 
-/* Everything outside the green vortex remains fixed. */
+/* Everything structural remains fixed. */
 .weekly-planet-layer--stone {
   opacity: 0.055;
   mix-blend-mode: screen;
@@ -2348,6 +2343,74 @@ img {
   }
 }
 
+@keyframes background-villigax-crossing {
+  /* Enters slowly from beyond the right edge. */
+  0% {
+    transform: translate3d(42vw, 16px, 0) scale(0.96);
+  }
+
+  16% {
+    transform: translate3d(13vw, 11px, 0) scale(0.975);
+  }
+
+  /* Approaches the Astrology planet. */
+  27% {
+    transform: translate3d(-8vw, 5px, 0) scale(1);
+  }
+
+  /* Roughly 25 seconds of inspection / hover time. */
+  40% {
+    transform: translate3d(-8vw, 5px, 0) scale(1);
+  }
+
+  /* Leaves the planet and resumes its long cruise. */
+  45% {
+    transform: translate3d(-24vw, 2px, 0) scale(1.005);
+  }
+
+  65% {
+    transform: translate3d(-70vw, -3px, 0) scale(1.015);
+  }
+
+  83% {
+    transform: translate3d(-113vw, -10px, 0) scale(1.025);
+  }
+
+  100% {
+    transform: translate3d(-158vw, -18px, 0) scale(1.035);
+  }
+}
+
+@keyframes background-villigax-bank {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0.35deg);
+    filter:
+      brightness(1.02)
+      saturate(1.03)
+      drop-shadow(0 10px 16px rgb(0 0 0 / 44%))
+      drop-shadow(0 0 4px rgb(255 70 35 / 14%));
+  }
+
+  45% {
+    transform: translate3d(0, -2px, 0) rotate(-0.32deg);
+    filter:
+      brightness(1.06)
+      saturate(1.08)
+      drop-shadow(0 11px 17px rgb(0 0 0 / 42%))
+      drop-shadow(0 0 8px rgb(255 70 35 / 28%));
+  }
+
+  72% {
+    transform: translate3d(0, 1px, 0) rotate(0.08deg);
+    filter:
+      brightness(1.035)
+      saturate(1.05)
+      drop-shadow(0 10px 16px rgb(0 0 0 / 44%))
+      drop-shadow(0 0 5px rgb(255 70 35 / 18%));
+  }
+}
+
 @keyframes information-panel-open {
   from {
     opacity: 0;
@@ -2441,6 +2504,12 @@ img {
     top: 60%;
     width: clamp(48px, 6.8vw, 78px);
   }
+
+
+  .background-vehicle--villigax {
+    top: 42%;
+    width: clamp(110px, 14vw, 170px);
+  }
 }
 
 @media (max-width: 850px) {
@@ -2481,6 +2550,13 @@ img {
   .background-vehicle--spaceship {
     top: 59%;
     right: 9%;
+    transform: none !important;
+  }
+
+
+  .background-vehicle--villigax {
+    top: 44%;
+    right: 5%;
     transform: none !important;
   }
 
