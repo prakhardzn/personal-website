@@ -180,6 +180,8 @@
   },
   "active": "0c2482928da9f283",
   "lastOpenFiles": [
+    "scripts/normalize-movie-library",
+    "scripts/repair-movie-imdb-ids.mjs",
     "src/content/movies/hereditary-2018.md",
     "src/content/movies/forrest-gump-1994.md",
     "src/content/movies/the-shawshank-redemption-1994.md",
@@ -205,7 +207,6 @@
     "src/content/movies/bolt-2008.md",
     "src/content/movies/meet-the-robinsons-2007.md",
     "src/content/movies/chicken-little-2005.md",
-    "src/content/movies/home-on-the-range-2004.md",
     "scripts/movie-import-list.mjs",
     "scripts/import-movies.mjs",
     "scripts/import-movies",
@@ -224,7 +225,6 @@
     "dist/assets/planets/library-planet/library-planet-portal-spill.webp",
     "dist/assets/planets/astrology-planet/astrology-planet-base.webp",
     "dist/assets/planets/astrology-planet",
-    "dist/assets/planets/weekly-planet",
-    "dist/assets/planets/library-planet"
+    "dist/assets/planets/weekly-planet"
   ]
 }

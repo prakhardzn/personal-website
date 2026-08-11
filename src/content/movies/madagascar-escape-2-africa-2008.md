@@ -1,6 +1,7 @@
 ---
 title: "Madagascar: Escape 2 Africa"
 year: "2008"
+imdbId: "tt0479952"
 director: "Eric Darnell, Tom McGrath"
 poster: "https://m.media-amazon.com/images/M/MV5BMjExMDA4NDcwMl5BMl5BanBnXkFtZTcwODAxNTQ3MQ@@._V1_SX300.jpg"
 rating: "6.7"

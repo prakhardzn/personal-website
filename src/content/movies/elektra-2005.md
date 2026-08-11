@@ -1,6 +1,7 @@
 ---
 title: "Elektra"
 year: "2005"
+imdbId: "tt0357277"
 director: "Rob Bowman"
 poster: "https://m.media-amazon.com/images/M/MV5BMTI3MTUwNzM5MV5BMl5BanBnXkFtZTcwNzczMDIzMw@@._V1_SX300.jpg"
 rating: "4.7"

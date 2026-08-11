@@ -122,7 +122,6 @@ const loadExistingRecords = async () => {
 
     existingRecords.set(exactKey, item.name);
 
-    // If an existing record has no year, treat the title itself as occupied.
     if (!record.year) {
       existingRecords.set(`${titleKey}|*`, item.name);
     }
@@ -157,7 +156,7 @@ const requestOmdb = async (params, attempt = 1) => {
   try {
     const response = await fetch(url, {
       headers: {
-        "User-Agent": "Portal-214-Movie-Importer/1.0",
+        "User-Agent": "Portal-214-Movie-Importer/1.1",
       },
     });
 
@@ -176,7 +175,6 @@ const requestOmdb = async (params, attempt = 1) => {
 };
 
 const findMovie = async ({ title, year }) => {
-  // 1. Exact title + year.
   let data = await requestOmdb({
     t: title,
     y: year,
@@ -186,7 +184,6 @@ const findMovie = async ({ title, year }) => {
 
   if (data?.Response !== "False") return data;
 
-  // 2. Search title + year and select the closest movie result.
   const search = await requestOmdb({
     s: title,
     y: year,
@@ -214,7 +211,6 @@ const findMovie = async ({ title, year }) => {
     }
   }
 
-  // 3. Last-resort exact-title lookup without year.
   data = await requestOmdb({
     t: title,
     type: "movie",
@@ -227,14 +223,20 @@ const findMovie = async ({ title, year }) => {
 const buildMarkdown = (movie) => {
   const title = cleanOmdbValue(movie.Title);
   const year = cleanOmdbValue(movie.Year);
+  const imdbId = cleanOmdbValue(movie.imdbID);
   const director = cleanOmdbValue(movie.Director);
   const poster = cleanOmdbValue(movie.Poster);
   const rating = cleanOmdbValue(movie.imdbRating);
+
+  if (!imdbId) {
+    throw new Error(`OMDb record for "${title || "unknown movie"}" has no imdbID.`);
+  }
 
   const lines = [
     "---",
     `title: ${yamlString(title)}`,
     `year: ${yamlString(year)}`,
+    `imdbId: ${yamlString(imdbId)}`,
   ];
 
   if (director) lines.push(`director: ${yamlString(director)}`);
@@ -265,11 +267,11 @@ await loadExistingRecords();
 
 console.log("\nPORTAL 214 // MOVIE BULK IMPORT");
 console.log("--------------------------------");
-console.log(`Mode:       ${DRY_RUN ? "DRY RUN" : "WRITE"}`);
-console.log(`Group:      ${SELECTED_GROUP || "ALL"}`);
-console.log(`Manifest:   ${selected.length}`);
+console.log(`Mode:         ${DRY_RUN ? "DRY RUN" : "WRITE"}`);
+console.log(`Group:        ${SELECTED_GROUP || "ALL"}`);
+console.log(`Manifest:     ${selected.length}`);
 console.log(`After dedupe: ${uniqueSelected.length}`);
-console.log(`Target:     ${path.relative(ROOT, TARGET_DIR)}`);
+console.log(`Target:       ${path.relative(ROOT, TARGET_DIR)}`);
 console.log("");
 
 let created = 0;
@@ -303,7 +305,12 @@ for (let index = 0; index < uniqueSelected.length; index += 1) {
     }
 
     const imdbID = cleanOmdbValue(movie.imdbID);
-    if (imdbID && importedImdbIds.has(imdbID)) {
+
+    if (!imdbID) {
+      throw new Error("OMDb result has no imdbID");
+    }
+
+    if (importedImdbIds.has(imdbID)) {
       skipped += 1;
       console.log(
         `[${String(index + 1).padStart(3, "0")}/${String(uniqueSelected.length).padStart(3, "0")}] DUPE  ${requested.title} (${requested.year})`
@@ -318,6 +325,7 @@ for (let index = 0; index < uniqueSelected.length; index += 1) {
     const filePath = path.join(TARGET_DIR, fileName);
 
     let fileAlreadyExists = false;
+
     try {
       await access(filePath);
       fileAlreadyExists = true;
@@ -330,7 +338,7 @@ for (let index = 0; index < uniqueSelected.length; index += 1) {
       console.log(
         `[${String(index + 1).padStart(3, "0")}/${String(uniqueSelected.length).padStart(3, "0")}] SKIP  ${resolvedTitle} (${resolvedYear}) -> ${fileName}`
       );
-      if (imdbID) importedImdbIds.add(imdbID);
+      importedImdbIds.add(imdbID);
       continue;
     }
 
@@ -339,7 +347,7 @@ for (let index = 0; index < uniqueSelected.length; index += 1) {
     }
 
     created += 1;
-    if (imdbID) importedImdbIds.add(imdbID);
+    importedImdbIds.add(imdbID);
 
     console.log(
       `[${String(index + 1).padStart(3, "0")}/${String(uniqueSelected.length).padStart(3, "0")}] ${DRY_RUN ? "WOULD" : "ADD "}  ${resolvedTitle} (${resolvedYear})`
@@ -370,13 +378,10 @@ if (failures.length) {
   for (const item of failures) {
     console.log(`- [${item.group}] ${item.title} (${item.year}) // ${item.reason}`);
   }
-  console.log(
-    "\nNothing was written for failed records. They can be corrected in scripts/movie-import-list.mjs and rerun."
-  );
 }
 
 console.log(
   DRY_RUN
     ? "\nDry run finished. No Markdown files were written.\n"
-    : "\nYour saved records are now in src/content/movies. Astro's existing Libraries page will read them automatically.\n"
+    : "\nSaved records are in src/content/movies.\n"
 );

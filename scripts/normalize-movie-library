@@ -1,0 +1,472 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+import process from "node:process";
+
+const projectRoot = process.cwd();
+const moviesDirectory = path.join(projectRoot, "src", "content", "movies");
+const envPath = path.join(projectRoot, ".env");
+
+function cleanValue(value) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === "" ||
+    value === "N/A"
+  ) {
+    return null;
+  }
+
+  return String(value).trim();
+}
+
+function splitList(value) {
+  const cleaned = cleanValue(value);
+
+  if (!cleaned) {
+    return [];
+  }
+
+  return cleaned
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function yamlString(value) {
+  if (value === null || value === undefined) {
+    return "null";
+  }
+
+  return JSON.stringify(String(value));
+}
+
+function yamlArray(values) {
+  return JSON.stringify(values);
+}
+
+function parseYamlScalar(frontmatter, key) {
+  const match = frontmatter.match(
+    new RegExp(`^${key}:\\s*(?:"([^"]*)"|'([^']*)'|([^\\r\\n#]+))`, "mi")
+  );
+
+  return (match?.[1] ?? match?.[2] ?? match?.[3] ?? "").trim();
+}
+
+function parseYamlBoolean(frontmatter, key, fallback = false) {
+  const raw = parseYamlScalar(frontmatter, key).toLowerCase();
+
+  if (raw === "true") return true;
+  if (raw === "false") return false;
+
+  return fallback;
+}
+
+function parseYamlArray(frontmatter, key) {
+  const line = frontmatter.match(
+    new RegExp(`^${key}:\\s*(\\[[^\\r\\n]*\\])`, "mi")
+  );
+
+  if (!line?.[1]) {
+    return [];
+  }
+
+  try {
+    const value = JSON.parse(line[1]);
+    return Array.isArray(value)
+      ? value.map((item) => String(item)).filter(Boolean)
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function getFrontmatter(text) {
+  const match = text.match(/^---\s*\r?\n([\s\S]*?)\r?\n---/);
+  return match ? match[1] : null;
+}
+
+function getBody(text) {
+  const match = text.match(
+    /^---\s*\r?\n[\s\S]*?\r?\n---\s*(?:\r?\n)?([\s\S]*)$/
+  );
+
+  return match?.[1] ?? "";
+}
+
+async function loadEnvironmentVariable(variableName) {
+  let envText;
+
+  try {
+    envText = await fs.readFile(envPath, "utf8");
+  } catch {
+    throw new Error("Could not find .env in the project root.");
+  }
+
+  for (const originalLine of envText.split(/\r?\n/)) {
+    const line = originalLine.trim();
+
+    if (!line || line.startsWith("#")) {
+      continue;
+    }
+
+    const equalsIndex = line.indexOf("=");
+
+    if (equalsIndex === -1) {
+      continue;
+    }
+
+    const key = line.slice(0, equalsIndex).trim();
+
+    if (key !== variableName) {
+      continue;
+    }
+
+    let value = line.slice(equalsIndex + 1).trim();
+
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+
+    return value;
+  }
+
+  return null;
+}
+
+async function requestOmdb(apiKey, { imdbId, title, year }) {
+  const url = new URL("https://www.omdbapi.com/");
+
+  url.searchParams.set("apikey", apiKey);
+  url.searchParams.set("type", "movie");
+  url.searchParams.set("plot", "full");
+  url.searchParams.set("r", "json");
+
+  if (imdbId && /^tt\d+$/i.test(imdbId)) {
+    url.searchParams.set("i", imdbId);
+  } else {
+    url.searchParams.set("t", title);
+
+    if (/^\d{4}$/.test(year)) {
+      url.searchParams.set("y", year);
+    }
+  }
+
+  let response = await fetch(url);
+  let movie = await response.json();
+
+  if (
+    response.ok &&
+    movie?.Response !== "False" &&
+    cleanValue(movie?.imdbID)
+  ) {
+    return movie;
+  }
+
+  // Fallback search if the exact title lookup failed.
+  const searchUrl = new URL("https://www.omdbapi.com/");
+  searchUrl.searchParams.set("apikey", apiKey);
+  searchUrl.searchParams.set("s", title);
+  searchUrl.searchParams.set("type", "movie");
+  searchUrl.searchParams.set("r", "json");
+
+  if (/^\d{4}$/.test(year)) {
+    searchUrl.searchParams.set("y", year);
+  }
+
+  response = await fetch(searchUrl);
+  const searchData = await response.json();
+
+  if (
+    !response.ok ||
+    searchData?.Response === "False" ||
+    !Array.isArray(searchData?.Search)
+  ) {
+    throw new Error(
+      searchData?.Error ??
+      movie?.Error ??
+      "OMDb could not resolve this movie."
+    );
+  }
+
+  const selected =
+    searchData.Search.find(
+      (item) =>
+        item?.Type === "movie" &&
+        String(item?.Year ?? "").startsWith(year)
+    ) ??
+    searchData.Search.find((item) => item?.Type === "movie");
+
+  if (!selected?.imdbID) {
+    throw new Error("OMDb search result had no IMDb ID.");
+  }
+
+  const detailUrl = new URL("https://www.omdbapi.com/");
+  detailUrl.searchParams.set("apikey", apiKey);
+  detailUrl.searchParams.set("i", selected.imdbID);
+  detailUrl.searchParams.set("plot", "full");
+  detailUrl.searchParams.set("r", "json");
+
+  response = await fetch(detailUrl);
+  movie = await response.json();
+
+  if (
+    !response.ok ||
+    movie?.Response === "False" ||
+    !cleanValue(movie?.imdbID)
+  ) {
+    throw new Error(movie?.Error ?? "OMDb detail lookup failed.");
+  }
+
+  return movie;
+}
+
+function buildCanonicalMarkdown({
+  movie,
+  oldFrontmatter,
+  oldBody,
+  oldPoster,
+  addedAt,
+}) {
+  const title = cleanValue(movie.Title);
+  const year = cleanValue(movie.Year);
+  const imdbId = cleanValue(movie.imdbID);
+
+  if (!title || !year || !imdbId) {
+    throw new Error("OMDb returned an incomplete movie record.");
+  }
+
+  const genre = splitList(movie.Genre);
+  const actors = splitList(movie.Actors);
+  const languages = splitList(movie.Language);
+  const countries = splitList(movie.Country);
+
+  const director = cleanValue(movie.Director);
+  const runtime = cleanValue(movie.Runtime);
+  const plot = cleanValue(movie.Plot);
+  const awards = cleanValue(movie.Awards);
+  const poster =
+    cleanValue(oldPoster) ??
+    cleanValue(movie.Poster);
+
+  const imdbRating =
+    cleanValue(movie.imdbRating) ??
+    cleanValue(parseYamlScalar(oldFrontmatter, "rating"));
+
+  const imdbVotes = cleanValue(movie.imdbVotes);
+  const rated = cleanValue(movie.Rated);
+  const released = cleanValue(movie.Released);
+  const mediaType = cleanValue(movie.Type) ?? "movie";
+
+  const oldStatus = cleanValue(parseYamlScalar(oldFrontmatter, "status"));
+  const oldShelf = cleanValue(parseYamlScalar(oldFrontmatter, "shelf"));
+  const oldMyRatingRaw = parseYamlScalar(oldFrontmatter, "myRating");
+  const oldTags = parseYamlArray(oldFrontmatter, "tags");
+
+  const status = oldStatus ?? "watchlist";
+  const favourite = parseYamlBoolean(oldFrontmatter, "favourite", false);
+  const shelf = oldShelf ?? "Unsorted";
+  const tags = oldTags.length ? oldTags : genre;
+
+  const myRating =
+    oldMyRatingRaw &&
+    oldMyRatingRaw.toLowerCase() !== "null"
+      ? oldMyRatingRaw
+      : null;
+
+  const body =
+    oldBody.trim().length > 0
+      ? oldBody.trimEnd()
+      : `Write your personal note about ${title} here.`;
+
+  return `---
+title: ${yamlString(title)}
+year: ${yamlString(year)}
+imdbId: ${yamlString(imdbId)}
+director: ${yamlString(director)}
+runtime: ${yamlString(runtime)}
+genre: ${yamlArray(genre)}
+actors: ${yamlArray(actors)}
+plot: ${yamlString(plot)}
+language: ${yamlArray(languages)}
+country: ${yamlArray(countries)}
+awards: ${yamlString(awards)}
+poster: ${yamlString(poster)}
+imdbRating: ${yamlString(imdbRating)}
+imdbVotes: ${yamlString(imdbVotes)}
+rated: ${yamlString(rated)}
+released: ${yamlString(released)}
+type: ${yamlString(mediaType)}
+
+status: ${yamlString(status)}
+favourite: ${favourite ? "true" : "false"}
+myRating: ${myRating === null ? "null" : myRating}
+shelf: ${yamlString(shelf)}
+tags: ${yamlArray(tags)}
+addedAt: ${yamlString(addedAt)}
+---
+
+${body}
+`;
+}
+
+const apiKey = await loadEnvironmentVariable("OMDB_API_KEY");
+
+if (!apiKey) {
+  console.error("");
+  console.error("OMDB_API_KEY was not found in .env.");
+  console.error("");
+  process.exit(1);
+}
+
+const entries = (await fs.readdir(moviesDirectory, { withFileTypes: true }))
+  .filter((entry) => entry.isFile() && /\.(md|mdx)$/i.test(entry.name))
+  .map((entry) => entry.name)
+  .sort((a, b) => a.localeCompare(b));
+
+// The files missing addedAt are the bulk-imported records.
+// Existing canonical records are deliberately left untouched.
+const targets = [];
+
+for (const fileName of entries) {
+  const filePath = path.join(moviesDirectory, fileName);
+  const text = await fs.readFile(filePath, "utf8");
+  const frontmatter = getFrontmatter(text);
+
+  if (!frontmatter) {
+    continue;
+  }
+
+  if (!/^addedAt:\s*/mi.test(frontmatter)) {
+    targets.push(fileName);
+  }
+}
+
+console.log("");
+console.log("PORTAL 214 // CANONICAL MOVIE NORMALIZER");
+console.log("-----------------------------------------");
+console.log(`Movie files detected: ${entries.length}`);
+console.log(`Bulk records to normalize: ${targets.length}`);
+console.log("");
+
+// Create a backup OUTSIDE the Git repository.
+const backupStamp = new Date()
+  .toISOString()
+  .replace(/[:.]/g, "-");
+
+const backupDirectory = path.join(
+  path.dirname(projectRoot),
+  `personal-website-movie-backup-${backupStamp}`
+);
+
+await fs.mkdir(backupDirectory, { recursive: true });
+
+for (const fileName of targets) {
+  await fs.copyFile(
+    path.join(moviesDirectory, fileName),
+    path.join(backupDirectory, fileName)
+  );
+}
+
+console.log(`Backup created outside repo: ${backupDirectory}`);
+console.log("");
+
+let fixed = 0;
+let failed = 0;
+const failures = [];
+
+for (let index = 0; index < targets.length; index += 1) {
+  const fileName = targets[index];
+  const filePath = path.join(moviesDirectory, fileName);
+
+  try {
+    const text = await fs.readFile(filePath, "utf8");
+    const frontmatter = getFrontmatter(text);
+
+    if (!frontmatter) {
+      throw new Error("Missing YAML frontmatter.");
+    }
+
+    const title = cleanValue(parseYamlScalar(frontmatter, "title"));
+    const year = cleanValue(parseYamlScalar(frontmatter, "year"));
+    const currentImdbId = cleanValue(parseYamlScalar(frontmatter, "imdbId"));
+    const oldPoster = cleanValue(parseYamlScalar(frontmatter, "poster"));
+    const oldBody = getBody(text);
+
+    if (!title || !year) {
+      throw new Error("Missing title or year.");
+    }
+
+    const movie = await requestOmdb(apiKey, {
+      imdbId: currentImdbId,
+      title,
+      year,
+    });
+
+    const stats = await fs.stat(filePath);
+
+    const addedAt =
+      stats.birthtime instanceof Date &&
+      !Number.isNaN(stats.birthtime.valueOf())
+        ? stats.birthtime.toISOString()
+        : new Date().toISOString();
+
+    const canonical = buildCanonicalMarkdown({
+      movie,
+      oldFrontmatter: frontmatter,
+      oldBody,
+      oldPoster,
+      addedAt,
+    });
+
+    await fs.writeFile(filePath, canonical, "utf8");
+
+    fixed += 1;
+
+    console.log(
+      `[${String(index + 1).padStart(3, "0")}/${String(targets.length).padStart(3, "0")}] FIX  ${fileName}`
+    );
+  } catch (error) {
+    failed += 1;
+
+    const reason =
+      error instanceof Error
+        ? error.message
+        : String(error);
+
+    failures.push({
+      fileName,
+      reason,
+    });
+
+    console.error(
+      `[${String(index + 1).padStart(3, "0")}/${String(targets.length).padStart(3, "0")}] FAIL ${fileName} // ${reason}`
+    );
+  }
+
+  await new Promise((resolve) => setTimeout(resolve, 300));
+}
+
+console.log("");
+console.log("-----------------------------------------");
+console.log("NORMALIZATION COMPLETE");
+console.log(`Fixed:  ${fixed}`);
+console.log(`Failed: ${failed}`);
+console.log("");
+
+if (failures.length) {
+  console.log("FAILED FILES:");
+  for (const item of failures) {
+    console.log(`- ${item.fileName} // ${item.reason}`);
+  }
+  console.log("");
+}
+
+console.log("NOW RUN:");
+console.log("  pnpm astro sync");
+console.log("");
+console.log("If that passes:");
+console.log("  pnpm dev");
+console.log("");
