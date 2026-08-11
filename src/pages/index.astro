@@ -18,34 +18,34 @@ const planetAsset = (folder: string, file: string): string =>
   buildSiteUrl(`assets/planets/${folder}/${file}`);
 
 const aboutLayers = [
-  ["about-planet-glow.png", "about-planet-layer--glow"],
-  ["about-planet-base.png", "about-planet-layer--base"],
-  ["about-planet-texture.png", "about-planet-layer--texture"],
-  ["about-planet-shadow.png", "about-planet-layer--shadow"],
-  ["about-planet-blink-overlay.png", "about-planet-layer--blink"],
-  ["about-planet-debris.png", "about-planet-layer--debris"],
+  ["about-planet-glow.webp", "about-planet-layer--glow"],
+  ["about-planet-base.webp", "about-planet-layer--base"],
+  ["about-planet-texture.webp", "about-planet-layer--texture"],
+  ["about-planet-shadow.webp", "about-planet-layer--shadow"],
+  ["about-planet-blink-overlay.webp", "about-planet-layer--blink"],
+  ["about-planet-debris.webp", "about-planet-layer--debris"],
 ] as const;
 
 const astrologyLayers = [
-  ["astrology-planet-glow.png", "astrology-planet-layer--glow"],
-  ["astrology-planet-base.png", "astrology-planet-layer--base"],
-  ["astrology-planet-cloud-shimmer.png", "astrology-planet-layer--clouds"],
-  ["astrology-planet-gold-twinkle.png", "astrology-planet-layer--gold"],
-  ["astrology-planet-central-star.png", "astrology-planet-layer--central-star"],
-  ["astrology-planet-shadow.png", "astrology-planet-layer--shadow"],
-  ["astrology-planet-orbit.png", "astrology-planet-layer--orbit"],
-  ["astrology-planet-moon.png", "astrology-planet-layer--moon"],
-  ["astrology-planet-detached.png", "astrology-planet-layer--detached"],
+  ["astrology-planet-glow.webp", "astrology-planet-layer--glow"],
+  ["astrology-planet-base.webp", "astrology-planet-layer--base"],
+  ["astrology-planet-cloud-shimmer.webp", "astrology-planet-layer--clouds"],
+  ["astrology-planet-gold-twinkle.webp", "astrology-planet-layer--gold"],
+  ["astrology-planet-central-star.webp", "astrology-planet-layer--central-star"],
+  ["astrology-planet-shadow.webp", "astrology-planet-layer--shadow"],
+  ["astrology-planet-orbit.webp", "astrology-planet-layer--orbit"],
+  ["astrology-planet-moon.webp", "astrology-planet-layer--moon"],
+  ["astrology-planet-detached.webp", "astrology-planet-layer--detached"],
 ] as const;
 
 const libraryLayers = [
-  ["library-planet-halo.png", "library-planet-layer--halo"],
-  ["library-planet-base.png", "library-planet-layer--base"],
-  ["library-planet-metal-shimmer.png", "library-planet-layer--metal"],
-  ["library-planet-portal-spill.png", "library-planet-layer--portal-spill"],
-  ["library-planet-portal-energy.png", "library-planet-layer--portal-energy"],
-  ["library-planet-portal-core.png", "library-planet-layer--portal-core"],
-  ["library-planet-shadow.png", "library-planet-layer--shadow"],
+  ["library-planet-halo.webp", "library-planet-layer--halo"],
+  ["library-planet-base.webp", "library-planet-layer--base"],
+  ["library-planet-metal-shimmer.webp", "library-planet-layer--metal"],
+  ["library-planet-portal-spill.webp", "library-planet-layer--portal-spill"],
+  ["library-planet-portal-energy.webp", "library-planet-layer--portal-energy"],
+  ["library-planet-portal-core.webp", "library-planet-layer--portal-core"],
+  ["library-planet-shadow.webp", "library-planet-layer--shadow"],
 ] as const;
 
 const particleNumbers = Array.from(
@@ -118,7 +118,7 @@ const particleNumbers = Array.from(
         <span class="background-vehicle background-vehicle--ufo">
           <img
             class="background-vehicle__image background-vehicle__image--ufo"
-            src="/assets/background-elements/ufo.png"
+            src="/assets/background-elements/ufo.webp"
             alt=""
             draggable="false"
           />
@@ -127,7 +127,7 @@ const particleNumbers = Array.from(
         <span class="background-vehicle background-vehicle--spaceship">
           <img
             class="background-vehicle__image background-vehicle__image--spaceship"
-            src="/assets/background-elements/spaceship.png"
+            src="/assets/background-elements/spaceship.webp"
             alt=""
             draggable="false"
           />
@@ -187,7 +187,7 @@ const particleNumbers = Array.from(
                     class="weekly-planet-layer weekly-planet-layer--halo"
                     src={planetAsset(
                       "weekly-planet",
-                      "weekly-planet-halo.png"
+                      "weekly-planet-halo.webp"
                     )}
                     alt=""
                     draggable="false"
@@ -198,7 +198,7 @@ const particleNumbers = Array.from(
                     class="weekly-planet-layer weekly-planet-layer--base"
                     src={planetAsset(
                       "weekly-planet",
-                      "weekly-planet-base.png"
+                      "weekly-planet-base.webp"
                     )}
                     alt=""
                     draggable="false"
@@ -230,7 +230,7 @@ const particleNumbers = Array.from(
                       class="weekly-planet-layer weekly-planet-layer--green-vortex weekly-planet-layer--green-vortex-outer"
                       src={planetAsset(
                         "weekly-planet",
-                        "weekly-planet-base.png"
+                        "weekly-planet-base.webp"
                       )}
                       alt=""
                       draggable="false"
@@ -240,7 +240,7 @@ const particleNumbers = Array.from(
                       class="weekly-planet-layer weekly-planet-layer--green-vortex weekly-planet-layer--green-vortex-inner"
                       src={planetAsset(
                         "weekly-planet",
-                        "weekly-planet-base.png"
+                        "weekly-planet-base.webp"
                       )}
                       alt=""
                       draggable="false"
@@ -250,7 +250,7 @@ const particleNumbers = Array.from(
                       class="weekly-planet-layer weekly-planet-layer--vortex-core"
                       src={planetAsset(
                         "weekly-planet",
-                        "weekly-planet-vortex-core.png"
+                        "weekly-planet-vortex-core.webp"
                       )}
                       alt=""
                       draggable="false"
@@ -262,7 +262,7 @@ const particleNumbers = Array.from(
                     class="weekly-planet-layer weekly-planet-layer--stone"
                     src={planetAsset(
                       "weekly-planet",
-                      "weekly-planet-stone-glint.png"
+                      "weekly-planet-stone-glint.webp"
                     )}
                     alt=""
                     draggable="false"
@@ -273,7 +273,7 @@ const particleNumbers = Array.from(
                     class="weekly-planet-layer weekly-planet-layer--detached"
                     src={planetAsset(
                       "weekly-planet",
-                      "weekly-planet-detached.png"
+                      "weekly-planet-detached.webp"
                     )}
                     alt=""
                     draggable="false"
@@ -283,7 +283,7 @@ const particleNumbers = Array.from(
                     class="weekly-planet-layer weekly-planet-layer--shadow"
                     src={planetAsset(
                       "weekly-planet",
-                      "weekly-planet-shadow.png"
+                      "weekly-planet-shadow.webp"
                     )}
                     alt=""
                     draggable="false"
@@ -409,7 +409,7 @@ const particleNumbers = Array.from(
                     class="library-planet-layer library-planet-layer--shadow"
                     src={planetAsset(
                       "library-planet",
-                      "library-planet-shadow.png"
+                      "library-planet-shadow.webp"
                     )}
                     alt=""
                     draggable="false"
@@ -455,7 +455,7 @@ const particleNumbers = Array.from(
             <span class="mobile-destination__viewport" aria-hidden="true">
               <span class="mobile-destination__planet">
                 <img
-                  src={planetAsset("about-me", "about-planet-base.png")}
+                  src={planetAsset("about-me", "about-planet-base.webp")}
                   alt=""
                   loading="eager"
                   decoding="async"
@@ -480,7 +480,7 @@ const particleNumbers = Array.from(
             <span class="mobile-destination__viewport" aria-hidden="true">
               <span class="mobile-destination__planet">
                 <img
-                  src={planetAsset("weekly-planet", "weekly-planet-base.png")}
+                  src={planetAsset("weekly-planet", "weekly-planet-base.webp")}
                   alt=""
                   loading="eager"
                   decoding="async"
@@ -505,7 +505,7 @@ const particleNumbers = Array.from(
             <span class="mobile-destination__viewport" aria-hidden="true">
               <span class="mobile-destination__planet">
                 <img
-                  src={planetAsset("astrology-planet", "astrology-planet-base.png")}
+                  src={planetAsset("astrology-planet", "astrology-planet-base.webp")}
                   alt=""
                   loading="eager"
                   decoding="async"
@@ -530,7 +530,7 @@ const particleNumbers = Array.from(
             <span class="mobile-destination__viewport" aria-hidden="true">
               <span class="mobile-destination__planet">
                 <img
-                  src={planetAsset("library-planet", "library-planet-base.png")}
+                  src={planetAsset("library-planet", "library-planet-base.webp")}
                   alt=""
                   loading="eager"
                   decoding="async"

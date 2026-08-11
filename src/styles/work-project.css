@@ -1260,7 +1260,8 @@
 }
 
 
-.work-project-video iframe {
+.work-project-video iframe,
+.work-project-local-video {
   position:
     absolute;
 
@@ -1278,6 +1279,18 @@
 
   background:
     #000;
+}
+
+
+.work-project-local-video {
+  display:
+    block;
+
+  object-fit:
+    contain;
+
+  object-position:
+    center;
 }
 
 

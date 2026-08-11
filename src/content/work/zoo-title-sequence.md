@@ -9,39 +9,41 @@ order: 4
 draft: false
 
 youtubeUrl: ""
-localVideo: "/assets/work/zoo-title-sequence/zoo-title-sequence.mp4"
+localVideo: "/assets/work/zoo-title-sequence/zoo-title-sequence.webm"
 videoTitle: "Zoo — Title Sequence"
 
 gallery:
-  - src: "/assets/work/zoo-title-sequence/zoo-01.png"
-    alt: "Visitors seated together in a black-and-white frame from the Zoo title sequence."
-    caption: "OBSERVATION"
-    orientation: "landscape"
 
-  - src: "/assets/work/zoo-title-sequence/zoo-02.png"
-    alt: "Typography frame reading a film by Bert Haanstra in the Zoo title sequence."
-    caption: "TITLE CREDIT"
-    orientation: "landscape"
+- src: "/assets/work/zoo-title-sequence/zoo-01.png"
+  alt: "Visitors seated together in a black-and-white frame from the Zoo title sequence."
+  caption: "OBSERVATION"
+  orientation: "landscape"
 
-  - src: "/assets/work/zoo-title-sequence/zoo-03.png"
-    alt: "A child covering their face behind an enclosure grid in the Zoo title sequence."
-    caption: "FRAMING"
-    orientation: "landscape"
+- src: "/assets/work/zoo-title-sequence/zoo-02.png"
+  alt: "Typography frame reading a film by Bert Haanstra in the Zoo title sequence."
+  caption: "TITLE CREDIT"
+  orientation: "landscape"
 
-  - src: "/assets/work/zoo-title-sequence/zoo-04.png"
-    alt: "A woman and child eating inside the Zoo title sequence."
-    caption: "OBSERVATION"
-    orientation: "landscape"
+- src: "/assets/work/zoo-title-sequence/zoo-03.png"
+  alt: "A child covering their face behind an enclosure grid in the Zoo title sequence."
+  caption: "FRAMING"
+  orientation: "landscape"
 
-  - src: "/assets/work/zoo-title-sequence/zoo-05.png"
-    alt: "Zoo visitors framed within the visual structure of the title sequence."
-    caption: "VISITORS"
-    orientation: "landscape"
+- src: "/assets/work/zoo-title-sequence/zoo-04.png"
+  alt: "A woman and child eating inside the Zoo title sequence."
+  caption: "OBSERVATION"
+  orientation: "landscape"
 
-  - src: "/assets/work/zoo-title-sequence/zoo-06.png"
-    alt: "A tiger walking behind the bars of its enclosure."
-    caption: "ENCLOSURE"
-    orientation: "landscape"
+- src: "/assets/work/zoo-title-sequence/zoo-05.png"
+  alt: "Zoo visitors framed within the visual structure of the title sequence."
+  caption: "VISITORS"
+  orientation: "landscape"
+
+- src: "/assets/work/zoo-title-sequence/zoo-06.png"
+  alt: "A tiger walking behind the bars of its enclosure."
+  caption: "ENCLOSURE"
+  orientation: "landscape"
+
 ---
 
 ## About the project

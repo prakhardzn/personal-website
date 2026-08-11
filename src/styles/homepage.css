@@ -117,7 +117,7 @@ img {
       rgb(2 7 5 / 10%),
       rgb(2 7 5 / 10%)
     ),
-    url("/assets/backgrounds/homepage-space-background.png");
+    url("/assets/backgrounds/homepage-space-background.webp");
 
   background-position: center;
   background-repeat: no-repeat;
@@ -554,7 +554,7 @@ img {
    The entire planet stays completely fixed.
 
    The two moving layers below are DUPLICATES OF THE ACTUAL
-   weekly-planet-base.png, clipped tightly around the bright
+   weekly-planet-base.webp, clipped tightly around the bright
    green centre. Because of that, the visible green painted
    texture rotates instead of a faint transparent effect.
 
@@ -790,10 +790,10 @@ img {
     );
   mix-blend-mode: screen;
   -webkit-mask:
-    url("/assets/planets/library-planet/library-planet-silhouette-mask.png")
+    url("/assets/planets/library-planet/library-planet-silhouette-mask.webp")
     center / contain no-repeat;
   mask:
-    url("/assets/planets/library-planet/library-planet-silhouette-mask.png")
+    url("/assets/planets/library-planet/library-planet-silhouette-mask.webp")
     center / contain no-repeat;
   animation: library-archive-scan 8.6s ease-in-out infinite;
 }
@@ -842,10 +842,10 @@ img {
     );
   mix-blend-mode: screen;
   -webkit-mask:
-    url("/assets/planets/library-planet/library-planet-film-reel-mask.png")
+    url("/assets/planets/library-planet/library-planet-film-reel-mask.webp")
     center / contain no-repeat;
   mask:
-    url("/assets/planets/library-planet/library-planet-film-reel-mask.png")
+    url("/assets/planets/library-planet/library-planet-film-reel-mask.webp")
     center / contain no-repeat;
   transform-origin: 34.3% 31.1%;
   animation: library-reel-glint 4.2s linear infinite;
@@ -861,10 +861,10 @@ img {
     );
   mix-blend-mode: screen;
   -webkit-mask:
-    url("/assets/planets/library-planet/library-planet-camera-lens-mask.png")
+    url("/assets/planets/library-planet/library-planet-camera-lens-mask.webp")
     center / contain no-repeat;
   mask:
-    url("/assets/planets/library-planet/library-planet-camera-lens-mask.png")
+    url("/assets/planets/library-planet/library-planet-camera-lens-mask.webp")
     center / contain no-repeat;
   transform-origin: 63.9% 14.8%;
   animation: library-lens-focus 5.3s ease-in-out infinite;
@@ -881,10 +881,10 @@ img {
     );
   mix-blend-mode: screen;
   -webkit-mask:
-    url("/assets/planets/library-planet/library-planet-lower-mechanism-mask.png")
+    url("/assets/planets/library-planet/library-planet-lower-mechanism-mask.webp")
     center / contain no-repeat;
   mask:
-    url("/assets/planets/library-planet/library-planet-lower-mechanism-mask.png")
+    url("/assets/planets/library-planet/library-planet-lower-mechanism-mask.webp")
     center / contain no-repeat;
   transform-origin: 56.1% 82.3%;
   animation: library-lower-mechanism 7.6s linear infinite;
