@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/homepage.css";
+import "../styles/homepage-mobile.css";
 
 const baseUrl = import.meta.env.BASE_URL;
 
@@ -54,11 +55,16 @@ const particleNumbers = Array.from(
 ---
 
 <BaseLayout
-  title="Prakhar's Universe"
-  description="Explore Prakhar's personal creative universe."
+  title="Portal 214"
+  description="A personal archive, signal log and creative index transmitted through Portal 214."
 >
   <div class="site-shell" id="site-shell">
     <header class="system-bar">
+      <div class="mobile-brand" aria-label="Portal 214">
+        <span class="mobile-brand__signal" aria-hidden="true">◉</span>
+        <span class="mobile-brand__name">PORTAL 214</span>
+      </div>
+
       <button
         class="icon-button icon-button--back"
         type="button"
@@ -105,9 +111,7 @@ const particleNumbers = Array.from(
     <div class="navigation-background-fade" aria-hidden="true"></div>
 
     <main class="planet-map">
-      <h1 class="visually-hidden">
-        Explore Prakhar's universe
-      </h1>
+      <h1 class="visually-hidden">Portal 214</h1>
 
       <!-- BACKGROUND SPACE TRAFFIC -->
       <div class="background-traffic" aria-hidden="true">
@@ -430,6 +434,130 @@ const particleNumbers = Array.from(
           </li>
         </ul>
       </nav>
+
+      <section class="mobile-home-directory" aria-labelledby="mobile-directory-title">
+        <div class="mobile-directory__scanline" aria-hidden="true"></div>
+
+        <header class="mobile-directory__header">
+          <div class="mobile-directory__heading">
+            <p>PORTAL 214 // LOCAL TERMINAL</p>
+            <h2 id="mobile-directory-title">PORTAL DIRECTORY</h2>
+          </div>
+
+          <div class="mobile-directory__count" aria-label="Four accessible nodes">
+            <strong>04</strong>
+            <span>NODES</span>
+          </div>
+        </header>
+
+        <nav class="mobile-directory__nav" aria-label="Mobile website sections">
+          <a class="mobile-destination mobile-destination--about" href={aboutUrl}>
+            <span class="mobile-destination__viewport" aria-hidden="true">
+              <span class="mobile-destination__planet">
+                <img
+                  src={planetAsset("about-me", "about-planet-base.png")}
+                  alt=""
+                  loading="eager"
+                  decoding="async"
+                  draggable="false"
+                />
+              </span>
+            </span>
+
+            <span class="mobile-destination__copy">
+              <span class="mobile-destination__meta">
+                <span>01 / PERSONAL NODE</span>
+                <span class="mobile-destination__state">READY</span>
+              </span>
+              <strong>ABOUT ME</strong>
+              <span class="mobile-destination__description">PERSONAL ARCHIVE</span>
+            </span>
+
+            <span class="mobile-destination__arrow" aria-hidden="true">→</span>
+          </a>
+
+          <a class="mobile-destination mobile-destination--weekly" href={weeklyUrl}>
+            <span class="mobile-destination__viewport" aria-hidden="true">
+              <span class="mobile-destination__planet">
+                <img
+                  src={planetAsset("weekly-planet", "weekly-planet-base.png")}
+                  alt=""
+                  loading="eager"
+                  decoding="async"
+                  draggable="false"
+                />
+              </span>
+            </span>
+
+            <span class="mobile-destination__copy">
+              <span class="mobile-destination__meta">
+                <span>02 / TRANSMISSION</span>
+                <span class="mobile-destination__state">LIVE</span>
+              </span>
+              <strong>NEWS WEEKLY</strong>
+              <span class="mobile-destination__description">WEEKLY ARCHIVE</span>
+            </span>
+
+            <span class="mobile-destination__arrow" aria-hidden="true">→</span>
+          </a>
+
+          <a class="mobile-destination mobile-destination--astrology" href={astrologyUrl}>
+            <span class="mobile-destination__viewport" aria-hidden="true">
+              <span class="mobile-destination__planet">
+                <img
+                  src={planetAsset("astrology-planet", "astrology-planet-base.png")}
+                  alt=""
+                  loading="eager"
+                  decoding="async"
+                  draggable="false"
+                />
+              </span>
+            </span>
+
+            <span class="mobile-destination__copy">
+              <span class="mobile-destination__meta">
+                <span>03 / CELESTIAL NODE</span>
+                <span class="mobile-destination__state">ONLINE</span>
+              </span>
+              <strong>ASTROLOGY</strong>
+              <span class="mobile-destination__description">CELESTIAL DATABASE</span>
+            </span>
+
+            <span class="mobile-destination__arrow" aria-hidden="true">→</span>
+          </a>
+
+          <a class="mobile-destination mobile-destination--libraries" href={librariesUrl}>
+            <span class="mobile-destination__viewport" aria-hidden="true">
+              <span class="mobile-destination__planet">
+                <img
+                  src={planetAsset("library-planet", "library-planet-base.png")}
+                  alt=""
+                  loading="eager"
+                  decoding="async"
+                  draggable="false"
+                />
+              </span>
+            </span>
+
+            <span class="mobile-destination__copy">
+              <span class="mobile-destination__meta">
+                <span>04 / MEDIA VAULT</span>
+                <span class="mobile-destination__state">MOUNTED</span>
+              </span>
+              <strong>LIBRARIES</strong>
+              <span class="mobile-destination__description">MEDIA ARCHIVE</span>
+            </span>
+
+            <span class="mobile-destination__arrow" aria-hidden="true">→</span>
+          </a>
+        </nav>
+
+        <footer class="mobile-directory__status" aria-label="Portal 214 system status">
+          <span>P-214</span>
+          <span>4/4 NODES ACCESSIBLE</span>
+          <span>PORTAL LINK STABLE</span>
+        </footer>
+      </section>
     </main>
 
     <footer class="bottom-dock">
@@ -602,6 +730,35 @@ const particleNumbers = Array.from(
         </button>
       </section>
     </footer>
+
+    <section class="mobile-home-panels" aria-label="Mobile homepage updates">
+      <article class="mobile-feed-panel mobile-feed-panel--latest">
+        <header class="mobile-feed-panel__bar">
+          <span>LATEST TRANSMISSION</span>
+          <span aria-hidden="true">⌁</span>
+        </header>
+
+        <div class="mobile-feed-panel__body">
+          <p class="mobile-feed-panel__stamp">TRANSMISSION 04 // SIGNAL RECEIVED</p>
+          <h2>STORIES FROM MY WEEK</h2>
+          <p>Discoveries, breakdowns and field notes received through Portal 214.</p>
+          <a href={weeklyUrl}>OPEN ARCHIVE <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+
+      <article class="mobile-feed-panel mobile-feed-panel--log">
+        <header class="mobile-feed-panel__bar">
+          <span>PORTAL LOG</span>
+          <span aria-hidden="true">≡</span>
+        </header>
+
+        <div class="mobile-system-log">
+          <p><span>P-214</span><strong>PORTAL LINK ONLINE</strong></p>
+          <p><span>ASTRO</span><strong>DATABASE CONNECTED</strong></p>
+          <p><span>ARCHIVE</span><strong>04 NODES AVAILABLE</strong></p>
+        </div>
+      </article>
+    </section>
 
     <dialog
       class="information-panel"

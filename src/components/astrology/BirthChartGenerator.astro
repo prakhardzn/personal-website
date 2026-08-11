@@ -1,0 +1,2964 @@
+---
+import BirthChartResult from "./BirthChartResult.astro";
+
+import "../../styles/birth-chart-generator.css";
+import "../../styles/birth-chart-location.css";
+---
+
+<section
+  class="birth-chart-module"
+  data-birth-chart-module
+  aria-labelledby="birth-chart-form-title"
+>
+  <div class="birth-chart-module__statusbar">
+    <div>
+      <span
+        class="birth-chart-module__signal"
+        aria-hidden="true"
+      ></span>
+
+      <strong>
+        CALCULATION TERMINAL // READY
+      </strong>
+    </div>
+
+    <span>
+      CHAPTER 08
+    </span>
+  </div>
+
+  <form
+    class="birth-chart-form"
+    id="birth-chart-form"
+    novalidate
+  >
+    <header class="birth-chart-form__header">
+      <p>
+        ENTER TEMPORAL COORDINATES
+      </p>
+
+      <h2 id="birth-chart-form-title">
+        Birth Details
+      </h2>
+
+      <span>
+        Enter the exact birth date and time,
+        then search for the birthplace.
+        The generator calculates the D1 once
+        and derives the D9 Navamsa from the
+        same exact sidereal longitudes.
+      </span>
+    </header>
+
+    <div class="birth-chart-form__grid">
+      <!-- ==================================================
+           NAME
+      =================================================== -->
+
+      <div
+        class="birth-chart-field birth-chart-field--wide"
+      >
+        <label for="birth-name">
+          <span>
+            NAME
+          </span>
+
+          <small>
+            OPTIONAL
+          </small>
+        </label>
+
+        <input
+          id="birth-name"
+          name="name"
+          type="text"
+          autocomplete="name"
+          maxlength="80"
+          placeholder="ENTER NAME"
+        />
+
+        <small
+          class="birth-chart-field__error"
+          data-field-error="name"
+          aria-live="polite"
+        ></small>
+      </div>
+
+      <!-- ==================================================
+           DATE
+      =================================================== -->
+
+      <div class="birth-chart-field">
+        <label for="birth-date">
+          <span>
+            DATE OF BIRTH
+          </span>
+
+          <small>
+            REQUIRED
+          </small>
+        </label>
+
+        <input
+          id="birth-date"
+          name="birthDate"
+          type="date"
+          autocomplete="bday"
+          required
+        />
+
+        <small
+          class="birth-chart-field__error"
+          data-field-error="birthDate"
+          aria-live="polite"
+        ></small>
+      </div>
+
+      <!-- ==================================================
+           TIME
+      =================================================== -->
+
+      <div class="birth-chart-field">
+        <label for="birth-time">
+          <span>
+            EXACT BIRTH TIME
+          </span>
+
+          <small>
+            LOCAL TIME
+          </small>
+        </label>
+
+        <input
+          id="birth-time"
+          name="birthTime"
+          type="time"
+          step="60"
+          required
+        />
+
+        <small
+          class="birth-chart-field__error"
+          data-field-error="birthTime"
+          aria-live="polite"
+        ></small>
+      </div>
+
+      <!-- ==================================================
+           LOCATION
+      =================================================== -->
+
+      <div
+        class="birth-chart-field birth-chart-field--wide"
+      >
+        <label for="birth-place">
+          <span>
+            PLACE OF BIRTH
+          </span>
+
+          <small>
+            SEARCH LOCATION
+          </small>
+        </label>
+
+        <div
+          class="birth-chart-location-search"
+          data-location-search
+        >
+          <input
+            id="birth-place"
+            name="birthPlace"
+            type="text"
+            autocomplete="off"
+            maxlength="140"
+            placeholder="START TYPING A CITY — MUMBAI"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-controls="birth-location-results"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            required
+          />
+
+          <div
+            class="birth-chart-location-results"
+            id="birth-location-results"
+            role="listbox"
+            aria-label="Birthplace search results"
+            hidden
+          ></div>
+        </div>
+
+        <div
+          class="birth-chart-location-status"
+          data-location-status
+          role="status"
+          aria-live="polite"
+        >
+          TYPE AT LEAST 3 CHARACTERS
+        </div>
+
+        <small
+          class="birth-chart-field__error"
+          data-field-error="birthPlace"
+          aria-live="polite"
+        ></small>
+
+        <div
+          class="birth-chart-selected-location"
+          data-selected-location
+          hidden
+        >
+          <div
+            class="birth-chart-selected-location__content"
+          >
+            <span
+              class="birth-chart-selected-location__eyebrow"
+            >
+              LOCATION LOCKED
+            </span>
+
+            <strong
+              data-selected-location-name
+            >
+              —
+            </strong>
+
+            <div
+              class="birth-chart-selected-location__details"
+            >
+              <span
+                data-selected-location-coordinates
+              >
+                —
+              </span>
+
+              <span
+                data-selected-location-timezone
+              >
+                —
+              </span>
+            </div>
+          </div>
+
+          <button
+            class="birth-chart-selected-location__clear"
+            data-clear-location
+            type="button"
+          >
+            CHANGE
+          </button>
+        </div>
+
+        <p
+          class="birth-chart-location-attribution"
+        >
+          LOCATION SEARCH // GEONAMES DATA VIA OPEN-METEO
+        </p>
+      </div>
+    </div>
+
+    <!-- ==================================================
+         ADVANCED LOCATION
+    =================================================== -->
+
+    <details
+      class="birth-chart-advanced"
+      id="birth-chart-advanced"
+    >
+      <summary>
+        <span>
+          ADVANCED LOCATION DATA
+        </span>
+
+        <small>
+          AUTOMATIC / MANUAL OVERRIDE
+        </small>
+      </summary>
+
+      <div
+        class="birth-chart-advanced__content"
+      >
+        <p>
+          Selecting a birthplace automatically
+          fills these values. They remain editable
+          as a manual fallback.
+        </p>
+
+        <div
+          class="birth-chart-advanced__resolved"
+        >
+          <div>
+            <span>
+              LATITUDE
+            </span>
+
+            <strong
+              data-resolved-latitude
+            >
+              —
+            </strong>
+          </div>
+
+          <div>
+            <span>
+              LONGITUDE
+            </span>
+
+            <strong
+              data-resolved-longitude
+            >
+              —
+            </strong>
+          </div>
+
+          <div>
+            <span>
+              TIMEZONE
+            </span>
+
+            <strong
+              data-resolved-timezone
+            >
+              —
+            </strong>
+          </div>
+        </div>
+
+        <div class="birth-chart-form__grid">
+          <div class="birth-chart-field">
+            <label for="birth-latitude">
+              <span>
+                LATITUDE
+              </span>
+
+              <small>
+                AUTO FILLED
+              </small>
+            </label>
+
+            <input
+              id="birth-latitude"
+              name="latitude"
+              type="number"
+              min="-90"
+              max="90"
+              step="0.000001"
+              inputmode="decimal"
+              placeholder="19.076000"
+            />
+
+            <small
+              class="birth-chart-field__error"
+              data-field-error="latitude"
+              aria-live="polite"
+            ></small>
+          </div>
+
+          <div class="birth-chart-field">
+            <label for="birth-longitude">
+              <span>
+                LONGITUDE
+              </span>
+
+              <small>
+                AUTO FILLED
+              </small>
+            </label>
+
+            <input
+              id="birth-longitude"
+              name="longitude"
+              type="number"
+              min="-180"
+              max="180"
+              step="0.000001"
+              inputmode="decimal"
+              placeholder="72.877700"
+            />
+
+            <small
+              class="birth-chart-field__error"
+              data-field-error="longitude"
+              aria-live="polite"
+            ></small>
+          </div>
+
+          <div
+            class="birth-chart-field birth-chart-field--wide"
+          >
+            <label for="birth-timezone">
+              <span>
+                TIMEZONE
+              </span>
+
+              <small>
+                AUTO FILLED
+              </small>
+            </label>
+
+            <input
+              id="birth-timezone"
+              name="timezone"
+              type="text"
+              autocomplete="off"
+              placeholder="Asia/Kolkata"
+            />
+
+            <small
+              class="birth-chart-field__hint"
+            >
+              Uses an IANA timezone such as
+              Asia/Kolkata, Europe/London or
+              America/New_York.
+            </small>
+
+            <small
+              class="birth-chart-field__error"
+              data-field-error="timezone"
+              aria-live="polite"
+            ></small>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- ==================================================
+         SETTINGS
+    =================================================== -->
+
+    <div
+      class="birth-chart-settings"
+      aria-label="Calculation settings"
+    >
+      <div>
+        <span>
+          ZODIAC
+        </span>
+
+        <strong>
+          SIDEREAL
+        </strong>
+      </div>
+
+      <div>
+        <span>
+          AYANAMSHA
+        </span>
+
+        <strong>
+          LAHIRI
+        </strong>
+      </div>
+
+      <div>
+        <span>
+          NODES
+        </span>
+
+        <strong>
+          MEAN
+        </strong>
+      </div>
+
+      <div>
+        <span>
+          HOUSES
+        </span>
+
+        <strong>
+          WHOLE SIGN
+        </strong>
+      </div>
+    </div>
+
+    <!-- ==================================================
+         MESSAGE
+    =================================================== -->
+
+    <div
+      class="birth-chart-form__message"
+      id="birth-chart-form-message"
+      role="status"
+      aria-live="polite"
+    >
+      <span aria-hidden="true">
+        &gt;
+      </span>
+
+      AWAITING BIRTH DATA
+    </div>
+
+    <!-- ==================================================
+         BUTTONS
+    =================================================== -->
+
+    <div class="birth-chart-form__actions">
+      <button
+        class="birth-chart-button birth-chart-button--primary"
+        data-calculate-button
+        type="submit"
+      >
+        <span aria-hidden="true">
+          &gt;
+        </span>
+
+        CALCULATE BIRTH CHART
+      </button>
+
+      <button
+        class="birth-chart-button birth-chart-button--secondary"
+        type="reset"
+      >
+        RESET TERMINAL
+      </button>
+    </div>
+  </form>
+
+  <!-- ==================================================
+       VERIFIED INPUT
+  =================================================== -->
+
+  <section
+    class="birth-chart-preview"
+    id="birth-chart-preview"
+    aria-labelledby="birth-chart-preview-title"
+    hidden
+  >
+    <div class="birth-chart-preview__header">
+      <div>
+        <span>
+          VERIFIED INPUT
+        </span>
+
+        <h2 id="birth-chart-preview-title">
+          Temporal Coordinates
+        </h2>
+      </div>
+
+      <strong>
+        ACCEPTED
+      </strong>
+    </div>
+
+    <p class="birth-chart-preview__notice">
+      These are the exact values used to
+      calculate the chart.
+    </p>
+
+    <dl class="birth-chart-preview__grid">
+      <div>
+        <dt>
+          NAME
+        </dt>
+
+        <dd data-preview-value="name">
+          —
+        </dd>
+      </div>
+
+      <div>
+        <dt>
+          DATE
+        </dt>
+
+        <dd data-preview-value="birthDate">
+          —
+        </dd>
+      </div>
+
+      <div>
+        <dt>
+          TIME
+        </dt>
+
+        <dd data-preview-value="birthTime">
+          —
+        </dd>
+      </div>
+
+      <div>
+        <dt>
+          LOCATION
+        </dt>
+
+        <dd data-preview-value="birthPlace">
+          —
+        </dd>
+      </div>
+
+      <div>
+        <dt>
+          TIMEZONE
+        </dt>
+
+        <dd data-preview-value="timezone">
+          —
+        </dd>
+      </div>
+
+      <div>
+        <dt>
+          COORDINATES
+        </dt>
+
+        <dd data-preview-value="coordinates">
+          —
+        </dd>
+      </div>
+    </dl>
+
+    <div class="birth-chart-preview__footer">
+      <span>
+        CALCULATION COMPLETE
+      </span>
+
+      <button
+        class="birth-chart-preview__edit"
+        id="birth-chart-edit"
+        type="button"
+      >
+        EDIT INPUT
+      </button>
+    </div>
+  </section>
+
+  <!-- ==================================================
+       RESULT
+  =================================================== -->
+
+  <div
+    id="birth-chart-result"
+    hidden
+  >
+    <BirthChartResult />
+  </div>
+</section>
+
+<script>
+  import {
+    BirthChartCalculationError,
+    calculateBirthChart,
+  } from "../../lib/astrology/calculations";
+
+  import {
+    GeocodingError,
+    formatLocationLabel,
+    searchBirthplaces,
+  } from "../../lib/astrology/geocoding";
+
+  import type {
+    GeocodingLocation,
+  } from "../../lib/astrology/geocoding";
+
+  import type {
+    BirthChartInput,
+    BirthChartResult as BirthChartResultData,
+    CelestialPosition,
+    PlanetPosition,
+  } from "../../lib/astrology/types";
+
+  const svgNamespace =
+    "http://www.w3.org/2000/svg";
+
+  const moduleElement =
+    document.querySelector<HTMLElement>(
+      "[data-birth-chart-module]"
+    );
+
+  const queryInsideModule = <
+    ElementType extends Element
+  >(
+    selector: string
+  ): ElementType | null => {
+    return (
+      moduleElement
+        ?.querySelector<ElementType>(
+          selector
+        ) ??
+      null
+    );
+  };
+
+  const form =
+    queryInsideModule<HTMLFormElement>(
+      "#birth-chart-form"
+    );
+
+  const formMessage =
+    queryInsideModule<HTMLElement>(
+      "#birth-chart-form-message"
+    );
+
+  const preview =
+    queryInsideModule<HTMLElement>(
+      "#birth-chart-preview"
+    );
+
+  const resultContainer =
+    queryInsideModule<HTMLElement>(
+      "#birth-chart-result"
+    );
+
+  const calculateButton =
+    queryInsideModule<HTMLButtonElement>(
+      "[data-calculate-button]"
+    );
+
+  const editButton =
+    queryInsideModule<HTMLButtonElement>(
+      "#birth-chart-edit"
+    );
+
+  const birthDateInput =
+    queryInsideModule<HTMLInputElement>(
+      "#birth-date"
+    );
+
+  const placeInput =
+    queryInsideModule<HTMLInputElement>(
+      "#birth-place"
+    );
+
+  const latitudeInput =
+    queryInsideModule<HTMLInputElement>(
+      "#birth-latitude"
+    );
+
+  const longitudeInput =
+    queryInsideModule<HTMLInputElement>(
+      "#birth-longitude"
+    );
+
+  const timezoneInput =
+    queryInsideModule<HTMLInputElement>(
+      "#birth-timezone"
+    );
+
+  const advancedDetails =
+    queryInsideModule<HTMLDetailsElement>(
+      "#birth-chart-advanced"
+    );
+
+  const locationResults =
+    queryInsideModule<HTMLElement>(
+      "#birth-location-results"
+    );
+
+  const locationStatus =
+    queryInsideModule<HTMLElement>(
+      "[data-location-status]"
+    );
+
+  const selectedLocationPanel =
+    queryInsideModule<HTMLElement>(
+      "[data-selected-location]"
+    );
+
+  const clearLocationButton =
+    queryInsideModule<HTMLButtonElement>(
+      "[data-clear-location]"
+    );
+
+  let selectedLocation:
+    GeocodingLocation |
+    null = null;
+
+  let currentSearchResults:
+    GeocodingLocation[] = [];
+
+  let activeResultIndex =
+    -1;
+
+  let searchTimer:
+    number |
+    undefined;
+
+  let searchController:
+    AbortController |
+    null = null;
+
+  /* =========================================================
+     GENERIC
+  ========================================================= */
+
+  const notifyContentChanged =
+    (): void => {
+      window.requestAnimationFrame(
+        () => {
+          window.dispatchEvent(
+            new CustomEvent(
+              "astrology:content-resized"
+            )
+          );
+        }
+      );
+    };
+
+  const cleanValue = (
+    data: FormData,
+    key: string
+  ): string => {
+    const value =
+      data.get(key);
+
+    return typeof value ===
+      "string"
+      ? value.trim()
+      : "";
+  };
+
+  const setText = (
+    selector: string,
+    value: string
+  ): void => {
+    const target =
+      queryInsideModule<HTMLElement>(
+        selector
+      );
+
+    if (
+      target
+    ) {
+      target.textContent =
+        value;
+    }
+  };
+
+  /* =========================================================
+     DATE
+  ========================================================= */
+
+  const getLocalDateString =
+    (): string => {
+      const now =
+        new Date();
+
+      const timezoneOffset =
+        now.getTimezoneOffset() *
+        60_000;
+
+      return new Date(
+        now.getTime() -
+          timezoneOffset
+      )
+        .toISOString()
+        .slice(
+          0,
+          10
+        );
+    };
+
+  const formatBirthDate = (
+    value: string
+  ): string => {
+    const [
+      year,
+      month,
+      day,
+    ] =
+      value
+        .split("-")
+        .map(Number);
+
+    const date =
+      new Date(0);
+
+    date.setFullYear(
+      year,
+      month - 1,
+      day
+    );
+
+    return new Intl.DateTimeFormat(
+      "en-IN",
+      {
+        day:
+          "2-digit",
+
+        month:
+          "long",
+
+        year:
+          "numeric",
+      }
+    ).format(date);
+  };
+
+  if (
+    birthDateInput
+  ) {
+    birthDateInput.max =
+      getLocalDateString();
+  }
+
+  /* =========================================================
+     ERRORS
+  ========================================================= */
+
+  const setFieldError = (
+    fieldName: string,
+    message: string
+  ): void => {
+    const field =
+      form
+        ?.elements
+        .namedItem(
+          fieldName
+        );
+
+    const error =
+      queryInsideModule<HTMLElement>(
+        `[data-field-error="${fieldName}"]`
+      );
+
+    if (
+      field instanceof
+      HTMLInputElement
+    ) {
+      field.setAttribute(
+        "aria-invalid",
+        String(
+          Boolean(
+            message
+          )
+        )
+      );
+    }
+
+    if (
+      error
+    ) {
+      error.textContent =
+        message;
+    }
+  };
+
+  const clearErrors =
+    (): void => {
+      [
+        "name",
+        "birthDate",
+        "birthTime",
+        "birthPlace",
+        "timezone",
+        "latitude",
+        "longitude",
+      ].forEach(
+        (
+          fieldName
+        ) => {
+          setFieldError(
+            fieldName,
+            ""
+          );
+        }
+      );
+    };
+
+  const isValidTimezone = (
+    timezone: string
+  ): boolean => {
+    try {
+      new Intl.DateTimeFormat(
+        "en-US",
+        {
+          timeZone:
+            timezone,
+        }
+      ).format();
+
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const showFormMessage = (
+    type:
+      | "idle"
+      | "error"
+      | "success",
+
+    text: string
+  ): void => {
+    if (
+      !formMessage
+    ) {
+      return;
+    }
+
+    formMessage
+      .classList
+      .remove(
+        "is-error",
+        "is-success"
+      );
+
+    if (
+      type ===
+      "error"
+    ) {
+      formMessage
+        .classList
+        .add(
+          "is-error"
+        );
+    }
+
+    if (
+      type ===
+      "success"
+    ) {
+      formMessage
+        .classList
+        .add(
+          "is-success"
+        );
+    }
+
+    formMessage.textContent =
+      text;
+  };
+
+  /* =========================================================
+     LOCATION STATUS
+  ========================================================= */
+
+  const setLocationStatus = (
+    type:
+      | "idle"
+      | "searching"
+      | "success"
+      | "error",
+
+    message: string
+  ): void => {
+    if (
+      !locationStatus
+    ) {
+      return;
+    }
+
+    locationStatus
+      .classList
+      .remove(
+        "is-searching",
+        "is-success",
+        "is-error"
+      );
+
+    if (
+      type ===
+      "searching"
+    ) {
+      locationStatus
+        .classList
+        .add(
+          "is-searching"
+        );
+    }
+
+    if (
+      type ===
+      "success"
+    ) {
+      locationStatus
+        .classList
+        .add(
+          "is-success"
+        );
+    }
+
+    if (
+      type ===
+      "error"
+    ) {
+      locationStatus
+        .classList
+        .add(
+          "is-error"
+        );
+    }
+
+    locationStatus.textContent =
+      message;
+  };
+
+  const hideLocationResults =
+    (): void => {
+      if (
+        !locationResults ||
+        !placeInput
+      ) {
+        return;
+      }
+
+      locationResults.hidden =
+        true;
+
+      placeInput.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
+      placeInput.removeAttribute(
+        "aria-activedescendant"
+      );
+
+      activeResultIndex =
+        -1;
+    };
+
+  const showLocationResults =
+    (): void => {
+      if (
+        !locationResults ||
+        !placeInput
+      ) {
+        return;
+      }
+
+      locationResults.hidden =
+        false;
+
+      placeInput.setAttribute(
+        "aria-expanded",
+        "true"
+      );
+
+      notifyContentChanged();
+    };
+
+  /* =========================================================
+     RESOLVED LOCATION
+  ========================================================= */
+
+  const updateResolvedLocationDisplay =
+    (
+      location:
+        GeocodingLocation |
+        null
+    ): void => {
+      setText(
+        "[data-resolved-latitude]",
+
+        location
+          ? location.latitude
+              .toFixed(6)
+          : "—"
+      );
+
+      setText(
+        "[data-resolved-longitude]",
+
+        location
+          ? location.longitude
+              .toFixed(6)
+          : "—"
+      );
+
+      setText(
+        "[data-resolved-timezone]",
+
+        location
+          ? location.timezone
+          : "—"
+      );
+    };
+
+  const clearSelectedLocation =
+    (
+      clearSearchInput =
+        false
+    ): void => {
+      selectedLocation =
+        null;
+
+      if (
+        clearSearchInput &&
+        placeInput
+      ) {
+        placeInput.value =
+          "";
+      }
+
+      if (
+        latitudeInput
+      ) {
+        latitudeInput.value =
+          "";
+      }
+
+      if (
+        longitudeInput
+      ) {
+        longitudeInput.value =
+          "";
+      }
+
+      if (
+        timezoneInput
+      ) {
+        timezoneInput.value =
+          "";
+      }
+
+      selectedLocationPanel
+        ?.setAttribute(
+          "hidden",
+          ""
+        );
+
+      updateResolvedLocationDisplay(
+        null
+      );
+
+      hideLocationResults();
+
+      if (
+        placeInput?.value.trim()
+      ) {
+        setLocationStatus(
+          "idle",
+          "SELECT A LOCATION FROM THE SEARCH RESULTS"
+        );
+      } else {
+        setLocationStatus(
+          "idle",
+          "TYPE AT LEAST 3 CHARACTERS"
+        );
+      }
+    };
+
+  const selectLocation = (
+    location:
+      GeocodingLocation
+  ): void => {
+    selectedLocation =
+      location;
+
+    const label =
+      formatLocationLabel(
+        location
+      );
+
+    if (
+      placeInput
+    ) {
+      placeInput.value =
+        label;
+    }
+
+    if (
+      latitudeInput
+    ) {
+      latitudeInput.value =
+        location.latitude.toFixed(
+          6
+        );
+    }
+
+    if (
+      longitudeInput
+    ) {
+      longitudeInput.value =
+        location.longitude.toFixed(
+          6
+        );
+    }
+
+    if (
+      timezoneInput
+    ) {
+      timezoneInput.value =
+        location.timezone;
+    }
+
+    setText(
+      "[data-selected-location-name]",
+      label
+    );
+
+    setText(
+      "[data-selected-location-coordinates]",
+
+      `${location.latitude.toFixed(
+        6
+      )}, ${location.longitude.toFixed(
+        6
+      )}`
+    );
+
+    setText(
+      "[data-selected-location-timezone]",
+
+      location.timezone
+    );
+
+    selectedLocationPanel
+      ?.removeAttribute(
+        "hidden"
+      );
+
+    updateResolvedLocationDisplay(
+      location
+    );
+
+    setFieldError(
+      "birthPlace",
+      ""
+    );
+
+    setFieldError(
+      "latitude",
+      ""
+    );
+
+    setFieldError(
+      "longitude",
+      ""
+    );
+
+    setFieldError(
+      "timezone",
+      ""
+    );
+
+    setLocationStatus(
+      "success",
+
+      `LOCATION LOCKED // ${location.timezone}`
+    );
+
+    hideLocationResults();
+
+    notifyContentChanged();
+  };
+
+  /* =========================================================
+     AUTOCOMPLETE KEYBOARD STATE
+  ========================================================= */
+
+  const setActiveResultIndex =
+    (
+      index: number
+    ): void => {
+      if (
+        !locationResults ||
+        !placeInput
+      ) {
+        return;
+      }
+
+      const options =
+        Array.from(
+          locationResults
+            .querySelectorAll<HTMLButtonElement>(
+              "[data-location-option]"
+            )
+        );
+
+      if (
+        options.length ===
+        0
+      ) {
+        activeResultIndex =
+          -1;
+
+        return;
+      }
+
+      activeResultIndex =
+        (
+          index +
+          options.length
+        ) %
+        options.length;
+
+      options.forEach(
+        (
+          option,
+          optionIndex
+        ) => {
+          const active =
+            optionIndex ===
+            activeResultIndex;
+
+          option.classList.toggle(
+            "is-active",
+            active
+          );
+
+          option.setAttribute(
+            "aria-selected",
+            String(active)
+          );
+
+          if (
+            active
+          ) {
+            placeInput.setAttribute(
+              "aria-activedescendant",
+              option.id
+            );
+
+            option.scrollIntoView(
+              {
+                block:
+                  "nearest",
+              }
+            );
+          }
+        }
+      );
+    };
+
+  /* =========================================================
+     LOCATION RESULTS
+  ========================================================= */
+
+  const renderLocationResults =
+    (
+      results:
+        GeocodingLocation[]
+    ): void => {
+      if (
+        !locationResults
+      ) {
+        return;
+      }
+
+      locationResults
+        .replaceChildren();
+
+      currentSearchResults =
+        results;
+
+      activeResultIndex =
+        -1;
+
+      if (
+        results.length ===
+        0
+      ) {
+        hideLocationResults();
+
+        setLocationStatus(
+          "error",
+          "NO MATCHING LOCATIONS FOUND"
+        );
+
+        return;
+      }
+
+      results.forEach(
+        (
+          location,
+          index
+        ) => {
+          const option =
+            document.createElement(
+              "button"
+            );
+
+          option.type =
+            "button";
+
+          option.id =
+            `birth-location-option-${location.id}-${index}`;
+
+          option.className =
+            "birth-chart-location-option";
+
+          option.dataset
+            .locationOption =
+            String(index);
+
+          option.setAttribute(
+            "role",
+            "option"
+          );
+
+          option.setAttribute(
+            "aria-selected",
+            "false"
+          );
+
+          const main =
+            document.createElement(
+              "span"
+            );
+
+          main.className =
+            "birth-chart-location-option__main";
+
+          const name =
+            document.createElement(
+              "strong"
+            );
+
+          name.className =
+            "birth-chart-location-option__name";
+
+          name.textContent =
+            location.name;
+
+          const region =
+            document.createElement(
+              "span"
+            );
+
+          region.className =
+            "birth-chart-location-option__region";
+
+          const regionParts = [
+            location.admin1,
+            location.country,
+          ].filter(Boolean);
+
+          region.textContent =
+            regionParts.join(
+              ", "
+            ) ||
+            "LOCATION";
+
+          main.append(
+            name,
+            region
+          );
+
+          const metadata =
+            document.createElement(
+              "span"
+            );
+
+          metadata.className =
+            "birth-chart-location-option__meta";
+
+          const timezone =
+            document.createElement(
+              "span"
+            );
+
+          timezone.textContent =
+            location.timezone;
+
+          const coordinates =
+            document.createElement(
+              "span"
+            );
+
+          coordinates.textContent =
+            `${location.latitude.toFixed(
+              2
+            )}, ${location.longitude.toFixed(
+              2
+            )}`;
+
+          metadata.append(
+            timezone,
+            coordinates
+          );
+
+          option.append(
+            main,
+            metadata
+          );
+
+          option.addEventListener(
+            "pointerdown",
+            (
+              event
+            ) => {
+              event.preventDefault();
+            }
+          );
+
+          option.addEventListener(
+            "click",
+            () => {
+              selectLocation(
+                location
+              );
+            }
+          );
+
+          locationResults.append(
+            option
+          );
+        }
+      );
+
+      setLocationStatus(
+        "success",
+
+        `${results.length} LOCATION${
+          results.length === 1
+            ? ""
+            : "S"
+        } FOUND`
+      );
+
+      showLocationResults();
+    };
+
+  /* =========================================================
+     LOCATION SEARCH
+  ========================================================= */
+
+  const runLocationSearch =
+    (
+      query: string
+    ): void => {
+      window.clearTimeout(
+        searchTimer
+      );
+
+      searchController
+        ?.abort();
+
+      if (
+        query.trim().length <
+        3
+      ) {
+        currentSearchResults =
+          [];
+
+        hideLocationResults();
+
+        setLocationStatus(
+          "idle",
+          "TYPE AT LEAST 3 CHARACTERS"
+        );
+
+        return;
+      }
+
+      setLocationStatus(
+        "searching",
+        "SEARCHING LOCATION DATABASE..."
+      );
+
+      searchTimer =
+        window.setTimeout(
+          async () => {
+            searchController =
+              new AbortController();
+
+            try {
+              const results =
+                await searchBirthplaces(
+                  query,
+                  searchController
+                    .signal
+                );
+
+              renderLocationResults(
+                results
+              );
+            } catch (
+              error
+            ) {
+              if (
+                error instanceof
+                  DOMException &&
+                error.name ===
+                  "AbortError"
+              ) {
+                return;
+              }
+
+              currentSearchResults =
+                [];
+
+              hideLocationResults();
+
+              const message =
+                error instanceof
+                  GeocodingError
+                  ? error.message
+                  : "Location search failed.";
+
+              setLocationStatus(
+                "error",
+
+                `SEARCH ERROR // ${message}`
+              );
+
+              console.error(
+                "Birthplace search failed:",
+                error
+              );
+            }
+          },
+          320
+        );
+    };
+
+  /* =========================================================
+     LOCATION INPUT EVENTS
+  ========================================================= */
+
+  placeInput?.addEventListener(
+    "input",
+    () => {
+      const value =
+        placeInput.value.trim();
+
+      if (
+        selectedLocation
+      ) {
+        const selectedLabel =
+          formatLocationLabel(
+            selectedLocation
+          );
+
+        if (
+          value !==
+          selectedLabel
+        ) {
+          clearSelectedLocation(
+            false
+          );
+        }
+      }
+
+      setFieldError(
+        "birthPlace",
+        ""
+      );
+
+      runLocationSearch(
+        value
+      );
+    }
+  );
+
+  placeInput?.addEventListener(
+    "focus",
+    () => {
+      if (
+        currentSearchResults.length >
+          0 &&
+        !selectedLocation
+      ) {
+        showLocationResults();
+      }
+    }
+  );
+
+  placeInput?.addEventListener(
+    "blur",
+    () => {
+      window.setTimeout(
+        () => {
+          hideLocationResults();
+        },
+        140
+      );
+    }
+  );
+
+  placeInput?.addEventListener(
+    "keydown",
+    (
+      event:
+        KeyboardEvent
+    ) => {
+      if (
+        event.key ===
+        "ArrowDown"
+      ) {
+        if (
+          currentSearchResults.length ===
+          0
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+
+        showLocationResults();
+
+        setActiveResultIndex(
+          activeResultIndex +
+            1
+        );
+
+        return;
+      }
+
+      if (
+        event.key ===
+        "ArrowUp"
+      ) {
+        if (
+          currentSearchResults.length ===
+          0
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+
+        showLocationResults();
+
+        setActiveResultIndex(
+          activeResultIndex -
+            1
+        );
+
+        return;
+      }
+
+      if (
+        event.key ===
+          "Enter" &&
+        activeResultIndex >=
+          0
+      ) {
+        event.preventDefault();
+
+        const location =
+          currentSearchResults[
+            activeResultIndex
+          ];
+
+        if (
+          location
+        ) {
+          selectLocation(
+            location
+          );
+        }
+
+        return;
+      }
+
+      if (
+        event.key ===
+        "Escape"
+      ) {
+        hideLocationResults();
+      }
+    }
+  );
+
+  clearLocationButton
+    ?.addEventListener(
+      "click",
+      () => {
+        clearSelectedLocation(
+          true
+        );
+
+        placeInput?.focus();
+
+        notifyContentChanged();
+      }
+    );
+
+  const updateAdvancedResolvedValues =
+    (): void => {
+      setText(
+        "[data-resolved-latitude]",
+
+        latitudeInput
+          ?.value ||
+          "—"
+      );
+
+      setText(
+        "[data-resolved-longitude]",
+
+        longitudeInput
+          ?.value ||
+          "—"
+      );
+
+      setText(
+        "[data-resolved-timezone]",
+
+        timezoneInput
+          ?.value ||
+          "—"
+      );
+    };
+
+  latitudeInput?.addEventListener(
+    "input",
+    updateAdvancedResolvedValues
+  );
+
+  longitudeInput?.addEventListener(
+    "input",
+    updateAdvancedResolvedValues
+  );
+
+  timezoneInput?.addEventListener(
+    "input",
+    updateAdvancedResolvedValues
+  );
+
+  advancedDetails?.addEventListener(
+    "toggle",
+    notifyContentChanged
+  );
+
+  /* =========================================================
+     OUTPUT FORMATTING
+  ========================================================= */
+
+  const formatAyanamsha = (
+    value: number
+  ): string => {
+    let degrees =
+      Math.floor(value);
+
+    const remainingMinutes =
+      (
+        value -
+        degrees
+      ) *
+      60;
+
+    let minutes =
+      Math.floor(
+        remainingMinutes
+      );
+
+    let seconds =
+      Math.round(
+        (
+          remainingMinutes -
+          minutes
+        ) *
+        60
+      );
+
+    if (
+      seconds ===
+      60
+    ) {
+      seconds =
+        0;
+
+      minutes +=
+        1;
+    }
+
+    if (
+      minutes ===
+      60
+    ) {
+      minutes =
+        0;
+
+      degrees +=
+        1;
+    }
+
+    return (
+      `${degrees}°` +
+      `${String(
+        minutes
+      ).padStart(
+        2,
+        "0"
+      )}′` +
+      `${String(
+        seconds
+      ).padStart(
+        2,
+        "0"
+      )}″`
+    );
+  };
+
+  const createTableCell = (
+    tagName:
+      "th" |
+      "td",
+
+    text: string
+  ): HTMLTableCellElement => {
+    const cell =
+      document.createElement(
+        tagName
+      );
+
+    cell.textContent =
+      text;
+
+    return cell;
+  };
+
+  const createPlanetRow = (
+    position:
+      | PlanetPosition
+      | (
+          CelestialPosition & {
+            abbreviation:
+              string;
+
+            retrograde?:
+              boolean;
+          }
+        )
+  ): HTMLTableRowElement => {
+    const row =
+      document.createElement(
+        "tr"
+      );
+
+    const bodyCell =
+      createTableCell(
+        "th",
+        position.abbreviation
+      );
+
+    bodyCell.scope =
+      "row";
+
+    row.append(
+      bodyCell,
+
+      createTableCell(
+        "td",
+        position.signName
+      ),
+
+      createTableCell(
+        "td",
+        String(
+          position.house
+        )
+      ),
+
+      createTableCell(
+        "td",
+
+        `${position.formattedDegree}${
+          position.retrograde
+            ? " R"
+            : ""
+        }`
+      ),
+
+      createTableCell(
+        "td",
+
+        `${position.nakshatra} P${position.pada}`
+      )
+    );
+
+    return row;
+  };
+
+  /* =========================================================
+     D1 CHART
+  ========================================================= */
+
+  const renderNorthIndianChart = (
+    result:
+      BirthChartResultData
+  ): void => {
+    setText(
+      "[data-chart-ephemeris]",
+      "CALCULATED EPHEMERIS"
+    );
+
+    setText(
+      "[data-chart-ascendant-sign]",
+      result.ascendant.signName
+    );
+
+    setText(
+      "[data-chart-ascendant-degree]",
+      result.ascendant
+        .formattedDegree
+    );
+
+    setText(
+      "[data-chart-profile]",
+
+      result.input.name ||
+        "UNNAMED CHART"
+    );
+
+    setText(
+      "[data-chart-context]",
+
+      `${formatBirthDate(
+        result.input.birthDate
+      )} // ` +
+        `${result.input.birthTime} // ` +
+        result.input.birthPlace
+    );
+
+    for (
+      let houseNumber = 1;
+      houseNumber <= 12;
+      houseNumber += 1
+    ) {
+      const house =
+        queryInsideModule<SVGGElement>(
+          `[data-chart-house="${houseNumber}"]`
+        );
+
+      if (
+        !house
+      ) {
+        continue;
+      }
+
+      const signNumber =
+        (
+          (
+            result.ascendant
+              .signNumber +
+            houseNumber -
+            2
+          ) %
+          12
+        ) +
+        1;
+
+      const signLabel =
+        house.querySelector<SVGTextElement>(
+          "[data-house-sign]"
+        );
+
+      const ascendantLabel =
+        house.querySelector<SVGTextElement>(
+          "[data-house-ascendant]"
+        );
+
+      const planetsLabel =
+        house.querySelector<SVGTextElement>(
+          "[data-house-planets]"
+        );
+
+      if (
+        signLabel
+      ) {
+        signLabel.textContent =
+          String(
+            signNumber
+          );
+      }
+
+      if (
+        ascendantLabel
+      ) {
+        ascendantLabel.textContent =
+          houseNumber ===
+          1
+            ? `ASC ${result.ascendant.formattedDegree}`
+            : "";
+      }
+
+      if (
+        !planetsLabel
+      ) {
+        continue;
+      }
+
+      planetsLabel
+        .replaceChildren();
+
+      const housePlanets =
+        result.planets.filter(
+          (
+            planet
+          ) =>
+            planet.house ===
+            houseNumber
+        );
+
+      house.dataset
+        .planetCount =
+        String(
+          Math.min(
+            housePlanets.length,
+            5
+          )
+        );
+
+      housePlanets.forEach(
+        (
+          planet,
+          planetIndex
+        ) => {
+          const line =
+            document.createElementNS(
+              svgNamespace,
+              "tspan"
+            );
+
+          line.setAttribute(
+            "x",
+            "0"
+          );
+
+          line.setAttribute(
+            "dy",
+
+            planetIndex ===
+              0
+              ? "1.15em"
+              : "1.2em"
+          );
+
+          line.textContent =
+            `${planet.abbreviation} ` +
+            `${planet.formattedDegree}` +
+            (
+              planet.retrograde
+                ? " R"
+                : ""
+            );
+
+          planetsLabel.append(
+            line
+          );
+        }
+      );
+    }
+  };
+
+  /* =========================================================
+     D1 TABLE
+  ========================================================= */
+
+  const renderPlanetaryTable = (
+    result:
+      BirthChartResultData
+  ): void => {
+    const tableBody =
+      queryInsideModule<HTMLTableSectionElement>(
+        "[data-planetary-table-body]"
+      );
+
+    if (
+      !tableBody
+    ) {
+      return;
+    }
+
+    tableBody.replaceChildren();
+
+    tableBody.append(
+      createPlanetRow(
+        {
+          ...result.ascendant,
+
+          abbreviation:
+            "ASC",
+
+          retrograde:
+            false,
+        }
+      )
+    );
+
+    result.planets.forEach(
+      (
+        planet
+      ) => {
+        tableBody.append(
+          createPlanetRow(
+            planet
+          )
+        );
+      }
+    );
+
+    setText(
+      "[data-result-zodiac]",
+      result.settings.zodiac
+    );
+
+    setText(
+      "[data-result-ayanamsha]",
+      result.settings.ayanamsha
+    );
+
+    setText(
+      "[data-result-nodes]",
+      result.settings.nodeType
+    );
+
+    setText(
+      "[data-result-houses]",
+      result.settings.houseSystem
+    );
+  };
+
+  /* =========================================================
+     WARNINGS
+  ========================================================= */
+
+  const renderWarnings = (
+    result:
+      BirthChartResultData
+  ): void => {
+    const list =
+      queryInsideModule<HTMLUListElement>(
+        "[data-result-warnings]"
+      );
+
+    if (
+      !list
+    ) {
+      return;
+    }
+
+    list.replaceChildren();
+
+    result.warnings.forEach(
+      (
+        warning
+      ) => {
+        const item =
+          document.createElement(
+            "li"
+          );
+
+        item.textContent =
+          warning;
+
+        list.append(
+          item
+        );
+      }
+    );
+  };
+
+  const renderResult = (
+    result:
+      BirthChartResultData
+  ): void => {
+    renderNorthIndianChart(
+      result
+    );
+
+    renderPlanetaryTable(
+      result
+    );
+
+    renderWarnings(
+      result
+    );
+
+    setText(
+      "[data-result-status]",
+      "CALCULATED"
+    );
+
+    setText(
+      "[data-result-engine]",
+
+      `Astronomy Engine ${result.calculation.engineVersion}`
+    );
+
+    setText(
+      "[data-result-utc]",
+
+      new Intl.DateTimeFormat(
+        "en-IN",
+        {
+          dateStyle:
+            "medium",
+
+          timeStyle:
+            "medium",
+
+          timeZone:
+            "UTC",
+        }
+      ).format(
+        new Date(
+          result.calculation
+            .utcDateTime
+        )
+      ) +
+        " UTC"
+    );
+
+    setText(
+      "[data-result-ayanamsha-value]",
+
+      formatAyanamsha(
+        result.calculation
+          .ayanamshaDegrees
+      )
+    );
+  };
+
+  /* =========================================================
+     PREVIEW
+  ========================================================= */
+
+  const updatePreview = (
+    input:
+      BirthChartInput
+  ): void => {
+    setText(
+      '[data-preview-value="name"]',
+
+      input.name ||
+        "NOT PROVIDED"
+    );
+
+    setText(
+      '[data-preview-value="birthDate"]',
+
+      formatBirthDate(
+        input.birthDate
+      )
+    );
+
+    setText(
+      '[data-preview-value="birthTime"]',
+
+      `${input.birthTime} LOCAL TIME`
+    );
+
+    setText(
+      '[data-preview-value="birthPlace"]',
+
+      input.birthPlace
+    );
+
+    setText(
+      '[data-preview-value="timezone"]',
+
+      input.timezone
+    );
+
+    setText(
+      '[data-preview-value="coordinates"]',
+
+      `${input.latitude.toFixed(
+        6
+      )}, ${input.longitude.toFixed(
+        6
+      )}`
+    );
+  };
+
+  /* =========================================================
+     SUBMIT
+  ========================================================= */
+
+  form?.addEventListener(
+    "submit",
+    async (
+      event:
+        SubmitEvent
+    ) => {
+      event.preventDefault();
+
+      clearErrors();
+      hideLocationResults();
+
+      const data =
+        new FormData(form);
+
+      const name =
+        cleanValue(
+          data,
+          "name"
+        );
+
+      const birthDate =
+        cleanValue(
+          data,
+          "birthDate"
+        );
+
+      const birthTime =
+        cleanValue(
+          data,
+          "birthTime"
+        );
+
+      const birthPlace =
+        cleanValue(
+          data,
+          "birthPlace"
+        );
+
+      const timezone =
+        cleanValue(
+          data,
+          "timezone"
+        );
+
+      const latitudeText =
+        cleanValue(
+          data,
+          "latitude"
+        );
+
+      const longitudeText =
+        cleanValue(
+          data,
+          "longitude"
+        );
+
+      const latitude =
+        Number(
+          latitudeText
+        );
+
+      const longitude =
+        Number(
+          longitudeText
+        );
+
+      let firstInvalidField:
+        HTMLInputElement |
+        null = null;
+
+      let hasErrors =
+        false;
+
+      const markInvalid = (
+        fieldName: string,
+        message: string
+      ): void => {
+        hasErrors =
+          true;
+
+        setFieldError(
+          fieldName,
+          message
+        );
+
+        const field =
+          form.elements.namedItem(
+            fieldName
+          );
+
+        if (
+          !firstInvalidField &&
+          field instanceof
+            HTMLInputElement
+        ) {
+          firstInvalidField =
+            field;
+        }
+      };
+
+      if (
+        !birthDate
+      ) {
+        markInvalid(
+          "birthDate",
+          "Enter the date of birth."
+        );
+      } else if (
+        birthDate >
+        getLocalDateString()
+      ) {
+        markInvalid(
+          "birthDate",
+          "The date cannot be in the future."
+        );
+      }
+
+      if (
+        !birthTime
+      ) {
+        markInvalid(
+          "birthTime",
+          "Enter the exact birth time."
+        );
+      }
+
+      if (
+        !birthPlace
+      ) {
+        markInvalid(
+          "birthPlace",
+          "Enter the birthplace."
+        );
+      }
+
+      if (
+        !latitudeText
+      ) {
+        markInvalid(
+          "latitude",
+
+          "Select a birthplace from the search results or enter latitude manually."
+        );
+      } else if (
+        !Number.isFinite(
+          latitude
+        ) ||
+        latitude < -90 ||
+        latitude > 90
+      ) {
+        markInvalid(
+          "latitude",
+          "Latitude must be between -90 and 90."
+        );
+      }
+
+      if (
+        !longitudeText
+      ) {
+        markInvalid(
+          "longitude",
+
+          "Select a birthplace from the search results or enter longitude manually."
+        );
+      } else if (
+        !Number.isFinite(
+          longitude
+        ) ||
+        longitude < -180 ||
+        longitude > 180
+      ) {
+        markInvalid(
+          "longitude",
+          "Longitude must be between -180 and 180."
+        );
+      }
+
+      if (
+        !timezone
+      ) {
+        markInvalid(
+          "timezone",
+
+          "Select a birthplace from the search results or enter its timezone manually."
+        );
+      } else if (
+        !isValidTimezone(
+          timezone
+        )
+      ) {
+        markInvalid(
+          "timezone",
+
+          "Use a valid timezone such as Asia/Kolkata."
+        );
+      }
+
+      if (
+        hasErrors
+      ) {
+        showFormMessage(
+          "error",
+
+          "! INPUT REJECTED // CHECK THE MARKED FIELDS"
+        );
+
+        preview
+          ?.setAttribute(
+            "hidden",
+            ""
+          );
+
+        resultContainer
+          ?.setAttribute(
+            "hidden",
+            ""
+          );
+
+        firstInvalidField
+          ?.focus();
+
+        if (
+          !latitudeText ||
+          !longitudeText ||
+          !timezone
+        ) {
+          if (
+            advancedDetails
+          ) {
+            advancedDetails.open =
+              true;
+          }
+        }
+
+        notifyContentChanged();
+
+        return;
+      }
+
+      const input:
+        BirthChartInput = {
+        name:
+          name ||
+          undefined,
+
+        birthDate,
+
+        birthTime,
+
+        birthPlace,
+
+        timezone,
+
+        latitude,
+
+        longitude,
+      };
+
+      if (
+        calculateButton
+      ) {
+        calculateButton.disabled =
+          true;
+
+        calculateButton.textContent =
+          "CALCULATING...";
+      }
+
+      showFormMessage(
+        "idle",
+
+        "> CALCULATING D1 + PREPARING D9"
+      );
+
+      try {
+        await new Promise<void>(
+          (
+            resolve
+          ) => {
+            window.requestAnimationFrame(
+              () =>
+                resolve()
+            );
+          }
+        );
+
+        /*
+         * ===============================================
+         * CALCULATE D1 ONCE
+         * ===============================================
+         */
+
+        const result =
+          calculateBirthChart(
+            input
+          );
+
+        /*
+         * Render the D1.
+         */
+
+        updatePreview(
+          input
+        );
+
+        renderResult(
+          result
+        );
+
+        preview
+          ?.removeAttribute(
+            "hidden"
+          );
+
+        resultContainer
+          ?.removeAttribute(
+            "hidden"
+          );
+
+        /*
+         * ===============================================
+         * SEND THE SAME D1 RESULT TO D9
+         * ===============================================
+         *
+         * No second ephemeris calculation.
+         */
+
+        window.dispatchEvent(
+          new CustomEvent<BirthChartResultData>(
+            "astrology:birth-chart-calculated",
+            {
+              detail:
+                result,
+            }
+          )
+        );
+
+        showFormMessage(
+          "success",
+
+          "> CALCULATION COMPLETE // D1 + D9 READY"
+        );
+
+        notifyContentChanged();
+
+        window.requestAnimationFrame(
+          () => {
+            resultContainer
+              ?.scrollIntoView(
+                {
+                  behavior:
+                    "smooth",
+
+                  block:
+                    "start",
+                }
+              );
+          }
+        );
+      } catch (
+        error
+      ) {
+        const message =
+          error instanceof
+            BirthChartCalculationError
+            ? error.message
+            : "The chart could not be calculated.";
+
+        showFormMessage(
+          "error",
+
+          `! CALCULATION FAILED // ${message}`
+        );
+
+        preview
+          ?.setAttribute(
+            "hidden",
+            ""
+          );
+
+        resultContainer
+          ?.setAttribute(
+            "hidden",
+            ""
+          );
+
+        console.error(
+          "Birth chart calculation failed:",
+          error
+        );
+
+        notifyContentChanged();
+      } finally {
+        if (
+          calculateButton
+        ) {
+          calculateButton.disabled =
+            false;
+
+          calculateButton.textContent =
+            "> CALCULATE BIRTH CHART";
+        }
+      }
+    }
+  );
+
+  /* =========================================================
+     RESET
+  ========================================================= */
+
+  form?.addEventListener(
+    "reset",
+    () => {
+      window.requestAnimationFrame(
+        () => {
+          clearErrors();
+
+          searchController
+            ?.abort();
+
+          window.clearTimeout(
+            searchTimer
+          );
+
+          currentSearchResults =
+            [];
+
+          selectedLocation =
+            null;
+
+          hideLocationResults();
+
+          selectedLocationPanel
+            ?.setAttribute(
+              "hidden",
+              ""
+            );
+
+          updateResolvedLocationDisplay(
+            null
+          );
+
+          setLocationStatus(
+            "idle",
+            "TYPE AT LEAST 3 CHARACTERS"
+          );
+
+          preview
+            ?.setAttribute(
+              "hidden",
+              ""
+            );
+
+          resultContainer
+            ?.setAttribute(
+              "hidden",
+              ""
+            );
+
+          showFormMessage(
+            "idle",
+
+            "> AWAITING BIRTH DATA"
+          );
+
+          /*
+           * Tell Chapter 8 to reset D9.
+           */
+
+          window.dispatchEvent(
+            new CustomEvent(
+              "astrology:birth-chart-reset"
+            )
+          );
+
+          notifyContentChanged();
+        }
+      );
+    }
+  );
+
+  /* =========================================================
+     EDIT
+  ========================================================= */
+
+  editButton?.addEventListener(
+    "click",
+    () => {
+      form?.scrollIntoView(
+        {
+          behavior:
+            "smooth",
+
+          block:
+            "start",
+        }
+      );
+
+      window.setTimeout(
+        () => {
+          queryInsideModule<HTMLInputElement>(
+            "#birth-name"
+          )?.focus();
+        },
+        250
+      );
+    }
+  );
+</script>

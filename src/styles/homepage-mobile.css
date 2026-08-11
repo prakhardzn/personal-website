@@ -1309,3 +1309,382 @@
     font-size: var(--mobile-text-body, 1rem);
   }
 }
+
+/* =========================================================
+   PORTAL 214 // FINAL MOBILE LOCK
+   Restores the spacious mobile terminal shown in the
+   approved phone layout and prevents compact overrides from
+   shrinking typography or touch targets again.
+========================================================= */
+
+@media (max-width: 700px) {
+  .site-shell {
+    --mobile-control-size: 48px;
+    --mobile-text-micro: 0.75rem;      /* 12px */
+    --mobile-text-meta: 0.875rem;      /* 14px */
+    --mobile-text-body: 1rem;          /* 16px */
+    --mobile-text-emphasis: 1.125rem;  /* 18px */
+    --mobile-text-heading: 1.25rem;    /* 20px */
+    --mobile-text-card: 1.4375rem;     /* 23px */
+    --mobile-text-section: 1.625rem;   /* 26px */
+    --mobile-text-page: 2rem;          /* 32px */
+  }
+
+  /* Header: same visual language as the approved mobile screenshot. */
+  .system-bar {
+    top: 6px;
+    height: 60px;
+    min-height: 60px;
+    margin-top: 6px;
+    padding: 5px;
+  }
+
+  .mobile-brand {
+    gap: 8px;
+    padding: 0 8px;
+    font-size: var(--mobile-text-meta);
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+  }
+
+  .mobile-brand__signal {
+    width: 14px;
+    height: 14px;
+    font-size: 9px;
+  }
+
+  .system-actions {
+    grid-template-columns: repeat(2, var(--mobile-control-size));
+    gap: 5px;
+  }
+
+  .system-actions .icon-button,
+  .information-panel__close {
+    width: var(--mobile-control-size);
+    height: var(--mobile-control-size);
+    min-width: var(--mobile-control-size);
+    min-height: var(--mobile-control-size);
+  }
+
+  .system-actions .icon-button {
+    font-size: var(--mobile-text-emphasis);
+  }
+
+  /* Main directory: never collapse back to the tiny version. */
+  .mobile-directory__header {
+    grid-template-columns: minmax(0, 1fr) 64px;
+    min-height: 96px;
+  }
+
+  .mobile-directory__heading {
+    padding: 14px 12px;
+  }
+
+  .mobile-directory__heading p,
+  .mobile-directory__eyebrow {
+    margin-bottom: 8px;
+    font-size: var(--mobile-text-micro);
+    line-height: 1.35;
+    letter-spacing: 0.045em;
+  }
+
+  .mobile-directory__heading h2 {
+    font-size: var(--mobile-text-section);
+    line-height: 1.12;
+    letter-spacing: 0.025em;
+  }
+
+  .mobile-directory__count strong {
+    font-size: var(--mobile-text-card);
+  }
+
+  .mobile-directory__count span {
+    font-size: var(--mobile-text-micro);
+    line-height: 1.25;
+  }
+
+  .mobile-destination {
+    grid-template-columns: 82px minmax(0, 1fr) 48px;
+    min-height: 106px;
+  }
+
+  .mobile-destination__planet {
+    width: 54px;
+    height: 54px;
+  }
+
+  .mobile-destination__viewport::before {
+    width: 58px;
+    height: 58px;
+  }
+
+  .mobile-destination__copy {
+    padding: 12px 10px;
+  }
+
+  .mobile-destination__meta {
+    margin-bottom: 6px;
+    font-size: var(--mobile-text-micro);
+    line-height: 1.3;
+    letter-spacing: 0.035em;
+  }
+
+  .mobile-destination strong {
+    font-size: var(--mobile-text-heading);
+    line-height: 1.15;
+    letter-spacing: 0.03em;
+  }
+
+  .mobile-destination__description {
+    margin-top: 7px;
+    font-size: var(--mobile-text-meta);
+    line-height: 1.35;
+    letter-spacing: 0.025em;
+  }
+
+  .mobile-destination__arrow {
+    font-size: var(--mobile-text-emphasis);
+  }
+
+  .mobile-destination__arrow::before {
+    right: 14px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .mobile-directory__status {
+    min-height: 40px;
+    padding: 7px 9px;
+    font-size: var(--mobile-text-micro);
+    line-height: 1.3;
+    letter-spacing: 0.025em;
+  }
+
+  /* Four equal mobile dock controls. */
+  .bottom-dock {
+    padding: 5px;
+  }
+
+  .dock-actions {
+    gap: 4px;
+  }
+
+  .dock-card {
+    height: var(--mobile-control-size);
+    min-height: var(--mobile-control-size);
+    padding: 4px;
+  }
+
+  .dock-card__inner {
+    gap: 5px;
+  }
+
+  .dock-card__icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dock-card__title {
+    font-size: var(--mobile-text-meta);
+    line-height: 1.2;
+    letter-spacing: 0.015em;
+  }
+
+  /* Lower information modules retain the same readable scale. */
+  .mobile-feed-panel__bar,
+  .mobile-feed-panel__stamp {
+    font-size: var(--mobile-text-micro) !important;
+    line-height: 1.3;
+  }
+
+  .mobile-feed-panel__bar {
+    min-height: 36px;
+    padding: 8px 9px;
+  }
+
+  .mobile-feed-panel__body {
+    padding: 14px 12px 12px;
+  }
+
+  .mobile-feed-panel__body h2,
+  .information-panel__header h2 {
+    font-size: var(--mobile-text-heading);
+  }
+
+  .mobile-feed-panel__body p,
+  .information-panel__content {
+    font-size: var(--mobile-text-body);
+    line-height: 1.65;
+  }
+
+  .mobile-feed-panel__body a {
+    min-height: var(--mobile-control-size);
+    font-size: var(--mobile-text-meta);
+    line-height: 1.3;
+  }
+
+  .mobile-system-log p {
+    grid-template-columns: 72px minmax(0, 1fr);
+    padding: 9px 2px;
+    font-size: var(--mobile-text-meta);
+    line-height: 1.45;
+  }
+
+  .mobile-system-log span,
+  .information-panel__command,
+  .system-toast {
+    font-size: var(--mobile-text-micro);
+  }
+}
+
+/* Narrow phones keep the SAME readable type and touch target sizes.
+   Only the artwork column compresses slightly. */
+@media (max-width: 390px) {
+  .mobile-directory__header {
+    grid-template-columns: minmax(0, 1fr) 58px;
+  }
+
+  .mobile-destination {
+    grid-template-columns: 74px minmax(0, 1fr) 48px;
+    min-height: 106px;
+  }
+
+  .mobile-destination__planet {
+    width: 52px;
+    height: 52px;
+  }
+
+  .mobile-destination__viewport::before {
+    width: 54px;
+    height: 54px;
+  }
+
+  .mobile-directory__heading h2 {
+    font-size: var(--mobile-text-section);
+  }
+
+  .mobile-destination__meta {
+    font-size: var(--mobile-text-micro);
+  }
+
+  .mobile-destination__description,
+  .dock-card__title {
+    font-size: var(--mobile-text-micro);
+  }
+}
+
+/* Short displays must not reintroduce 30px controls or 5–7px text. */
+@media (max-width: 700px) and (max-height: 720px) {
+  .system-bar {
+    top: 4px;
+    height: 58px;
+    min-height: 58px;
+    margin-top: 4px;
+  }
+
+  .system-actions {
+    grid-template-columns: repeat(2, var(--mobile-control-size));
+  }
+
+  .system-actions .icon-button {
+    width: var(--mobile-control-size);
+    height: var(--mobile-control-size);
+    min-width: var(--mobile-control-size);
+    min-height: var(--mobile-control-size);
+  }
+
+  .mobile-directory__header {
+    min-height: 92px;
+  }
+
+  .mobile-destination {
+    min-height: 102px;
+  }
+
+  .mobile-destination__planet {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+
+/* =========================================================
+   PORTAL 214 // MOBILE CONTROL CONSISTENCY LOCK
+   Keeps the approved mobile layout from shrinking controls or text.
+   ========================================================= */
+@media (max-width: 700px) {
+  .site-shell {
+    --mobile-control-size: 48px;
+  }
+
+  .system-actions .icon-button,
+  .information-panel__close,
+  .dock-card,
+  .mobile-feed-panel__body a {
+    min-height: var(--mobile-control-size);
+  }
+
+  .system-actions .icon-button,
+  .information-panel__close {
+    width: var(--mobile-control-size);
+    height: var(--mobile-control-size);
+    min-width: var(--mobile-control-size);
+    max-width: var(--mobile-control-size);
+    max-height: var(--mobile-control-size);
+  }
+
+  .dock-card {
+    height: var(--mobile-control-size);
+    max-height: var(--mobile-control-size);
+  }
+
+  .mobile-brand,
+  .mobile-directory__heading p,
+  .mobile-destination__meta,
+  .mobile-directory__status,
+  .mobile-feed-panel__bar,
+  .mobile-feed-panel__stamp,
+  .information-panel__command,
+  .system-toast {
+    font-size: 12px;
+  }
+
+  .mobile-destination__description,
+  .dock-card__title,
+  .mobile-feed-panel__body a,
+  .mobile-system-log p {
+    font-size: 14px;
+  }
+
+  .mobile-feed-panel__body p,
+  .information-panel__content {
+    font-size: 16px;
+  }
+
+  .mobile-destination strong,
+  .mobile-feed-panel__body h2,
+  .information-panel__header h2 {
+    font-size: 20px;
+  }
+
+  .mobile-directory__heading h2 {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 700px) and (max-height: 720px) {
+  .system-actions .icon-button {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    max-width: 48px;
+    max-height: 48px;
+  }
+
+  .dock-card {
+    height: 48px;
+    min-height: 48px;
+    max-height: 48px;
+  }
+}

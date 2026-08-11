@@ -180,6 +180,8 @@
   },
   "active": "0c2482928da9f283",
   "lastOpenFiles": [
+    "public/assets/planets/about-me/about-planet-base.webp",
+    "public/assets/planets/about-me/about-planet-base.png",
     "src/content/weekly/codes-over-coffee.md",
     "src/content/weekly/codes-over-coffee",
     "src/content/weekly/spiderman-bnd-review.md",
@@ -198,7 +200,6 @@
     "public/assets/work/zoo-title-sequence/zoo-04.png",
     "public/assets/work/zoo-title-sequence/zoo-03.png",
     "public/assets/work/zoo-title-sequence/zoo-02.png",
-    "public/assets/work/zoo-title-sequence/zoo-01.png",
     "public/assets/work/zoo-title-sequence",
     "public/assets/work/dune-poster",
     "public/assets/work/dune-typography",
@@ -224,7 +225,6 @@
     "src/content/music/eminem--i-m-a-dick.md",
     "src/content/music/eminem--girls.md",
     "src/content/music/eminem--ear-drums-pop.md",
-    "src/content/music/eminem--pulsion-kill-you.md",
     "src/styles/library-music.css"
   ]
 }

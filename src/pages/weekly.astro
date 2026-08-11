@@ -604,45 +604,79 @@ const cardTones = [
     }
 
 
+    const getScrollbarMetrics = () => {
+      const styles =
+        window.getComputedStyle(
+          scrollbar
+        );
+
+      const paddingTop =
+        Number.parseFloat(
+          styles.paddingTop
+        ) || 0;
+
+      const paddingBottom =
+        Number.parseFloat(
+          styles.paddingBottom
+        ) || 0;
+
+      const trackHeight =
+        Math.max(
+          0,
+          scrollbar.clientHeight -
+            paddingTop -
+            paddingBottom
+        );
+
+      const maximumScroll =
+        Math.max(
+          0,
+          contentWindow.scrollHeight -
+            contentWindow.clientHeight
+        );
+
+      const visibleRatio =
+        contentWindow.scrollHeight >
+        0
+          ? contentWindow.clientHeight /
+            contentWindow.scrollHeight
+          : 1;
+
+      const thumbHeight =
+        Math.min(
+          trackHeight,
+          Math.max(
+            46,
+            trackHeight *
+              visibleRatio
+          )
+        );
+
+      const movementDistance =
+        Math.max(
+          0,
+          trackHeight -
+            thumbHeight
+        );
+
+      return {
+        paddingTop,
+        trackHeight,
+        maximumScroll,
+        thumbHeight,
+        movementDistance,
+      };
+    };
+
+
     const updateScrollbar =
       (): void => {
-        const trackHeight =
-          scrollbar.clientHeight;
-
-
-        const maximumScroll =
-          Math.max(
-            0,
-            contentWindow.scrollHeight -
-              contentWindow.clientHeight
-          );
-
-
-        const visibleRatio =
-          contentWindow.scrollHeight >
-          0
-            ? contentWindow.clientHeight /
-              contentWindow.scrollHeight
-            : 1;
-
-
-        const thumbHeight =
-          Math.min(
-            trackHeight,
-            Math.max(
-              52,
-              trackHeight *
-                visibleRatio
-            )
-          );
-
-
-        const movementDistance =
-          Math.max(
-            0,
-            trackHeight -
-              thumbHeight
-          );
+        const {
+          maximumScroll,
+          thumbHeight,
+          movementDistance,
+        } =
+          getScrollbarMetrics();
 
 
         const scrollProgress =
@@ -677,6 +711,244 @@ const cardTones = [
       updateScrollbar,
       {
         passive: true,
+        signal,
+      }
+    );
+
+
+    scrollbar.addEventListener(
+      "wheel",
+      (
+        event:
+          WheelEvent
+      ): void => {
+        const {
+          maximumScroll,
+        } =
+          getScrollbarMetrics();
+
+        if (
+          maximumScroll ===
+          0
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+
+        contentWindow.scrollTop +=
+          event.deltaY;
+      },
+      {
+        passive: false,
+        signal,
+      }
+    );
+
+
+    scrollbar.addEventListener(
+      "click",
+      (
+        event:
+          MouseEvent
+      ): void => {
+        if (
+          event.target ===
+          scrollbarThumb
+        ) {
+          return;
+        }
+
+        const {
+          paddingTop,
+          maximumScroll,
+          thumbHeight,
+          movementDistance,
+        } =
+          getScrollbarMetrics();
+
+        if (
+          maximumScroll ===
+            0 ||
+          movementDistance ===
+            0
+        ) {
+          return;
+        }
+
+        const bounds =
+          scrollbar.getBoundingClientRect();
+
+        const pointerPosition =
+          event.clientY -
+          bounds.top -
+          paddingTop -
+          thumbHeight /
+            2;
+
+        const thumbPosition =
+          Math.max(
+            0,
+            Math.min(
+              movementDistance,
+              pointerPosition
+            )
+          );
+
+        contentWindow.scrollTop =
+          (
+            thumbPosition /
+            movementDistance
+          ) *
+          maximumScroll;
+      },
+      {
+        signal,
+      }
+    );
+
+
+    let isDragging =
+      false;
+
+    let dragStartY =
+      0;
+
+    let dragStartScroll =
+      0;
+
+
+    scrollbarThumb.addEventListener(
+      "pointerdown",
+      (
+        event:
+          PointerEvent
+      ): void => {
+        const {
+          maximumScroll,
+        } =
+          getScrollbarMetrics();
+
+        if (
+          maximumScroll ===
+          0
+        ) {
+          return;
+        }
+
+        isDragging =
+          true;
+
+        dragStartY =
+          event.clientY;
+
+        dragStartScroll =
+          contentWindow.scrollTop;
+
+        scrollbarThumb.setPointerCapture(
+          event.pointerId
+        );
+
+        scrollbarThumb.classList.add(
+          "is-dragging"
+        );
+
+        event.preventDefault();
+      },
+      {
+        signal,
+      }
+    );
+
+
+    scrollbarThumb.addEventListener(
+      "pointermove",
+      (
+        event:
+          PointerEvent
+      ): void => {
+        if (
+          !isDragging
+        ) {
+          return;
+        }
+
+        const {
+          maximumScroll,
+          movementDistance,
+        } =
+          getScrollbarMetrics();
+
+        if (
+          maximumScroll ===
+            0 ||
+          movementDistance ===
+            0
+        ) {
+          return;
+        }
+
+        const pointerMovement =
+          event.clientY -
+          dragStartY;
+
+        contentWindow.scrollTop =
+          dragStartScroll +
+          (
+            pointerMovement /
+            movementDistance
+          ) *
+          maximumScroll;
+      },
+      {
+        signal,
+      }
+    );
+
+
+    const stopDragging =
+      (
+        event?:
+          PointerEvent
+      ): void => {
+        if (
+          !isDragging
+        ) {
+          return;
+        }
+
+        isDragging =
+          false;
+
+        scrollbarThumb.classList.remove(
+          "is-dragging"
+        );
+
+        if (
+          event &&
+          scrollbarThumb.hasPointerCapture(
+            event.pointerId
+          )
+        ) {
+          scrollbarThumb.releasePointerCapture(
+            event.pointerId
+          );
+        }
+      };
+
+
+    scrollbarThumb.addEventListener(
+      "pointerup",
+      stopDragging,
+      {
+        signal,
+      }
+    );
+
+    scrollbarThumb.addEventListener(
+      "pointercancel",
+      stopDragging,
+      {
         signal,
       }
     );

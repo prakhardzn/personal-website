@@ -2495,3 +2495,617 @@ img {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =========================================================
+   PORTAL 214 // HOMEPAGE SIZE + COLLISION LOCK V3
+   2026-08-11
+
+   Fixed rules:
+   - utility controls no longer resize with viewport
+   - all four planet name tags are exactly the same compact size
+   - bottom dock buttons use one fixed height
+   - Astrology gets its own clear right-side lane
+   ========================================================= */
+
+:root {
+  --homepage-icon-control-size: 48px;
+  --homepage-tag-width: 180px;
+  --homepage-tag-height: 50px;
+  --homepage-dock-control-height: 64px;
+}
+
+/* =========================================================
+   TOP SYSTEM BAR — SYMMETRICAL CONTROL LANES
+
+   Left and right lanes are the same width so the message stays
+   optically centred. Every visible utility control is 48 × 48.
+   ========================================================= */
+
+.system-bar {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr) 104px;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.system-message {
+  position: static;
+  grid-column: 2;
+  width: 100% !important;
+  max-width: none !important;
+  padding: 0 10px;
+  transform: none;
+}
+
+.icon-button--back {
+  grid-column: 1;
+  justify-self: start;
+}
+
+.system-actions {
+  grid-column: 3;
+  justify-self: end;
+  display: grid;
+  grid-template-columns: repeat(2, var(--homepage-icon-control-size));
+  grid-template-rows: var(--homepage-icon-control-size);
+  align-items: center;
+  gap: 8px;
+  width: calc((var(--homepage-icon-control-size) * 2) + 8px);
+  height: var(--homepage-icon-control-size);
+}
+
+/* =========================================================
+   TOP SYSTEM CONTROLS — ONE SIZE ONLY
+   ========================================================= */
+
+.icon-button,
+.icon-button--back,
+.icon-button--pause,
+.icon-button--power {
+  width: var(--homepage-icon-control-size) !important;
+  height: var(--homepage-icon-control-size) !important;
+  min-width: var(--homepage-icon-control-size) !important;
+  min-height: var(--homepage-icon-control-size) !important;
+  max-width: var(--homepage-icon-control-size) !important;
+  max-height: var(--homepage-icon-control-size) !important;
+  flex: 0 0 var(--homepage-icon-control-size) !important;
+  padding: 0 !important;
+}
+
+/* =========================================================
+   PLANET NAME TAGS — ONE SIZE ONLY
+   ========================================================= */
+
+.planet-label,
+.destination--about .planet-label,
+.destination--weekly .planet-label,
+.destination--astrology .planet-label,
+.destination--libraries .planet-label {
+  width: var(--homepage-tag-width) !important;
+  height: var(--homepage-tag-height) !important;
+  min-width: var(--homepage-tag-width) !important;
+  min-height: var(--homepage-tag-height) !important;
+  max-width: var(--homepage-tag-width) !important;
+  max-height: var(--homepage-tag-height) !important;
+  padding: 6px 12px !important;
+  font-size: 13px !important;
+  line-height: 1.05;
+  letter-spacing: 0.09em;
+}
+
+.destination--about .planet-label {
+  top: 42.5%;
+  left: 0.8%;
+  right: auto;
+}
+
+.destination--weekly .planet-label {
+  top: 13.2%;
+  left: 15.8%;
+  right: auto;
+}
+
+/* =========================================================
+   ASTROLOGY — HARD RESERVED RIGHT-SIDE LANE
+
+   The planet is capped at 78% of the navigation canvas. The
+   label owns the final right-hand lane. This is deliberately
+   horizontal separation: no amount of planet artwork can sit
+   underneath the label box.
+   ========================================================= */
+
+.destination--astrology .planet-artwork {
+  top: 13.5%;
+  left: 56.5%;
+  width: 21.5%;
+  max-width: 390px;
+}
+
+.destination--astrology .planet-label {
+  top: 24.3%;
+  right: 0.8%;
+  left: auto;
+}
+
+.destination--astrology .planet-label::after {
+  top: 50%;
+  right: 100%;
+  left: auto;
+  width: 54px;
+  height: 2px;
+  background: var(--neon-green);
+  transform: translateY(-50%);
+  transform-origin: right center;
+}
+
+/* Keep a visible gap between the connector and the planet on
+   normal desktop/laptop widths. */
+@media (min-width: 1151px) {
+  .destination--astrology .planet-artwork {
+    left: 57.5%;
+    width: 20.5%;
+  }
+}
+
+/* Libraries — deliberate plate overlap.
+   Keep the planet fixed and let the label sit slightly over the
+   upper-right edge so the relationship feels intentional rather
+   than separated by an awkward empty lane. */
+.destination--libraries .planet-label {
+  top: 52.5%;
+  right: 4.5%;
+  left: auto;
+}
+
+.destination--libraries .planet-label::after {
+  top: 68%;
+  left: 0;
+  right: auto;
+  width: 72px;
+  height: 2px;
+  background: var(--neon-green);
+  transform: rotate(160deg);
+  transform-origin: left center;
+}
+
+/* =========================================================
+   BOTTOM DOCK — EQUAL BUTTONS + READABLE COPY
+   ========================================================= */
+
+.bottom-dock {
+  height: 88px;
+}
+
+.dock-actions {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dock-card {
+  width: 100%;
+  height: var(--homepage-dock-control-height) !important;
+  min-height: var(--homepage-dock-control-height) !important;
+  max-height: var(--homepage-dock-control-height) !important;
+  padding: 8px 12px;
+}
+
+.dock-card__inner {
+  gap: 12px;
+}
+
+.dock-card__icon {
+  width: 32px;
+  height: 32px;
+}
+
+.dock-card__title {
+  font-size: 14px !important;
+  line-height: 1.1;
+  letter-spacing: 0.075em;
+}
+
+.dock-card__description {
+  display: block;
+  font-size: 11px !important;
+  line-height: 1.25;
+  letter-spacing: 0.025em;
+  opacity: 0.92;
+}
+
+.system-status {
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+/* =========================================================
+   MID-SIZE DESKTOP / LAPTOP
+
+   Keep component dimensions fixed. Only spacing changes.
+   The dedicated mobile stylesheet takes over at 700px.
+   ========================================================= */
+
+@media (min-width: 701px) and (max-width: 1150px) {
+  .system-bar {
+    grid-template-columns: 104px minmax(0, 1fr) 104px;
+  }
+
+  .destination--astrology .planet-artwork {
+    left: 53%;
+    width: 20%;
+  }
+
+  .destination--astrology .planet-label {
+    right: 0.5%;
+  }
+
+  .dock-actions {
+    gap: 8px;
+  }
+
+  .dock-card {
+    padding: 7px 9px;
+  }
+
+  .dock-card__icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .dock-card__title {
+    font-size: 13px !important;
+  }
+
+  .dock-card__description {
+    font-size: 10px !important;
+  }
+}
+
+/* No compact 30px/34px control fallback is allowed here.
+   Mobile has its own fixed 48px control system. */
+
+/* =========================================================
+   PORTAL 214 // HOMEPAGE DESKTOP NAVBAR + ASTROLOGY LOCK V4
+
+   Final correction based on the shared InternalPage navbar:
+   - desktop system bar = 72px high
+   - inner padding = 6px
+   - Back / Pause / Power = 56px × 56px
+   - all controls remain completely inside the bar
+   - Astrology planet is restored to its ORIGINAL position/size
+   - only the Astrology label/connector may overlap the artwork
+   - mobile remains controlled by homepage-mobile.css
+   ========================================================= */
+
+@media (min-width: 701px) {
+  :root {
+    --homepage-desktop-system-bar-height: 62px;
+    --homepage-desktop-system-control-size: 48px;
+    --homepage-desktop-system-gap: 7px;
+  }
+
+  /* Match the shared internal-page navbar proportions. */
+  .system-bar {
+    top: 10px;
+    left: 12px;
+    width: calc(100% - 24px);
+    height: var(--homepage-desktop-system-bar-height);
+    padding: 5px;
+
+    display: grid;
+    grid-template-columns:
+      var(--homepage-desktop-system-control-size)
+      minmax(0, 1fr)
+      auto;
+    align-items: center;
+    gap: var(--homepage-desktop-system-gap);
+
+    border-width: 2px;
+  }
+
+  .system-message {
+    position: static;
+    grid-column: 2;
+    align-self: center;
+
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0;
+    padding: 0 12px;
+    margin: 0 !important;
+
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    transform: none;
+  }
+
+  .icon-button--back {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .system-actions {
+    position: static;
+    grid-column: 3;
+    justify-self: end;
+
+    display: flex;
+    align-items: center;
+    gap: var(--homepage-desktop-system-gap);
+
+    width: auto;
+    height: var(--homepage-desktop-system-control-size);
+  }
+
+  /* Exactly the same visible control size as the internal navbar. */
+  .system-bar .icon-button,
+  .system-bar .icon-button--back,
+  .system-bar .icon-button--pause,
+  .system-bar .icon-button--power {
+    width: var(--homepage-desktop-system-control-size) !important;
+    height: var(--homepage-desktop-system-control-size) !important;
+    min-width: var(--homepage-desktop-system-control-size) !important;
+    min-height: var(--homepage-desktop-system-control-size) !important;
+    max-width: var(--homepage-desktop-system-control-size) !important;
+    max-height: var(--homepage-desktop-system-control-size) !important;
+    flex: 0 0 var(--homepage-desktop-system-control-size) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 20px !important;
+  }
+
+  .system-message {
+    font-size: clamp(11px, 0.9vw, 16px);
+  }
+
+  /* =======================================================
+     ASTROLOGY — DO NOT MOVE THE PLANET
+
+     These are the original desktop coordinates from the
+     established homepage composition. The planet is locked.
+     The label is allowed to overlap the artwork if necessary.
+     ======================================================= */
+
+  .destination--astrology .planet-artwork {
+    top: 13.5% !important;
+    left: 64.5% !important;
+    width: clamp(270px, 29%, 500px) !important;
+    max-width: none;
+  }
+
+  .destination--astrology .planet-label {
+    top: 17.5% !important;
+    right: 0.8% !important;
+    left: auto !important;
+  }
+
+  .destination--astrology .planet-label::after {
+    top: calc(100% - 1px) !important;
+    right: 72% !important;
+    left: auto !important;
+    width: clamp(60px, 6vw, 110px) !important;
+    height: 2px !important;
+    transform: rotate(-36deg) !important;
+    transform-origin: right center !important;
+  }
+}
+
+/* =========================================================
+   PORTAL 214 // HOMEPAGE NAVBAR — MATCH INTERNAL PAGES
+   2026-08-11
+
+   HOMEPAGE ONLY.
+   Nothing in internal-page.css or InternalPageLayout.astro
+   needs to change.
+
+   Desktop standard copied from the existing compact internal
+   navbar:
+   - bar: 62px
+   - inner padding: 5px
+   - controls: 48px × 48px
+   - control gap: 7px
+   - icon visual box: 22px × 22px
+   ========================================================= */
+
+@media (min-width: 701px) {
+  .system-bar {
+    top: 10px !important;
+    left: 12px !important;
+    width: calc(100% - 24px) !important;
+    height: 62px !important;
+    min-height: 62px !important;
+    max-height: 62px !important;
+    padding: 5px !important;
+
+    display: grid !important;
+    grid-template-columns: 48px minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 7px !important;
+
+    border-width: 2px !important;
+    box-sizing: border-box;
+  }
+
+  .system-message {
+    position: static !important;
+    grid-column: 2 !important;
+    align-self: center !important;
+
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+
+    font-size: clamp(11px, 0.9vw, 16px) !important;
+    line-height: 1.25 !important;
+    transform: none !important;
+  }
+
+  .icon-button--back {
+    grid-column: 1 !important;
+    justify-self: start !important;
+  }
+
+  .system-actions {
+    position: static !important;
+    grid-column: 3 !important;
+    justify-self: end !important;
+
+    display: grid !important;
+    grid-template-columns: repeat(2, 48px) !important;
+    grid-template-rows: 48px !important;
+    align-items: center !important;
+    gap: 7px !important;
+
+    width: 103px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+  }
+
+  .system-bar .icon-button,
+  .system-bar .icon-button--back,
+  .system-bar .icon-button--pause,
+  .system-bar .icon-button--power {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    max-width: 48px !important;
+    max-height: 48px !important;
+    flex: 0 0 48px !important;
+
+    display: grid !important;
+    place-items: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    line-height: 0 !important;
+  }
+
+  /* -------------------------------------------------------
+     ICON NORMALISATION
+
+     Works with either the original glyph markup OR the SVG
+     markup. Every visible icon occupies exactly 22 × 22px.
+     ------------------------------------------------------- */
+
+  .system-bar .top-nav-icon {
+    display: block !important;
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px !important;
+    min-height: 22px !important;
+    max-width: 22px !important;
+    max-height: 22px !important;
+
+    overflow: visible;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.15;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+  }
+
+  /* Original homepage markup uses text glyphs. Hide the glyph
+     itself and draw a consistent 22px vector icon through CSS. */
+  .system-bar .icon-button > span[aria-hidden="true"] {
+    position: relative !important;
+    display: block !important;
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px !important;
+    min-height: 22px !important;
+
+    overflow: visible !important;
+    color: inherit !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+  }
+
+  .system-bar .icon-button > span[aria-hidden="true"]::before {
+    display: block;
+    width: 22px;
+    height: 22px;
+    background: currentColor;
+    content: "";
+
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: 22px 22px;
+    mask-size: 22px 22px;
+  }
+
+  .system-bar .icon-button--back > span[aria-hidden="true"]::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 12H5M10 17l-5-5 5-5' fill='none' stroke='black' stroke-width='2.15' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 12H5M10 17l-5-5 5-5' fill='none' stroke='black' stroke-width='2.15' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+
+  .system-bar .icon-button--pause > span[aria-hidden="true"]::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14M16 5v14' fill='none' stroke='black' stroke-width='2.15' stroke-linecap='round'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14M16 5v14' fill='none' stroke='black' stroke-width='2.15' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
+
+  .system-bar .icon-button--power > span[aria-hidden="true"]::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2v10M18.36 6.64a9 9 0 1 1-12.72 0' fill='none' stroke='black' stroke-width='2.15' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2v10M18.36 6.64a9 9 0 1 1-12.72 0' fill='none' stroke='black' stroke-width='2.15' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+
+  /* If SVG icons are already present, prevent the glyph-only CSS
+     from affecting anything else. */
+  .system-bar .icon-button:has(.top-nav-icon) > span[aria-hidden="true"] {
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   PORTAL 214 // RIGHT-SHIFT ASTROLOGY + LIBRARIES TAGS
+   2026-08-11
+
+   Position-only correction.
+   - Planet positions unchanged.
+   - Tag dimensions unchanged.
+   - Typography unchanged.
+   - Navbar/dock/mobile/internal pages unchanged.
+   - Connector pseudo-elements move with their parent labels.
+   ========================================================= */
+
+@media (min-width: 701px) {
+  .destination--astrology .planet-label {
+    right: -1.1% !important;
+    left: auto !important;
+  }
+
+  .destination--libraries .planet-label {
+    right: 1.8% !important;
+    left: auto !important;
+  }
+}
+
+/* =========================================================
+   PORTAL 214 // RIGHT-SHIFT ONLY
+   Astrology + Libraries name tags only.
+   No other homepage geometry is changed.
+   ========================================================= */
+
+@media (min-width: 701px) {
+  .destination--astrology .planet-label {
+    right: -2.2% !important;
+    left: auto !important;
+  }
+
+  .destination--libraries .planet-label {
+    right: 1.5% !important;
+    left: auto !important;
+  }
+}

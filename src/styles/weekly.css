@@ -3689,3 +3689,303 @@ a {
       1 !important;
   }
 }
+
+/* =========================================================
+   WEEKLY INDEX // SCROLLBAR FIX V2
+   LAYOUT-SAFE VERSION
+
+   This block does NOT change the Weekly layout, containers,
+   widths, grid columns, globe, ticker, cards, or animations.
+
+   The existing 20px scrollbar column is preserved so nothing
+   shifts horizontally. The old JS-proxy scrollbar is made
+   invisible, while the REAL scrollbar belongs directly to
+   .weekly-feed-panel and is always scrollable/drag-able.
+========================================================= */
+
+@media (min-width: 781px) {
+  .weekly-page:not(.weekly-post-page)
+  .weekly-content-stage {
+    /*
+      Preserve the ORIGINAL two-column layout exactly:
+      content + existing 20px scrollbar slot.
+    */
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      )
+      20px;
+
+    gap:
+      4px;
+  }
+
+
+  .weekly-page:not(.weekly-post-page)
+  .weekly-right-column,
+  .weekly-page:not(.weekly-post-page)
+  .weekly-content-stage {
+    height:
+      100%;
+
+    min-height:
+      0;
+
+    overflow:
+      hidden;
+  }
+
+
+  .weekly-page:not(.weekly-post-page)
+  .weekly-feed-panel {
+    /*
+      Force this exact panel to be the scroll viewport.
+      `scroll` instead of `auto` ensures the scrollbar exists
+      even before the browser finishes calculating card heights.
+    */
+    height:
+      100%;
+
+    min-height:
+      0;
+
+    max-height:
+      100%;
+
+    overflow-x:
+      hidden !important;
+
+    overflow-y:
+      scroll !important;
+
+    overscroll-behavior-y:
+      contain;
+
+    touch-action:
+      pan-y;
+
+    scrollbar-width:
+      auto !important;
+
+    scrollbar-color:
+      var(
+        --weekly-green
+      )
+      var(
+        --weekly-bg
+      ) !important;
+  }
+
+
+  .weekly-page:not(.weekly-post-page)
+  .weekly-feed-panel::-webkit-scrollbar {
+    display:
+      block !important;
+
+    width:
+      12px;
+  }
+
+
+  .weekly-page:not(.weekly-post-page)
+  .weekly-feed-panel::-webkit-scrollbar-track {
+    background:
+      var(
+        --weekly-bg
+      );
+  }
+
+
+  .weekly-page:not(.weekly-post-page)
+  .weekly-feed-panel::-webkit-scrollbar-thumb {
+    min-height:
+      52px;
+
+    border:
+      2px
+      solid
+      var(
+        --weekly-bg
+      );
+
+    border-radius:
+      999px;
+
+    background:
+      linear-gradient(
+        180deg,
+        var(
+          --weekly-mint
+        ),
+        var(
+          --weekly-green
+        )
+      );
+  }
+
+
+  .weekly-page:not(.weekly-post-page)
+  .weekly-feed-panel::-webkit-scrollbar-thumb:hover {
+    background:
+      var(
+        --weekly-green
+      );
+  }
+
+
+  /*
+    Keep the original 20px grid slot so the rest of the layout
+    does not move, but hide the old JS-controlled proxy bar.
+    The real draggable scrollbar is now inside the feed panel.
+  */
+  .weekly-page:not(.weekly-post-page)
+  .weekly-scrollbar {
+    visibility:
+      hidden !important;
+
+    pointer-events:
+      none !important;
+  }
+}
+
+
+/* Tablet / mobile:
+   the shared internal-page system already switches the document
+   back to normal page scrolling. We only make sure the feed never
+   traps touch/trackpad input. */
+@media (max-width: 780px) {
+  .weekly-page:not(.weekly-post-page)
+  .weekly-feed-panel {
+    overflow:
+      visible;
+
+    touch-action:
+      pan-y;
+  }
+}
+
+
+
+/* =========================================================
+   PORTAL 214 // WEEKLY SCROLLBAR MATCH ASTROLOGY
+
+   IMPORTANT:
+   - Appended to the existing Weekly stylesheet only.
+   - Does not alter the Weekly layout, cards, typography,
+     animations, navbar, left column, responsive layout,
+     article pages, or any shared/internal-page styles.
+   - Restores the existing external 20px scrollbar on the
+     desktop Weekly index and visually matches Astrology.
+========================================================= */
+
+@media (min-width: 781px) {
+  .weekly-page:not(.weekly-post-page)
+  .weekly-feed-panel {
+    /*
+      Keep the feed as the actual scrolling element so the
+      existing Weekly scrollbar JavaScript continues to work,
+      but hide the browser-native scrollbar that caused the
+      visual mismatch with Astrology.
+    */
+    scrollbar-width:
+      none !important;
+
+    -ms-overflow-style:
+      none;
+  }
+
+
+  .weekly-page:not(.weekly-post-page)
+  .weekly-feed-panel::-webkit-scrollbar {
+    display:
+      none !important;
+
+    width:
+      0 !important;
+
+    height:
+      0 !important;
+  }
+
+
+  .weekly-page:not(.weekly-post-page)
+  .weekly-scrollbar {
+    visibility:
+      visible !important;
+
+    pointer-events:
+      auto !important;
+
+    position:
+      relative;
+
+    width:
+      20px;
+
+    height:
+      100%;
+
+    min-height:
+      0;
+
+    padding:
+      3px;
+
+    overflow:
+      hidden;
+
+    border:
+      2px
+      solid
+      var(--weekly-green);
+
+    border-radius:
+      999px;
+
+    background:
+      var(--weekly-bg);
+
+    cursor:
+      pointer;
+
+    touch-action:
+      none;
+  }
+
+
+  .weekly-page:not(.weekly-post-page)
+  .weekly-scrollbar__thumb {
+    display:
+      block;
+
+    width:
+      100%;
+
+    min-height:
+      46px;
+
+    border-radius:
+      999px;
+
+    background:
+      var(--weekly-green);
+
+    cursor:
+      grab;
+
+    touch-action:
+      none;
+
+    will-change:
+      height,
+      transform;
+  }
+
+
+  .weekly-page:not(.weekly-post-page)
+  .weekly-scrollbar__thumb:active {
+    cursor:
+      grabbing;
+  }
+}

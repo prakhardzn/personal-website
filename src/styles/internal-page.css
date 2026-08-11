@@ -694,3 +694,79 @@ body {
     font-size: var(--site-text-micro);
   }
 }
+
+/* =========================================================
+   PORTAL 214 // COMPACT SHARED TOP NAVBAR
+   2026-08-11
+
+   Desktop ratio: 62px bar / 48px controls.
+   Tablet/mobile ratio: 56px bar / 44px controls.
+   This is deliberately smaller than the previous 72/56 system
+   while preserving the same visual proportions and safe insets.
+========================================================= */
+
+@media (min-width: 781px) {
+  .internal-page-shell {
+    grid-template-rows: 62px minmax(0, 1fr);
+  }
+
+  .internal-system-bar {
+    height: 62px;
+    padding: 5px;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .internal-system-actions {
+    align-items: center;
+    height: 48px;
+    gap: 7px;
+  }
+
+  .internal-icon-button {
+    width: 48px;
+    min-width: 48px;
+    max-width: 48px;
+    height: 48px;
+    min-height: 48px;
+    max-height: 48px;
+    flex: 0 0 48px;
+    font-size: 20px;
+  }
+
+  .internal-system-message {
+    font-size: clamp(11px, 0.9vw, 16px);
+  }
+}
+
+@media (max-width: 780px) {
+  .internal-system-bar {
+    height: 56px;
+    padding: 4px;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .internal-system-actions {
+    align-items: center;
+    height: 44px;
+    gap: 6px;
+  }
+
+  .internal-icon-button {
+    width: 44px;
+    min-width: 44px;
+    max-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    max-height: 44px;
+    flex: 0 0 44px;
+    font-size: 18px;
+  }
+
+  .internal-system-message {
+    font-size: clamp(10px, 2.7vw, 13px);
+  }
+}
