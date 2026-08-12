@@ -741,58 +741,24 @@ const getStatusTone = (status: string): string => {
   type AstrologyTab =
     (typeof validAstrologyTabs)[number];
 
-  const astrologyModeLabels: Record<AstrologyTab, string> = {
+  type AstrologyRuntimeWindow = Window & {
+    __astrologyPageController?: AbortController;
+    __astrologyPageResizeObserver?: ResizeObserver;
+  };
+
+  const astrologyRuntimeWindow =
+    window as AstrologyRuntimeWindow;
+
+  const astrologyModeLabels: Record<
+    AstrologyTab,
+    string
+  > = {
     explore: "EXPLORE",
     "case-studies": "CASE STUDY",
     questions: "QUESTIONS",
     blogs: "BLOGS",
     "chart-generator": "BIRTH MATRIX",
   };
-
-  const tabButtons =
-    document.querySelectorAll<HTMLButtonElement>(
-      "[data-astrology-tab]"
-    );
-
-  const contentPanels =
-    document.querySelectorAll<HTMLElement>(
-      "[data-astrology-panel]"
-    );
-
-  const sidebarPanels =
-    document.querySelectorAll<HTMLElement>(
-      "[data-astrology-sidebar]"
-    );
-
-  const modeValue =
-    document.querySelector<HTMLElement>(
-      "#astrology-mode-value"
-    );
-
-  const contentWindow =
-    document.querySelector<HTMLElement>(
-      "#astrology-content-window"
-    );
-
-  const scrollbar =
-    document.querySelector<HTMLElement>(
-      "#astrology-scrollbar"
-    );
-
-  const scrollbarThumb =
-    document.querySelector<HTMLElement>(
-      "#astrology-scrollbar-thumb"
-    );
-
-  const archiveCards =
-    document.querySelectorAll<HTMLElement>(
-      "[data-archive-card]"
-    );
-
-  const archiveNodes =
-    document.querySelectorAll<HTMLElement>(
-      "[data-archive-node]"
-    );
 
   function isAstrologyTab(
     value: string
@@ -802,302 +768,132 @@ const getStatusTone = (status: string): string => {
     );
   }
 
-  function restartPanelAnimation(
-    panel: HTMLElement | undefined
-  ): void {
-    if (!panel) {
-      return;
-    }
+  function initialiseAstrologyPage(): void {
+    /*
+     * IMPORTANT:
+     * Astro's ClientRouter can swap this page into the DOM without
+     * doing a full browser refresh. DOM references and event listeners
+     * therefore have to be created again for the CURRENT Astrology DOM.
+     *
+     * The old version queried everything once at module evaluation time.
+     * That is why the tabs could appear visually but remain inert until
+     * a manual refresh.
+     */
 
-    panel.classList.remove("is-entering");
-    void panel.offsetWidth;
-    panel.classList.add("is-entering");
-  }
+    astrologyRuntimeWindow
+      .__astrologyPageController
+      ?.abort();
 
-  function setLinkedArchive(
-    archiveKey: string | null
-  ): void {
-    archiveNodes.forEach((node) => {
-      node.classList.toggle(
-        "is-linked",
-        archiveKey !== null &&
-          node.dataset.archiveNode === archiveKey
-      );
-    });
-  }
+    astrologyRuntimeWindow
+      .__astrologyPageResizeObserver
+      ?.disconnect();
 
-  function updateAstrologyScrollbar(): void {
-    if (
-      !contentWindow ||
-      !scrollbar ||
-      !scrollbarThumb
-    ) {
-      return;
-    }
-
-    const trackHeight = Math.max(
-      0,
-      scrollbar.clientHeight - 6
-    );
-
-    const maximumScroll = Math.max(
-      0,
-      contentWindow.scrollHeight -
-        contentWindow.clientHeight
-    );
-
-    const visibleRatio =
-      contentWindow.scrollHeight > 0
-        ? contentWindow.clientHeight /
-          contentWindow.scrollHeight
-        : 1;
-
-    const thumbHeight = Math.min(
-      trackHeight,
-      Math.max(46, trackHeight * visibleRatio)
-    );
-
-    const moveDistance = Math.max(
-      0,
-      trackHeight - thumbHeight
-    );
-
-    const scrollProgress =
-      maximumScroll > 0
-        ? contentWindow.scrollTop /
-          maximumScroll
-        : 0;
-
-    scrollbarThumb.style.height =
-      `${thumbHeight}px`;
-
-    scrollbarThumb.style.transform =
-      `translateY(${scrollProgress * moveDistance}px)`;
-  }
-
-  function activateAstrologyTab(
-    tabName: AstrologyTab,
-    updateHash = true
-  ): void {
-    let activePanel: HTMLElement | undefined;
-
-    tabButtons.forEach((button) => {
-      const isActive =
-        button.dataset.astrologyTab === tabName;
-
-      button.classList.toggle(
-        "is-active",
-        isActive
-      );
-
-      button.setAttribute(
-        "aria-selected",
-        String(isActive)
-      );
-
-      button.tabIndex = isActive ? 0 : -1;
-    });
-
-    contentPanels.forEach((panel) => {
-      const isActive =
-        panel.dataset.astrologyPanel === tabName;
-
-      panel.hidden = !isActive;
-
-      if (isActive) {
-        activePanel = panel;
-      }
-    });
-
-    sidebarPanels.forEach((panel) => {
-      panel.hidden =
-        panel.dataset.astrologySidebar !== tabName;
-    });
-
-    if (modeValue) {
-      modeValue.textContent =
-        astrologyModeLabels[tabName];
-    }
-
-    if (contentWindow) {
-      contentWindow.scrollTop = 0;
-    }
-
-    if (updateHash) {
-      window.history.replaceState(
-        null,
-        "",
-        `#${tabName}`
-      );
-    }
-
-    restartPanelAnimation(activePanel);
-
-    window.requestAnimationFrame(
-      updateAstrologyScrollbar
-    );
-  }
-
-  tabButtons.forEach((button, index) => {
-    button.addEventListener("click", () => {
-      const tabName =
-        button.dataset.astrologyTab;
-
-      if (tabName && isAstrologyTab(tabName)) {
-        activateAstrologyTab(tabName);
-      }
-    });
-
-    button.addEventListener(
-      "keydown",
-      (event: KeyboardEvent) => {
-        if (
-          event.key !== "ArrowRight" &&
-          event.key !== "ArrowLeft" &&
-          event.key !== "Home" &&
-          event.key !== "End"
-        ) {
-          return;
-        }
-
-        event.preventDefault();
-
-        let nextIndex = index;
-
-        if (event.key === "ArrowRight") {
-          nextIndex = (index + 1) % tabButtons.length;
-        }
-
-        if (event.key === "ArrowLeft") {
-          nextIndex =
-            (index - 1 + tabButtons.length) %
-            tabButtons.length;
-        }
-
-        if (event.key === "Home") {
-          nextIndex = 0;
-        }
-
-        if (event.key === "End") {
-          nextIndex = tabButtons.length - 1;
-        }
-
-        const nextButton = tabButtons[nextIndex];
-        const nextTab =
-          nextButton?.dataset.astrologyTab;
-
-        if (
-          nextButton &&
-          nextTab &&
-          isAstrologyTab(nextTab)
-        ) {
-          nextButton.focus();
-          activateAstrologyTab(nextTab);
-        }
-      }
-    );
-  });
-
-  archiveCards.forEach((card) => {
-    const archiveKey =
-      card.dataset.archiveCard ?? null;
-
-    card.addEventListener(
-      "mouseenter",
-      () => setLinkedArchive(archiveKey)
-    );
-
-    card.addEventListener(
-      "mouseleave",
-      () => setLinkedArchive(null)
-    );
-
-    card.addEventListener(
-      "focus",
-      () => setLinkedArchive(archiveKey)
-    );
-
-    card.addEventListener(
-      "blur",
-      () => setLinkedArchive(null)
-    );
-  });
-
-  const requestedTab =
-    window.location.hash.replace("#", "");
-
-  if (
-    requestedTab &&
-    isAstrologyTab(requestedTab)
-  ) {
-    activateAstrologyTab(
-      requestedTab,
-      false
-    );
-  } else {
-    activateAstrologyTab(
-      "explore",
-      false
-    );
-  }
-
-  contentWindow?.addEventListener(
-    "scroll",
-    updateAstrologyScrollbar,
-    { passive: true }
-  );
-
-  scrollbar?.addEventListener(
-    "pointerdown",
-    (event: PointerEvent) => {
-      if (
-        !contentWindow ||
-        !scrollbar ||
-        !scrollbarThumb ||
-        event.target === scrollbarThumb
-      ) {
-        return;
-      }
-
-      const rectangle =
-        scrollbar.getBoundingClientRect();
-
-      const trackHeight = Math.max(
-        1,
-        scrollbar.clientHeight - 6
-      );
-
-      const moveDistance = Math.max(
-        1,
-        trackHeight -
-          scrollbarThumb.offsetHeight
-      );
-
-      const intendedPosition = Math.min(
-        moveDistance,
-        Math.max(
-          0,
-          event.clientY -
-            rectangle.top -
-            scrollbarThumb.offsetHeight / 2
+    const tabButtons =
+      Array.from(
+        document.querySelectorAll<HTMLButtonElement>(
+          ".astrology-page [data-astrology-tab]"
         )
       );
 
-      const maximumScroll = Math.max(
-        0,
-        contentWindow.scrollHeight -
-          contentWindow.clientHeight
+    /*
+     * If this script is alive while another Astro page is active,
+     * do nothing. astro:page-load will call us again when Astrology
+     * is actually present.
+     */
+    if (tabButtons.length === 0) {
+      return;
+    }
+
+    const controller =
+      new AbortController();
+
+    const { signal } =
+      controller;
+
+    astrologyRuntimeWindow
+      .__astrologyPageController =
+      controller;
+
+    const contentPanels =
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".astrology-page [data-astrology-panel]"
+        )
       );
 
-      contentWindow.scrollTop =
-        (intendedPosition / moveDistance) *
-        maximumScroll;
-    }
-  );
+    const sidebarPanels =
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".astrology-page [data-astrology-sidebar]"
+        )
+      );
 
-  scrollbarThumb?.addEventListener(
-    "pointerdown",
-    (event: PointerEvent) => {
+    const modeValue =
+      document.querySelector<HTMLElement>(
+        ".astrology-page #astrology-mode-value"
+      );
+
+    const contentWindow =
+      document.querySelector<HTMLElement>(
+        ".astrology-page #astrology-content-window"
+      );
+
+    const scrollbar =
+      document.querySelector<HTMLElement>(
+        ".astrology-page #astrology-scrollbar"
+      );
+
+    const scrollbarThumb =
+      document.querySelector<HTMLElement>(
+        ".astrology-page #astrology-scrollbar-thumb"
+      );
+
+    const archiveCards =
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".astrology-page [data-archive-card]"
+        )
+      );
+
+    const archiveNodes =
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".astrology-page [data-archive-node]"
+        )
+      );
+
+    function restartPanelAnimation(
+      panel: HTMLElement | undefined
+    ): void {
+      if (!panel) {
+        return;
+      }
+
+      panel.classList.remove(
+        "is-entering"
+      );
+
+      void panel.offsetWidth;
+
+      panel.classList.add(
+        "is-entering"
+      );
+    }
+
+    function setLinkedArchive(
+      archiveKey: string | null
+    ): void {
+      archiveNodes.forEach((node) => {
+        node.classList.toggle(
+          "is-linked",
+          archiveKey !== null &&
+            node.dataset.archiveNode ===
+              archiveKey
+        );
+      });
+    }
+
+    function updateAstrologyScrollbar(): void {
       if (
         !contentWindow ||
         !scrollbar ||
@@ -1106,110 +902,576 @@ const getStatusTone = (status: string): string => {
         return;
       }
 
-      event.preventDefault();
+      const trackHeight =
+        Math.max(
+          0,
+          scrollbar.clientHeight - 6
+        );
 
-      const startingPointerY = event.clientY;
-      const startingScrollTop =
-        contentWindow.scrollTop;
+      const maximumScroll =
+        Math.max(
+          0,
+          contentWindow.scrollHeight -
+            contentWindow.clientHeight
+        );
 
-      const trackHeight = Math.max(
-        1,
-        scrollbar.clientHeight - 6
-      );
+      const visibleRatio =
+        contentWindow.scrollHeight > 0
+          ? contentWindow.clientHeight /
+            contentWindow.scrollHeight
+          : 1;
 
-      const moveDistance = Math.max(
-        1,
-        trackHeight -
-          scrollbarThumb.offsetHeight
-      );
-
-      const maximumScroll = Math.max(
-        0,
-        contentWindow.scrollHeight -
-          contentWindow.clientHeight
-      );
-
-      scrollbarThumb.setPointerCapture(
-        event.pointerId
-      );
-
-      const moveThumb = (
-        moveEvent: PointerEvent
-      ): void => {
-        contentWindow.scrollTop =
-          startingScrollTop +
-          ((moveEvent.clientY - startingPointerY) /
-            moveDistance) *
-            maximumScroll;
-      };
-
-      const releaseThumb = (
-        releaseEvent: PointerEvent
-      ): void => {
-        if (
-          scrollbarThumb.hasPointerCapture(
-            releaseEvent.pointerId
+      const thumbHeight =
+        Math.min(
+          trackHeight,
+          Math.max(
+            46,
+            trackHeight * visibleRatio
           )
-        ) {
-          scrollbarThumb.releasePointerCapture(
-            releaseEvent.pointerId
-          );
+        );
+
+      const moveDistance =
+        Math.max(
+          0,
+          trackHeight - thumbHeight
+        );
+
+      const scrollProgress =
+        maximumScroll > 0
+          ? contentWindow.scrollTop /
+            maximumScroll
+          : 0;
+
+      scrollbarThumb.style.height =
+        `${thumbHeight}px`;
+
+      scrollbarThumb.style.transform =
+        `translateY(${
+          scrollProgress *
+          moveDistance
+        }px)`;
+    }
+
+    function activateAstrologyTab(
+      tabName: AstrologyTab,
+      updateHash = true
+    ): void {
+      let activePanel:
+        HTMLElement | undefined;
+
+      tabButtons.forEach((button) => {
+        const isActive =
+          button.dataset.astrologyTab ===
+          tabName;
+
+        button.classList.toggle(
+          "is-active",
+          isActive
+        );
+
+        button.setAttribute(
+          "aria-selected",
+          String(isActive)
+        );
+
+        button.tabIndex =
+          isActive ? 0 : -1;
+      });
+
+      contentPanels.forEach((panel) => {
+        const isActive =
+          panel.dataset.astrologyPanel ===
+          tabName;
+
+        panel.hidden =
+          !isActive;
+
+        if (isActive) {
+          activePanel =
+            panel;
         }
+      });
 
-        scrollbarThumb.removeEventListener(
-          "pointermove",
-          moveThumb
+      sidebarPanels.forEach((panel) => {
+        panel.hidden =
+          panel.dataset.astrologySidebar !==
+          tabName;
+      });
+
+      if (modeValue) {
+        modeValue.textContent =
+          astrologyModeLabels[tabName];
+      }
+
+      if (contentWindow) {
+        contentWindow.scrollTop =
+          0;
+      }
+
+      if (updateHash) {
+        window.history.replaceState(
+          null,
+          "",
+          `${window.location.pathname}${window.location.search}#${tabName}`
         );
+      }
 
-        scrollbarThumb.removeEventListener(
-          "pointerup",
-          releaseThumb
-        );
-
-        scrollbarThumb.removeEventListener(
-          "pointercancel",
-          releaseThumb
-        );
-      };
-
-      scrollbarThumb.addEventListener(
-        "pointermove",
-        moveThumb
+      restartPanelAnimation(
+        activePanel
       );
 
-      scrollbarThumb.addEventListener(
-        "pointerup",
-        releaseThumb
-      );
-
-      scrollbarThumb.addEventListener(
-        "pointercancel",
-        releaseThumb
+      window.requestAnimationFrame(
+        updateAstrologyScrollbar
       );
     }
-  );
 
-  if ("ResizeObserver" in window) {
-    const observer = new ResizeObserver(
-      updateAstrologyScrollbar
+    function activateFromLocation(): void {
+      const requestedTab =
+        window.location.hash.replace(
+          "#",
+          ""
+        );
+
+      activateAstrologyTab(
+        requestedTab &&
+        isAstrologyTab(requestedTab)
+          ? requestedTab
+          : "explore",
+        false
+      );
+    }
+
+    tabButtons.forEach(
+      (button, index) => {
+        button.addEventListener(
+          "click",
+          () => {
+            const tabName =
+              button.dataset.astrologyTab;
+
+            if (
+              tabName &&
+              isAstrologyTab(tabName)
+            ) {
+              activateAstrologyTab(
+                tabName
+              );
+            }
+          },
+          { signal }
+        );
+
+        button.addEventListener(
+          "keydown",
+          (
+            event: KeyboardEvent
+          ) => {
+            if (
+              event.key !==
+                "ArrowRight" &&
+              event.key !==
+                "ArrowLeft" &&
+              event.key !== "Home" &&
+              event.key !== "End"
+            ) {
+              return;
+            }
+
+            event.preventDefault();
+
+            let nextIndex =
+              index;
+
+            if (
+              event.key ===
+              "ArrowRight"
+            ) {
+              nextIndex =
+                (index + 1) %
+                tabButtons.length;
+            }
+
+            if (
+              event.key ===
+              "ArrowLeft"
+            ) {
+              nextIndex =
+                (
+                  index -
+                  1 +
+                  tabButtons.length
+                ) %
+                tabButtons.length;
+            }
+
+            if (
+              event.key === "Home"
+            ) {
+              nextIndex =
+                0;
+            }
+
+            if (
+              event.key === "End"
+            ) {
+              nextIndex =
+                tabButtons.length - 1;
+            }
+
+            const nextButton =
+              tabButtons[nextIndex];
+
+            const nextTab =
+              nextButton
+                ?.dataset
+                .astrologyTab;
+
+            if (
+              nextButton &&
+              nextTab &&
+              isAstrologyTab(nextTab)
+            ) {
+              nextButton.focus();
+
+              activateAstrologyTab(
+                nextTab
+              );
+            }
+          },
+          { signal }
+        );
+      }
     );
 
-    if (contentWindow) {
-      observer.observe(contentWindow);
+    archiveCards.forEach((card) => {
+      const archiveKey =
+        card.dataset.archiveCard ??
+        null;
+
+      card.addEventListener(
+        "mouseenter",
+        () =>
+          setLinkedArchive(
+            archiveKey
+          ),
+        { signal }
+      );
+
+      card.addEventListener(
+        "mouseleave",
+        () =>
+          setLinkedArchive(
+            null
+          ),
+        { signal }
+      );
+
+      card.addEventListener(
+        "focus",
+        () =>
+          setLinkedArchive(
+            archiveKey
+          ),
+        { signal }
+      );
+
+      card.addEventListener(
+        "blur",
+        () =>
+          setLinkedArchive(
+            null
+          ),
+        { signal }
+      );
+    });
+
+    contentWindow?.addEventListener(
+      "scroll",
+      updateAstrologyScrollbar,
+      {
+        passive: true,
+        signal,
+      }
+    );
+
+    scrollbar?.addEventListener(
+      "pointerdown",
+      (
+        event: PointerEvent
+      ) => {
+        if (
+          !contentWindow ||
+          !scrollbar ||
+          !scrollbarThumb ||
+          event.target ===
+            scrollbarThumb
+        ) {
+          return;
+        }
+
+        const rectangle =
+          scrollbar
+            .getBoundingClientRect();
+
+        const trackHeight =
+          Math.max(
+            1,
+            scrollbar.clientHeight -
+              6
+          );
+
+        const moveDistance =
+          Math.max(
+            1,
+            trackHeight -
+              scrollbarThumb
+                .offsetHeight
+          );
+
+        const intendedPosition =
+          Math.min(
+            moveDistance,
+            Math.max(
+              0,
+              event.clientY -
+                rectangle.top -
+                scrollbarThumb
+                  .offsetHeight /
+                  2
+            )
+          );
+
+        const maximumScroll =
+          Math.max(
+            0,
+            contentWindow
+              .scrollHeight -
+              contentWindow
+                .clientHeight
+          );
+
+        contentWindow.scrollTop =
+          (
+            intendedPosition /
+            moveDistance
+          ) *
+          maximumScroll;
+      },
+      { signal }
+    );
+
+    scrollbarThumb?.addEventListener(
+      "pointerdown",
+      (
+        event: PointerEvent
+      ) => {
+        if (
+          !contentWindow ||
+          !scrollbar ||
+          !scrollbarThumb
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const startingPointerY =
+          event.clientY;
+
+        const startingScrollTop =
+          contentWindow.scrollTop;
+
+        const trackHeight =
+          Math.max(
+            1,
+            scrollbar.clientHeight -
+              6
+          );
+
+        const moveDistance =
+          Math.max(
+            1,
+            trackHeight -
+              scrollbarThumb
+                .offsetHeight
+          );
+
+        const maximumScroll =
+          Math.max(
+            0,
+            contentWindow
+              .scrollHeight -
+              contentWindow
+                .clientHeight
+          );
+
+        scrollbarThumb
+          .setPointerCapture(
+            event.pointerId
+          );
+
+        const moveThumb = (
+          moveEvent: PointerEvent
+        ): void => {
+          contentWindow.scrollTop =
+            startingScrollTop +
+            (
+              (
+                moveEvent.clientY -
+                startingPointerY
+              ) /
+              moveDistance
+            ) *
+              maximumScroll;
+        };
+
+        const releaseThumb = (
+          releaseEvent:
+            PointerEvent
+        ): void => {
+          if (
+            scrollbarThumb
+              .hasPointerCapture(
+                releaseEvent
+                  .pointerId
+              )
+          ) {
+            scrollbarThumb
+              .releasePointerCapture(
+                releaseEvent
+                  .pointerId
+              );
+          }
+
+          scrollbarThumb
+            .removeEventListener(
+              "pointermove",
+              moveThumb
+            );
+
+          scrollbarThumb
+            .removeEventListener(
+              "pointerup",
+              releaseThumb
+            );
+
+          scrollbarThumb
+            .removeEventListener(
+              "pointercancel",
+              releaseThumb
+            );
+        };
+
+        scrollbarThumb
+          .addEventListener(
+            "pointermove",
+            moveThumb
+          );
+
+        scrollbarThumb
+          .addEventListener(
+            "pointerup",
+            releaseThumb
+          );
+
+        scrollbarThumb
+          .addEventListener(
+            "pointercancel",
+            releaseThumb
+          );
+      },
+      { signal }
+    );
+
+    window.addEventListener(
+      "resize",
+      updateAstrologyScrollbar,
+      { signal }
+    );
+
+    window.addEventListener(
+      "hashchange",
+      activateFromLocation,
+      { signal }
+    );
+
+    if (
+      "ResizeObserver" in window
+    ) {
+      const observer =
+        new ResizeObserver(
+          updateAstrologyScrollbar
+        );
+
+      if (contentWindow) {
+        observer.observe(
+          contentWindow
+        );
+      }
+
+      astrologyRuntimeWindow
+        .__astrologyPageResizeObserver =
+        observer;
     }
+
+    /*
+     * Clean page-specific listeners when Astro is about to replace
+     * this document. The permanent astro:page-load hook below remains.
+     */
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        controller.abort();
+
+        astrologyRuntimeWindow
+          .__astrologyPageResizeObserver
+          ?.disconnect();
+
+        astrologyRuntimeWindow
+          .__astrologyPageResizeObserver =
+          undefined;
+      },
+      {
+        once: true,
+        signal,
+      }
+    );
+
+    activateFromLocation();
+
+    window.requestAnimationFrame(
+      () => {
+        updateAstrologyScrollbar();
+
+        window.requestAnimationFrame(
+          updateAstrologyScrollbar
+        );
+      }
+    );
   }
 
-  window.addEventListener(
-    "load",
-    updateAstrologyScrollbar
+  /*
+   * Runs after every Astro ClientRouter navigation.
+   */
+  document.addEventListener(
+    "astro:page-load",
+    initialiseAstrologyPage
   );
 
-  window.addEventListener(
-    "resize",
-    updateAstrologyScrollbar
-  );
-
-  window.requestAnimationFrame(
-    updateAstrologyScrollbar
-  );
+  /*
+   * Also supports a normal hard refresh/direct visit.
+   */
+  if (
+    document.readyState ===
+    "loading"
+  ) {
+    document.addEventListener(
+      "DOMContentLoaded",
+      initialiseAstrologyPage,
+      { once: true }
+    );
+  } else {
+    initialiseAstrologyPage();
+  }
 </script>
+

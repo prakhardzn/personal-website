@@ -1,4 +1,4 @@
-/* =========================================================
+ /* =========================================================
    PORTAL 214 // THE LIBRARIES
    REFERENCE TERMINAL + MEDIA SHELF LAYOUT V5
 
@@ -1952,3 +1952,154 @@
   0%,100% { opacity: .42; transform: scaleY(.96); }
   50% { opacity: .75; transform: scaleY(1); }
 }
+
+/* =========================================================
+   PORTAL 214 // LIBRARIES // PHONE TAB COLLISION FIX
+
+   The V5 responsive rules set the catalogue's second grid row
+   to 50px at <=1040px, while the older <=520px rule stacks the
+   three tabs vertically. On phones that makes a three-row tab
+   group overflow a single 50px grid track and collide with the
+   first shelf heading.
+
+   Final phone behaviour:
+   - catalogue rows size from their actual content
+   - MOVIES / GAMES / MUSIC stay in one compact 3-column row
+   - no tab content can spill into the shelf area
+   - desktop/tablet layouts are untouched
+========================================================= */
+
+@media (max-width: 520px) {
+  .libraries-catalogue {
+    grid-template-rows:
+      auto
+      auto
+      auto;
+  }
+
+  .libraries-tabs {
+    position: relative;
+    z-index: 3;
+
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 4px;
+
+    width: 100%;
+    min-height: 0;
+
+    padding:
+      5px
+      8px
+      7px;
+
+    overflow: hidden;
+
+    border-bottom:
+      1px solid
+      var(--library-border);
+
+    background:
+      var(--library-bg);
+  }
+
+  .libraries-tab,
+  .libraries-tab:last-child {
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 2px;
+
+    min-width: 0;
+    min-height: 46px;
+
+    padding:
+      5px
+      3px;
+
+    border:
+      1px solid
+      var(--library-border);
+
+    overflow: hidden;
+  }
+
+  .libraries-tab span {
+    display: block;
+
+    max-width: 100%;
+
+    font-size: 12px;
+    line-height: 1;
+
+    white-space: nowrap;
+  }
+
+  .libraries-tab strong {
+    display: block;
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+    font-size: 12px;
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .libraries-catalogue__scroll {
+    position: relative;
+    z-index: 1;
+
+    padding-top: 10px;
+  }
+
+  .libraries-panel,
+  .libraries-stacks,
+  .libraries-shelf {
+    position: relative;
+    z-index: 1;
+  }
+
+  .libraries-shelf:first-child,
+  .libraries-stacks > .libraries-shelf:first-child {
+    margin-top: 6px;
+  }
+
+  .libraries-shelf__header {
+    min-height: 34px;
+
+    padding-top: 2px;
+    padding-bottom: 6px;
+  }
+}
+
+@media (max-width: 360px) {
+  .libraries-tabs {
+    gap: 3px;
+
+    padding-inline:
+      6px;
+  }
+
+  .libraries-tab,
+  .libraries-tab:last-child {
+    min-height: 44px;
+
+    padding-inline:
+      2px;
+  }
+
+  .libraries-tab span,
+  .libraries-tab strong {
+    font-size: 12px;
+  }
+}
+
